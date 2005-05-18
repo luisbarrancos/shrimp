@@ -1,0 +1,44 @@
+#!/bin/sh
+
+cat << EOF
+
+Bootstrapping Shrimp ...
+
+This script uses aclocal, automake, autoconf, and libtool
+to generate configuration and makefiles for building
+the project.  It is intended for use by developers who
+obtain the source via CVS.  If you obtained Shrimp via
+source tarball you shouldn't need to run this script,
+since the generated files are normally included in a
+tarball distribution.
+
+EOF
+
+libtoolize --force --automake --copy
+aclocal
+automake --add-missing --copy
+autoconf
+
+cat << EOF
+Bootstrap complete ... next, run
+
+	./configure
+
+to set build options.  Note: by default, the build will
+create binaries with debugging symbols (-g) and moderate
+optimization (-O2) enabled.  This is default behavior for
+autoconf, and can be overridden by specifying CFLAGS and
+CXXFLAGS when you run configure, e.g.
+
+	CFLAGS="-O3" CXXFLAGS="-O3" ./configure
+
+for a build with more aggressive optimization and
+no debugging symbols. Run
+
+	./configure --help
+
+for details on these and other available options.
+
+EOF
+
+

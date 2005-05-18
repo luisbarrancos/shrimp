@@ -1,0 +1,105 @@
+<shrimp name="rings" type="surface">
+	<about>Author: A Gill.
+
+Shrimp example shader showing tiling. The tiling block will be removed in the next release and replaced with a better one that can handle antialiasing more easily.
+	</about>
+	<circuit gridsize="52 30">
+		<block file="surface_output.shml" id="Output" position="47 12">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Matte"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false" value="1.0"/>
+		</block>
+		<block file="st.shml" id="st" position="1 17">
+			<output name="s" type="float"/>
+			<output name="t" type="float"/>
+		</block>
+		<block file="tile.shml" id="Tile" position="7 17">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="s" outputparentid="st"/>
+			</input>
+			<input name="y" type="float" shadervar="false">
+				<connection outputname="t" outputparentid="st"/>
+			</input>
+			<input name="xfreq" type="float" shadervar="false" value="10"/>
+			<input name="yfreq" type="float" shadervar="false" value="7"/>
+			<output name="xt" type="float"/>
+			<output name="yt" type="float"/>
+			<output name="column" type="float"/>
+			<output name="row" type="float"/>
+		</block>
+		<block file="add.shml" id="Add" position="19 17">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Noise3D"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" + ">
+				<connection outputname="yt" outputparentid="Tile"/>
+			</input>
+			<output name="val" type="float"/>
+		</block>
+		<block file="add.shml" id="Add_2" position="19 13">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Noise3D"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" + ">
+				<connection outputname="xt" outputparentid="Tile"/>
+			</input>
+			<output name="val" type="float"/>
+		</block>
+		<block file="ring.shml" id="Ring" position="26 13">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Add_2"/>
+			</input>
+			<input name="y" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Add"/>
+			</input>
+			<input name="ox" type="float" shadervar="false" value="0.5"/>
+			<input name="oy" type="float" shadervar="false" value="0.5"/>
+			<input name="radius" type="float" shadervar="false" value="0.4"/>
+			<input name="thickness" type="float" shadervar="false" value="0.1"/>
+			<input name="blur" type="float" shadervar="false" value="0.05"/>
+			<output name="out" type="float"/>
+		</block>
+		<block file="cs.shml" id="Cs" position="26 22">
+			<output name="Cs" type="color"/>
+		</block>
+		<block file="p.shml" id="p" position="1 12">
+			<output name="P" type="point"/>
+		</block>
+		<block file="scale.shml" id="Scale_2" position="7 11">
+			<input name="a" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="9.7623"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="noise3d.shml" id="Noise3D" position="13 11">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="amplitude" type="float" shadervar="false" value="0.2"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="matte.shml" id="Matte" position="40 12">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false" value="faceforward( normalize(N), I )"/>
+			<input name="Cs" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Mix"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="1.0"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="mix.shml" id="Mix" position="33 15">
+			<input name="alpha" type="float" shadervar="false">
+				<connection outputname="out" outputparentid="Ring"/>
+			</input>
+			<input name="A" type="color" shadervar="false" value="color( 0.1, 0.2, 0.75 )"/>
+			<input name="B" type="color" shadervar="false">
+				<connection outputname="Cs" outputparentid="Cs"/>
+			</input>
+			<output name="out" type="color"/>
+		</block>
+	</circuit>
+</shrimp>

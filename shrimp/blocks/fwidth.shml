@@ -1,0 +1,10 @@
+<shrimp type="function" name="FWidth" description="Determine correct sample size for antialiasing">
+	<input name="p" description="point under consideration" type="float point"/>
+	<output name="fwidth" description="An estimate of the sample width at p"/>
+	<include>shrimp_util.h</include>
+	<code>
+		$(fwidth) = filterwidth( $(p) );
+	</code>
+	<usage>This should be used to calulate the fwidth or blur inputs to other blocks that do their own antialising.
+	</usage> 
+</shrimp>

@@ -1,0 +1,17 @@
+<shrimp type="function" name="Metal" description="Standard metal shader">
+	<input name="Ka" description="Ambient coefficient" shadervar="true"/>
+	<input name="Ks" description="Specular coefficient" shadervar="true"/>
+	<input name="roughness" description="Surface roughness" shadervar="true" default="0.25"/>
+	<input name="Nf" description="Surface normal" type="normal" default="faceforward( normalize(N), I )"/>
+	<input name="V" description="Direction of viewer" type="vector" default="-normalize( I )"/>
+	<input name="Cs" description="Surface colour" type="color" default="Cs"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded colour" type="color"/>
+	<output name="Oi" description="Output opacity" type="color"/>
+	<code>	
+	$(Ci) = $(Os) * $(Cs) * ( $(Ka)*ambient() + 
+	$(Ks)*specular($(Nf), $(V), $(roughness)) );
+	$(Oi) = $(Os);
+	</code>
+	<usage>The standard metal shader.</usage>
+</shrimp>

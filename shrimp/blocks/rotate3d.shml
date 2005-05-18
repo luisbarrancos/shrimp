@@ -1,0 +1,12 @@
+<shrimp type="function" name="Rotate3D" description="Rotate a point about an axis">
+	<input name = "Q" description="point to rotate" type="point"/>
+	<input name = "angle" description="The angle to rotate in radians"/>
+	<input name = "P1" description="1st line endpoint" type="point"/>
+	<input name = "P2" description="2nd line endpoint" type="point"/>
+	<output name="out" description="Rotated point" type="point"/>
+	<code>
+	$(out) = rotate( $(Q), $(angle), $(P1), $(P2) );
+	</code>
+	<usage>Rotates the point Q angle radians about the axis through P1,P2
+	</usage>
+</shrimp>

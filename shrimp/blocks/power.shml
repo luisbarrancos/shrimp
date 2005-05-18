@@ -1,0 +1,8 @@
+<shrimp type="function" name="Power" description="Power block">
+	<input name="A" description="Input value"/>
+	<input name="x" description="exponent"/>
+	<output name="val" description="val = A raised to the power x"/>
+	<code>
+	$(val) = pow( $(A), $(x) );
+	</code>
+</shrimp>

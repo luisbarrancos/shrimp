@@ -1,0 +1,8 @@
+<shrimp type="function" name="Max" description="Return the largest input">
+	<input name="a" description="1st input" type="float point vector normal color"/>
+	<input name="b" description="2nd or subsequent inputs" type="float point vector normal color" multi="true" separator=", "/>
+	<output name="out" description="out = the largest input" type="float point vector normal color"/>
+	<code>
+	$(out) = max( $(a), $(b) );
+	</code>
+</shrimp>

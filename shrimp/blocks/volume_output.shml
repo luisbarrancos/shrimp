@@ -1,0 +1,8 @@
+<shrimp type="function" name="Output" description="Outputs to Volume Shader">
+	<input name="Ci" description="Attenuated ray colour" type="color" default="0"/>
+	<input name="Oi" description="Attenuated ray opacity" type="color" default="1"/>
+	<code>
+	Ci = $(Ci);
+	Oi = $(Oi);
+	</code>
+</shrimp>

@@ -1,0 +1,12 @@
+<shrimp type="function" name="Cell2D" description="2 dimensional cell noise function">
+	<input name="x" description="noise x co-ordinate"/>
+	<input name="y" description="noise y co-ordinate"/>
+	<input name="amplitude" description="Amplitude of noise"/>
+	<output name="val" description="Cell noise value at (x,y), in range 0 - 1" type="float color point vector"/>
+	<code>
+	$(val) = $(amplitude) * $(var_type) cellnoise( $(x), $(y) );
+	</code>
+	<usage>Cellnoise returns a random value between 0 and 1 for each integer 'cell'.
+It is much cheaper than calling noise.
+	</usage> 
+</shrimp>

@@ -1,0 +1,9 @@
+<shrimp type="function" name="Noise2D" description="2 dimensional perlin noise function">
+	<input name="x" description="noise x co-ordinate"/>
+	<input name="y" description="noise y co-ordinate"/>
+	<input name="amplitude" description="Amplitude of noise"/>
+	<output name="val" description="Noise value at (x,y), in range 0 - 1" type="float color point vector"/>
+	<code>
+	$(val) = $(amplitude) * $(var_type) noise( $(x), $(y) );
+	</code>
+</shrimp>

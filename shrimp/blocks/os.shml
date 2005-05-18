@@ -1,0 +1,6 @@
+<shrimp type="function" name="Os" description="Surface Opacity">
+	<output name="Os" description="Surface Opacity" type="color"/>
+	<code>
+	$(Os) = Os;
+	</code>
+</shrimp>

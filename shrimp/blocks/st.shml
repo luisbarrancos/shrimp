@@ -1,0 +1,8 @@
+<shrimp type="function" name="st" description="Surface texture co-ords">
+	<output name="s" description="horizontal co-ord"/>
+	<output name="t" description="vertical co-ord"/>
+	<code>
+	$(s) = s;
+	$(t) = t;
+	</code>
+</shrimp>

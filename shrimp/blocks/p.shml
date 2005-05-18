@@ -1,0 +1,6 @@
+<shrimp type="function" name="p" description="Surface Position">
+	<output name="P" description="Surface Position" type="point"/>
+	<code>
+	$(P) = P;
+	</code>
+</shrimp>

@@ -1,0 +1,28 @@
+<gtkml>
+	<window name="window" show="false" size="350 400">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+			<vbox homogeneous="false" fill="true" expand="true">
+				  <vbox homogeneous="false" padding="10">
+					<label name="type"/>
+					<hbox homogeneous="false">
+						<label>Shader Name</label>
+						<entry name="name" padding="10"/>
+					</hbox>
+				  </vbox>
+				<frame padding="20" fill="true" expand="true">Notes
+					<text name="about"/>
+				</frame>
+			</vbox>
+			<hbuttonbox>
+				<button expand="true" padding="4">OK
+					<event signal="clicked" name="onok"/>
+				</button>
+				<button expand="true" padding="4">Cancel
+					<event signal="clicked" name="oncancel"/>
+				</button>
+			</hbuttonbox>
+		</vbox>
+	</window>
+</gtkml>
+				

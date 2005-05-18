@@ -1,0 +1,10 @@
+<shrimp type="function" name="Add" description="Addition block">
+	<input name="A" description="1st input" type="float color point vector normal"/>
+	<input name="B" description="2nd or subsequent inputs" type="float color point vector normal" separator=" + " multi="true"/>
+	<output name="val" description="val = A + B" type="float color point vector normal"/>
+	<code>
+	$(val) = $(A) + $(B);
+	</code>
+	<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+	</usage>
+</shrimp>

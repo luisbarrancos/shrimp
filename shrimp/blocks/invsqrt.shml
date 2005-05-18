@@ -1,0 +1,7 @@
+<shrimp type="function" name="InvSqrt" description="Inverse square root">
+	<input name="a" description="Input value"/>
+	<output name="val" description="val = the inverse sqare root of a"/>
+	<code>
+	$(val) = inversesqrt( $(a) );
+	</code>
+</shrimp>

@@ -1,0 +1,7 @@
+<shrimp type="function" name="Floor" description="Return the largest integer not greater than a">
+	<input name="a" description="Input value"/>
+	<output name="out" description="The largest integer not greater than a"/>
+	<code>
+	$(out) = floor( $(a) );
+	</code>
+</shrimp>

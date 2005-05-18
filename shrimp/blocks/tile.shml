@@ -1,0 +1,14 @@
+<shrimp type="function" name="Tile" description="Simple tiling function">
+	<input name="x" description="x,y give the point to be transformed"/>
+	<input name="y" description="x,y give the point to be transformed"/>
+	<input name="xfreq" description="The frequency of the tiling in the x direction"/>
+	<input name="yfreq" description="The frequency of the tiling in the y direction"/>
+	<output name="xt" description="The x co-ord inside the tile"/>
+	<output name="yt" description="The y co-ord inside the tile"/>
+	<output name="column" description="The column number of the current tile"/>
+	<output name="row" description="The row number of the current tile"/>
+	<include>tile.h</include>
+	<code>
+	shTile( $(x),$(y),$(xfreq),$(yfreq),$(xt),$(yt),$(column),$(row) );
+	</code>
+</shrimp>

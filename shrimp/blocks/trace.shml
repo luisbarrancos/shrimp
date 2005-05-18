@@ -1,0 +1,8 @@
+<shrimp type="function" name="Trace" description="Ray Trace">
+	<input name="p" description="Ray start" type="point"/>
+	<input name="dir" description="Ray direction" type="vector normal point"/>
+	<output name="col" description="The color reaching p from a direction dir" type="color"/>
+	<code>
+	$(col) = trace( $(p), $(dir) );
+	</code>
+</shrimp>

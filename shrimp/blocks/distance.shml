@@ -1,0 +1,8 @@
+<shrimp type="function" name="Distance" description="Distance between 2 points">
+	<input name = "P1" description="1st point" type="point"/>
+	<input name = "P2" description="2nd point" type="point"/>
+	<output name="out" description="The distance between P1 and P2"/>
+	<code>
+	$(out) = distance( $(P1), $(P2) );
+	</code>
+</shrimp>

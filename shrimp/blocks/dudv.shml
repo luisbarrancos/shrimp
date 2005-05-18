@@ -1,0 +1,8 @@
+<shrimp type="function" name="dudv" description="Change in Surface Parameters">
+	<output name="du" description="Change in u direction"/>
+	<output name="dv" description="Change in v direction"/>
+	<code>
+	$(du) = du;
+	$(dv) = dv;
+	</code>
+</shrimp>

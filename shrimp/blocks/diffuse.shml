@@ -1,0 +1,7 @@
+<shrimp type="function" name="Diffuse" description="Computes diffuse light at surface">
+	<input name="norm" description="The surface normal" 	type="normal" default="Ng"/>
+	<output name="col" description="The amount of diffuse light" 	type="color"/>
+	<code>
+	$(col) = diffuse( $(norm) );
+	</code>
+</shrimp>

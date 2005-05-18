@@ -1,0 +1,588 @@
+<gtkml>
+  <window type="toplevel" title="Shrimp" name="mainwindow" show="false" size="750 550">
+    <event signal="destroy" name="ondestroy"/>
+    <vbox homogeneous="false">
+      <menubar>
+        <menuitem>File
+          <menu name="normalmenu">
+            <menuitem>New
+              <menu>
+                <menuitem>Surface
+                  <event signal="activate" name="onnewsurface"/>
+                </menuitem>
+                <menuitem>Displacement
+                  <event signal="activate" name="onnewdisplacement"/>
+                </menuitem>
+                <menuitem show="false">Light
+                  <event signal="activate" name="onnewlight"/>
+                </menuitem>
+                <menuitem show="false">Volume
+                  <event signal="activate" name="onnewvolume"/>
+                </menuitem>                
+                <menuitem show="false">Imager
+                  <event signal="activate" name="onnewimager"/>
+                </menuitem>
+                <menuitem/>
+                <menuitem show="false">Function
+                </menuitem>
+              </menu>
+            </menuitem>
+            <menuitem>Open
+              <event signal="activate" name="oncircuitopen"/>
+            </menuitem>
+            <menuitem/>
+            <menuitem>Save
+              <event signal="activate" name="oncircuitsave"/>
+            </menuitem>
+            <menuitem>Save As...
+              <event signal="activate" name="oncircuitsaveas"/>
+            </menuitem>
+            <menuitem>Close
+              <event signal="activate" name="oncircuitclose"/>
+            </menuitem>
+            <menuitem/>
+            <menuitem>Resize Grid
+            	<event signal="activate" name="oncircuitresize"/>
+			</menuitem>
+            <menuitem>Shader Properties
+              <event signal="activate" name="onshaderproperties"/>
+            </menuitem>
+            <menuitem>Preview
+              <event signal="activate" name="onpreview"/>
+            </menuitem>
+            <menuitem>Render Options...
+              <event signal="activate" name="onrenderoptions"/>
+            </menuitem>
+            <menuitem>Code Preview...
+              <event signal="activate" name="oncodepreview"/>
+            </menuitem>
+            <menuitem>Save Code...
+              <event signal="activate" name="onsavecode"/>
+            </menuitem>
+            <menuitem/>
+            <menuitem>Exit
+              <event signal="activate" name="onexit"/>
+            </menuitem>
+          </menu>
+        </menuitem>
+        <menuitem>Add
+          <menu>
+            <menuitem>Shaders
+              <menu name="shaders">
+                <menuitem>Matte
+                  <event signal="activate" name="onblockaddmatte"/>
+                </menuitem>
+                <menuitem>Plastic
+                  <event signal="activate" name="onblockaddplastic"/>
+                </menuitem>
+                <menuitem>Metal
+                  <event signal="activate" name="onblockaddmetal"/>
+                </menuitem>
+                <menuitem>Displace
+                  <event signal="activate" name="onblockadddisplace"/>
+                </menuitem>
+                <menuitem>Bump
+                  <event signal="activate" name="onblockaddbump"/>
+                </menuitem>
+                <menuitem>Wood
+                  <event signal="activate" name="onblockaddwood"/>
+                </menuitem>
+              </menu>
+            </menuitem>
+            <menuitem>Inputs
+              <menu name="inputs">
+                <menuitem>Texture Co-ords s,t
+                  <event signal="activate" name="onblockaddst"/>
+                </menuitem>
+                <menuitem>Parametric Co-ords u,v
+                  <event signal="activate" name="onblockadduv"/>
+                </menuitem>
+                <menuitem>Position P
+                  <event signal="activate" name="onblockaddp"/>
+                </menuitem>
+                <menuitem>Shading Normal
+                  <event signal="activate" name="onblockaddn"/>
+                </menuitem>
+                <menuitem>Geometric Normal
+                  <event signal="activate" name="onblockaddng"/>
+                </menuitem>
+                <menuitem>Surface Deriv's
+                  <event signal="activate" name="onblockadds_deriv"/>
+                </menuitem>
+                <menuitem>Parametric Deriv's
+                  <event signal="activate" name="onblockadddudv"/>
+                </menuitem>
+                <menuitem>Time
+                  <event signal="activate" name="onblockaddtime"/>
+                </menuitem>
+                <menuitem>dTime
+                  <event signal="activate" name="onblockadddtime"/>
+                </menuitem>
+                <menuitem>dPdTime
+                  <event signal="activate" name="onblockadddpdtime"/>
+                </menuitem>
+                <menuitem>Surface Colour
+                  <event signal="activate" name="onblockaddcs"/>
+                </menuitem>
+                <menuitem>Surface Opacity
+                  <event signal="activate" name="onblockaddos"/>
+                </menuitem>
+                <menuitem>Eye Position
+                  <event signal="activate" name="onblockadde"/>
+                </menuitem>
+                <menuitem>Ray Direction
+                  <event signal="activate" name="onblockaddi"/>
+                </menuitem>
+              </menu>
+            </menuitem>
+            <menuitem>Fractal
+              <menu name="fractals">
+                <menuitem>Noise
+                  <menu>
+                    <menuitem>1D Noise
+                      <event signal="activate" name="onblockaddnoise1d"/>
+                    </menuitem>
+                    <menuitem>2D Noise
+                      <event signal="activate" name="onblockaddnoise2d"/>
+                    </menuitem>
+                    <menuitem>3D Noise
+                      <event signal="activate" name="onblockaddnoise3d"/>
+                    </menuitem>
+                    <menuitem>4D Noise
+                      <event signal="activate" name="onblockaddnoise4d"/>
+                    </menuitem>
+		            <menuitem/>
+                    <menuitem>1D CellNoise
+                      <event signal="activate" name="onblockaddcellnoise1d"/>
+                    </menuitem>
+                    <menuitem>2D CellNoise
+                      <event signal="activate" name="onblockaddcellnoise2d"/>
+                    </menuitem>
+                    <menuitem>3D CellNoise
+                      <event signal="activate" name="onblockaddcellnoise3d"/>
+                    </menuitem>
+                    <menuitem>4D CellNoise
+                      <event signal="activate" name="onblockaddcellnoise4d"/>
+                    </menuitem>
+		            <menuitem/>
+                    <menuitem>1D SNoise
+                      <event signal="activate" name="onblockaddsnoise1d"/>
+                    </menuitem>
+                    <menuitem>2D SNoise
+                      <event signal="activate" name="onblockaddsnoise2d"/>
+                    </menuitem>
+                    <menuitem>3D SNoise
+                      <event signal="activate" name="onblockaddsnoise3d"/>
+                    </menuitem>
+                    <menuitem>4D SNoise
+                      <event signal="activate" name="onblockaddsnoise4d"/>
+                    </menuitem>
+                  </menu>
+                </menuitem>
+                <menuitem>fBm
+                  <menu>
+                    <menuitem>1D fBm
+                      <event signal="activate" name="onblockaddfbm1d"/>
+                    </menuitem>
+                    <menuitem>2D fBm
+                      <event signal="activate" name="onblockaddfbm2d"/>
+                    </menuitem>
+                    <menuitem>3D fBm
+                      <event signal="activate" name="onblockaddfbm3d"/>
+                    </menuitem>
+                    <menuitem>4D fBm
+                      <event signal="activate" name="onblockaddfbm4d"/>
+                    </menuitem>
+                  </menu>
+                </menuitem>
+                <menuitem>Turbulence
+                  <menu>
+                    <menuitem>1D Turbulence
+                      <event signal="activate" name="onblockaddturbulence1d"/>
+                    </menuitem>
+                    <menuitem>2D Turbulence
+                      <event signal="activate" name="onblockaddturbulence2d"/>
+                    </menuitem>
+                    <menuitem>3D Turbulence
+                      <event signal="activate" name="onblockaddturbulence3d"/>
+                    </menuitem>
+                    <menuitem>4D Turbulence
+                      <event signal="activate" name="onblockaddturbulence4d"/>
+                    </menuitem>
+                  </menu>
+                </menuitem>
+                <menuitem>Ridged
+                  <menu>
+                    <menuitem>1D Ridged
+                      <event signal="activate" name="onblockaddridged1d"/>
+                    </menuitem>
+                    <menuitem>2D Ridged
+                      <event signal="activate" name="onblockaddridged2d"/>
+                    </menuitem>
+                    <menuitem>3D Ridged
+                      <event signal="activate" name="onblockaddridged3d"/>
+                    </menuitem>
+                    <menuitem>4D Ridged
+                      <event signal="activate" name="onblockaddridged4d"/>
+                    </menuitem>
+                  </menu>
+                </menuitem>
+              </menu>
+            </menuitem>
+            <menuitem>Patterns
+              <menu name="patterns">
+                <menuitem>Rectangle
+                  <event signal="activate" name="onblockaddrectangle"/>
+                </menuitem>
+                <menuitem>Disc
+                  <event signal="activate" name="onblockadddisc"/>
+                </menuitem>
+                <menuitem>Ring
+                  <event signal="activate" name="onblockaddring"/>
+                </menuitem>
+                <menuitem>Line
+                  <event signal="activate" name="onblockaddline"/>
+                </menuitem>
+                <menuitem>Tile
+                  <event signal="activate" name="onblockaddtile"/>
+                </menuitem>
+                <menuitem>Stripe
+                  <event signal="activate" name="onblockaddstripe"/>
+                </menuitem>
+                <menuitem>Step
+                  <event signal="activate" name="onblockaddstep"/>
+                </menuitem>
+                <menuitem>Smooth step
+                  <event signal="activate" name="onblockaddsmoothstep"/>
+                </menuitem>
+                <menuitem>Triangle Wave
+                  <event signal="activate" name="onblockaddtriangle"/>
+                </menuitem>
+                <menuitem>Sawtooth Wave
+                  <event signal="activate" name="onblockaddsawtooth"/>
+                </menuitem>
+			  </menu>
+			</menuitem>
+			<menuitem>Maths
+			  <menu name="maths">
+                <menuitem>Trigonomic
+                  <menu>
+				    <menuitem>Sin
+	                  <event signal="activate" name="onblockaddsin"/>
+	                </menuitem>
+				    <menuitem>Cos
+	                  <event signal="activate" name="onblockaddcos"/>
+	                </menuitem>
+				    <menuitem>Tan
+	                  <event signal="activate" name="onblockaddtan"/>
+	                </menuitem>
+				    <menuitem>ASin
+	                  <event signal="activate" name="onblockaddasin"/>
+	                </menuitem>
+				    <menuitem>ACos
+	                  <event signal="activate" name="onblockaddacos"/>
+	                </menuitem>
+				    <menuitem>ATan
+	                  <event signal="activate" name="onblockaddatan"/>
+	                </menuitem>
+				    <menuitem>Degrees
+	                  <event signal="activate" name="onblockadddegrees"/>
+	                </menuitem>
+				    <menuitem>Radians
+	                  <event signal="activate" name="onblockaddradians"/>
+	                </menuitem>
+				  </menu>
+				</menuitem>
+				<menuitem>Exponential
+				  <menu>
+				    <menuitem>Power
+	                  <event signal="activate" name="onblockaddpower"/>
+	                </menuitem>
+				    <menuitem>Exp
+	                  <event signal="activate" name="onblockaddexp"/>
+	                </menuitem>
+				    <menuitem>Sqrt
+	                  <event signal="activate" name="onblockaddsqrt"/>
+	                </menuitem>
+				    <menuitem>Inverse Sqrt
+	                  <event signal="activate" name="onblockaddinvsqrt"/>
+	                </menuitem>
+				    <menuitem>Log
+	                  <event signal="activate" name="onblockaddlog"/>
+	                </menuitem>
+				    <menuitem>Natural Log
+	                  <event signal="activate" name="onblockaddln"/>
+	                </menuitem>
+				  </menu>
+				</menuitem>
+				<menuitem>Vector
+				  <menu>
+				    <menuitem>Dot Product
+ 	                 <event signal="activate" name="onblockadddot"/>
+ 	                </menuitem>
+				    <menuitem>Cross Product
+ 	                 <event signal="activate" name="onblockaddcross"/>
+ 	                </menuitem>
+				    <menuitem>Rotate3D
+ 	                 <event signal="activate" name="onblockaddrotate3d"/>
+ 	                </menuitem>
+				    <menuitem>Rotate2D
+ 	                 <event signal="activate" name="onblockaddrotate2d"/>
+ 	                </menuitem>
+				    <menuitem>Scale
+ 	                 <event signal="activate" name="onblockaddscale"/>
+ 	                </menuitem>
+				    <menuitem>Normalise
+ 	                 <event signal="activate" name="onblockaddnormalise"/>
+ 	                </menuitem>
+				    <menuitem>Length
+ 	                 <event signal="activate" name="onblockaddlength"/>
+ 	                </menuitem>
+				    <menuitem>Distance
+ 	                 <event signal="activate" name="onblockadddistance"/>
+ 	                </menuitem>
+				    <menuitem>Depth
+ 	                 <event signal="activate" name="onblockadddepth"/>
+ 	                </menuitem>
+				    <menuitem>Reflect
+ 	                 <event signal="activate" name="onblockaddreflect"/>
+ 	                </menuitem>
+				    <menuitem>Refract
+ 	                 <event signal="activate" name="onblockaddrefract"/>
+ 	                </menuitem>
+				    <menuitem>Fresnel
+ 	                 <event signal="activate" name="onblockaddfresnel"/>
+ 	                </menuitem>
+				    <menuitem>Transform
+ 	                 <event signal="activate" name="onblockaddtransform"/>
+ 	                </menuitem>
+				    <menuitem>Calulate Normal
+ 	                 <event signal="activate" name="onblockaddcalcnormal"/>
+ 	                </menuitem>
+ 	                <menuitem>Face Forward
+ 	                 <event signal="activate" name="onblockaddfaceforward"/>
+ 	                </menuitem>
+ 	              </menu>
+ 	            </menuitem>
+ 	            <menuitem>Boolean
+ 	              <menu>
+ 	              	<menuitem>AND
+ 	              	  <event signal="activate" name="onblockaddand"/>
+ 	              	</menuitem>
+ 	              	<menuitem>OR
+ 	              	  <event signal="activate" name="onblockaddor"/>
+ 	              	</menuitem>
+ 	              	<menuitem>SUB
+ 	              	  <event signal="activate" name="onblockaddsub"/>
+ 	              	</menuitem>
+ 	              	<menuitem>NOT
+ 	              	  <event signal="activate" name="onblockaddnot"/>
+ 	              	</menuitem>
+ 	              	<menuitem>XOR
+ 	              	  <event signal="activate" name="onblockaddxor"/>
+ 	              	</menuitem>
+ 	              </menu>
+ 	            </menuitem>
+			    <menuitem>Add
+                  <event signal="activate" name="onblockaddadd"/>
+                </menuitem>
+			    <menuitem>Subtract
+                  <event signal="activate" name="onblockaddsubtract"/>
+                </menuitem>
+			    <menuitem>Multiply
+                  <event signal="activate" name="onblockaddmultiply"/>
+                </menuitem>
+			    <menuitem>Divide
+                  <event signal="activate" name="onblockadddivide"/>
+                </menuitem>
+			    <menuitem>Abs
+                  <event signal="activate" name="onblockaddabs"/>
+                </menuitem>
+			    <menuitem>Sign
+                  <event signal="activate" name="onblockaddsign"/>
+                </menuitem>
+			    <menuitem>Mod
+                  <event signal="activate" name="onblockaddmod"/>
+                </menuitem>
+			    <menuitem>Odd
+                  <event signal="activate" name="onblockaddodd"/>
+                </menuitem>
+			    <menuitem>Even
+                  <event signal="activate" name="onblockaddeven"/>
+                </menuitem>
+			    <menuitem>Min
+                  <event signal="activate" name="onblockaddmin"/>
+                </menuitem>
+			    <menuitem>Max
+                  <event signal="activate" name="onblockaddmax"/>
+                </menuitem>
+			    <menuitem>Clamp
+                  <event signal="activate" name="onblockaddclamp"/>
+                </menuitem>
+			    <menuitem>Floor
+                  <event signal="activate" name="onblockaddfloor"/>
+                </menuitem>
+			    <menuitem>Ceil
+                  <event signal="activate" name="onblockaddceil"/>
+                </menuitem>
+			    <menuitem>Round
+                  <event signal="activate" name="onblockaddround"/>
+                </menuitem>
+			    <menuitem>Random
+                  <event signal="activate" name="onblockaddrandom"/>
+                </menuitem>
+              </menu>
+            </menuitem>
+            <menuitem>Misc
+              <menu name="misc">
+              	<menuitem>Diffuse
+              	  <event signal="activate" name="onblockadddiffuse"/>
+              	</menuitem>
+                <menuitem>Texture
+              	  <event signal="activate" name="onblockaddtexture"/>
+              	</menuitem>
+                <menuitem>Constant
+              	  <event signal="activate" name="onblockaddconstant"/>
+              	</menuitem>
+              	<menuitem>Mix
+              	  <event signal="activate" name="onblockaddmix"/>
+              	</menuitem>
+              	<menuitem>Spline
+              	  <event signal="activate" name="onblockaddspline"/>
+              	</menuitem>
+              	<menuitem>Filter Width
+              	  <event signal="activate" name="onblockaddfwidth"/>
+              	</menuitem>
+              	<menuitem>Du
+              	  <event signal="activate" name="onblockadddu"/>
+              	</menuitem>
+              	<menuitem>Dv
+              	  <event signal="activate" name="onblockadddv"/>
+              	</menuitem>
+              	<menuitem>Deriv
+              	  <event signal="activate" name="onblockaddderiv"/>
+              	</menuitem>
+              	<menuitem>Area
+              	  <event signal="activate" name="onblockaddarea"/>
+              	</menuitem>
+              	<menuitem>If
+              	  <event signal="activate" name="onblockaddif"/>
+              	</menuitem>
+              	<menuitem>Get Components
+              	  <event signal="activate" name="onblockaddgetcomp"/>
+              	</menuitem>
+              	<menuitem>Set Components
+              	  <event signal="activate" name="onblockaddsetcomp"/>
+              	</menuitem>
+              	<menuitem>Get Colour Comp
+              	  <event signal="activate" name="onblockaddgetcol"/>
+              	</menuitem>
+              	<menuitem>Set Colour Comp
+              	  <event signal="activate" name="onblockaddsetcol"/>
+              	</menuitem>
+              </menu>
+            </menuitem>
+          </menu>
+        </menuitem>
+        <menuitem>Help
+          <menu>
+            <menuitem>About
+              <event signal="activate" name="onabout"/>
+            </menuitem>
+          </menu>
+        </menuitem>
+    <menuitem show="false">Invisible
+    <menu name="blockmenu">
+      <menuitem>Move
+        <event signal="activate" name="onblockmove"/>
+        <accelerator key="m" signal="activate"/>
+      </menuitem>
+      <menuitem>Copy
+        <event signal="activate" name="onblockcopy"/>
+        <accelerator key="c" signal="activate"/>
+      </menuitem>
+      <menuitem>Delete
+        <event signal="activate" name="onblockdelete"/>
+        <accelerator key="d" signal="activate"/>
+      </menuitem>
+      <menuitem>Help..
+      	<event signal="activate" name="onblockhelp"/>
+      </menuitem>
+    </menu>
+    </menuitem>
+    <menuitem show="false">Also Invisible
+    <menu name="iomenu">
+      <menuitem name="paddisconnect">Disconnect
+        <event signal="activate" name="onpaddisconnect"/>
+        <accelerator key="x" signal="activate"/>
+      </menuitem>
+      <menuitem>Properties...
+        <event signal="activate" name="onpadproperties"/>
+        <accelerator key="p" signal="activate"/>
+      </menuitem>
+      <menuitem/>
+      <menuitem name="newmultipad">Add New Pad
+        <event signal="activate" name="onpadnewmulti"/>
+      </menuitem>
+      <menuitem name="removemultipad">Remove Pad
+        <event signal="activate" name="onpadremovemulti"/>
+      </menuitem>
+    </menu>
+    </menuitem>
+        
+      </menubar>
+      <button>Preview
+        <event signal="clicked" name="onpreview"/>
+      </button>
+      <hbox homogeneous="false" fill="true" expand="true">
+        <vbox homogeneous="false">
+          <button padding="2">Shaders..
+            <event signal="button-press-event" name="openmenushaders"/>
+          </button>
+          <button padding="2">Inputs..
+            <event signal="button-press-event" name="openmenuinputs"/>
+          </button>
+          <button padding="2">Fractals..
+            <event signal="button-press-event" name="openmenufractals"/>
+          </button>
+          <button padding="2">Patterns..
+            <event signal="button-press-event" name="openmenupatterns"/>
+          </button>
+          <button padding="2">Maths..
+            <event signal="button-press-event" name="openmenumaths"/>
+          </button>
+          <button padding="2">Misc..
+            <event signal="button-press-event" name="openmenumisc"/>
+          </button>
+          <button padding="2" show="false">Load
+            <event signal="clicked" name="onblockload"/>
+          </button>         
+        </vbox>
+        <vbox homogeneous="false" fill="true" expand="true">
+          <scrolledwindow fill="true" expand="true">
+            <viewport>
+              <drawingarea name="canvas">
+                <event signal="configure-event" name="ontestconfigureevent"/>
+                <event signal="expose-event" name="ontestexposeevent"/>
+                <event signal="button-press-event" name="onbuttonpressevent"/>
+                <event signal="motion-notify-event" name="onmousemoveevent"/>
+              </drawingarea>
+            </viewport>
+          </scrolledwindow>
+          <hbox homogeneous="false">
+          	<label expand="true"> Zoom  </label>
+          	<hscrollbar expand="true" fill="true">
+          	  <adjustment name="zoom" range="5 40" value="18" stepincrement="1" pageincrement="5" pagesize="5">
+          	    <event signal="value-changed" name="onzoom"/>
+          	  </adjustment>
+            </hscrollbar>
+          </hbox>
+        </vbox>
+      </hbox>
+      <table columns="3">
+      	<statusbar name="statusbar" tableposition="0 2 0 1"/>
+      	<statusbar name="statusbar2" tableposition="2 3 0 1"/>
+      </table>
+    </vbox>
+  </window>
+</gtkml>

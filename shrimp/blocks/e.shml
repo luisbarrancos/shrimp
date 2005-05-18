@@ -1,0 +1,6 @@
+<shrimp type="function" name="E" description="Position of eye">
+	<output name="E" description="Position of eye" type="point"/>
+	<code>
+	$(E) = E;
+	</code>
+</shrimp>

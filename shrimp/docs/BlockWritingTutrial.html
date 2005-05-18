@@ -1,0 +1,120 @@
+<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+<html>
+<head>
+   <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
+   <meta name="Author" content="Clive Gibbons">
+   <meta name="GENERATOR" content="Mozilla/4.6 [en] (Win98; I) [Netscape]">
+   <title>Shrimp Tutorial</title>
+</head>
+<body text="#FFFFFF" bgcolor="#65657F" link="#0000EE" vlink="#551A8B" alink="#FF0000">
+
+<center><font face="Verdana"><font size=+1>Writing your own Shrimp blocks.</font></font></center>
+
+<p><br>
+<center><table BORDER CELLSPACING=0 CELLPADDING=15 COLS=1 WIDTH="70%" BGCOLOR="#7A7A99" >
+<tr>
+<td><font face="Verdana">In this tutorial, I shall attempt to show you
+how to add your own blocks to Shrimp. First we will write the block in
+xml, and then add it to the interface. Because the interface is itself
+described in a number of xml files, the new block will appear in the interface
+without having to recompile Shrimp.</font>
+<p><font face="Verdana">We will be adding a block that computes the diffuse
+light incident on the surface. This is a built in function of the Renderman
+shading language so the actual code is fairly simple. So, open your favorite
+text editor, and we'll begin creating the xml description.</font>
+<br><font face="Verdana">Each shrimp block must start with the element
+&lt;shrimp>.&nbsp;
+This needs to include the attributes type, name,and description.</font>
+<br><font face="Verdana">All the blocks you'll be writing will be functions
+so the type should equal "function". The name attribute is the string that
+will be printed on the block inside Shrimp. We'll call this one "Diffuse".
+Likewise the description will appear in the status bar when the mouse moves
+over the block. Write something like "Computes diffuse light at surface".</font>
+<br><font face="Verdana">The first line of your file should read:</font>
+<br><font face="Courier New,Courier">&lt;shrimp type="function" name="Diffuse"
+description="Computes diffuse light at surface"></font>
+<p><font face="Verdana">Right, that's the first bit, now let's add some
+inputs and outputs to the block. The input to the diffuse function is simply
+the surface normal and the output will be a color. Input and output elements
+also have type, name, and description attributes. The name and description
+perform essentially the same job as they did in the main shrimp element.
+The type defines the data-type of the input, it can be one (or more) of&nbsp;
+"float", "color", "string", "point", "vector", "normal". If more than one
+of these is listed (eg type="point vector normal" ), then this input/output
+can become any one of those types, the first in the list is the default.
+If no type attribute is given, it is assumed to be "float". Input pads
+can also optionally supply a default value by giving a default attribute.
+If none is given the default is "1.0".</font>
+<br><font face="Verdana">Vector, Point, Normal and Colour defaults can be given
+by listing the components. for example default="0.5 0.7 0.7".&nbsp;</font>
+<p><font face="Verdana">Okay, our input is a normal, and the default value
+will be the current geometric normal, as that seems vaguely sensible (this
+is a global variable Ng in the shading language).</font>
+<br><font face="Verdana">&nbsp;So we add the line:</font>
+<br><font face="Courier New,Courier">&lt;input name="norm" description="The
+surface normal" type="normal" default="Ng"/></font>
+<p><font face="Verdana">And our output is a color:</font>
+<br><font face="Courier New,Courier">&lt;output name="col" description="The
+amount of diffuse light" type="color"/></font>
+<p><font face="Verdana">If we had multiple inputs or outputs we would just
+list them one after another. They appear on the block in the order given
+here.</font>
+<p><font face="Verdana">Right, now we can add the interesting stuff, the
+actual code. The text between &lt;code> and &lt;/code> is inserted into
+the body of the shader function, with translations to substitute in values
+etc. Anything between &lt;include> and &lt;/include> is copied to the top
+of the shader file (without any translation). As diffuse is built in we
+don't require any include files. The code section will look like this:</font>
+<br><font face="Courier New,Courier">&lt;code>$(col)=diffuse( $(norm) );&lt;/code></font>
+<br><font face="Verdana">Input and output names can be referred to inside
+$(), and are replaced by the corresponding variable name or value in the
+code.&nbsp;</font>
+<p><font face="Verdana">The optional &lt;usage> element gives a more detailed
+description of the block if it is particularly complicated or obscure.</font>
+<p><font face="Verdana">All that's left to do is to close the original
+&lt;shrimp> element, and our completed block should look like this:</font>
+<p><font face="Courier New,Courier">&lt;shrimp type="function" name="Diffuse"
+description="Computes diffuse light at surface"></font>
+<br><font face="Courier New,Courier">&nbsp;&lt;input name="norm" description="The
+surface normal"&nbsp; type="normal" default="Ng"/></font>
+<br><font face="Courier New,Courier">&nbsp;&lt;output name="col" description="The
+amount of diffuse light"&nbsp; type="color"/></font>
+<br><font face="Courier New,Courier">&nbsp;&lt;code></font>
+<br><font face="Courier New,Courier">&nbsp;$(col) = diffuse( $(norm) );</font>
+<br><font face="Courier New,Courier">&nbsp;&lt;/code></font>
+<br><font face="Courier New,Courier">&lt;/shrimp></font>
+<p><font face="Verdana">Save this file as diffuse.shml and put it in the
+blocks directory with all the other Shrimp blocks.</font>
+<p><font face="Verdana">Now open up the file dialogtemplates/mainwindow.gtkml.
+We'll add our block in the Misc menu for now so find the line:</font>
+<br><font face="Courier New,Courier">&lt;menuitem>Misc</font>
+<p><font face="Verdana">Under that somewhere insert a new entry like this:</font>
+<br><font face="Courier New,Courier">&lt;menuitem>Diffuse</font>
+<br><font face="Courier New,Courier">&nbsp; &lt;event signal="activate"
+name="onblockadddiffuse"/></font>
+<br><font face="Courier New,Courier">&lt;/menuitem></font>
+<p><font face="Verdana">The first line gives the name that will appear
+in the menu. The next line tells Shrimp what to do when this menu item
+is selected (activated). In order to add a block the name must be "onblockadd"
+and then the name of the file minus the .shml extension.&nbsp;</font>
+<br><font face="Verdana">Save this file and start Shrimp and your new block
+should appear in the menu and behave like any other block. If the preview
+fails when you try to use the block, have a look at the code Shrimp is
+generating with the code preview. All the $(var_name) bits should have
+been replaced. If there are any still here then make sure the names inside
+$() in your xml code match the names you gave to the inputs/outputs. Remember
+names are case sensitive.&nbsp;</font>
+<br><font face="Verdana">Well, that's about it for now. If you want a tutorial
+on a particular aspect of Shrimp then post a note on the Mailing list.</font>
+<br>&nbsp;
+<br>&nbsp;
+<br>
+<br>
+<center>
+<p><font face="Verdana">--The End--</font></center>
+</td>
+</tr>
+</table></center>
+
+</body>
+</html>

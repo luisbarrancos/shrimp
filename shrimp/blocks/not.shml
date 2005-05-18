@@ -1,0 +1,10 @@
+<shrimp type="function" name="NOT" description="Boolean NOT function">
+	<input name = "A" description="Input value"/>
+	<output name="out" description="The logical inversion of A"/>
+	<include>shrimp_util.h</include>
+	<code>
+	$(out) = complement( $(A) );
+	</code>
+	<usage>This block computes the logical inversion of the input. The input should be in the range 0-1.
+	</usage>
+</shrimp>

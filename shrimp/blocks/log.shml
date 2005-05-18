@@ -1,0 +1,8 @@
+<shrimp type="function" name="Log" description="Logarithm">
+	<input name="a" description="Input value"/>
+	<input name="base" description="Base of log"/>
+	<output name="val" description="val = log(a) with base base"/>
+	<code>
+	$(val) = log( $(a), $(base) );
+	</code>
+</shrimp>

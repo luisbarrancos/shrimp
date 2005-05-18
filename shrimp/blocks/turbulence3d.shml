@@ -1,0 +1,15 @@
+<shrimp type="function" name="Turbulence3D" description="3 dimensional turbulence function.">
+	<input name="p" description="point to sample turbulence at" type="point"/>
+	<input name="fwidth" description="Filter width for antialiasing" default="0"/>
+	<input name="octaves" description="Maximum octaves of noise" default="5"/>
+	<input name="lacunarity" description="Controls the smoothness of the turbulence" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the turbulence" default="0.5"/>
+	<input name="amplitude" description="Amplitude of turbulence"/>
+	<output name="val" description="turbulence value at p" type="float"/>
+	<include>fractal.h</include>
+	<code>
+		$(val) = $(amplitude) *  turbulence( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain) );		
+	</code>
+	<usage>This is the Perlin turbulence function.
+	</usage> 
+</shrimp>

@@ -1,0 +1,8 @@
+<shrimp type="function" name="Output" description="Outputs to Light Shader">
+	<input name="Cl" description="Outgoing light ray colour" type="color" default="0"/>
+	<input name="Ol" description="Outgoing light ray opacity" type="color" default="1"/>
+	<code>
+	Cl = $(Cl);
+	Ol = $(Ol);
+	</code>
+</shrimp>

@@ -1,0 +1,6 @@
+<shrimp type="function" name="Time" description="Current shutter time">
+	<output name="time" description="Current shutter time" type="float"/>
+	<code>
+	$(time) = time;
+	</code>
+</shrimp>

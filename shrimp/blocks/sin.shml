@@ -1,0 +1,8 @@
+<shrimp type="function" name="Sin" description="Sine block">
+	<input name="theta" description="Input value in radians"/>
+	<output name="val" description="val = Sin( theta )"/>
+	<code>
+	$(val) = sin( $(theta) );
+	</code>
+	<usage>Standard trigonomic sin function</usage>
+</shrimp>

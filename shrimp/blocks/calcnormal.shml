@@ -1,0 +1,9 @@
+<shrimp type="function" name="CalcNormal" description="Calculate the normal at p">
+	<input name = "p" description="Point to calculate normal at" type="point"/>
+	<output name="NN" description="NN is normal at p" type="normal"/>
+	<code>
+	$(NN) = calculatenormal( $(p) );
+	</code>
+	<usage>The output of this function is the surface normal at p.
+	</usage>
+</shrimp>

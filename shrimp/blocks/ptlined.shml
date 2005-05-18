@@ -1,0 +1,11 @@
+<shrimp type="function" name="PtLineD" description="Shortest distance between a point and a line segment">
+	<input name = "Q" description="point to test" type="point"/>
+	<input name = "P1" description="1st line endpoint" type="point"/>
+	<input name = "P2" description="2nd line endpoint" type="point"/>
+	<output name="out" description="The minimum distance between Q and the line segment P1 -&gt; P2"/>
+	<code>
+	$(out) = ptlined( $(Q), $(P1), $(P2) );
+	</code>
+	<usage>This function returns the minimum perpendiular distance between the point Q and the line segment that passes from the point P1 to P2. NB Not the infinite extension of this line. 
+	</usage>
+</shrimp>

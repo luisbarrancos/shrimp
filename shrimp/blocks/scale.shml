@@ -1,0 +1,8 @@
+<shrimp type="function" name="Scale" description="Scale value by a factor">
+	<input name="a" description="value to be scaled" type="float color point vector normal"/>
+	<input name="factor" description="factor to scale by"/>
+	<output name="val" description="new_val = factor * a" type="float color point vector normal"/>
+	<code>
+	$(val) = $(factor) * $(a);
+	</code>
+</shrimp>

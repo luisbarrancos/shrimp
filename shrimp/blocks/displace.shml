@@ -1,0 +1,13 @@
+<shrimp type="function" name="Displace" description="Displacement function">
+	<input name="P" description="The surface point to be displaced" type="point" default="P"/>
+	<input name="Dir" description="Direction to displace the surface (should be normalised)" type="vector" default="normalize(N)"/>
+	<input name="Scale" description="Amplitude of the displacement"/>
+	<output name="PP" description="The displaced surface point" type="point"/>
+	<output name="NN" description="The new surface normal" type="normal"/>
+	<code>
+	$(PP) = $(P) + $(Dir)*$(Scale);
+	$(NN) = normalize( calculatenormal( $(PP) ) );
+	</code>
+	<usage>This block performs true displacement in a displacment shader but can also be used to do bump mapping in a surface shader as the new P is simply ignored.
+	</usage>
+</shrimp>

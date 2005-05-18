@@ -1,0 +1,6 @@
+<shrimp type="function" name="N" description="Surface Shading Normal">
+	<output name="N" description="Surface Shading Normal" type="normal"/>
+	<code>
+	$(N) = N;
+	</code>
+</shrimp>

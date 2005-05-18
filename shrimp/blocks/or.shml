@@ -1,0 +1,11 @@
+<shrimp type="function" name="OR" description="Boolean OR function">
+	<input name = "A" description="1st value"/>
+	<input name = "B" description="2nd value"/>
+	<output name="out" description="The union of A and B"/>
+	<include>shrimp_util.h</include>
+	<code>
+	$(out) = union( $(A), $(B) );
+	</code>
+	<usage>This block computes the logical OR of the two inputs. The inputs should be in the range 0-1.
+	</usage>
+</shrimp>

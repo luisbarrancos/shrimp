@@ -1,0 +1,90 @@
+<gtkml>
+	<window title="Render Options" name="window" show="false" size="350 400">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+			<frame padding="10" fill="true" expand="true">
+			  <vbox homogeneous="false">
+				  <vbox homogeneous="false" padding="10">
+					<hbox homogeneous="false">
+						<label>Compile command</label>
+						<entry name="compile" padding="10"/>
+					</hbox>
+					<hbox homogeneous="false">
+						<label>Render  command</label>
+						<entry name="render" padding="10"/>
+					</hbox>
+				  </vbox>
+				<frame padding="20" fill="true" expand="true">Resolution
+					<hbox homogeneous="false">
+						<label padding="10">x Res</label>
+						<spinbutton name="xres" expand="true" fill="true" padding="10">
+							<adjustment stepincrement="1" range="0 2000"/>
+						</spinbutton>
+						<label padding="10">y Res</label>
+						<spinbutton name="yres" expand="true" fill="true" padding="10">
+							<adjustment stepincrement="1" range="0 2000"/>
+						</spinbutton>
+					</hbox>
+				</frame>
+				<frame padding="20" fill="true" expand="true">Pixel Samples
+					<hbox homogeneous="false">
+						<label padding="10">Num x</label>
+						<spinbutton name="xpix" expand="true" fill="true" padding="10">
+							<adjustment stepincrement="1" range="0 64"/>
+						</spinbutton>
+						<label padding="10">Num y</label>
+						<spinbutton name="ypix" expand="true" fill="true" padding="10">
+							<adjustment stepincrement="1" range="0 64"/>
+						</spinbutton>
+					</hbox>
+				</frame>
+				<hbox>
+				  <label>Shape</label>
+				  <optionmenu name="shape" tooltip="The shape that will appear in the preview">
+					<menu>
+						<menuitem>Sphere
+							<event signal="activate" name="onshapesphere"/>
+						</menuitem>
+						<menuitem>Cylinder
+							<event signal="activate" name="onshapecylinder"/>
+						</menuitem>
+						<menuitem>Cube
+							<event signal="activate" name="onshapecube"/>
+						</menuitem>
+						<menuitem>Cone
+							<event signal="activate" name="onshapecone"/>
+						</menuitem>
+						<menuitem>Plane
+							<event signal="activate" name="onshapeplane"/>
+						</menuitem>
+					</menu>
+				  </optionmenu>
+				</hbox>
+				<hbox padding="10">
+					<label>Colour</label>
+					<frame shadowtype="out">
+						<drawingarea name="colour" size="64 32">
+							<event signal="button-press-event" name="oncolourpressevent"/>
+							<event signal="configure-event" name="oncolourconfigureevent"/>
+							<event signal="expose-event" name="oncolourexposeevent"/>
+						</drawingarea>
+					</frame>
+				</hbox>
+			  </vbox>
+			</frame>
+			<frame padding="10" fill="true" expand="true">
+			  <hbuttonbox>
+				<button expand="true" padding="4">OK
+					<event signal="clicked" name="onok"/>
+				</button>
+				<button expand="true" padding="4">Cancel
+					<event signal="clicked" name="oncancel"/>
+				</button>
+				<button expand="true" padding="4">Set Defaults
+					<event signal="clicked" name="onsetdefaults"/>
+				</button>
+			  </hbuttonbox>
+			</frame>
+		</vbox>
+	</window>
+</gtkml>

@@ -1,0 +1,9 @@
+Authors page for the SDPTYPES library
+
+* 1999 - Created SDPTYPES - Timothy M. Shead <tshead@k-3d.com>
+* 1999 - Encouragement, Makefiles, CVS server space, and keeping me honest - Eric Plaster <plaster@imageman.com>
+* 2000 - Maintainance of Win32 project files / builds - Paul Gregory <pgregory@aqsis.com>
+* 2000 - Improved flexibility / standardized behaviour for sdptypes-config - Lukas Schroeder <lukas@azzit.de>
+* 2001 - Patches for portability to BSD - Alexander Leidinger <Alexander@Leidinger.net>
+* 2002 - Autoconf/Automake improvements, ANSI C++ compliance - Josh Moline <jdmoline@attbi.com>
+ 

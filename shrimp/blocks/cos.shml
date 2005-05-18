@@ -1,0 +1,8 @@
+<shrimp type="function" name="Cos" description="Cosine block">
+	<input name="theta" description="Input value in radians"/>
+	<output name="val" description="val = Cos( theta )"/>
+	<code>
+	$(val) = cos( $(theta) );
+	</code>
+	<usage>Standard trigonomic cos function</usage>
+</shrimp>

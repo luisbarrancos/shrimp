@@ -1,0 +1,9 @@
+<shrimp type="function" name="Clamp" description="clamp the input between to values">
+	<input name="a" description="Input value" type="float point vector normal color"/>
+	<input name="min" description="minimum value" type="float point vector normal color" default="0.0"/>
+	<input name="max" description="maximum value" type="float point vector normal color" default="1.0"/>
+	<output name="out" description="Clamp a between min and max" type="float point vector normal color"/>
+	<code>
+	$(out) = clamp( $(a), $(min), $(max) );
+	</code>
+</shrimp>

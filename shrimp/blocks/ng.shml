@@ -1,0 +1,6 @@
+<shrimp type="function" name="Ng" description="Surface Geometric Normal">
+	<output name="Ng" description="Surface Geometric Normal" type="normal"/>
+	<code>
+	$(Ng) = Ng;
+	</code>
+</shrimp>

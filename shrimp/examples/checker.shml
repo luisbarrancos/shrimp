@@ -1,0 +1,74 @@
+<shrimp name="checker" type="surface">
+	<about>The classic chess board pattern.
+	</about>
+	<circuit gridsize="35 25">
+		<block file="surface_output.shml" id="Output" position="30 0">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Plastic"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false" value="1"/>
+		</block>
+		<block file="xor.shml" id="XOR" position="18 6">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="out" outputparentid="Stripe"/>
+			</input>
+			<input name="B" type="float" shadervar="false">
+				<connection outputname="out" outputparentid="Stripe_2"/>
+			</input>
+			<output name="out" type="float"/>
+		</block>
+		<block file="plastic.shml" id="Plastic" position="24 0">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="0.5"/>
+			<input name="Ks" type="float" shadervar="true" value="0.5"/>
+			<input name="roughness" type="float" shadervar="true" value="0.1"/>
+			<input name="specularcolour" type="color" shadervar="true" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false" value="faceforward( normalize(N), I )"/>
+			<input name="V" type="vector" shadervar="false" value="-normalize( I )"/>
+			<input name="Cs" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="XOR"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="Os"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="st.shml" id="st_2" position="0 3">
+			<output name="s" type="float"/>
+			<output name="t" type="float"/>
+		</block>
+		<block file="stripe.shml" id="Stripe" position="12 0">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="s" outputparentid="st_2"/>
+			</input>
+			<input name="freq" type="float" shadervar="false" value="8"/>
+			<input name="width" type="float" shadervar="false" value="0.5"/>
+			<input name="blur" type="float" shadervar="false">
+				<connection outputname="fwidth" outputparentid="FWidth"/>
+			</input>
+			<output name="out" type="float"/>
+		</block>
+		<block file="stripe.shml" id="Stripe_2" position="12 6">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="t" outputparentid="st_2"/>
+			</input>
+			<input name="freq" type="float" shadervar="false" value="4"/>
+			<input name="width" type="float" shadervar="false" value="0.5"/>
+			<input name="blur" type="float" shadervar="false">
+				<connection outputname="fwidth" outputparentid="FWidth_2"/>
+			</input>
+			<output name="out" type="float"/>
+		</block>
+		<block file="fwidth.shml" id="FWidth" position="6 3">
+			<input name="p" type="float" shadervar="false">
+				<connection outputname="s" outputparentid="st_2"/>
+			</input>
+			<output name="fwidth" type="float"/>
+		</block>
+		<block file="fwidth.shml" id="FWidth_2" position="6 9">
+			<input name="p" type="float" shadervar="false">
+				<connection outputname="t" outputparentid="st_2"/>
+			</input>
+			<output name="fwidth" type="float"/>
+		</block>
+	</circuit>
+</shrimp>

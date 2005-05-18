@@ -1,0 +1,9 @@
+<shrimp type="function" name="Texture" description="Access a texture map">
+	<input name="name" description="Texture map name" type="string" default="&quot;&quot;"/>
+	<input name="s" description="horizontal texture co-ordinate" default="s"/>
+	<input name="t" description="vertical texture co-ordinate" default="t"/>
+	<output name="val" description="The value of the texture at (s,t)" type="color float"/>
+	<code>
+	$(val) = $(var_type) texture( $(name), $(s), $(t) );
+	</code>
+</shrimp>

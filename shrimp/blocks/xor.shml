@@ -1,0 +1,11 @@
+<shrimp type="function" name="XOR" description="Boolean exclusive or">
+	<input name = "A" description="1st value"/>
+	<input name = "B" description="2nd value"/>
+	<output name="out" description="Performs the logical operation A XOR B"/>
+	<include>shrimp_util.h</include>
+	<code>
+	$(out) = exclusiveor( $(A), $(B) );
+	</code>
+	<usage>This block computes the logical operation A XOR B. The inputs should be in the range 0-1.
+	</usage>
+</shrimp>

@@ -1,0 +1,8 @@
+<shrimp type="function" name="Deriv" description="Compute Derivative">
+	<input name="num" description="Value to compute derivative at" type="float color vector point"/>
+	<input name="den" description="Value to compute derivative with respect to"/>
+	<output name="val" description="Derivative of num with respect to den" type="float color vector point"/>
+	<code>
+	$(val) = Deriv( $(num), $(den) );
+	</code>
+</shrimp>

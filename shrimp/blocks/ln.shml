@@ -1,0 +1,7 @@
+<shrimp type="function" name="Ln" description="Natural logarithm">
+	<input name="a" description="Input value"/>
+	<output name="val" description="val = ln(a)"/>
+	<code>
+	$(val) = log( $(a) );
+	</code>
+</shrimp>

@@ -1,0 +1,252 @@
+<gtkmldoc>
+	<element name="accelerator" description="creates a key-accelerator, attached to the parent widget">
+		<attribute name="key" values="any character" default="" required="yes" description="specifies the key that activates the accelerator"/>
+		<attribute name="signal" values="any GTK+ signal, or quit, timeout, or idle" default="" required="yes" description="specifies any modifiers that must be used to activate the accelerator"/>
+		<attribute name="modifiers" values="shift, lock, control, mod1, mod2, mod3, mod4, mod5, button1, button2, button3, button4, button5, release" default="" required="no"/>
+		<attribute name="visible" values="true, false" default="true" required="no"/>
+	</element>
+	<element name="acceleratorgroup" description="creates a GtkAccelGroup element, attached to the parent widget"/>
+	<element sdpgtk="sdpGtkEvent" name="event" description="creates a named virtual event, attached to the parent widget">
+		<attribute name="signal" values="any GTK+ signal" default="" required="yes" description="specifies the GTK+ signal that activates this event"/>
+		<attribute name="name" values="non-empty string" default="" required="yes" description="names this event; the event name will be sent to the underlying framework when the event occurs"/>
+		<attribute name="duration" values="positive, non-zero integer" default="" required="no" description="specifies the duration in milliseconds of a timeout event"/>
+	</element>
+	<element name="resource" description="creates a named resource within the document">
+		<attribute name="name" values="unique (wihtin the GTKML document) non-empty string" default="" required="yes" description="names this resource; the underlying framework can access resources by name at runtime"/>
+		<attribute name="value" values="any string" default="" required="yes"/>
+	</element>
+	<element gtk="GtkObject" sdpgtk="sdpGtkObject">
+		<attribute name="name" values="unique (within the GTKML document) non-empty string" default="" required="no" description="names this object; the underlying framework can access objects by name at runtime"/>
+		<element gtk="GtkData" sdpgtk="sdpGtkData">
+			<element gtk="GtkAdjustment" sdpgtk="sdpGtkAdjustment" name="adjustment" description="creates a GtkAdjustment widget">
+				<attribute name="range" values="ordered pair of floating-point numbers" default="0, 1" required="no"/>
+				<attribute name="value" values="floating-point number" default="0" required="no"/>
+				<attribute name="stepincrement" values="floating-point number" default="" required="no"/>
+				<attribute name="pageincrement" values="floating-point number" default="" required="no"/>
+				<attribute name="pagesize" values="floating-point number" default="" required="no"/>
+			</element>
+			<element gtk="GtkTooltips" sdpgtk="sdpGtkTooltips" name="tooltips" description="creates a GtkTooltips widget"/>
+		</element>
+		<element gtk="GtkWidget" sdpgtk="sdpGtkWidget">
+			<attribute name="size" values="ordered pair of positive integers" default="" required="no" description="specifies the size of a widget, measured in pixels"/>
+			<attribute name="charactersize" values="ordered pair of positive floating-point numbers" default="" required="no" description="specifies the size of a widget, measured in characters (works well in conjunction with maxlength in text entry widgets)"/>
+			<attribute name="dragsource" values="non-empty string" default="" required="no"/>
+			<attribute name="dragdestination" values="non-empty string" default="" required="no"/>
+			<attribute name="show" values="true, false" default="true" required="no" description="controls whether this widget should be visible when the document is created"/>
+			<attribute name="pack" values="start, end" default="start" required="no" childof="GtkBox"/>
+			<attribute name="expand" values="true, false" default="false" required="no" childof="GtkBox"/>
+			<attribute name="fill" values="true, false" default="false" required="no" childof="GtkBox"/>
+			<attribute name="padding" values="positive integer" default="0" required="no" childof="GtkBox"/>
+			<attribute name="position" values="ordered pair of positive integers" default="0 0" required="no" childof="GtkFixed"/>
+			<attribute name="tablabel" values="any string" default="" required="no" childof="GtkNotebook" description="when this widget is a child of a notebook, sets the label that will appear on the notebook tab"/>
+			<attribute name="resize" values="true, false" default="true" required="no" childof="GtkPaned"/>
+			<attribute name="shrink" values="true, false" default="false" required="no" childof="GtkPaned"/>
+			<attribute name="target" values="horizontal, vertical" default="" required="yes" childof="GtkScrolledWindow" description="when an adjustment is the child of a scrolledwindow, controls whether it is the horizontal or vertical adjustment"/>
+			<attribute name="target" values="horizontal, vertical" default="" required="yes" childof="GtkViewport" description="when an adjustment is the child of a viewport, controls whether it is the horizontal or vertical adjustment"/>
+			<attribute name="tableposition" values="ordered quadruple of positive integers" default="0 1 0 1" required="no" childof="GtkTable" description="when this widget is a child of a table, specifies how many table cells the widget should occupy"/>
+			<attribute name="hexpand" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="hshrink" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="hfill" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="vexpand" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="vshrink" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="vfill" values="true, false" default="true" required="no" childof="GtkTable"/>
+			<attribute name="xpadding" values="positive integer" default="0" required="no" childof="GtkTable"/>
+			<attribute name="ypadding" values="positive integer" default="0" required="no" childof="GtkTable"/>
+			<attribute name="toolbartip" values="any string" default="" required="no" childof="GtkToolbar"/>
+			<element gtk="GtkCalendar" sdpgtk="sdpGtkCalendar" name="calendar" description="creates a GtkCalendar widget">
+				<attribute name="displayoptions" values="zero-or-more of: heading, daynames, nomonthchanges, weeknumbers, startmonday" default="" required="no"/>
+			</element>
+			<element gtk="GtkContainer" sdpgtk="sdpGtkContainer">
+				<element gtk="GtkBin" sdpgtk="sdpGtkBin">
+					<element gtk="GtkAlignment" sdpgtk="sdpGtkAlignment" name="alignment" description="creates a GtkAlignment widget">
+						<attribute name="xalign" values="floating-point number" default="0.5" required="no"/>
+						<attribute name="yalign" values="floating-point number" default="0.5" required="no"/>
+						<attribute name="xscale" values="floating-point number" default="1.0" required="no"/>
+						<attribute name="yscale" values="floating-point number" default="1.0" required="no"/>
+					</element>
+					<element gtk="GtkButton" sdpgtk="sdpGtkButton" name="button" text="becomes the button label" description="creates a GtkButton widget">
+						<attribute name="relief" values="normal, half, none" default="normal" required="no"/>
+						<element gtk="GtkOptionMenu" sdpgtk="sdpGtkOptionMenu" name="optionmenu" description="creates a GtkOptionMenu widget"/>
+						<element gtk="GtkToggleButton" sdpgtk="sdpGtkToggleButton" name="togglebutton" text="becomes the button label" description="creates a GtkToggleButton widget">
+							<element gtk="GtkCheckButton" sdpgtk="sdpGtkCheckButton" name="checkbutton" text="becomes the button label" description="creates a GtkCheckButton widget">
+								<element gtk="GtkRadioButton" sdpgtk="sdpGtkRadioButton" name="radiobutton" text="becomes the button label" description="creates a GtkRadioButton widget">
+									<attribute name="group" values="non-empty text" default="" required="yes" description="specifies a group name for the button. all radio buttons within the document that share the same group name will be (logically, not visually) grouped together so that only one may be selected at a time."/>
+								</element>
+							</element>
+						</element>
+					</element>
+					<element gtk="GtkEventBox" sdpgtk="sdpGtkEventBox" name="eventbox" description="creates a GtkEventBox widget"/>
+					<element gtk="GtkFrame" sdpgtk="sdpGtkFrame" name="frame" text="becomes the frame label" description="creates a GtkFrame widget">
+						<attribute name="labelalignment" values="ordered pair of floating-point numbers" default="0.0, 0.0" required="no" description="controls the position of the frame label, as a percentage of total width and height"/>
+						<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+						<element gtk="GtkAspectFrame" sdpgtk="sdpGtkAspectFrame" name="aspectframe" text="becomes the frame label" description="creates a GtkAspectFrame widget">
+							<attribute name="xalign" values="floating-point number" default="0.5" required="no"/>
+							<attribute name="yalign" values="floating-point number" default="0.5" required="no"/>
+							<attribute name="ratio" values="floating-point number" default="1.0" required="no"/>
+							<attribute name="ignoreratio" values="true, false" default="false" required="no"/>
+						</element>
+					</element>
+					<element gtk="GtkHandleBox" sdpgtk="sdpGtkHandleBox" name="handlebox" description="creates a GtkHandleBox widget">
+						<attribute name="handleposition" values="left, right, top, bottom" default="top" required="no"/>
+						<attribute name="snapedge" values="left, right, top, bottom" default="top" required="no"/>
+						<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+					</element>
+					<element gtk="GtkItem" sdpgtk="sdpGtkItem">
+						<element gtk="GtkListItem" sdpgtk="sdpGtkListItem" name="listitem" text="becomes the item text" description="creates a GtkListItem widget"/>
+						<element gtk="GtkMenuItem" sdpgtk="sdpGtkMenuItem" name="menuitem" text="becomes the menu text" description="creates a GtkMenuItem widget">
+							<attribute name="separator" values="true, false" default="false" required="no" description="when true, the menu item becomes a separator (horizontal line)"/>
+							<element gtk="GtkCheckMenuItem" sdpgtk="sdpGtkCheckMenuItem" name="checkmenuitem" text="becomes the menu text" description="creates a GtkCheckMenuItem widget">
+								<element gtk="GtkRadioMenuItem" sdpgtk="sdpGtkRadioMenuItem" name="radiomenuitem" text="becomes the menu text" description="creates a GtkRadioMenuItem widget">
+									<attribute name="group" values="non-empty text" default="" required="yes" description="specifies a group name for the menu item. all radio menu items within the document that share the same group name will be (logically, not visually) grouped together so that only one may be selected at a time."/>
+								</element>
+							</element>
+							<element gtk="GtkTearoffMenuItem" sdpgtk="sdpGtkTearoffMenuItem" name="tearoffmenuitem" description="creates a GtkTearoffMenuItem widget"/>
+						</element>
+						<element gtk="GtkTreeItem" sdpgtk="sdpGtkTreeItem" name="treeitem" text="becomes the item text" description="creates a GtkTreeItem widget"/>
+					</element>
+					<element gtk="GtkScrolledWindow" sdpgtk="sdpGtkScrolledWindow" name="scrolledwindow" description="creates a GtkScrolledWindow widget">
+						<attribute name="hscrollbar" values="automatic, always" default="automatic" required="no" description="controls whether the window should always have a horizontal scrollbar, or only when the contents are too wide to be displayed"/>
+						<attribute name="vscrollbar" values="automatic, always" default="automatic" required="no" description="controls whether the window should always have a vertical scrollbar, or only when the contents are too tall to be displayed"/>
+					</element>
+					<element gtk="GtkViewport" sdpgtk="sdpGtkViewport" name="viewport" description="creates a GtkViewport widget">
+						<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+					</element>
+					<element gtk="GtkWindow" sdpgtk="sdpGtkWindow" name="window" description="creates a GtkWindow widget">
+						<attribute name="type" values="toplevel, dialog, popup" default="toplevel" required="no"/>
+						<attribute name="defaultsize" values="ordered pair of non-zero integers" default="" required="no"/>
+						<attribute name="title" values="text" default="" required="no" description="specifies the titlebar text for this window"/>
+						<attribute name="modal" values="true, false" default="false" required="no"/>
+						<attribute name="allowshrink" values="true, false" default="false" required="no" description="specifies whether the user should be allowed to size the window smaller than required to fit all its children"/>
+						<attribute name="allowgrow" values="true, false" default="true" required="no" description="specifies whether the user should be allowed to size the window larger than required to fit its children"/>
+						<attribute name="autoshrink" values="true, false" default="true" required="no" description="specifies whether the window should automatically shrink itself to fit its children"/>
+						<element gtk="GtkDialog" sdpgtk="sdpGtkDialog" name="dialog" description="creates a GtkDialog widget">
+							<element gtk="GtkInputDialog" sdpgtk="sdpGtkInputDialog" name="inputdialog" description="creates a GtkInputDialog widget"/>
+						</element>
+						<element gtk="GtkFileSelection" sdpgtk="sdpGtkFileSelection" name="fileselection" text="becomes the dialog title" description="creates a GtkFileSelection widget"/>
+						<element gtk="GtkFontSelectionDialog" sdpgtk="sdpGtkFontSelectionDialog" name="fontselectiondialog" text="becomes the dialog title" description="creates a GtkFontSelectionDialog widget"/>
+						<element gtk="GtkPlug" sdpgtk="sdpGtkPlug"/>
+					</element>
+				</element>
+				<element gtk="GtkBox" sdpgtk="sdpGtkBox">
+					<attribute name="homogeneous" values="true, false" default="true" required="no" description="controls whether child widgets should be packed into identically-sized areas"/>
+					<attribute name="spacing" values="positive integer" default="0" required="no"/>
+					<element gtk="GtkButtonBox" sdpgtk="sdpGtkButtonBox">
+						<attribute name="layout" values="spread, edge, start, end" default="spread" required="no"/>
+						<element gtk="GtkHButtonBox" sdpgtk="sdpGtkHButtonBox" name="hbuttonbox" description="creates a GtkHButtonBox widget"/>
+						<element gtk="GtkVButtonBox" sdpgtk="sdpGtkVButtonBox" name="vbuttonbox" description="creates a GtkVButtonBox widget"/>
+					</element>
+					<element gtk="GtkHBox" sdpgtk="sdpGtkHBox" name="hbox" description="creates a GtkHBox widget">
+						<element gtk="GtkCombo" sdpgtk="sdpGtkCombo" name="combo" description="creates a GtkCombo widget"/>
+						<element gtk="GtkStatusbar" sdpgtk="sdpGtkStatusbar" name="statusbar" description="creates a GtkStatusbar widget"/>
+					</element>
+					<element gtk="GtkVBox" sdpgtk="sdpGtkVBox" name="vbox" description="creates a GtkVBox widget">
+						<element gtk="GtkColorSelection" sdpgtk="sdpGtkColorSelection" name="colorselection" description="creates a GtkColorSelection widget"/>
+						<element gtk="GtkGammaCurve" sdpgtk="sdpGtkGammaCurve" name="gammacurve" description="creates a GtkGammaCurve widget"/>
+					</element>
+				</element>
+				<element gtk="GtkCList" sdpgtk="sdpGtkCList" name="clist" description="creates a GtkCList widget">
+					<attribute name="columns" values="non-zero positive integer" default="" required="yes" description="controls the number of columns in the widget"/>
+					<attribute name="selectionmode" values="single, browse, multiple, extended" default="single" required="no"/>
+					<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+					<element gtk="GtkCTree" sdpgtk="sdpGtkCTree" name="ctree" description="creates a GtkCTree widget">
+						<attribute name="treecolumn" values="non-zero positive integer" default="" required="yes"/>
+					</element>
+				</element>
+				<element gtk="GtkFixed" sdpgtk="sdpGtkFixed" name="fixed" description="creates a GtkFixed widget"/>
+				<element gtk="GtkList" sdpgtk="sdpGtkList" name="list" description="creates a GtkList widget"/>
+				<element gtk="GtkMenuShell" sdpgtk="sdpGtkMenuShell">
+					<element gtk="GtkMenu" sdpgtk="sdpGtkMenu" name="menu" description="creates a GtkMenu widget">
+						<attribute name="title" values="string" default="" required="no"/>
+					</element>
+					<element gtk="GtkMenuBar" sdpgtk="sdpGtkMenuBar" name="menubar" description="creates a GtkMenuBar widget">
+						<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+					</element>
+				</element>
+				<element gtk="GtkNotebook" sdpgtk="sdpGtkNotebook" name="notebook" description="creates a GtkNotebook widget">
+					<element gtk="GtkFontSelection" sdpgtk="sdpGtkFontSelection" name="fontselection" description="creates a GtkFontSelection widget"/>
+				</element>
+				<element gtk="GtkPaned" sdpgtk="sdpGtkPaned">
+					<attribute name="handle" values="positive integer" default="5" required="no" description="specifies the size (in pixels) of the pane resizing handle"/>
+					<attribute name="gutter" values="positive integer" default="5" required="no" description="specifies the size (in pixels) of the gap between panes"/>
+					<element gtk="GtkHPaned" sdpgtk="sdpGtkHPaned" name="hpaned" description="creates a GtkHPaned widget"/>
+					<element gtk="GtkVPaned" sdpgtk="sdpGtkVPaned" name="vpaned" description="creates a GtkVPaned widget"/>
+				</element>
+				<element gtk="GtkSocket" sdpgtk="sdpGtkSocket" name="socket" description="creates a GtkSocket widget"/>
+				<element gtk="GtkTable" sdpgtk="sdpGtkTable" name="table" description="creates a GtkTable widget">
+					<attribute name="rows" values="non-zero positive integer" default="1" required="no" description="controls the number of rows in the table"/>
+					<attribute name="columns" values="non-zero positive integer" default="1" required="no" description="controls the number of columns in the table"/>
+					<attribute name="homogeneous" values="true, false" default="true" required="no" description="controls whether child widgets should be packed into identically-sized areas"/>
+				</element>
+				<element gtk="GtkToolbar" sdpgtk="sdpGtkToolbar" name="toolbar" description="creates a GtkToolbar widget">
+					<attribute name="orientation" values="horizontal, vertical" default="horizontal" required="no" description="controls whether the buttons in the toolbar are packed horizontally or vertically"/>
+					<attribute name="style" values="icons, text, both" default="icons" required="no"/>
+				</element>
+				<element gtk="GtkTree" sdpgtk="sdpGtkTree" name="tree" description="creates a GtkTree widget"/>
+			</element>
+			<element gtk="GtkDrawingArea" sdpgtk="sdpGtkDrawingArea" name="drawingarea" description="creates a GtkDrawingArea widget">
+				<attribute name="width" values="non-zero positive integer" default="" required="no"/>
+				<attribute name="height" values="non-zero positive integer" default="" required="no/>      ">
+					<element gtk="GtkCurve" sdpgtk="sdpGtkCurve" name="curve" description="creates a GtkCurve widget"/>
+				</attribute>
+				<element gtk="GtkEditable" sdpgtk="sdpGtkEditable">
+					<element gtk="GtkEntry" sdpgtk="sdpGtkEntry" name="entry" description="creates a GtkEntry widget">
+						<attribute name="maxlength" values="positive integer" default="0" required="no" description="controls the maximum number of text characters allowed in the widget"/>
+						<attribute name="visible" values="true, false" default="true" required="no"/>
+						<attribute name="editable" values="true, false" default="true" required="no" description="controls whether the contents of the widget can be altered by the user"/>
+						<element gtk="GtkSpinButton" sdpgtk="sdpGtkSpinButton" name="spinbutton" text="initial contents of the field" description="creates a GtkSpinButton widget">
+							<attribute name="climbrate" values="floating-point number" default="1.0" required="no"/>
+							<attribute name="digits" values="positive integer" default="0" required="no" description="specifies the number of digits visible to the right of the decimal point"/>
+							<attribute name="shadowtype" values="none, in, out, etched-in, etched-out" default="in" required="no"/>
+						</element>
+					</element>
+					<element gtk="GtkText" sdpgtk="sdpGtkText" name="text" text="initial contents of the widget" description="creates a GtkText widget">
+						<attribute name="wordwrap" values="true, false" default="true" required="no"/>
+						<attribute name="linewrap" values="true, false" default="true" required="no"/>
+						<attribute name="editable" values="true, false" default="true" required="no"/>
+					</element>
+				</element>
+				<element gtk="GtkMisc" sdpgtk="sdpGtkMisc">
+					<attribute name="alignment" values="ordered pair of floating-point numbers" default="0.5, 0.5" required="no"/>
+					<attribute name="labelpadding" values="ordered pair of positive integers" default="0, 0" required="no"/>
+					<element gtk="GtkArrow" sdpgtk="sdpGtkArrow" name="arrow" description="creates a GtkArrow widget">
+						<attribute name="direction" values="left, right, up, down" default="" required="yes"/>
+					</element>
+					<element gtk="GtkImage" sdpgtk="sdpGtkImage" name="image" description="creates a GtkImage widget"/>
+					<element gtk="GtkLabel" sdpgtk="sdpGtkLabel" name="label" text="becomes the label text" description="creates a GtkLabel widget">
+						<element gtk="GtkAccelLabel" sdpgtk="sdpGtkAccelLabel" name="accellabel" text="becomes the label text" description="creates a GtkAccelLabel widget"/>
+						<element gtk="GtkTipsQuery" sdpgtk="sdpGtkTipsQuery" name="tipsquery" description="creates a GtkTipsQuery widget">
+							<attribute name="inactive" values="any text" default="" required="no"/>
+							<attribute name="notip" values="any text" default="" required="no"/>
+						</element>
+					</element>
+					<element gtk="GtkPixmap" sdpgtk="sdpGtkPixmap" name="pixmap" text="relative (to the GTKML document) path to an X Pixmap File" description="creates a GtkPixmap widget"/>
+				</element>
+				<element gtk="GtkRange" sdpgtk="sdpGtkRange">
+					<element gtk="GtkScale" sdpgtk="sdpGtkScale">
+						<attribute name="digits" values="positive integer" default="0" required="no" description="specifies the number of digits visible to the right of the decimal point"/>
+						<attribute name="drawvalue" values="true, false" default="true" required="no" description="controls whether the scale value should be drawn next to the widget"/>
+						<attribute name="valueposition" values="left, right, top, bottom" default="right" required="no" description="controls the position of the scale value, relative to the widget"/>
+						<element gtk="GtkHScale" sdpgtk="sdpGtkHScale" name="hscale" description="creates a GtkHScale widget"/>
+						<element gtk="GtkVScale" sdpgtk="sdpGtkVScale" name="vscale" description="creates a GtkVScale widget"/>
+					</element>
+					<element gtk="GtkScrollbar" sdpgtk="sdpGtkScrollbar">
+						<element gtk="GtkHScrollbar" sdpgtk="sdpGtkHScrollbar" name="hscrollbar" description="creates a GtkHScrollbar widget"/>
+						<element gtk="GtkVScrollbar" sdpgtk="sdpGtkVScrollbar" name="vscrollbar" description="creates a GtkVScrollbar widget"/>
+					</element>
+				</element>
+				<element gtk="GtkRuler" sdpgtk="sdpGtkRuler">
+					<attribute name="metric" values="pixels, inches, cm" default="pixels" required="no" description="sets the ruler units-of-measurement"/>
+					<attribute name="range" values="ordered pair of floating-point numbers" default="0, 0" required="no"/>
+					<attribute name="position" values="floating-point number" default="0.0" required="no"/>
+					<attribute name="maxsize" values="floating-point number" default="0.0" required="no"/>
+					<element gtk="GtkHRuler" sdpgtk="sdpGtkHRuler" name="hruler" description="creates a GtkHRuler widget"/>
+					<element gtk="GtkVRuler" sdpgtk="sdpGtkVRuler" name="vruler" description="creates a GtkVRuler widget"/>
+				</element>
+				<element gtk="GtkSeparator" sdpgtk="sdpGtkSeparator">
+					<element gtk="GtkHSeparator" sdpgtk="sdpGtkHSeparator" name="hseparator" description="creates a GtkHSeparator widget"/>
+					<element gtk="GtkVSeparator" sdpgtk="sdpGtkVSeparator" name="vseparator" description="creates a GtkVSeparator widget"/>
+				</element>
+			</element>
+		</element>
+	</element>
+</gtkmldoc>

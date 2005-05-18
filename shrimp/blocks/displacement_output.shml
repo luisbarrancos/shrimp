@@ -1,0 +1,10 @@
+<shrimp type="function" name="Output" description="Outputs to Displacement Shader">
+	<input name="P" description="Displaced surface position" type="point" default="P"/>
+	<input name="N" description="Displaced surface shading normal" type="normal" default="N"/>
+	<code>
+	N = $(N);
+	P = $(P);
+	</code>
+	<usage>The inputs N and P are simply returned to the renderer as the results of the shader. 
+	</usage>
+</shrimp>

@@ -1,0 +1,10 @@
+<shrimp type="function" name="Divide" description="Division block">
+	<input name="A" description="1st input" type="float color point vector normal"/>
+	<input name="B" description="2nd input" type="float color point vector normal"/>
+	<output name="val" description="val = A / B" type="float color point vector normal"/>
+	<code>
+	$(val) = $(A) / $(B);
+	</code>
+	<usage>Both inputs must be of the same type. The operation is done in parallel for each component.
+	</usage>
+</shrimp>

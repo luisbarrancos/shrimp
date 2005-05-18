@@ -1,0 +1,8 @@
+<shrimp type="function" name="Reflect" description="Reflected vector">
+	<input name="I" description="Incident vector" type="vector"/>
+	<input name="N" description="Surface normal" type="normal vector" default="Ng"/>
+	<output name="R" description="The reflected vector" type="vector"/>
+	<code>
+	$(R) = reflect( $(I), $(N) );
+	</code>
+</shrimp>

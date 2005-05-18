@@ -1,0 +1,17 @@
+<gtkml>
+	<window name="window" show="false" size="520 650">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+          <scrolledwindow fill="true" expand="true">
+			<viewport>
+				<text name="text"/>
+			</viewport>
+          </scrolledwindow>
+          	<hbuttonbox>
+			  <button expand="true" padding="4">OK
+				<event signal="clicked" name="onok"/>
+			  </button>
+			</hbuttonbox>
+		</vbox>
+	</window>
+</gtkml>

@@ -1,0 +1,13 @@
+<shrimp type="function" name="Matte" description="Standard matte shader">
+	<input name="Ka" description="Ambient coefficient" shadervar="true" default="1"/>
+	<input name="Kd" description="Diffuse coefficient" shadervar="true" default="1"/>
+	<input name="Nf" description="Surface normal" type="normal" default="faceforward( normalize(N), I )"/>
+	<input name="Cs" description="Surface colour" type="color" default="Cs"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded colour" type="color"/>
+	<output name="Oi" description="Output opacity" type="color"/>
+	<code>	
+	$(Ci) = $(Os) * $(Cs) * ( $(Ka)*ambient() + $(Kd)*diffuse($(Nf)) );
+	$(Oi) = $(Os);
+	</code>
+</shrimp>
