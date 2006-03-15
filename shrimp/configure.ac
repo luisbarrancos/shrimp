@@ -1,6 +1,6 @@
 AC_INIT(src/shrimp.cc)
 
-AM_INIT_AUTOMAKE(shrimp,0.4.2)
+AM_INIT_AUTOMAKE(shrimp,0.4.3)
 
 AC_PREFIX_DEFAULT(/usr/local/shrimp)
 
