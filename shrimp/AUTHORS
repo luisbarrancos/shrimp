@@ -5,6 +5,6 @@ Changes :
 
 * SDP libraries : Timothy M. Shead
 * included no-longer available SDP libraries: Romain Behar <romainbehar at yahoo dot com> - 2004
-* supplied Wood block : Luis Barrancos <luis dot barrancos at mail dot telepac dot pt> - 2005
+* supplied wood, specular, environment blocks and reflection, minnaert, granit examples; fixed several blocks : rconstruct <rconstruct at mail dot telepac dot pt> - 2005
 
 

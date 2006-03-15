@@ -1,6 +1,6 @@
 <shrimp type="function" name="FaceForward" description="Flip a vector s direction">
 	<input name="N" description="Vector or Normal to flip" type="normal vector"/>
-	<input name="I" description="Vector to face away from" type="normal vector"/>
+	<input name="I" description="Vector to face away from" type="vector" default="I"/>
 	<input name="Nref" description="Optional reference vector" type="normal vector" default="Ng"/>
 	<output name="NN" description="A vector pointing in the direction oposite to I" type="vector normal"/>
 	<code>

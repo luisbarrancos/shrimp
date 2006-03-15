@@ -1,0 +1,20 @@
+<shrimp name="Minnaert" type="function" description="Minnaert Shading Model">
+	<input name="SurfaceColor" description="Surface Color" shadervar="true" type="color" default="0.5"/>
+	<input name="Ka" description="Ambient coefficient" shadervar="true" type="float" default="0.2"/>
+	<input name="Kd" description="Diffuse coefficient" shadervar="true" type="float" default="1.0"/>
+	<input name="k" description="k parameter" shadervar="true" type="float" default="1.0"/>
+	<input name="P" description="Surface point" type="point" default="P"/>
+	<input name="cminnaert" description="cminnaert" shadervar="true" type="color" default="0"/>
+	<input name="Nf" description="Surface normal" type="normal" default="faceforward( normalize(N), I )"/>
+	<input name="Nn" description="Normalized N" type="normal" default="normalize(N)"/>
+	<input name="V" description="Direction of viewer" type="vector" default="-normalize( I )"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded colour" type="color"/>
+	<output name="Oi" description="Output opacity" type="color"/>
+	<code>	
+		<include>minnaert.h</include>
+		#include "minnaert.h"
+		$(Ci) = Oi * $(SurfaceColor) * ($(Ka)*ambient() + $(Kd)*cminnaertfun( $(P), $(k), $(cminnaert), $(Nn), $(Nf)));
+		$(Oi) = $(Os);
+	</code>
+</shrimp>

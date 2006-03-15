@@ -1,0 +1,5 @@
+
+aqsl reflection_surface.sl -I. -I../shaders
+aqsl reflection_displace.sl -I. -I../shaders
+aqsis reflection.rib
+

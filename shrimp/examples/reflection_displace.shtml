@@ -1,0 +1,39 @@
+<shrimp name="reflection_displace" type="displacement">
+	<about>Built with Shrimp.
+Created by rconstruct</about>
+	<circuit gridsize="60 45">
+		<block file="displacement_output.shml" id="Output" position="35 4">
+			<input name="P" type="point" shadervar="false">
+				<connection outputname="PP" outputparentid="Displace"/>
+			</input>
+			<input name="N" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Displace"/>
+			</input>
+		</block>
+		<block file="displace.shml" id="Displace" position="29 4">
+			<input name="P" type="point" shadervar="false" value="P"/>
+			<input name="Dir" type="vector" shadervar="false" value="normalize(N)"/>
+			<input name="Scale" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Ridged3D"/>
+			</input>
+			<output name="PP" type="point"/>
+			<output name="NN" type="normal"/>
+		</block>
+		<block file="p.shml" id="p" position="16 6">
+			<output name="P" type="point"/>
+		</block>
+		<block file="ridged3d.shml" id="Ridged3D" position="22 6">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="fwidth" type="float" shadervar="false" value="0 0 0"/>
+			<input name="octaves" type="float" shadervar="false" value="5 5 5"/>
+			<input name="lacunarity" type="float" shadervar="false" value="2.17 2.17 2.17"/>
+			<input name="gain" type="float" shadervar="false" value="0.5 0.5 0.5"/>
+			<input name="offset" type="float" shadervar="false" value="1 0.7 0.7"/>
+			<input name="amplitude" type="float" shadervar="false" value="0.2 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+	</circuit>
+</shrimp>
+
