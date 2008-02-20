@@ -1,0 +1,22 @@
+
+FrameBegin 1
+
+$(imager_shader)
+
+Projection "perspective" "fov" 40
+
+WorldBegin
+
+$(shaders)
+
+Color [ 1 1 1 ]
+
+Translate 0 0 3
+Scale 2 2 2
+PointsPolygons[4] [ 0 1 2 3 ]
+	"P" [ -0.5 -0.5 0 0.5 -0.5 0 0.5 0.5 0 -0.5 0.5 0 ]
+
+WorldEnd
+
+FrameEnd
+

@@ -1,0 +1,21 @@
+
+FrameBegin 1
+
+$(imager_shader)
+
+Projection "perspective" "fov" 40
+
+WorldBegin
+
+$(shaders)
+
+Color [ 1 1 1 ]
+
+Translate 0 .1 3
+Rotate 50 1 0 0
+Torus .65 .3 0 360 360
+	
+WorldEnd
+
+FrameEnd
+

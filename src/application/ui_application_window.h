@@ -1,0 +1,130 @@
+
+/*
+    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+
+    This file is part of Shrimp 2.
+
+    Shrimp 2 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Shrimp 2 is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
+#ifndef _ui_application_window_h_
+#define _ui_application_window_h_
+
+#include <fltk/DoubleBufferWindow.h>
+#include <fltk/Group.h>
+#include <fltk/InvisibleBox.h>
+#include <fltk/PopupMenu.h>
+#include <fltk/RadioButton.h>
+#include <fltk/ReturnButton.h>
+#include <fltk/Slider.h>
+#include <fltk/ThumbWheel.h>
+#include <fltk/ToggleItem.h>
+#include <fltk/Window.h>
+
+#include "../shading/scene.h"
+#include "ui_scene_view.h"
+
+class application_window : public fltk::Window {
+
+	// scene zoom widget
+	fltk::Slider m_zoom_slider;
+	fltk::PopupMenu m_block_menu;
+	fltk::Button m_custom_block;
+
+public:
+	application_window();
+	~application_window();
+
+	bool load_scene (const std::string& File);
+
+private:
+	// OpenGL view of current scene
+	scene_view* m_scene_view;
+	// currently edited scene
+	scene* m_scene;
+	std::string m_scene_file;
+
+	// menu items
+	fltk::ToggleItem* m_menu_show_grid;
+	fltk::ToggleItem* m_menu_snap_to_grid;
+	fltk::ToggleItem* m_menu_overview;
+
+	void on_menu_file_new(fltk::Widget*);
+	void on_menu_file_open(fltk::Widget*);
+	void on_menu_file_save(fltk::Widget*);
+	void on_menu_file_save_as(fltk::Widget*);
+	void on_menu_file_export_shader(fltk::Widget*);
+
+	void on_menu_shader_properties (fltk::Widget*);
+	void on_menu_code_preview (fltk::Widget*);
+	void on_menu_preferences (fltk::Widget*);
+
+	void on_menu_view_toggle_grid (fltk::Widget*);
+	void on_menu_view_toggle_grid_snap (fltk::Widget*);
+	void on_menu_view_toggle_overview (fltk::Widget*);
+
+	void on_zoom(fltk::Slider*, void* Data);
+	void on_button_fit_scene(fltk::Widget*);
+	void on_custom_block();
+	void on_preview();
+
+	static void block_menu_callback(fltk::Widget* o, void* v)
+	{
+		((application_window*)(o->parent()))->block_menu_action(o, v);
+	}
+	void block_menu_action(fltk::Widget* w, void*);
+
+
+	void build_menu(const std::string& name, scene::default_block_list_t& list);
+
+	// override the window's handle() function
+	int handle (int event);
+
+	// callback functions
+	static void cb_menu_file_new(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new(W); }
+	static void cb_menu_file_open(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open(W); }
+	static void cb_menu_file_save(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save(W); }
+	static void cb_menu_file_save_as(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as(W); }
+	static void cb_menu_file_export_shader(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_shader(W); }
+
+	static void cb_menu_shader_properties (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_shader_properties (W); }
+	static void cb_menu_code_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_code_preview (W); }
+	static void cb_menu_preferences (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_preferences (W); }
+
+	static void cb_menu_view_toggle_grid (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid (W); }
+	static void cb_menu_view_toggle_grid_snap (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid_snap (W); }
+	static void cb_menu_view_toggle_overview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_overview (W); }
+
+	static void cb_button_fit_scene(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_button_fit_scene(W); }
+	static void cb_zoom_slider(fltk::Slider* W, void* Data) { ((application_window*)Data)->on_zoom(W, Data); }
+	static void cb_custom_block(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_custom_block(); }
+	static void cb_preview(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_preview(); }
+
+	static void on_menu_file_options(fltk::Widget*, void*);
+	static void on_menu_file_close(fltk::Widget*, void*);
+	static void on_menu_file_quit(fltk::Widget*, void*);
+	static void on_menu_help_about(fltk::Widget*, void*);
+
+
+	// internal functions
+	void save_scene_as();
+
+};
+
+static application_window* application_pointer = 0;
+
+
+#endif // _ui_application_window_h_
+
