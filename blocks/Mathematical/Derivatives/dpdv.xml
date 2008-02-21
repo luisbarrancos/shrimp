@@ -1,0 +1,8 @@
+<shrimp name="dpdv" type="function" description="Surface derivative along V" author="rconstruct">
+	<output name="val" description="Surface derivative of point P along V" type="vector"/>
+	<code>
+	$(val) = dPdv;
+	</code>
+	<usage>Surface derivative of point P along direction V. This only accesses the global variable dPdv. If you want to calculate the surface derivative of other points, use the dv block, which calls Dv(input), or the Deriv block, which calculates the derivatives of its first argument in regard to its second argument.</usage>
+</shrimp>
+

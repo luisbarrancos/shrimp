@@ -1,0 +1,7 @@
+<shrimp type="function" name="E" description="Position of the eye" author="rconstruct">
+	<output name="E" description="Position of the eye" type="point"/>
+	<code>
+	$(E) = E;
+	</code>
+</shrimp>
+

@@ -1,0 +1,9 @@
+<shrimp type="function" name="Mtranslate" description="Translates matrix m." author="rconstruct">
+    <input name="minput" description="Matrix input" type="matrix" default="1"/>
+	<input name="vaxis" description="Vector axis" type="vector" default="1"/>
+    <output name="mout" description="Translated matrix" type="matrix"/>
+	<code>
+	$(mout) = translate( $(minput), $(vaxis) );
+	</code>
+<usage>Translates matrix m.These functions are similar to the Ri functions RiTranslate, RiRotate, and RiScale, except that the rotation angle in rotate() is in radians, not in degrees as with RiRotate.</usage>
+</shrimp>

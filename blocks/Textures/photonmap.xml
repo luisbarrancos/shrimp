@@ -1,0 +1,12 @@
+<shrimp type="function" name="PhotonMap" description="Photon map lookup" author="rconstruct">
+	<input name="pmap" description="Photon map" type="string" default="&quot;&quot;"/>
+	<input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
+	<input name="PP" description="Surface point" type="point" default="P"/>
+	<input name="ltype" description="Lookup type" type="string" default="&quot;irradiance&quot;"/>
+	<input name="estim" description="Estimator type" type="float" default="50"/>
+	<output name="val" description="Output value" type="color"/>
+	<code>
+		$(val) = photonmap( $(pmap), $(PP), $(NN), "lookuptype", $(ltype), "estimator", $(estim) );
+	</code>
+	<usage>Performs a photon map lookup of a surface point P with a surface normal N. Lookup type can be irradiance, or radiance, in which case the lookup is performed before the BRDF calculation, and after the BRDF calculation respectively. Estimator specifies the number of photons used.</usage>
+</shrimp>

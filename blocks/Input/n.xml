@@ -1,0 +1,7 @@
+<shrimp type="function" name="N" description="Surface shading normal" author="rconstruct">
+    <output name="N" description="Surface shading normal" type="normal"/>
+    <code>
+    $(N) = N;
+    </code>
+</shrimp>
+

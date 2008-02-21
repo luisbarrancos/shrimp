@@ -1,0 +1,28 @@
+<shrimp name="AshikhminShirley" type="function" description="Ashikhmin-Shirley shading model." author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.5"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.5"/>
+	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
+    <input name="nu" description="Specularity along U direction" type="float" default="1000"/>
+    <input name="nv" description="Specularity along V direction" type="float" default="10"/>
+	<input name="Kr" description="Reflection coefficient" type="float" default="0.1"/>
+	<input name="rsamples" description="Environment samples" type="float" default="0"/>
+    <input name="envmap" description="Environment map" type="string" default="&quot;&quot;"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<input name="xdir" description="Direction vector" type="vector" default="normalize(dPdu)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        #define ver_$(rsamples)
+        $(Ci) = LocIllumAshShir( faceforward( $(N), $(I)), -$(I), $(xdir),
+									$(Kd), $(Ks), $(nu), $(nv) );
+        #ifdef ver_0
+			$(Ci) = $(Ci);
+		#else
+			$(Ci) += $(Kr) * EnvIllumAshShir( faceforward($(N), $(I)), -$(I),
+						$(xdir), $(Kd), $(Ks), $(nu), $(nv),
+						$(rsamples), $(envmap) );
+		#endif
+	</code>
+	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley shading model. If environment samples >0 , then samples environment reflections, if = 0, bypasses this. Notice that the more samples you use, the longer it takes to render. Have in mind that if no environment map is given, then raytracing is used.</usage>
+</shrimp>

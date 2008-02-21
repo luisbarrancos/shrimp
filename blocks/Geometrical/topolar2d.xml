@@ -1,0 +1,11 @@
+<shrimp type="function" name="ToPolar2D" description="Converts cartesian to polar coordinates" author="rconstruct">
+	<input name="x" description="X coordinate of point to convert" type="float" default="s"/>
+	<input name="y" description="Y coordinate of point to convert" type="float" default="t"/>
+	<output name="rout" description="The converted coordinates" type="float"/>
+	<output name="thetaout" description="The converted coordinates" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+	topolar2d( $(x), $(y), $(rout), $(thetaout) );
+	</code>
+	<usage>Converts cartesian to polar coordinates.	</usage>
+</shrimp>

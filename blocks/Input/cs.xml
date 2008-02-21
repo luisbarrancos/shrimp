@@ -1,0 +1,7 @@
+<shrimp type="function" name="Cs" description="Surface color" author="rconstruct">
+	<output name="Cs" description="Surface color" type="color"/>
+	<code>
+	$(Cs) = Cs;
+	</code>
+</shrimp>
+

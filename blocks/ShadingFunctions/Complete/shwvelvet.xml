@@ -1,0 +1,16 @@
+<shrimp name="SHWVelvet" type="function" description="Stephen H. Westins velvet shader." author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
+    <input name="backscatter" description="Back scattering value" type="float" default="0.6"/>
+    <input name="edginess" description="Backscattering edginess" type="float" default="10"/>
+    <input name="roughness" description="Roughness" type="float" default="0.05"/>
+    <input name="sheen" description="Sheen color" type="color" default="0.25"/>
+    <input name="N" description="Normal vector" type="normal vector" default="normalize(N)"/>
+    <input name="I" description="Eye vector" type="vector" default="normalize(I)"/>
+    <output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<include>shrimp_helpers.h</include>
+	<code>
+        $(Ci) = $(Ks) * velvet( $(backscatter), $(edginess), $(roughness), $(sheen), $(N), $(I) );
+	</code>
+    <usage>Based on Stephen H. Westin's velvet shader. This is meant to be used in a network with an ambient and diffuse terms. Note that Cs and Os aren't included, make proper arrangements in your shading network to consider them where desired. Ks controls overall intensity of effect.</usage>
+</shrimp>

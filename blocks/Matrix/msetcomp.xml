@@ -1,0 +1,33 @@
+<shrimp type="function" name="MatrixSetcomp" description="Set the components of a matrix" author="rconstruct">
+	<input name="m01" description="row 1, component 1" type="float" default="0"/>
+	<input name="m02" description="row 1, component 2" type="float" default="0"/>
+	<input name="m03" description="row 1, component 3" type="float" default="0"/>
+    <input name="m04" description="row 1, component 4" type="float" default="0"/>
+	<input name="m11" description="row 2, component 1" type="float" default="0"/>
+	<input name="m12" description="row 2, component 2" type="float" default="0"/>
+	<input name="m13" description="row 2, component 3" type="float" default="0"/>
+    <input name="m14" description="row 2, component 4" type="float" default="0"/>
+	<input name="m21" description="row 3, component 1" type="float" default="0"/>
+	<input name="m22" description="row 3, component 2" type="float" default="0"/>
+	<input name="m23" description="row 3, component 3" type="float" default="0"/>
+    <input name="m24" description="row 3, component 4" type="float" default="0"/>
+	<input name="m31" description="row 4, component 1" type="float" default="0"/>
+	<input name="m32" description="row 4, component 2" type="float" default="0"/>
+	<input name="m33" description="row 4, component 3" type="float" default="0"/>
+    <input name="m34" description="row 4, component 4" type="float" default="0"/>
+    <input name="spacename" description="optional space name" type="string" default="1"/>
+    <output name="mout" description="Matrix" type="matrix"/>
+	<output name="mstr" description="Optional space name string" type="string"/>
+    <code>
+    #define space_$(spacename)
+    
+    #ifdef space_1
+        $(mout) = matrix( $(m01), $(m02), $(m03), $(m04), $(m11), $(m12), $(m13), $(m14), $(m21), $(m22), $(m23), $(m24), $(m31), $(m32), $(m33), $(m34) );
+     #else
+        $(mout) = matrix $(spacename) ( $(m01), $(m02), $(m03), $(m04), $(m11), $(m12), $(m13), $(m14), $(m21), $(m22), $(m23), $(m24), $(m31), $(m32), $(m33), $(m34) );
+    #endif
+	$(mstr) = $(spacename);
+        
+	</code>
+<usage>Assigns components to a matrix. Defaults to a 0 matrix. A matrix can be constructed in reference to a named space, either existing spaces, or any name, that can later be referenced for transformations.</usage>
+</shrimp>

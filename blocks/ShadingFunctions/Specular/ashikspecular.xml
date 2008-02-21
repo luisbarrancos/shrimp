@@ -1,0 +1,16 @@
+<shrimp name="AshikminSpec" type="function" description="Ashikmin-Shirley anisotropic specular term" author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
+	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
+    <input name="nu" description="specularity along U direction" type="float" default="100"/>
+    <input name="nv" description="specularity along V direction" type="float" default="5"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+
+        $(Ci) = anisophongspec( $(N), $(I), $(nu), $(nv), $(ior) );
+
+	</code>
+	<usage>Based on Szymon Rusinkiewicz's implementation of the Ashikmin-Shirley model. Meant to be used with the respective diffuse term, altough you have the freedom to experiment. Color and opacity aren't included, arrange for these in your network.</usage>
+</shrimp>

@@ -1,0 +1,17 @@
+<shrimp type="function" name="SNoise2D" description="Signed 2 dimensional perlin noise function" author="rconstruct">
+	<input name="x" description="noise x coordinate" type="float" default="s"/>
+	<input name="y" description="noise y coordinate" type="float" default="t"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at (x,y), in range -1 - 1" type="float color point vector"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * snoisexy( $(x), $(y) );
+	#else
+		$(val) = $(amplitude) * $(var_type) vsnoisexy( $(x), $(y) );
+	#endif
+	</code>
+	<usage>SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
+	</usage> 
+</shrimp>

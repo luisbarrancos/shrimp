@@ -1,0 +1,13 @@
+<shrimp name="AshikminDiff" type="function" description="Ashikmin-Shirley diffuse term" author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.3"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
+	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = anisophongdiff( $(N), $(I), $(Ks), $(Kd) );
+	</code>
+	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley model. Meant to be used with the respective specular term. Ks is used, since diffuse and specular terms vary with one another. Color and opacity aren't included, arrange for these in your network.</usage>
+</shrimp>

@@ -1,0 +1,25 @@
+<shrimp name="MKGooch" type="function" description="Gooch Non-PhotoRealistic shader" author="rconstruct">
+	<input name="Ka" description="Ambient light coefficient" type="float" default="0"/>
+	<input name="Kd" description="Diffuse light coefficient" type="float" default=".5"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="0"/>
+    <input name="calpha" description="Gooch cool color factor" type="float" default="0.25"/>
+	<input name="cbeta" description="Gooch warm color factor" type="float" default="0.5"/>
+	<input name="B" description="Used to construct the cool color" type="float" default="0.55"/>
+	<input name="Y" description="Used to contruct the warm color" type="float" default="0.3"/>
+	<input name="roughness" description="Specular roughness" type="float" default=".1"/>
+	<input name="cdiff" description="Surface color" type="color" default=".2"/>
+	<input name="opac" description="Surface opacity" type="color" default="Os"/>
+	<input name="cspec" description="Specular color" type="color" default="1"/>
+    <input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
+    <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
+    <output name="Ci" description="Shaded color" type="color"/>
+	<output name="Oi" description="Shaded opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+		$(Oi) = Os;
+        $(Ci) = $(Oi) * MKgooch( $(NN), $(IN), $(Ka), $(Kd), $(Ks), $(calpha),
+							$(cbeta), $(roughness), $(B), $(Y),
+							$(cdiff), $(cspec) );
+	</code>
+    <usage>Gooch non photorealistic shading model, by Mike King, as described in an "A Non-Photorealistic Lighting Model for Automatic Technical Illustration", in the Siggraph 1998 proceedings. Ka, Kd, Ks, ambient, diffuse, and specular coefficients respectively, calpha and cbeta, the Gooch cool and warm color factors. B and Y used to contruct the cool and warm color, roughness and specular color, to control specular roughness and color respectively.</usage>
+</shrimp>

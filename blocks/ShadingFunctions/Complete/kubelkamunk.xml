@@ -1,0 +1,19 @@
+<shrimp name="KubelkaMunk" type="function" description="Kubelka-Munk model for the composition of layered surfaces." author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="color" default="0.05"/>
+    <input name="Ks" description="Specular light coefficient" type="color" default="0.3"/>
+	<input name="sigmaa" description="sigmaa" type="color" default="color( .5, .1, 0.05 )"/>
+    <input name="sigmas" description="sigmas" type="color" default="color( .7, .3, .1 )"/>
+    <input name="thickness" description="Surface thickness" type="float" default="0.5"/>
+    <input name="roughness" description="Surface roughness" type="float" default="0.25"/>
+	<input name="N" description="Surface normal" type="normal" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Oi" description="Shaded opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+		$(Oi) = $(Os);
+        $(Ci) = $(Oi) * KMOverGlossy( $(N), $(I), $(sigmaa), $(sigmas), $(Kd), $(Ks), $(thickness), $(roughness) ) ;
+	</code>
+<usage>Based on Matt Pharr's implementation of the Kubelka-Munk model, for the composition of layered surfaces. See SIGGRAPH 2001 course notes, "Advanced RenderMan 3: Render Harder", for notes and background information.</usage>
+</shrimp>

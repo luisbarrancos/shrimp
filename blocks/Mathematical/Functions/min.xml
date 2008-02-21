@@ -1,0 +1,8 @@
+<shrimp type="function" name="Min" description="Return the smallest input" author="rconstruct">
+	<input name="a" description="1st input" type="float point vector normal color" default="0"/>
+	<input name="b" description="2nd or subsequent inputs" type="float point vector normal color" multi="true" separator=", " default="0"/>
+	<output name="out" description="out = the smallest input" type="float point vector normal color"/>
+	<code>
+	$(out) = min( $(a), $(b) );
+	</code>
+</shrimp>

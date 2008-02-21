@@ -1,0 +1,49 @@
+<shrimp name="GranierHeidrich" type="function" description="Thin-film interference BRDF" author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.7"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
+    <input name="ior" description="IOR for RGB" type="vector" default="vector(1.4, 1.7, 2.0)"/>
+    <input name="drangemin" description="density range minimum" type="float" default="65"/>
+    <input name="drangemax" description="density range maximum" type="float" default="67"/>
+    <input name="specmin" description="specmin" type="float" default="70"/>
+    <input name="specmax" description="specmax" type="float" default="230"/>
+    <input name="freqmin" description="frequency minimum" type="float" default="60"/>
+    <input name="freqmax" description="frequency maximum" type="float" default="70"/>
+    <input name="dev" description="deviation" type="float" default="0.2"/>
+    <input name="seed" description="noise seed" type="float" default="1234"/>
+	<input name="ss" description="noise X coordinates" type="float" default="s"/>
+	<input name="tt" description="noise Y coordinates" type="float" default="t"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+    <input name="Cs" description="Surface color" type="color" default="Cs"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Oi" description="Shaded opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<include>shrimp_helpers.h</include>
+	<include>fractal.h</include>
+	<code>
+
+        normal Nf = faceforward( $(N) , $(I) );
+        vector Vf = -$(I);
+
+        float drange[2] = { $(drangemin), $(drangemax) };
+        float iorrgb[3] = { xcomp( $(ior) ), ycomp( $(ior) ), zcomp( $(ior) ) } ;
+        float spec[2] = { $(specmin), $(specmax) };
+        float freq[2] = { $(freqmin), $(freqmax) };
+
+        float lambda[3] = { 645, 525, 445 };
+
+        float d = blend( drange[0], drange[1], noise( $(ss) * freq[0] +
+						 $(seed) + 19928, $(tt) *freq[0] / 2 + $(seed) +
+						 1998122));
+
+        normal Nl = normalize( normal( Nf + $(dev) * snoise2( $(ss) * freq[1] +
+								 $(seed) + 19928, $(tt) *freq[1] / 2 + 
+								$(seed) + 1998122)));
+
+        $(Oi) = $(Os);
+        $(Ci) = $(Oi) * $(Cs) * LocIllumGranier( Nf, Nl, Vf, spec[0], spec[1],
+				 d, iorrgb, lambda, $(Kd), $(Ks) );
+	</code>
+    <usage>Based on Peter Stuart's implementation of the Granier-Heidrich thin-film interference BRDF.</usage>
+</shrimp>

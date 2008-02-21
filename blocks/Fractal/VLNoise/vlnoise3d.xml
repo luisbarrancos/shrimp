@@ -1,0 +1,18 @@
+<shrimp type="function" name="VLNoise3D" description="3D Ken Musgrave VLNoise" author="rconstruct">
+	<input name="p" description="point to sample noise at" type="point" default="P"/>
+	<input name="scale" description="Scale" type="float" default="1"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at p" type="float color vector point"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * VLNoise( $(p), $(scale) );
+	#else
+		$(val) = $(amplitude) * $(var_type) vsnoise(
+					vsnoise( $(p) ) * $(scale) + $(p) );
+	#endif
+	</code>
+	<usage>3D Ken Musgrave VLNoise.
+	</usage> 
+</shrimp>

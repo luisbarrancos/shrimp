@@ -1,0 +1,16 @@
+<shrimp type="function" name="SNoise3D" description="Signed 3 dimensional perlin noise function" author="rconstruct">
+	<input name="p" description="point to sample noise at" type="point" default="P"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at p, in range -1 - 1" type="float color point vector"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * snoise( $(p) );
+	#else
+		$(val) = $(amplitude) * $(var_type) vsnoise( $(p) );
+	#endif
+	</code>
+	<usage>SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
+	</usage> 
+</shrimp>

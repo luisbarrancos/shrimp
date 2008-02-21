@@ -1,0 +1,13 @@
+<shrimp name="WardIso" type="function" description="Ward isotropic specular term." author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
+    <input name="roughness" description="The surface roughness." type="float" default="0.2"/>
+    <input name="Cspec" description="Specular color" type="color" default="1"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = $(Ks) * $(Cspec) * Wardisotropy( $(N), $(I), $(roughness) );
+	</code>
+    <usage>Gregory J. Ward's anisotropic specular term. This is meant to be combined in a network with ambient and diffuse terms. Note that Cs isn't taken into consideration here, nor is Os, these must be included in your network.</usage>
+</shrimp>

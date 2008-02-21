@@ -1,0 +1,22 @@
+<shrimp name="Trace" type="function" description="Returns light reaching point P from direction R" author="rconstruct">
+    <input name="inpoint" description="Surface point" type="point" default="P"/>
+	<input name="indir" description="Direction" type="vector" default="0"/>
+    <input name="bias" description="Ray bias" type="float" default="-1"/>
+    <input name="maxdist" description="Maximum distance" type="float" default="100"/>
+	<input name="label" description="Label associated to the ray" type="string" default="&quot;&quot;"/>
+	<input name="subset" description="Set of objects available for ray computations" type="string" default="&quot;&quot;"/>
+	<output name="val" description="Trace color" type="float color"/>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(var_type) trace( $(inpoint), $(indir) );
+	#else
+		$(val) = $(var_type) trace( $(inpoint), $(indir),
+									"label", $(label),
+									"subset", $(subset),
+									"bias", $(bias),
+									"maxdist", $(maxdist) );
+	#endif
+	</code>
+    <usage>Returns the incident light reaching a point P from a given direction R. If raytracing isn't supported, trace will return 0. Bias specifies the bias for the ray starting point. Maxdist specifies are distance after which no intersections are checked. If the float version is used, then the distance to the nearest ray intersection is returned instead.</usage>
+</shrimp>

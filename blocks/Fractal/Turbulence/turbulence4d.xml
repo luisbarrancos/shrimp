@@ -1,0 +1,23 @@
+<shrimp type="function" name="Turbulence4D" description="4 dimensional turbulence function." author="rconstruct">
+	<input name="p" description="point to sample turbulence at" type="point" default="P"/>
+	<input name="t" description="4th dimension value" type="float" default="time"/>
+	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
+	<input name="octaves" description="Maximum octaves of noise" type="float" default="5"/>
+	<input name="lacunarity" description="Controls the smoothness of the turbulence" type="float" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the turbulence" type="float" default="0.5"/>
+	<input name="amplitude" description="Amplitude of turbulence" type="float" default="1"/>
+	<output name="val" description="turbulence value at (p,t)" type="float color vector point"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * turbulence( $(p), $(t), $(fwidth),
+										$(octaves), $(lacunarity), $(gain) );
+	#else
+		$(val) = $(amplitude) * $(var_type) vturbulence( $(p), $(t), $(fwidth),
+										$(octaves), $(lacunarity), $(gain) );
+	#endif
+	</code>
+	<usage>This is the Perlin turbulence function.
+	</usage> 
+</shrimp>

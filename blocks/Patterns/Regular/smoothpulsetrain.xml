@@ -1,0 +1,14 @@
+<shrimp type="function" name="Smoothpulsetrain" description="Larry Gritz&apos;s smoothpulsetrain" author="rconstruct">
+	<input name="x" description="Value to test" type="float" default="1"/>
+	<input name="min1" description="First minimum" type="float" default="0"/>
+	<input name="max1" description="First maximum" type="float" default="1"/>
+	<input name="min2" description="Second minimum" type="float" default="0.2"/>
+	<input name="max2" description="Second maximum" type="float" default="0.8"/>
+	<input name="period" description="Period" type="float" default="1"/>
+	<output name="val" description="Value of the wave at x" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		$(val) = smoothpulsetrain( $(min1), $(max1), $(min2), $(max2), $(period), $(x) );
+	</code>
+	<usage>SmoothPulsetrain by Larry Gritz. Returns a signal that repeats with a given period.</usage>
+</shrimp>

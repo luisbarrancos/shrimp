@@ -1,0 +1,20 @@
+<shrimp type="function" name="Brick" description="Larry Gritz&apos;s brick pattern" author="rconstruct">
+	<input name="x" description="X point to be tested" type="float" default="s"/>
+	<input name="y" description="Y point to be tested" type="float" default="t"/>
+    <input name="twidth" description="Tile width" type="float" default="0.6"/>
+    <input name="theight" description="Tile height" type="float" default="0.2"/>
+    <input name="rstagger" description="Row stagger" type="float" default="0.2"/>
+    <input name="rsvary" description="Row stagger variation" type="float" default="0.4"/>
+    <input name="jfreq" description="Edge noise frequency" type="float" default="2"/>
+    <input name="jamp" description="Edge noise amplitude" type="float" default="0.5"/>
+    <output name="row" description="Output row" type="float"/>
+    <output name="column" description="Output column" type="float"/>
+    <output name="xtile" description="X position with this tile" type="float"/>
+    <output name="ytile" description="Y position with this tile" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		basicbrick( $(x), $(y), $(twidth), $(theight), $(rstagger), $(rsvary), $(jfreq), $(jamp), $(column), $(row), $(xtile), $(ytile) );
+	</code>
+	<usage>Basic brick tiling pattern, by Larry Gritz. X, Y, the x and y coordinates of the surface, twidth and theight are the dimensions of each tile. Rstagger defines how much each row stagger relative to the previous row, and rsvary defines how much rstagger should randomly vary. Jfreq and jamp define the frequency and amplitude of the noise added to the edge between tiles. This block outputs the row and column indexes of which tile the sample is in, and the position x and y coords within this tile, in 0-1 range.
+	</usage>
+</shrimp>

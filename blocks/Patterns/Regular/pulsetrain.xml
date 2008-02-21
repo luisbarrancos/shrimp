@@ -1,0 +1,11 @@
+<shrimp type="function" name="Pulsetrain" description="Larry Gritz&apos;s pulsetrain" author="rconstruct">
+	<input name="x" description="Value to test" type="float" default="s"/>
+	<input name="edge" description="Edge" type="float" default="0.2"/>
+	<input name="period" description="Period" type="float" default="1"/>
+	<output name="val" description="Value of the wave at x" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		$(val) = pulsetrain( $(edge), $(period), $(x) );
+	</code>
+	<usage>Pulsetrain by Larry Gritz. Returns a signal that repeats with a given period.</usage>
+</shrimp>

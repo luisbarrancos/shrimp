@@ -1,0 +1,11 @@
+<shrimp type="function" name="AND" description="Boolean AND function" author="rconstruct">
+	<input name = "A" description="1st value" type="float" default="1"/>
+	<input name = "B" description="2nd value" type="float" default="1"/>
+	<output name="out" description="The intersection of A and B" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+	$(out) = intersection( $(A), $(B) );
+	</code>
+	<usage>This block computes the logical AND of the two inputs. The inputs should be in the range 0-1.
+	</usage>
+</shrimp>

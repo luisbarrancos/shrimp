@@ -1,0 +1,9 @@
+<shrimp name="MPSurf" type="function" description="Surface shader message passing" author="rconstruct">
+    <input name="sparam" description="Shader parameter to query" type="string" default="&quot;&quot;"/>
+	<output name="result" description="Query value" type="float color normal vector point string"/>
+	<output name="status" description="Exit status" type="float"/>
+	<code>
+		$(status) = surface( $(sparam), $(result) );
+	</code>
+    <usage>You use this to query the value of the parameter chosen on one of the shaders attached to the object being shaded. If there is a matching parameter, and parameter type, in a matching shader, then its value is stored in output variable, while the function exists with an return code of 1, else, the output variable retains its default and the function returns 0. Note however that the lightsource function is only available inside illuminance blocks.</usage>
+</shrimp>

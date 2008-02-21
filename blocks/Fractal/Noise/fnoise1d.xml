@@ -1,0 +1,15 @@
+<shrimp type="function" name="FNoise1D" description="Filtered 1 dimensional perlin noise function" author="rconstruct">
+	<input name="x" description="value to sample noise at" type="float" default="s"/>
+	<input name="width" description="Filter width" type="float" default="0"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at x, in range 0 - 1" type="float color point vector"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_float
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * $(var_type) filterednoise( $(x), $(width) );
+	#else
+		$(val) = $(amplitude) * $(var_type) filteredvnoise( $(x), $(width) );
+	#endif
+	</code>
+</shrimp>

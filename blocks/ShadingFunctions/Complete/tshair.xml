@@ -1,0 +1,28 @@
+<shrimp name="TSHair" type="function" description="Hair shader, based on Thorsten Scheuermann&apos;s work for Ati&apos;s 3d application research group." author="rconstruct">
+    <input name="Ka" description="Ambient light coefficient" type="float" default="0.05"/>
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.4"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
+    <input name="shift" description="Primary specular shift" type="float" default="0.1"/>
+    <input name="shift2" description="Secondary specular shift" type="float" default="0.25"/>
+    <input name="exponent" description="Primary specular exponent" type="float" default="15"/>
+    <input name="exponent2" description="Secondary specular exponent" type="float" default="25"/>
+    <input name="specmask" description="Specular mask" type="float" default="0.5"/>
+    <input name="NN" description="Surface normal" type="normal vector" default="normalize(N)"/>
+    <input name="IN" description="Viewer vector" type="vector" default="normalize(I)"/>
+	<input name="Cdiff" description="Surface color" type="color" default="Cs"/>
+	<input name="Cbase" description="Hair base color" type="color" default="color( .3, .12, .05)"/>
+	<input name="Ctip" description="Hair tip color" type="color" default="color( .89, .82, .54)"/>
+    <input name="Cspec" description="Specular color" type="color" default="color(1, 1, 1)"/>
+    <input name="Cspec2" description="Secondary specular color" type="color" default="color( .96, .56, .26)"/>
+    <input name="Os" description="Surface opacity" type="color" default="Os"/>
+    <output name="Ci" description="Shaded color" type="color"/>
+    <output name="Oi" description="Output opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = $(Os) * tshair( $(Ka), $(Kd), $(Ks), $(shift), $(shift2),
+                    $(exponent), $(exponent2), $(specmask), $(Cdiff),
+                    $(Cbase), $(Ctip), $(Cspec), $(Cspec2), $(NN), $(IN) );
+        $(Oi) = $(Os);
+	</code>
+    <usage>Hair shader, based on Thorsten Scheuermann work for the 3d application research group of Ati Inc. The technique described in the paper was meant to be used for polygonal hair models, instead of multiple line/tube approach, being a mix of Kajiya-Kay hair shading model, and Marschner model, presented at Siggraph2003. Ka, Kd, Ks have the usual meanings. Shift and shift2 are the primary and secondary specular highlight shifts, to give some strand specular variation. The primary specular highlight is usually white, the secondary, having some hair color, being these Cspec and Cspec2. Exponent and Exponent2 are the primary and secondary specular exponents, and specmask is the specular mask used to give some variation.</usage>
+</shrimp>

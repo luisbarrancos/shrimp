@@ -1,0 +1,19 @@
+<shrimp type="function" name="FSNoise4D" description="Filtered signed 4 dimensional perlin noise function" author="rconstruct">
+	<input name="p" description="point to sample noise at" type="point" default="P"/>
+	<input name="t" description="4th dimension value" type="float" default="time"/>
+    <input name="width" description="Filter width" type="float" default="0"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at (p,t), in range -1 - 1" type="float color point vector"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * filteredsnoisexy( $(p), $(t), $(width) );
+	#else
+		$(val) = $(amplitude) * $(var_type) filteredvsnoisexy( $(p), $(t),
+                                                                $(width) );
+	#endif
+	</code>
+	<usage>Filtered version of 4d signed noise. SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
+	</usage> 
+</shrimp>

@@ -1,0 +1,13 @@
+<shrimp type="function" name="RimLight" description="Rim lighting shader" author="rconstruct">
+	<input name="rwidth" description="Rim width" type="float" default="1"/>
+	<input name="rint" description="Rim intensity" type="float" default="1"/>
+	<input name="N" description="Surface normal" type="normal" default="normalize(N)"/>
+	<input name="V" description="Viewer or user supplied vector" type="vector" default="normalize(I)"/>
+	<input name="dx" description="Filter width" type="float" default="0.0"/>
+	<output name="val" description="The amount of diffuse light" type="float"/>
+	<include>shadingmodels.h</include>
+	<code>
+		$(val) = $(rint) * rimlighting( $(rwidth), $(dx), $(N), $(V) );
+	</code>
+<usage>Rim lighting shader, based on surface normal & viewer vector dot product, altough you can supply an custom vector instead of viewer vector, to get a directional rim lighting effect. This is meant to be multiplied by a color in your network. You can specify an filter width, in which case the function uses filteredsmoothstep instead of smoothstep.</usage>
+</shrimp>

@@ -1,0 +1,12 @@
+<shrimp name="Minnaert" type="function" description="Minnaert limb darkening diffuse term" author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
+	<input name="k" description="Limb darkening coefficient" type="float" default="2.0"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = $(Kd) * Minnaert( $(k), $(N), $(I) );
+	</code>
+	<usage>Minnaert limb darkening term. Integrate this diffuse term in your network, with ambient and specular terms, where required, if required. Cs or Os aren't taken into consideration here. Make proper arrangements in your shading network to include them where necessary. Note that darkening range values should be in the 1.0-2.0 range.</usage>
+</shrimp>

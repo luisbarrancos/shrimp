@@ -1,0 +1,12 @@
+<shrimp type="function" name="WDiffuse" description="Wrapped diffuse lighting model" author="rconstruct">
+	<input name="wangle" description="Wrapped angle" type="float" default="15"/>
+	<input name="N" description="The surface normal" type="normal" default="normalize(N)"/>
+	<input name="V" description="The viewer vector" type="vector" default="normalize(I)"/>
+	<output name="col" description="The amount of diffuse light" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+		$(col) = wrappeddiffuse( $(wangle), $(N), $(V) );
+	</code>
+<usage>Wrapped diffuse illumination model, allows light to reach beyong 90 degrees on the surface, overcoming one limitation of classical Lambertian difusse, the steep falloff to shadow areas. This is meant to be multiplied by a color, in your network.</usage>
+
+</shrimp>

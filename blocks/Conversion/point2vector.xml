@@ -1,0 +1,7 @@
+<shrimp type="function" name="Point2Vector" description="Point to vector conversion">
+    <input name="in" description="Input value" type="point" default="0"/>
+    <output name="out" description="Output value" type="vector"/>
+	<code>
+	    $(out) = vector( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
+	</code>
+</shrimp>

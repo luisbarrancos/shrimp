@@ -1,0 +1,8 @@
+<shrimp type="function" name="Sawtooth" description="Generates a sawtooth wave" author="rconstruct">
+	<input name = "x" description="Value to sample the wave at" type="float" default="s"/>
+	<input name = "amp" description="Amplitude of the wave" type="float" default="1"/>
+	<output name="val" description="Value of the wave at x" type="float"/>
+	<code>
+	$(val) = $(amp) * mod( $(x), 1 );
+	</code>
+</shrimp>

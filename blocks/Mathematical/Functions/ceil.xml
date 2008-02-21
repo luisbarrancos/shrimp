@@ -1,0 +1,7 @@
+<shrimp type="function" name="Ceil" description="Return the smallest integer not smaller than a" author="rconstruct">
+	<input name="a" description="Input value" type="float" default="0"/>
+	<output name="out" description="The smallest integer not smaller than a" type="float"/>
+	<code>
+	$(out) = ceil( $(a) );
+	</code>
+</shrimp>

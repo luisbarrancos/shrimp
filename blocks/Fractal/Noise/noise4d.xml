@@ -1,0 +1,10 @@
+<shrimp type="function" name="Noise4D" description="4 dimensional perlin noise function" author="rconstruct">
+	<input name="p" description="point to sample noise at" type="point" default="P"/>
+	<input name="t" description="4th dimension value" type="float" default="time"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
+	<code>
+	$(val) = $(amplitude) * $(var_type) noise( $(p), $(t) );
+	</code>
+<usage>4 dimensional perlin noise function.</usage>
+</shrimp>

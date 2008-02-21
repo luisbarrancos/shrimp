@@ -1,0 +1,10 @@
+<shrimp type="function" name="SetZcomp" description="Set the Z components of a point, vector or normal" author="rconstruct">
+	<input name="z" description="z component" type="float" default="0"/>
+	<input name="p" description="point, vector, or normal" type="point vector normal" default="0"/>
+	<output name="out" description="point, vector or normal with the specified components" type="point vector normal"/>
+	<code>
+	setzcomp( $(var_type) $(p), $(z) );
+	$(out) = $(p);
+	</code>
+<usage>Sets the Z component, of a point, vector, or normal.</usage>
+</shrimp>

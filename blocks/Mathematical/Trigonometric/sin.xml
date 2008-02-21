@@ -1,0 +1,8 @@
+<shrimp type="function" name="Sin" description="Sine block" author="rconstruct">
+	<input name="theta" description="Input value in radians" type="float" default="1"/>
+	<output name="val" description="val = Sin( theta )" type="float"/>
+	<code>
+	$(val) = sin( $(theta) );
+	</code>
+	<usage>Standard trigonomic sin function of radian arguments</usage>
+</shrimp>

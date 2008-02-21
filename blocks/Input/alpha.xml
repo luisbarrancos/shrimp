@@ -1,0 +1,8 @@
+<shrimp type="function" name="alpha" description="Fractional pixel coverage" author="rconstruct">
+    <output name="alpha" description="Fractional pixel coverage" type="float"/>
+    <code>
+    $(alpha) = alpha;
+    </code>
+	<usage>Fractional pixel coverage. Note that this variable is exclusive of imager shaders.</usage>
+</shrimp>
+

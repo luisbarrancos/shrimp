@@ -1,0 +1,18 @@
+<shrimp type="function" name="Gain" description="Adjust gain." author="rconstruct">
+	<input name="nput" description="Input to be adjusted" type="float color" default="1"/>
+	<input name="gain" description="Gain value" type="float" default="0.5"/>
+	<output name="val" description="Adjusted value." type="float color"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = gain($(nput), $(gain));
+	#else
+		float xtmp = xcomp( $(var_type) $(nput));
+		float ytmp = ycomp( $(var_type) $(nput));
+		float ztmp = zcomp( $(var_type) $(nput));
+		$(val) = $(var_type) (gain(xtmp, $(gain)), gain(ytmp, $(gain)), gain(ztmp, $(gain)));
+	#endif
+	</code>
+	<usage>Similar to a contrast adjustment</usage>
+</shrimp>

@@ -1,0 +1,15 @@
+<shrimp type="function" name="Tile" description="Simple tiling function" author="rconstruct">
+	<input name="x" description="x,y give the point to be transformed" type="float" default="s"/>
+	<input name="y" description="x,y give the point to be transformed" type="float" default="t"/>
+	<input name="xfreq" description="The frequency of the tiling in the x direction" type="float" default="1"/>
+	<input name="yfreq" description="The frequency of the tiling in the y direction" type="float" default="1"/>
+	<output name="xt" description="The x coordinate inside the tile" type="float"/>
+	<output name="yt" description="The y coordinate inside the tile" type="float"/>
+	<output name="column" description="The column number of the current tile" type="float"/>
+	<output name="row" description="The row number of the current tile" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<include>shapes.h</include>
+	<code>
+		shTile( $(x),$(y),$(xfreq),$(yfreq),$(xt),$(yt),$(column),$(row) );
+	</code>
+</shrimp>

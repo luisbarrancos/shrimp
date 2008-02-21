@@ -1,0 +1,13 @@
+<shrimp type="function" name="Spline" description="Fits a Spline to the given control points" author="rconstruct">
+	<input name="basis" description="The basis function" type="string" default="&quot;catmull-rom&quot;"/>
+	<input name="x" description="The value to test the spline at" type="float" default="0"/>
+	<input name="cp1" description="The 1st Control Point" type="float color point vector" default="0"/>
+	<input name="cp2" description="The 2nd Control Point" type="float color point vector" default="0.2"/>
+	<input name="cp3" description="The 3rd Control Point" type="float color point vector" default="0.8"/>
+	<input name="cp4" description="The 4th or subsequent Control Points" type="float color point vector" multi="true" separator=", " default="1"/>
+	<output name="val" description="The value of the spline at x" type="float color point vector"/>
+	<code>
+	$(val) = spline( $(basis), $(x), $(cp1), $(cp2), $(cp3), $(cp4) );
+	</code>
+<usage>Fits a spline into the control points passed, using the specified spline basis function. These can be of type "catmull-rom", "bezier", "bspline", "hermite", or "linear". Defaults to catmull-rom. In 3delight, any spline type may be prefixed by "solve", such as "solvecatmull-rom", in which case this shadeop becomes a root solver and may be used as an invert function.</usage>
+</shrimp>

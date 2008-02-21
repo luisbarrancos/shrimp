@@ -1,0 +1,15 @@
+<shrimp name="Blinn" type="function" description="Blinn specular term." author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
+    <input name="size" description="Specular size." type="float" default="15"/>
+    <input name="Cspec" description="Specular color" type="color" default="1"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="-normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+
+        $(Ci) = $(Ks) * $(Cspec) * blinn( $(N), $(I), $(size) );
+
+	</code>
+    <usage>Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term.</usage>
+</shrimp>

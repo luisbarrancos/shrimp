@@ -1,0 +1,6 @@
+<shrimp type="function" name="ShowUV" description="Show UV coordinates" author="rconstruct">
+	<output name="Ci" description="Output value" type="color"/>
+	<code>
+        $(Ci) = color( u, v, .1 );
+	</code>
+</shrimp>

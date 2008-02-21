@@ -1,0 +1,10 @@
+<shrimp type="function" name="Phong" description="Computes Phong specular light at surface" author="rconstruct">
+	<input name="norm" description="The surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="viewer" description="The viewer vector" type="normal vector" default="-normalize(I)"/>
+	<input name="size" description="The specular highlight size" type="float" default="15"/>
+	<output name="col" description="The amount of diffuse light" type="color"/>
+	<code>
+	$(col) = phong( $(norm), $(viewer), $(size) );
+	</code>
+<usage>Specular term, using the Phong specular lighting model. This is meant to be combined in your network, with an ambient and/or diffuse term, as needed. Cs isn't taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).</usage>
+</shrimp>

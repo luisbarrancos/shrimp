@@ -1,0 +1,19 @@
+<shrimp type="function" name="FNoise4D" description="Filtered 4 dimensional perlin noise function" author="rconstruct">
+	<input name="p" description="point to sample noise at" type="point" default="P"/>
+	<input name="t" description="4th dimension value" type="float" default="time"/>
+	<input name="width" description="Filter width" type="float" default="0"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
+	<include>fractal.h</include>
+	<code>
+	#define $(val)_$(var_type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * $(var_type) filteredvnoisexy( $(p), $(t),
+															 $(width) );
+	#else
+		$(val) = $(amplitude) * $(var_type) filteredvnoisexy( $(p), $(t),
+																$(width) );
+	#endif
+	</code>
+<usage>Filtered 4 dimensional Perlin noise function.</usage>
+</shrimp>

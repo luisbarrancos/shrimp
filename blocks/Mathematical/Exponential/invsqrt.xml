@@ -1,0 +1,7 @@
+<shrimp type="function" name="InvSqrt" description="Inverse square root" author="rconstruct">
+	<input name="a" description="Input value" type="float" default="1"/>
+	<output name="val" description="val = the inverse sqare root of a" type="float"/>
+	<code>
+	$(val) = inversesqrt( $(a) );
+	</code>
+</shrimp>

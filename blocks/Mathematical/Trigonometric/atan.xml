@@ -1,0 +1,15 @@
+<shrimp type="function" name="atan" description="Arc tangent block" author="rconstruct">
+	<input name="a" description="Input value" type="float" default="1"/>
+	<input name="b" description="Input value" type="float" default="off"/>
+	<output name="val" description="val = atan( a )" type="float"/>
+	<code>
+		#define tanxy_$(b)
+		#ifdef tanxy_off
+			$(val) = atan( $(a) );
+		#else
+			$(val) = atan( $(a), $(b) );
+		#endif
+	</code>
+	<usage>Returns the arc tangent in the range -Pi/2 to +PI/2 with one argument. With two arguments, returns the arc tangent of y/x in the range -PI to +PI.
+	</usage>
+</shrimp>

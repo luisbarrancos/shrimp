@@ -1,0 +1,12 @@
+<shrimp name="OrenNayar" type="function" description="OrenNayar diffuse shading model" author="rconstruct">
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
+	<input name="roughness" description="roughness" type="float" default="0.05"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="V" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>	
+        $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
+	</code>
+    <usage>Oren-Nayar diffuse term. Kd controls overall intensity. Note that this is meant to be used in a network with an ambient term, and/or a specular term, if desired. A good starting point might be an Blinn specular term. Note that Cs and Os aren't taken into consideration, and must be added in your network, where proper/desired.</usage>
+</shrimp>

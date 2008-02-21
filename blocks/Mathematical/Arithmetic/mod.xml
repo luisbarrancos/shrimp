@@ -1,0 +1,8 @@
+<shrimp type="function" name="Mod" description="Return the positive remainder of a/b" author="rconstruct">
+	<input name="a" description="numerator" type="float" default="1"/>
+	<input name="b" description="denominator" type="float" default="1"/>
+	<output name="val" description="The positive remainder of a/b" type="float"/>
+	<code>
+	$(val) = mod( $(a), $(b) );
+	</code>
+</shrimp>

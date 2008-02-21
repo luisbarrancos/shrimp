@@ -1,0 +1,9 @@
+<shrimp type="function" name="st" description="Surface texture coordinates" author="rconstruct">
+    <output name="s" description="S texture coordinate" type="float"/>
+    <output name="t" description="T texture coordinate" type="float"/>
+    <code>
+    $(s) = s;
+    $(t) = t;
+    </code>
+</shrimp>
+

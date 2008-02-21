@@ -1,0 +1,39 @@
+<shrimp type="function" name="Texture" description="Access a texture map" author="rconstruct">
+	<input name="texname" description="Texture map name" type="string" default="&quot;&quot;"/>
+	<input name="xcoord" description="horizontal texture co-ordinate" type="float" default="s"/>
+	<input name="ycoord" description="vertical texture co-ordinate" type="float" default="t"/>
+    <input name="blur" description="Texture blur" type="float" default="0"/>
+    <input name="sblur" description="Blur along S" type="float" default="0"/>
+    <input name="tblur" description="Blur along T" type="float" default="0"/>
+    <input name="width" description="Blur filter width" type="float" default="0"/>
+    <input name="swidth" description="Blur filter width along S" type="float" default="0"/>
+    <input name="twidth" description="Blur filter width along T" type="float" default="0"/>
+    <input name="fill" description="Fill value on empty channel" type="float" default="0"/>
+    <input name="filter" description="Filter type" type="string" default="&quot;gaussian&quot;"/>
+    <input name="channel" description="Channel, in color textures" type="float" default="0"/>
+	<output name="val" description="Output color" type="color float"/>
+	<code>
+	#define $(val)_$(var_type)
+    #ifdef $(val)_float
+        $(val) = $(var_type) texture( $(texname), $(xcoord), $(ycoord),
+								"blur", $(blur),
+								"sblur", $(sblur),
+								"tblur", $(tblur),
+								"width", $(width),
+								"swidth", $(swidth),
+								"twidth", $(twidth),
+                                "filter", $(filter),
+								"fill", $(fill) ) ;
+    #else
+        $(val) = color texture( $(texname)[$(channel)], $(xcoord), $(ycoord),
+								"blur", $(blur),
+								"sblur", $(sblur),
+								"tblur", $(tblur),
+								"width", $(width),
+								"swidth", $(swidth),
+								"twidth", $(twidth),
+                                "filter", $(filter),
+								"fill", $(fill) ) ;
+    #endif
+	</code>
+</shrimp>

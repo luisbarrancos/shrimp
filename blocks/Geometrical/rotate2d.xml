@@ -1,0 +1,15 @@
+<shrimp type="function" name="Rotate2D" description="Rotate a 2d point about an origin" author="rconstruct">
+	<input name="x" description="X coordinate of point to rotate" type="float" default="s"/>
+	<input name="y" description="Y coordinate of point to rotate" type="float" default="t"/>
+	<input name="ox" description="X coordinate of rotation center" type="float" default="0.5"/>
+	<input name="oy" description="Y coordinate of rotation center" type="float" default="0.5"/>
+	<input name="angle" description="The rotation angle in radians" type="float" default="1"/>
+	<output name="rx" description="X coordinate of rotated point" type="float"/>
+	<output name="ry" description="Y coordinate of rotated point" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+	rotate2d( $(x), $(y), $(angle), $(ox), $(oy), $(rx), $(ry) );
+	</code>
+	<usage>Rotates the point (x,y) angle radians about the point (ox,oy)
+	</usage>
+</shrimp>

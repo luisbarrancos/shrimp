@@ -1,0 +1,26 @@
+<shrimp name="IndirectDiffuse" type="function" description="Diffuse-to-diffuse light transport" author="rconstruct">
+    <input name="inpoint" description="Surface point" type="point" default="P"/>
+	<input name="indir" description="Direction" type="vector normal" default="normalize(N)" />
+	<input name="samples" description="Samples" type="float" default="4" />
+	<input name="coneangle" description="Cone angle" type="float" default="1.57"/>
+	<input name="axis" description="Light casting hemisphere direction" type="vector" default="0"/>
+	<input name="bias" description="Ray bias" type="float" default="-1"/>
+	<input name="maxdist" description="Maximum ray distance" type="float" default="100"/>
+	<input name="envmap" description="Environment map" type="string" default="&quot;pisa.tdl&quot;"/>
+	<input name="envspace" description="Environment space" type="string" default="&quot;world&quot;"/>
+	<input name="distribution" description="Distribution type" type="string" default="&quot;cosine&quot;"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<code>
+
+		$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
+								"coneangle", $(coneangle),
+								"axis", $(axis),
+								"bias", $(bias),
+								"maxdist", $(maxdist),
+								"environmentmap", $(envmap),
+								"environmentspace", $(envspace),
+								"distribution", $(distribution) ) ;
+
+	</code>
+    <usage>Indirect diffuse retrieves diffuse illumination from indirect illumination, allowing effects such as color bleeding. You can use an environment map, in which case indirectdiffuse returns the irradiance coming from the supplied environment map along the given unitary direction vector. Ray distribution can be cosine or uniform.</usage>
+</shrimp>

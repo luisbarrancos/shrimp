@@ -1,0 +1,14 @@
+<shrimp type="function" name="MPCurvature" description="Matthew Parrot&apos;s surface curvature shader" author="rconstruct">
+	<input name="offset" description="Offset" type="float" default="0"/>
+	<input name="gain" description="Gain" type="float" default="1.0"/>
+	<input name="PP" description="Surface point" type="point" default="P"/>
+	<output name="val" description="Curvature at P" type="color"/>
+	<output name="kmin" description="Min curvature" type="float"/>
+	<output name="kmax" description="Max curvature" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		mpcurvature( $(PP), $(kmax), $(kmin) );
+		$(val) = color "hsv" ( $(kmax)+$(kmin) * $(gain)+$(offset), .8, .8 );
+	</code>
+<usage>Surface curvature shader, alternative implementation by Matthew Parrot, derived from Advanced Renderman by Apodaca and Gritz, and Mathworld.com. Calculates the min and max curvature at point.</usage>
+</shrimp>

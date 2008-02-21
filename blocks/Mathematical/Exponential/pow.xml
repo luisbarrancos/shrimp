@@ -1,0 +1,8 @@
+<shrimp type="function" name="Power" description="Power block" author="rconstruct">
+	<input name="A" description="Input value" type="float" default="1"/>
+	<input name="x" description="exponent" type="float" default="1"/>
+	<output name="val" description="val = A raised to the power x" type="float"/>
+	<code>
+	$(val) = pow( $(A), $(x) );
+	</code>
+</shrimp>

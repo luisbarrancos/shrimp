@@ -1,0 +1,9 @@
+<shrimp name="MPAttr" type="function" description="Returns primitive attribute state data" author="rconstruct">
+    <input name="sparam" description="Primitive attribute data to query, see help." type="string" default="&quot;&quot;"/>
+	<output name="result" description="Query value" type="float color normal vector point string"/>
+	<output name="status" description="Exit status" type="float"/>
+	<code>
+		$(status) = attribute( $(sparam), $(result) );
+	</code>
+    <usage>Returns the data associated with a primitive's attribute state, as long as the data is known to the renderer and of correct type, in which case result will contain the associated data content, and attribute() will exit with 1.0, otherwise, attribute() will exit with 0. The data accessible by the attribute() call is listed next, as well as its type : "ShadingRate", uniform float; "Sides", uniform float; "Matte", uniform float; "GeometricApproximation:motionfactor", uniform float; "displacementbound:sphere", uniform float; "displacementbound:coordinatesystem", uniform string; "identifier:name", uniform string; "grouping:membership", uniform string; "trace:bias", uniform float: "trace:displacements", uniform float; "photon:shadingmodel", uniform string; "photon:causticmap", uniform string; "photon:globalmap", uniform string; "photon:estimator", uniform float; "visibility:camera", uniform float; "visibility:trace", uniform float; "visibility:transmission", uniform string; "user:attributename", user set type. Notice that different renderer implementations of attribute() might be able to access different data fields.</usage>
+</shrimp>

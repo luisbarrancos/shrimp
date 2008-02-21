@@ -1,0 +1,15 @@
+<shrimp name="WardAniso" type="function" description="Greg Ward Larson anisotropic shading model" author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.3"/>
+    <input name="uroughness" description="The apparent roughness of the surface in xdir." type="float" default="0.6"/>
+    <input name="vroughness" description="The apparent roughness of the surface in a tangent perpendicular to xdir" type="float" default="0.15"/>
+    <input name="dir" description="Anisotropy direction" type="vector" default="normalize(dPdv)"/>
+    <input name="Cspec" description="Specular color" type="color" default="1"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = $(Ks) * $(Cspec) * LocIllumWardAnisotropic( $(N), $(I), $(dir), $(uroughness), $(vroughness) );
+	</code>
+    <usage>Gregory J. Ward's anisotropic specular term. This is meant to be combined in a network with ambient and diffuse terms. Note that Cs isn't taken into consideration here, nor is Os, these must be included in your network.</usage>
+</shrimp>

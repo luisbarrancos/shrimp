@@ -1,0 +1,11 @@
+<shrimp type="function" name="GetCol" description="Get the components of a colour" author="rconstruct">
+	<input name="col" description="Colour to split into components" type="color" default="0"/>
+	<output name="r" description="red component" type="float"/>
+	<output name="g" description="green component" type="float"/>
+	<output name="b" description="blue component" type="float"/>
+	<code>
+	$(r) = comp( $(col), 0 );
+	$(g) = comp( $(col), 1 );
+	$(b) = comp( $(col), 2 );
+	</code>
+</shrimp>

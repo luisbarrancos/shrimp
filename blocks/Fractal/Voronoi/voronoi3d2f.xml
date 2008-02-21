@@ -1,0 +1,14 @@
+<shrimp type="function" name="Voronoi3D2F" description="3D Voronoi noise, 2 features." author="rconstruct">
+	<input name="p" description="point to sample Voronoi at" type="point" default="P"/>
+	<input name="jitter" description="Jitter" type="float" default="1"/>
+	<input name="dtype" description="Minkowski P parameter, see help" type="float" default="2"/>
+	<output name="f1" description="f1" type="float"/>
+	<output name="f2" description="f2" type="float"/>
+	<output name="pos1" description="pos1" type="point"/>
+	<output name="pos2" description="pos2" type="point"/>
+	<include>fractal.h</include>
+	<code>
+    voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2), $(pos2));
+	</code>
+	<usage>3D Voronoi cell noise, 2 features version, uses Minkowski distance metric, so when dtype = 1, metric is Euclidian, when dtype = 2, metric is Manhattan.</usage> 
+</shrimp>

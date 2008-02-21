@@ -1,0 +1,31 @@
+<shrimp type="function" name="Transform" description="Transform to a different coordinate system" author="rconstruct">
+	<input name="p" description="Point, vector or normal to transform" type="point vector normal" default="P"/>
+	<input name="from_space" description="The coordinate system to transform from" type="string" default="&quot;current&quot;"/>
+	<input name="to_space" description="The coordinate system to transform into" type="string" default="&quot;object&quot;"/>
+	<input name="mmat" description="Use this matrix instead of a predefined coordinate system" type="matrix" default="none"/>
+	<output name="pp" description="The transformed point, vector or normal" type="point vector normal"/>
+	<code>
+	#define $(p)_$(var_type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+	</code>
+<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn't passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.</usage>
+</shrimp>

@@ -1,0 +1,13 @@
+<shrimp type="function" name="While" description="Conditionaly pass a value" author="rconstruct">
+	<input name="val" description="Condition value, true if non-zero, false if zero" type="float" default="1"/>
+	<input name="true_val" description="Input value to pass through if exp is true" type="float color normal vector point string" default="1"/>
+	<input name="false_val" description="Input value to pass through if exp is false" type="float color normal vector point string" default="0"/>
+	<output name="out" description="if condition is true then this is true_val, otherwise it is false_val" type="float color normal vector point string"/>
+	<code>
+	while( $(val) )
+		$(out) = $(true_val);
+	else
+		$(out) = $(false_val);
+	</code>
+	<usage>Val is a float that determines which input value is passed to the output. Any non-zero value is regarded as true.</usage>
+</shrimp>

@@ -1,0 +1,10 @@
+<shrimp type="function" name="SetXcomp" description="Set the X components of a point, vector or normal" author="rconstruct">
+	<input name="x" description="x component" type="float" default="0"/>
+	<input name="p" description="point, vector, or normal" type="point vector normal" default="0"/>
+	<output name="out" description="point, vector or normal with the specified components" type="point vector normal"/>
+	<code>
+	setxcomp( $(var_type) $(p), $(x) );
+	$(out) = $(p);
+	</code>
+<usage>Sets the X component, of a point, vector, or normal.</usage>
+</shrimp>

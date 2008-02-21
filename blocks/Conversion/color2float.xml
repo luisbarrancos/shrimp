@@ -1,0 +1,7 @@
+<shrimp type="function" name="Color2Float" description="Color to float conversion" author="rconstruct">
+    <input name="in" description="Input color" type="color" default="0"/>
+    <output name="out" description="Output value" type="float"/>
+	<code>
+	    $(out) = ( comp( $(in), 0) + comp( $(in), 1) + comp( $(in), 2)) / 3;
+	</code>
+</shrimp>

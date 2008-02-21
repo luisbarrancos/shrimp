@@ -1,0 +1,10 @@
+<shrimp type="function" name="ShowDuDv" description="Show UV derivatives" author="rconstruct">
+	<input name="duscale" description="Du scale factor" type="float" default="5"/>
+	<input name="dvscale" description="Dv scale factor" type="float" default="5"/>
+	<output name="Ci" description="Output value" type="color"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+        $(Ci) = color(	filterwidth(u) * $(duscale),
+						filterwidth(v) * $(dvscale), .1 );
+	</code>
+</shrimp>

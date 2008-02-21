@@ -1,0 +1,7 @@
+<shrimp type="function" name="Point2Color" description="Point to color conversion" author="rconstruct">
+    <input name="in" description="Input value" type="point" default="0"/>
+    <output name="out" description="Output value" type="color"/>
+	<code>
+	    $(out) = color( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
+	</code>
+</shrimp>

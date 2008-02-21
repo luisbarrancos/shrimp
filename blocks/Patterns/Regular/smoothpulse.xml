@@ -1,0 +1,13 @@
+<shrimp type="function" name="Smoothpulse" description="Larry Gritz&apos;s smoothpulse" author="rconstruct">
+	<input name="x" description="Value to test" type="float" default="s"/>
+	<input name="e0" description="E0" type="float" default="0"/>
+	<input name="e1" description="E1" type="float" default="0.3"/>
+	<input name="e2" description="E2" type="float" default="0.7"/>
+	<input name="e3" description="E3" type="float" default="1"/>
+	<output name="val" description="Value of the wave at x" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		$(val) = smoothpulse( $(e0), $(e1), $(e2), $(e3), $(x) );
+	</code>
+	<usage>Smoothpulse by Larry Gritz. Returns smoothstep(e0, e1, x) - smoothstep( e2, e3, x).</usage>
+</shrimp>

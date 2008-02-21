@@ -1,0 +1,8 @@
+<shrimp type="function" name="Cosh" description="Hyperbolic cosine block" author="rconstruct">
+	<input name="theta" description="Input value in radians" type="float" default="1"/>
+	<output name="val" description="Output value" type="float"/>
+	<code>
+		$(val) = ( exp($(theta))+exp(-$(theta)))/2;
+	</code>
+	<usage>Hyperbolic cosine function.</usage>
+</shrimp>

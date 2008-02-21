@@ -1,0 +1,10 @@
+<shrimp type="function" name="Mandelbrot" description="Mandelbrot fractal, by Michael Rivero" author="rconstruct">
+	<input name="maxiter" description="Maximum number of iterations" type="float" default="500"/>
+	<input name="useuv" description="Use UV instead of ST" type="float" default="0"/>
+	<output name="val" description="Output color" type="color"/>
+	<include>extrapatterns.h</include>
+	<code>
+        $(val) = mrrand( $(maxiter), $(useuv) );
+	</code>
+	<usage>Michael Rivero's Mandelbrot fractal shader. Maxiter defines the maximum number of iterations, and usev = 1/0 toggles between using UV surface parameters and ST surface texture parameters.</usage>
+</shrimp>

@@ -1,0 +1,8 @@
+<shrimp type="function" name="Tan" description="Tangent block" author="rconstruct">
+	<input name="theta" description="Input value in radians" type="float" default="1"/>
+	<output name="val" description="val = Tan( theta )" type="float"/>
+	<code>
+	$(val) = tan( $(theta) );
+	</code>
+	<usage>Standard trigonomic tan function</usage>
+</shrimp>

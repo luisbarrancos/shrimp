@@ -1,0 +1,10 @@
+<shrimp type="function" name="PNoise1D" description="1 dimensional periodic noise function" author="rconstruct">
+	<input name="x" description="value to sample noise at" type="float" default="s"/>
+	<input name="period" description="Noise period" type="float" default="5"/>
+	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
+	<output name="val" description="Noise value at x, in range 0 - 1" type="float color point vector"/>
+	<code>
+	$(val) = $(amplitude) * $(var_type) pnoise( $(x), $(period) );
+	</code>
+<usage>Periodic noise, maximum period = 256.</usage>
+</shrimp>

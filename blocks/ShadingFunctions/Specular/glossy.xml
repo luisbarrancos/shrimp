@@ -1,0 +1,15 @@
+<shrimp name="Glossy" type="function" description="Possible replacement for specular()" author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
+    <input name="roughness" description="The specular highlight roughness" type="float" default="0.2"/>
+    <input name="size" description="The specular highlight size" type="float" default="0.5"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+    <include>shadingmodels.h</include>
+	<code>
+        
+        $(Ci) = $(Ks) * LocIllumGlossy( $(N), $(I), $(roughness), $(size) );
+
+	</code>
+    <usage>Larry Gritz's glossy specular(). Possible replacement for specular(), with a more uniformly bright core and sharper falloff. Good specular function for something made of glass or liquid, in which roughness = related to the size of the specular highlight, larger is bigger, and sharpness = 1 is infinitely sharp, 0 is very dull.</usage>
+</shrimp>

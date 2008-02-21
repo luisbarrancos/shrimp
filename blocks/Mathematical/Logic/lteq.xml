@@ -1,0 +1,12 @@
+<shrimp type="function" name="LowerEqual" description="Lower than or equal to" author="rconstruct">
+	<input name="a" description="Input value" type="float" default="0"/>
+	<input name="b" description="Input value" type="float" default="0"/>
+	<output name="out" description="1 if a<=b, 0 if not" type="float"/>
+	<code>
+	if( $(b) >= $(a) )
+		$(out) = 1;
+	else
+		$(out) = 0;
+	</code>
+	<usage>Returns 1 if A is lower than or equal to B, else returns 0.</usage>
+</shrimp>

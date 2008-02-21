@@ -1,0 +1,8 @@
+<shrimp type="function" name="Arraylength" description="Returns the number of elements in array var" author="rconstruct">
+    <input name="var" description="Array element" type="float color normal vector point" default="0"/>
+    <output name="val" description="Number of elements" type="float"/>
+	<code>
+	    $(val) = arraylength( $(var) );
+	</code>
+<usage>Returns the number of elements in array var, or -1 if var is an scalar. Notice that RSL allows for single dimensional arrays of any basic data type.</usage>
+</shrimp>

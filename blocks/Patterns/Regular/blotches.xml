@@ -1,0 +1,14 @@
+<shrimp type="function" name="Blotches" description="Generates blotches" author="rconstruct">
+	<input name="PP" description="Surface point to evaluate" type="point" default="P"/>
+	<input name="radius" description="Blotch radius" type="float" default="0.25"/>
+	<input name="freq" description="Frequency" type="float" default="0.1"/>
+	<input name="offset" description="Offset" type="float" default="0.35"/>
+	<input name="jitter" description="Jittering" type="float" default="0.65"/>
+	<output name="val" description="Output value" type="float"/>
+	<include>extrapatterns.h</include>
+	<code>
+		$(val) = blotches( $(radius), $(freq), $(offset),
+							$(jitter), $(PP) );
+	</code>
+	<usage>Blotches block. Generates random blotches, based on single feature voronoi cell noise. Jitter controls the voronoi cell noise jittering, generating a less or more evenly distribution of blotches. Offset controls the center offset, a value of 0 generating a hollow blotch, and 1.0 an solid blotch. Radius controls the radius, frequency, the frequency of the blotches.</usage>
+</shrimp>

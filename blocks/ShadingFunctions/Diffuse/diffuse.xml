@@ -1,0 +1,8 @@
+<shrimp type="function" name="Diffuse" description="Computes diffuse light at surface" author="rconstruct">
+	<input name="norm" description="The surface normal" type="normal" default="normalize(N)"/>
+	<output name="col" description="The amount of diffuse light" type="color"/>
+	<code>
+	$(col) = diffuse( $(norm) );
+	</code>
+<usage>Lambertian Diffuse term. This is meant to be combined in your network, with an diffuse, and/or specular term, as needed. Cs isn't taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).</usage>
+</shrimp>

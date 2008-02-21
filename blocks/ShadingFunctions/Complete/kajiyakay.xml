@@ -1,0 +1,22 @@
+<shrimp name="KajiyaKay" type="function" description="Hair shader, Kajiya-Kay model, based on Mario Marengo&apos;s VEX work." author="rconstruct">
+    <input name="Ka" description="Ambient light coefficient" type="float" default="0.1"/>
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
+    <input name="rough" description="Specular roughness" type="float" default="0.01"/>
+    <input name="NN" description="Surface normal" type="normal vector" default="normalize(N)"/>
+    <input name="IN" description="Viewer vector" type="vector" default="normalize(I)"/>
+	<input name="Cd" description="Surface color" type="color" default="Cs"/>
+	<input name="Cbase" description="Hair base color" type="color" default="color( .2, .15, .1)"/>
+	<input name="Ctip" description="Hair tip color" type="color" default="color( .84, .75, .4)"/>
+    <input name="Cs" description="Specular color" type="color" default="color(1, 1, .8)"/>
+    <input name="Os" description="Surface opacity" type="color" default="Os"/>
+    <output name="Ci" description="Shaded color" type="color"/>
+    <output name="Oi" description="Output opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+        $(Ci) = $(Os) * kajiyakay( $(Ka), $(Kd), $(Ks), $(rough), $(Cd),
+				$(Cbase), $(Ctip), $(Cs), $(NN), $(IN) );
+        $(Oi) = $(Os);
+	</code>
+    <usage>Hair shader, based on Mario Marengo VEX work for an implementation of Kajiya-Kay hair illumination model. Ka, Kd, Ks have the usual meaning, rough is the specular roughness. Cs and Os the usual meaning, surface color and opacity.</usage>
+</shrimp>

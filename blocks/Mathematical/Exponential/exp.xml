@@ -1,0 +1,7 @@
+<shrimp type="function" name="Exp" description="Raise e to the power x" author="rconstruct">
+	<input name="x" description="Power" type="float" default="1"/>
+	<output name="val" description="val = e to the power x" type="float"/>
+	<code>
+	$(val) = exp( $(x) );
+	</code>
+</shrimp>

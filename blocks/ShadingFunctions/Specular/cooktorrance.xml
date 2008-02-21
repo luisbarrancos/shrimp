@@ -1,0 +1,15 @@
+<shrimp name="CookTorrance" type="function" description="Cook-Torrance shading model." author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
+    <input name="roughness" description="The apparent surface roughness." type="float" default="0.3"/>
+    <input name="ior" description="Index of refraction" type="float" default="4"/>
+    <input name="Cspec" description="Specular color" type="color" default="1"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+
+        $(Ci) = $(Ks) * $(Cspec) * cooktorrance( $(N), $(I), $(ior), $(roughness));
+	</code>
+    <usage>Cook-Torrance shading model. Specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.</usage>
+</shrimp>

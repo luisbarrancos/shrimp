@@ -1,0 +1,8 @@
+<shrimp type="function" name="Cl" description="Incoming light ray color" author="rconstruct">
+	<output name="Cl" description="Incoming light ray color" type="color"/>
+	<code>
+	$(Cl) = Cl;
+	</code>
+	<usage>Note that you can only access the light color Cl inside illuminance statements.</usage>
+</shrimp>
+

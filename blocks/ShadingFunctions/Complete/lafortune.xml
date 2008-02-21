@@ -1,0 +1,97 @@
+<shrimp name="Lafortune" type="function" description="Lafortune BRDF" author="rconstruct">
+    <input name="Ka" description="Ambient light coefficient" type="float" default="0.05"/>
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.2"/>
+    <input name="Ks" description="Specular coefficient" type="float" default="1"/>
+    <input name="specularcolor" description="Specular color" type="color" default="1.0"/>
+    <input name="model" description="BRDF model" type="float" default="2"/>
+    <input name="colormatrix" description="Color matrix metal/skin" type="color" default="2"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+    <input name="dir" description="Surface direction tangent" type="vector" default="dPdu"/>
+    <input name="Cs" description="Surface color" type="color" default="Cs"/>
+    <input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+    <output name="Oi" description="Shaded opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+
+    /* spray-painted latex blue paint */
+    uniform float $(blockname)_coeff_1[27] = { 0.877276, 0.801226, 21.88889,
+                                  0.857255, 0.774290, 18.597755,
+                                  0.670982, 0.586674, 7.472717,
+                                  -0.419449, 0.008408, 2.594712,
+                                  -0.406681, 0.017625, 2.581499,
+                                  -0.477976, 0.227295, 3.677653,
+                                  -1.031545, 0.706734, 66.899060,
+                                  -1.029426, 0.696530, 63.767912,
+                                  -1.026588, 0.687715, 57.489181 };
+    /* matte finished steel */
+    uniform float $(blockname)_coeff_2[27] = { -1.11854, 1.01272, 15.8708,
+                                  -1.11845, 1.01469, 15.6489,
+                                  -1.11999, 1.01942, 15.4571,
+                                  -1.05334, 0.69541, 111.267,
+                                  -1.06409, 0.662178, 88.9222,
+                                  -1.08378, 0.626672, 65.2179,
+                                  -1.01684, 1.00132, 180.181,
+                                  -1.01635, 1.00112, 184.152,
+                                  -1.01529, 1.00108, 195.773 };
+    /* primer gray */ 
+    uniform float $(blockname)_coeff_3[27] = { -0.399286, 0.167504, 2.466633, 
+                                  -1.033473, 0.009545, 7.637253, 
+                                  -1.058104, -0.068002, 8.117645,
+                                  -1.041861, 0.014375, 7.993722, 
+                                  -1.100108, -0.198147, 29.446268, 
+                                  -1.087779, -0.053605, 41.988990,
+                                  -1.098605, -0.145110, 31.899719, 
+                                  -0.379883, 0.159127, 2.372852, 
+                                  -0.449038, 0.173224, 2.636161 };
+
+    /* skin_1 - caucasian male */
+    uniform float $(blockname)_coeff_4[27] = {-1.131747, -1.209182, 6.421658,
+                                 -1.016939, -1.462488, 3.699932,
+                                 -0.966018, -1.222419, 3.524889,
+                                 -0.546570,  0.380123, 3.685044,
+                                 -0.643533,  0.410559, 4.266495,
+                                 -0.638934,  0.437367, 4.539742,
+                                 -1.020153,  0.703913, 63.919687,
+                                 -1.027479,  0.573625, 43.809866,
+                                 -0.998888,  0.857998, 64.208486 };
+    /* skin_2 - asian male (Only two lobes were used in this approximation,
+     * so we make cx=cy=cz=0 for the third lobe) 
+     */
+    uniform float $(blockname)_coeff_5[27] = { -0.418599, 0.399808, 3.327653,
+                                  -0.418849, 0.397372, 3.502029,
+                                  -0.663313, 0.591432, 5.782860,
+                                  -1.030919, 0.832314, 28.298369,
+                                  -1.030556, 0.823648, 25.766759,
+                                  -1.042135, 0.797070, 31.002562,
+                                  0.000000, 0.000000, 1.00000,
+                                  0.000000, 0.000000, 1.00000,
+                                  0.000000, 0.000000, 1.00000 };
+    /* clay */
+    uniform float $(blockname)_coeff_6[27] = { -1.089701, -1.354682, 17.968505,
+                                  -1.102701, -2.714801, 11.024489,
+                                  -1.107603, -1.569866, 21.270282,
+                                  -0.733381, 0.676108, 8.219745, 
+                                  -0.793320, 0.679314, 9.055139, 
+                                  -0.848206, 0.726031, 11.261951,
+                                  -1.010548, 0.910783, 152.912795, 
+                                  -1.012378, 0.885239, 141.937171, 
+                                  -1.011263, 0.892451, 201.046802 };
+    /* color matrix for: blue paint, matte finished steel */ 
+    uniform float $(blockname)_colormatrix_1[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+    /* color matrix for: primer grey, skin_1, skin_2, clay */
+    uniform float $(blockname)_colormatrix_2[9] = { 1.063302,  0.382044, -0.445346,
+                                      -0.298125,  1.667665, -0.369540,
+                                      -1.322302, -0.446321,  2.768624 };
+
+        $(Oi) = $(Os);
+
+        color out = lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs), $(specularcolor),
+		$(blockname)_coeff_$(model) , $(blockname)_colormatrix_$(colormatrix), $(N), $(I), $(dir) );
+
+        $(Ci) = $(Os) * out;
+
+	</code>
+    <usage>Based on Stephen H. Westin's implementation of the Lafortune model. BRDFs 1-7, color matrix 1-2 for metal or skin. Note that coefficient model and colormatrix values need to be absolute.</usage>
+</shrimp>

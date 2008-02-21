@@ -1,0 +1,8 @@
+<shrimp type="function" name="Area" description="Differential surface area" author="rconstruct">
+	<input name="p" description="Point to compute area at" type="point" default="P"/>
+	<output name="val" description="Differential surface area at p" type="float"/>
+	<code>
+	$(val) = area( $(p) );
+	</code>
+<usage>Returns the differential surface area (length( Du(P)*du^Dv(P)*dv)).</usage>
+</shrimp>

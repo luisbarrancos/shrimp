@@ -1,0 +1,12 @@
+<shrimp type="function" name="FindPRhomb" description="Find Penrose rhomb" author="rconstruct">
+	<input name="sx" description="X value to sample" type="float" default="s"/>
+	<input name="sy" description="Y value to sample" type="float" default="t"/>
+	<output name="tx" description="out tile X" type="float"/>
+	<output name="ty" description="out tile Y" type="float"/>
+	<output name="ttype" description="Tile type" type="float"/>
+	<include>extrapatterns.h</include>
+	<code>
+		find_penrose_rhomb( $(tx), $(ty), $(ttype), $(sx), $(sy) );
+	</code>
+	<usage>Penrose rhomb tile, by Derek Ledbetter, returns Penrose rhomb tile values, and tile types, being 0 = skinny, and 1 = fat.</usage> 
+</shrimp>

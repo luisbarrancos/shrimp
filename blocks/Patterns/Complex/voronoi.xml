@@ -1,0 +1,41 @@
+<shrimp type="function" name="Voronoi" description="Voronoi example" author="rconstruct">
+	<input name="p" description="point to sample Voronoi at" type="point" default="P"/>
+	<input name="jitter" description="Jitter" type="float" default="0.1"/>
+	<input name="dtype" description="Minkowski P parameter, see help" type="float" default="2"/>
+    <input name="squiggle" description="Squiggliness" type="float" default="2"/>
+    <input name="freq" description="Frequency" type="float" default="10"/>
+    <input name="scale" description="Scale" type="float" default="2"/>
+    <input name="lthick" description="Line thickness" type="float" default="0.02"/>
+    <input name="fwidth" description="fBm filter width" type="float" default="4"/>
+    <input name="octaves" description="fBm octaves" type="float" default="2"/>
+    <input name="lacun" description="fBm lacunarity" type="float" default="0.05"/>
+    <input name="gain" description="fBm gain" type="float" default="0.5"/>
+    <input name="cspace" description="Coordinate space" type="string" default="&quot;object&quot;"/>
+    <output name="val" description="Output color" type="color"/>
+    <output name="f1" description="1st feature" type="float"/>
+    <output name="f2" description="2nd feature" type="float" />
+    <output name="pos1" description="1st position" type="point" />
+    <output name="pos2" description="2nd position" type="point" />
+    <output name="cc" description="Temp color" type="color" />
+    <output name="po" description="temp po" type="point" />
+    <output name="pp" description="temp pp" type="point" />
+    <output name="sfactor" description="scale factor" type="float" />
+	<include>fractal.h</include>
+	<code>
+        $(po) = transform( $(cspace), $(p) );
+
+        $(pp) = $(po) / $(scale) + $(squiggle) * vfBm( $(po) / $(scale) *
+                        $(freq), $(fwidth), $(octaves), $(lacun), $(gain) );
+
+        voronoi_f1f2_3d( $(pp), $(jitter), $(f1), $(pos1), $(f2), $(pos2) );
+
+        $(cc) = color cellnoise( vector(10, 0, 0) + $(pos1) );
+        $(sfactor) = distance( $(pos1), $(pos2) ) / distance( $(pos1), $(pp) )
+                             + distance( $(pp) , $(pos2) );
+
+        $(cc) *= step( $(lthick) * $(sfactor), $(f2) - $(f1) );
+
+        $(val) = $(cc);
+	</code>
+	<usage>Voronoi example shader. Can be constructed with the cell noise and voronoi blocks, as can be seen in an example scene, but we'll provide it in a block form for convenience as well. Uses Minkowski distance metric, so when dtype = 1, distance metric is Euclidian, when dtype = 2, distance metric is Manhattan.</usage> 
+</shrimp>

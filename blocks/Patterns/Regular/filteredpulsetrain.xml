@@ -1,0 +1,12 @@
+<shrimp type="function" name="FPulsetrain" description="Larry Gritz&apos;s filtered pulsetrain" author="rconstruct">
+	<input name="x" description="Value to test" type="float" default="s"/>
+	<input name="edge" description="Edge" type="float" default="0.2"/>
+	<input name="period" description="Period" type="float" default="1"/>
+	<input name="dx" description="Filter width" type="float" default="0.1"/>
+	<output name="val" description="Value of the wave at x" type="float"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+		$(val) = filteredpulsetrain( $(edge), $(period), $(x), $(dx) );
+	</code>
+	<usage>Antialiased version of pulsetrain, by Larry Gritz.</usage>
+</shrimp>

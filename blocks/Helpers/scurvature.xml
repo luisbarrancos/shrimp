@@ -1,0 +1,14 @@
+<shrimp name="SCurve" type="function" description="Surface curvature" author="rconstruct">
+    <input name="ctype" description="Curvature type, see usage." type="string" default="&quot;amean&quot;"/>
+	<input name="cmin" description="Minimum" type="float" default="-1"/>
+    <input name="cmax" description="Maximum" type="float" default="1"/>
+    <input name="greys" description="Greyscale on/off" type="float" default="0"/>
+	<input name="Nn" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<output name="val" description="Curvature output" type="color"/>
+	<include>shrimp_helpers.h</include>
+	<code>
+        $(val) = scurvature( $(ctype), $(cmin), $(cmax), $(greys), $(Nn), $(I));
+	</code>
+    <usage>Surface curvature block, based on Mario Marengo's VEX work. Curvature types are gauss, mean, amean, min, max. If greyscale = 1.0, then it returns the curvature intensity in greyscale, else, it returns it in color.</usage>
+</shrimp>

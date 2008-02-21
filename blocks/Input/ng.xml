@@ -1,0 +1,7 @@
+<shrimp type="function" name="Ng" description="Surface geometric normal" author="rconstruct">
+	<output name="Ng" description="Surface geometric normal" type="normal"/>
+	<code>
+	$(Ng) = Ng;
+	</code>
+</shrimp>
+
