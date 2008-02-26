@@ -355,6 +355,13 @@ xml::element scene::xml_network() {
 
 			xml_input.push_attribute ("description", input->m_description);
 
+			// store type parent, if any
+			const std::string type_parent = input->get_type_parent();
+			if (!type_parent.empty()) {
+
+				xml_input.push_attribute ("type_parent", type_parent);
+			}
+
 			// store connection, if any
 			dag_t::const_iterator connection = m_dag.find (io_t (block->name(), input->m_name));
 			if (connection != m_dag.end()) {

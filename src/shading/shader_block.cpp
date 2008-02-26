@@ -35,6 +35,7 @@ property::property (const std::string& Name, const std::string& Description) :
 	m_multi_operator (""),
 	m_multi_operator_parent_name (""),
 	m_shader_output (false),
+	m_type_parent (""),
 	m_uniform (false),
 	m_value ("")
 {
@@ -311,6 +312,18 @@ bool property::is_uniform() const {
 bool property::is_multi_operator() const {
 
 	return !m_multi_operator.empty();
+}
+
+
+void property::set_type_parent (const std::string& Parent) {
+
+	m_type_parent = Parent;
+}
+
+
+std::string property::get_type_parent() const {
+
+	return m_type_parent;
 }
 
 
@@ -628,13 +641,41 @@ std::string shader_block::get_input_parent (const std::string& Name) const {
 }
 
 
+void shader_block::set_input_type_parent (const std::string& Name, const std::string& Parent) {
+
+	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			i->set_type_parent (Parent);
+			return;
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+}
+
+
 bool shader_block::set_output_type (const std::string& Name, const std::string& Type) {
 
+	bool answer = true;
+
+	// look for the output and set its type
 	for (properties_t::iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
 
 		if (i->m_name == Name) {
 
-			return i->set_type (Type);
+			// change the type children (if any)
+			for (properties_t::iterator j = m_inputs.begin(); j != m_inputs.end(); ++j) {
+
+				const std::string parent = j->get_type_parent();
+				if (!parent.empty() && (parent == Name)) {
+
+					answer &= j->set_type (Type);
+				}
+			}
+
+			return answer && i->set_type (Type);
 		}
 	}
 
@@ -988,6 +1029,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 			std::string input_multi_operator_parent ("");
 			bool input_uniform = false;
 			bool shader_parameter_input = false;
+			std::string input_type_parent = "";
 
 			for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
 
@@ -1017,17 +1059,21 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 				else if (name == "multi_parent") {
 					input_multi_operator_parent = a->Value();
 				}
+				else if (name == "type_parent") {
+					input_type_parent = a->Value();
+				}
 				else if (name == "separator")
 					// DEPRECATED : put the operator in the "multi" attribute
 					input_multi_operator = a->Value();
 				else
-					log() << error << "Unhandled input attribute : '" << name << "'" << std::endl;
+					log() << error << "unhandled input attribute : '" << name << "'" << std::endl;
 			}
 
 			add_input (input_name, input_type, input_description, input_value, input_multi_operator, shader_parameter_input);
 			if (!input_multi_operator_parent.empty()) {
 				set_input_multi_operator_parent (input_name, input_multi_operator_parent);
 			}
+			set_input_type_parent (input_name, input_type_parent);
 		}
 		else if (element == "output") {
 
@@ -1045,8 +1091,9 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 				else if (name == "type") {
 					output_type = a->Value();
 				}
-				else if (name == "description")
+				else if (name == "description") {
 					output_description = a->Value();
+				}
 				else if (name == "storage") {
 					// DON'T WRITE 'if (a->Value() == "uniform")' it always returns false!
 					const std::string value = a->Value();
@@ -1061,7 +1108,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					}
 				}
 				else
-					log() << error << "Unhandled output attribute : '" << name << "'" << std::endl;
+					log() << error << "unhandled output attribute : '" << name << "'" << std::endl;
 			}
 
 			if (output_uniform) {

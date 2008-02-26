@@ -68,6 +68,9 @@ public:
 	std::string get_value() const;
 	std::string value_as_sl_string() const;
 
+	void set_type_parent (const std::string& Parent);
+	std::string get_type_parent() const;
+
 private:
 	// variable type
 	variable_t m_current_type;
@@ -75,6 +78,10 @@ private:
 
 	variable_t from_string (const std::string& Type);
 	std::string to_string (variable_t Type) const;
+
+	// name of a parent property,
+	// a parent type change applies to its children
+	std::string m_type_parent;
 
 	// storage type: either 'varying' or 'uniform',
 	// stored as a boolean for 'uniform' since the default is 'varying'
@@ -146,6 +153,9 @@ public:
 
 	void set_input_parent (const std::string& Name, const std::string& Parent);
 	std::string get_input_parent (const std::string& Name) const;
+
+	void set_input_type_parent (const std::string& Name, const std::string& Parent);
+	//std::string get_input_type_parent (const std::string& Name) const;
 
 	bool set_output_type (const std::string& Name, const std::string& Type);
 	std::string get_output_type (const std::string& Name) const;
