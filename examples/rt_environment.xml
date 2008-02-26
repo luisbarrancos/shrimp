@@ -14,18 +14,18 @@
 			<output name="val" type="color" description="val = A + B"/>
 			<code>
 	$(val) = $(A) + $(B);
-							</code>
+										</code>
 			<include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.						</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
 		<block id="Constant" position_x="-0.107692307692314" position_y="0.846153846153844" author="rconstruct">
 			<input name="in" type="color" value="color( .73, .31, .25 )" description="Input"/>
 			<output name="out" type="color" description="Output = Input"/>
 			<code>
 	$(out) = $(in);
-							</code>
+										</code>
 			<include/>
-			<usage>Useful for supplying multiple inputs with the same value.						</usage>
+			<usage>Useful for supplying multiple inputs with the same value.									</usage>
 		</block>
 		<block id="CookTorrance" position_x="-1.38461538461539" position_y="-0.230769230769233" author="rconstruct">
 			<input name="Ks" type="float" value="1.0" description="Specular light coefficient"/>
@@ -38,9 +38,9 @@
 			<code>
 
         $(Ci) = $(Ks) * $(Cspec) * cooktorrance( $(N), $(I), $(ior), $(roughness));
-							</code>
-			<include>shadingmodels.h						</include>
-			<usage>Cook-Torrance shading model. Specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.						</usage>
+										</code>
+			<include>shadingmodels.h									</include>
+			<usage>Cook-Torrance shading model. Specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.									</usage>
 		</block>
 		<block id="Environment" position_x="3.09230769230769" position_y="-0.246153846153846" author="rconstruct">
 			<input name="texname" type="string" value="&quot;raytrace&quot;" description="Texture map name"/>
@@ -83,7 +83,7 @@
                                 &quot;filter&quot;, $(filter),
 								&quot;fill&quot;, $(fill) ) ;
     #endif
-							</code>
+										</code>
 			<include/>
 			<usage/>
 		</block>
@@ -91,7 +91,7 @@
 			<output name="I" type="vector" description="Incident ray direction"/>
 			<code>
 	$(I) = I;
-							</code>
+										</code>
 			<include/>
 			<usage/>
 		</block>
@@ -105,10 +105,10 @@
 			<output name="val" type="color" description="val = A * B"/>
 			<code>
 	$(val) = $(A) * $(B);
-							</code>
+										</code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-							</usage>
+										</usage>
 		</block>
 		<block id="Multiply_2" position_x="1.49230769230769" position_y="1.41538461538461" author="rconstruct">
 			<input name="A" type="color" value="1" description="1st input">
@@ -120,16 +120,16 @@
 			<output name="val" type="color" description="val = A * B"/>
 			<code>
 	$(val) = $(A) * $(B);
-							</code>
+										</code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-							</usage>
+										</usage>
 		</block>
 		<block id="N" position_x="-3.44615384615384" position_y="-3.81538461538461" author="rconstruct">
 			<output name="N" type="normal" description="Surface shading normal"/>
 			<code>
     $(N) = N;
-    						</code>
+    									</code>
 			<include/>
 			<usage/>
 		</block>
@@ -140,9 +140,9 @@
 			<output name="val" type="normal" description="val is a vector of unit length"/>
 			<code>
 	$(val) = normalize( $(A) );
-							</code>
+										</code>
 			<include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).						</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
 		</block>
 		<block id="Normalise_2" position_x="-1.90769230769231" position_y="-3.12307692307692" author="rconstruct">
 			<input name="A" type="vector" value="1" description="Input">
@@ -151,9 +151,9 @@
 			<output name="val" type="vector" description="val is a vector of unit length"/>
 			<code>
 	$(val) = normalize( $(A) );
-							</code>
+										</code>
 			<include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).						</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
 		</block>
 		<block id="OrenNayar" position_x="-1.53846153846154" position_y="1.53846153846154" author="rconstruct">
 			<input name="Kd" type="float" value="0.8" description="Diffuse light coefficient"/>
@@ -163,9 +163,9 @@
 			<output name="Ci" type="color" description="Shaded color"/>
 			<code>	
         $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
-							</code>
-			<include>shadingmodels.h						</include>
-			<usage>Oren-Nayar diffuse term. Kd controls overall intensity. Note that this is meant to be used in a network with an ambient term, and/or a specular term, if desired. A good starting point might be an Blinn specular term. Note that Cs and Os aren&apos;t taken into consideration, and must be added in your network, where proper/desired.						</usage>
+										</code>
+			<include>shadingmodels.h									</include>
+			<usage>Oren-Nayar diffuse term. Kd controls overall intensity. Note that this is meant to be used in a network with an ambient term, and/or a specular term, if desired. A good starting point might be an Blinn specular term. Note that Cs and Os aren&apos;t taken into consideration, and must be added in your network, where proper/desired.									</usage>
 		</block>
 		<block id="Reflect" position_x="0.169230769230769" position_y="-3.2" author="rconstruct">
 			<input name="I" type="vector" value="normalize(I)" description="Incident vector">
@@ -177,9 +177,9 @@
 			<output name="R" type="vector" description="The reflected vector"/>
 			<code>
 	$(R) = reflect( $(I), $(N) );
-							</code>
+										</code>
 			<include/>
-			<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).						</usage>
+			<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).									</usage>
 		</block>
 		<block id="Root block" position_x="6.99499999999999" position_y="0.401538461538462" author="" root="RIB" AOV_preview="1">
 			<rib_statements>Attribute &quot;visibility&quot; &quot;integer trace&quot; 1
@@ -215,15 +215,15 @@
 
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
 
-							</code>
-			<include>shadingmodels.h						</include>
-			<usage>Christophe Schlick&apos;s fast fresnel approximation.						</usage>
+										</code>
+			<include>shadingmodels.h									</include>
+			<usage>Christophe Schlick&apos;s fast fresnel approximation.									</usage>
 		</block>
 		<block id="Transform" position_x="1.6" position_y="-2.93846153846154" author="rconstruct">
 			<input name="p" type="vector" value="P" description="Point, vector or normal to transform">
 				<connection parent="Reflect" output="R"/>
 			</input>
-			<input name="from_space" type="string" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="from_space" type="string" value="&quot;object&quot;" description="The coordinate system to transform from"/>
 			<input name="to_space" type="string" value="&quot;world&quot;" description="The coordinate system to transform into"/>
 			<input name="mmat" type="matrix" value="none" description="Use this matrix instead of a predefined coordinate system"/>
 			<output name="pp" type="normal" description="The transformed point, vector or normal"/>
@@ -249,9 +249,9 @@
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-							</code>
+										</code>
 			<include/>
-			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.						</usage>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
 		</block>
 	</network>
 </shrimp>
