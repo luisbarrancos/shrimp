@@ -101,7 +101,9 @@ bool property::set_type (const std::string& Type) {
 		} while (!stream.eof());
 
 		if (new_type != UNKNOWN) {
+
 			m_current_type = new_type;
+
 			return true;
 		}
 
@@ -672,6 +674,19 @@ bool shader_block::set_output_type (const std::string& Name, const std::string& 
 				if (!parent.empty() && (parent == Name)) {
 
 					answer &= j->set_type (Type);
+
+					// if it's a multi-input, change the children's type
+					if (j->is_multi_operator()) {
+
+						// get list of child inputs
+						std::vector<std::string> children;
+						get_multi_input_child_list (j->m_name, children);
+
+						for (std::vector<std::string>::const_iterator c = children.begin(); c != children.end(); ++c) {
+
+							set_input_type (*c, Type);
+						}
+					}
 				}
 			}
 
