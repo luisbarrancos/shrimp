@@ -4,14 +4,14 @@
 	<output name="val" description="Adjusted value." type="float color"/>
 	<include>shrimp_helpers.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = gain($(nput), $(gain));
 	#else
-		float xtmp = xcomp( $(var_type) $(nput));
-		float ytmp = ycomp( $(var_type) $(nput));
-		float ztmp = zcomp( $(var_type) $(nput));
-		$(val) = $(var_type) (gain(xtmp, $(gain)), gain(ytmp, $(gain)), gain(ztmp, $(gain)));
+		float xtmp = xcomp( $(val:type) $(nput));
+		float ytmp = ycomp( $(val:type) $(nput));
+		float ztmp = zcomp( $(val:type) $(nput));
+		$(val) = $(val:type) (gain(xtmp, $(gain)), gain(ytmp, $(gain)), gain(ztmp, $(gain)));
 	#endif
 	</code>
 	<usage>Similar to a contrast adjustment</usage>

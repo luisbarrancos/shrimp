@@ -6,11 +6,11 @@
 	<output name="val" description="Noise value at (x,y)" type="float color vector point"/>
 	<include>fractal.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * filteredVLNoise( $(x), $(width), $(scale) );
 	#else
-		$(val) = $(amplitude) * $(var_type) filteredvsnoise(
+		$(val) = $(amplitude) * $(val:type) filteredvsnoise(
 				filteredvsnoise( $(x), $(width) ) * $(scale) + $(x), $(width));
 	#endif
 	</code>

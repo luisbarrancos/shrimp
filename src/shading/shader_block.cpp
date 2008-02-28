@@ -299,10 +299,10 @@ std::string property::to_string (variable_t Type) const {
 }
 
 
-/*void property::set_uniform (const bool Type) {
+void property::set_uniform (const bool IsUniform) {
 
-	m_uniform = Type;
-}*/
+	m_uniform = IsUniform;
+}
 
 
 bool property::is_uniform() const {
@@ -339,13 +339,16 @@ types_t get_property_types() {
 	list.push_back ("vector");
 	list.push_back ("normal");
 	list.push_back ("matrix");
-	list.push_back ("uniform float");
-	list.push_back ("uniform color");
-	list.push_back ("uniform string");
-	list.push_back ("uniform point");
-	list.push_back ("uniform vector");
-	list.push_back ("uniform normal");
-	list.push_back ("uniform matrix");
+
+	return list;
+}
+
+
+types_t get_property_storage_types() {
+
+	types_t list;
+	list.push_back ("varying");
+	list.push_back ("uniform");
 
 	return list;
 }
@@ -362,7 +365,6 @@ shader_block::shader_block (const std::string& Name, const std::string& Descript
 	m_width (1),
 	m_height (1) {
 
-	m_type = "float";
 }
 
 
@@ -848,7 +850,7 @@ bool shader_block::is_input_uniform (const std::string& Name) const {
 }
 
 
-/*void shader_block::set_input_uniform (const std::string& Name, const bool State) {
+void shader_block::set_input_uniform (const std::string& Name, const bool State) {
 
 	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
 
@@ -860,7 +862,7 @@ bool shader_block::is_input_uniform (const std::string& Name) const {
 	}
 
 	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
-}*/
+}
 
 
 bool shader_block::is_output_uniform (const std::string& Name) const {

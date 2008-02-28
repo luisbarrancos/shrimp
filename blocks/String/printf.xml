@@ -3,7 +3,7 @@
 	<input name="var" description="Variable input" type="float color normal vector point matrix string" default="0"/>
 	<output name="val" description="Variable output" type="float color normal vector point matrix string"/>
 	<code>
-	#define var_$(var_type)
+	#define var_$(var:type)
 	#ifdef var_float
 		printf( concat( $(str), " %f\n"), $(var) );
 	#elif var_color

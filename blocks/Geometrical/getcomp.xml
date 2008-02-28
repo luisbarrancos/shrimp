@@ -4,8 +4,8 @@
 	<output name="y" description="y component" type="float"/>
 	<output name="z" description="z component" type="float"/>
 	<code>
-	$(x) = xcomp( $(var_type) $(in) );
-	$(y) = ycomp( $(var_type) $(in) );
-	$(z) = zcomp( $(var_type) $(in) );
+	$(x) = xcomp( $(in:type) $(in) );
+	$(y) = ycomp( $(in:type) $(in) );
+	$(z) = zcomp( $(in:type) $(in) );
 	</code>
 </shrimp>

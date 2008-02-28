@@ -40,6 +40,7 @@ namespace edit_input
 static fltk::Output* s_name = 0;
 static fltk::Input* s_value = 0;
 static fltk::Choice* s_type = 0;
+static fltk::Choice* s_storage = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
 
 
@@ -50,6 +51,7 @@ private:
 	shader_block* m_shader_block;
 	std::string m_edited_input;
 	types_t m_types;
+	types_t m_storage_types;
 
 public:
 	dialog (shader_block* Block) :
@@ -69,8 +71,21 @@ public:
 			w->add (s_value);
 			s_value->tooltip ("Input value");
 
+			// variable storage edition
+			s_storage = new fltk::Choice (70,59, 90,23, "Type");
+			s_storage->begin();
+				// make sure the list isn't destroyed before the dialog closes
+				m_storage_types = get_property_storage_types();
+				for (types_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i) {
+
+					new fltk::Item (st_i->c_str());
+				}
+			s_storage->end();
+			w->add (s_storage);
+			s_storage->tooltip ("Input variable storage type");
+
 			// variable type edition
-			s_type = new fltk::Choice (70,59, 120,23, "Type");
+			s_type = new fltk::Choice (160,59, 120,23, "");
 			s_type->begin();
 				// make sure the list isn't destroyed before the dialog closes
 				m_types = get_property_types();
@@ -116,12 +131,23 @@ public:
 		const std::string value = m_shader_block->get_input_value (m_edited_input);
 		s_value->text (value.c_str());
 
-		// set type
-		std::string type = m_shader_block->get_input_type (m_edited_input);
-		if (m_shader_block->is_input_uniform (m_edited_input)) {
-			type = "uniform " + type;
+		// set types
+		if (m_storage_types.size() >= 2) {
+
+			if (m_shader_block->is_input_uniform (m_edited_input)) {
+				if (m_storage_types[0] == "uniform")
+					s_storage->value (0);
+				else
+					s_storage->value (1);
+			} else {
+				if (m_storage_types[0] == "varying")
+					s_storage->value (0);
+				else
+					s_storage->value (1);
+			}
 		}
 
+		const std::string type = m_shader_block->get_input_type (m_edited_input);
 		int type_number = 0;
 		for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i, ++type_number) {
 
@@ -142,7 +168,15 @@ public:
 		const std::string new_value = s_value->value();
 		m_shader_block->set_input_value (m_edited_input, new_value);
 
-		// save type
+		// save types
+		types_t storage_list = get_property_storage_types();
+		const unsigned int storage_type_number = s_storage->value();
+		if (storage_type_number >= 0 && storage_type_number < storage_list.size()) {
+
+			const bool uniform = (storage_list[storage_type_number] == "uniform");
+			m_shader_block->set_input_uniform (m_edited_input, uniform);
+		}
+
 		types_t list = get_property_types();
 		const unsigned int type_number = s_type->value();
 		if (type_number >= 0 && type_number < list.size()) {

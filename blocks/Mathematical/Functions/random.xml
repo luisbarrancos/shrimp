@@ -3,6 +3,6 @@
 	<input name="max" description="maximum value" type="float" default="1.0"/>
 	<output name="val" description="A random value between min and max" type="float color point"/>
 	<code>
-	$(val) = ($(max)-$(min))*( $(var_type) random() ) + $(min);
+	$(val) = ($(max)-$(min))*( $(val:type) random() ) + $(min);
 	</code>
 </shrimp>

@@ -13,9 +13,9 @@
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="color float"/>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
     #ifdef $(val)_float
-        $(val) = $(var_type) environment( $(texname), $(dir),
+        $(val) = $(val:type) environment( $(texname), $(dir),
 								"blur", $(blur),
 								"sblur", $(sblur),
 								"tblur", $(tblur),

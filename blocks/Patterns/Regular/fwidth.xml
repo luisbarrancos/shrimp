@@ -3,7 +3,7 @@
 	<output name="fwidth" description="An estimate of the sample width at p" type="float"/>
 	<include>shrimp_helpers.h</include>
 	<code>
-	#define val_$(var_type)
+	#define val_$(p:type)
 	#ifdef val_float
 		$(fwidth) = filterwidth( $(p) );
 	#else

@@ -5,7 +5,7 @@
 	<input name="mmat" description="Use this matrix instead of a predefined coordinate system" type="matrix" default="none"/>
 	<output name="pp" description="The transformed point, vector or normal" type="point vector normal"/>
 	<code>
-	#define $(p)_$(var_type)
+	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	#ifdef $(p)_point
 	#ifdef mmat_none

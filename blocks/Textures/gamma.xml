@@ -3,14 +3,14 @@
 	<input name="gammaval" description="Range lower point" type="float" default="0"/>
 	<output name="val" description="Remapped value." type="float color"/>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = pow($(nput), 1/$(gammaval));
 	#else
-		float xtmp = xcomp( $(var_type) $(nput));
-		float ytmp = ycomp( $(var_type) $(nput));
-		float ztmp = zcomp( $(var_type) $(nput));
-		$(val) = $(var_type) (pow(xtmp, 1/$(gammaval)), pow(ytmp, 1/$(gammaval)), pow(ztmp, 1/$(gammaval)));
+		float xtmp = xcomp( $(val:type) $(nput));
+		float ytmp = ycomp( $(val:type) $(nput));
+		float ztmp = zcomp( $(val:type) $(nput));
+		$(val) = $(val:type) (pow(xtmp, 1/$(gammaval)), pow(ytmp, 1/$(gammaval)), pow(ztmp, 1/$(gammaval)));
 	#endif
 	</code>
 </shrimp>

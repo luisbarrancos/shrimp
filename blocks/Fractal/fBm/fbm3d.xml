@@ -8,11 +8,11 @@
 	<output name="val" description="fBm value at p" type="float color point vector normal"/>
 	<include>fractal.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * fBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain) );
 	#else
-		$(val) = $(amplitude) * $(var_type) vfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain) );		
+		$(val) = $(amplitude) * $(val:type) vfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain) );		
 	#endif
 	</code>
 	<usage>fBm is a sumation of noises at different frequencies. Note that the output is not clamped and may exceed +1 or -1.

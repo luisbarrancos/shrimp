@@ -4,7 +4,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
 	<code>
-	$(val) = $(amplitude) * $(var_type) pnoise( $(p), $(pperiod) );
+	$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(pperiod) );
 	</code>
 <usage>Periodic noise, maximum period = 256.</usage>
 </shrimp>

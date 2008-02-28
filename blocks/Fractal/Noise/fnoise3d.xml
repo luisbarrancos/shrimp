@@ -5,11 +5,11 @@
 	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
 	<include>fractal.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * $(var_type) filterednoise( $(p), $(width) );
+		$(val) = $(amplitude) * $(val:type) filterednoise( $(p), $(width) );
 	#else
-		$(val) = $(amplitude) * $(var_type) filteredvnoise( $(p), $(width) );
+		$(val) = $(amplitude) * $(val:type) filteredvnoise( $(p), $(width) );
 	#endif
 	</code>
 </shrimp>

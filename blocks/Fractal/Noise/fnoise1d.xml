@@ -7,9 +7,9 @@
 	<code>
 	#define $(val)_float
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * $(var_type) filterednoise( $(x), $(width) );
+		$(val) = $(amplitude) * $(val:type) filterednoise( $(x), $(width) );
 	#else
-		$(val) = $(amplitude) * $(var_type) filteredvnoise( $(x), $(width) );
+		$(val) = $(amplitude) * $(val:type) filteredvnoise( $(x), $(width) );
 	#endif
 	</code>
 </shrimp>

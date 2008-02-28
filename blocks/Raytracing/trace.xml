@@ -7,11 +7,11 @@
 	<input name="subset" description="Set of objects available for ray computations" type="string" default="&quot;&quot;"/>
 	<output name="val" description="Trace color" type="float color"/>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(var_type) trace( $(inpoint), $(indir) );
+		$(val) = $(val:type) trace( $(inpoint), $(indir) );
 	#else
-		$(val) = $(var_type) trace( $(inpoint), $(indir),
+		$(val) = $(val:type) trace( $(inpoint), $(indir),
 									"label", $(label),
 									"subset", $(subset),
 									"bias", $(bias),

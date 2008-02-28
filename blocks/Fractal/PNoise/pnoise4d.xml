@@ -6,7 +6,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
 	<code>
-	$(val) = $(amplitude) * $(var_type) pnoise( $(p), $(t), $(pperiod), 
+	$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(t), $(pperiod), 
 												$(tperiod) );
 	</code>
 <usage>Periodic noise, maximum period = 256.</usage>

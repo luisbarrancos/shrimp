@@ -8,12 +8,12 @@
 	<output name="val" description="turbulence value at p" type="float color vector point"/>
 	<include>fractal.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * turbulence( $(p), $(fwidth),
 										$(octaves), $(lacunarity), $(gain) );
 	#else
-		$(val) = $(amplitude) * $(var_type) vturbulence( $(p), $(fwidth),
+		$(val) = $(amplitude) * $(val:type) vturbulence( $(p), $(fwidth),
 										$(octaves), $(lacunarity), $(gain) );
 	#endif
 	</code>

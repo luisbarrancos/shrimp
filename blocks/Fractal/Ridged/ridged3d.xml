@@ -9,12 +9,12 @@
 	<output name="val" description="fractal value at p" type="float color vector point"/>
 	<include>fractal.h</include>
 	<code>
-	#define $(val)_$(var_type)
+	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * Ridged( $(p), $(fwidth), $(octaves),
 										$(lacunarity), $(gain), $(offset) );
 	#else
-		$(val) = $(amplitude) * $(var_type) vRidged( $(p), $(fwidth),
+		$(val) = $(amplitude) * $(val:type) vRidged( $(p), $(fwidth),
 							$(octaves),	$(lacunarity), $(gain), $(offset) );
 	#endif
 	</code>

@@ -4,7 +4,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Cell noise value at (x,y), in range 0 - 1" type="float color point vector"/>
 	<code>
-	$(val) = $(amplitude) * $(var_type) cellnoise( $(x), $(y) );
+	$(val) = $(amplitude) * $(val:type) cellnoise( $(x), $(y) );
 	</code>
 	<usage>Cellnoise returns a random value between 0 and 1 for each integer 'cell'. It is much cheaper than calling noise.
 	</usage> 

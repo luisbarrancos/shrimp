@@ -4,7 +4,7 @@
 	<input name="z" description="z component" type="float" default="0"/>
 	<output name="out" description="point, vector, or normal with the specified components" type="point vector normal"/>
 	<code>
-	$(out) = $(var_type) ( $(x), $(y), $(z) ); 
+	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
 	</code>
 <usage>Sets xyz components of a point, vector, or normal.</usage>
 </shrimp>

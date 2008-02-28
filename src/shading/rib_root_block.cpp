@@ -481,9 +481,19 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	// replace block name
 	replace_variable (code, "$(blockname)", Block->sl_name());
 
-	// replace variables content with actual values
-	replace_variable (code, "$(var_type)", Block->m_type);
+	// replace variable types: $(p:type) -> float (in case p is a float)
+	for (shader_block::properties_t::const_iterator input = Block->m_inputs.begin(); input != Block->m_inputs.end(); ++input) {
 
+		const std::string tag = "$(" + input->m_name + ":type)";
+		replace_variable (code, tag, input->get_type());
+	}
+	for (shader_block::properties_t::const_iterator output = Block->m_outputs.begin(); output != Block->m_outputs.end(); ++output) {
+
+		const std::string tag = "$(" + output->m_name + ":type)";
+		replace_variable (code, tag, output->get_type());
+	}
+
+	// process input parents
 	for (shader_block::properties_t::const_iterator input = Block->m_inputs.begin(); input != Block->m_inputs.end(); ++input) {
 
 		std::string parent_output;

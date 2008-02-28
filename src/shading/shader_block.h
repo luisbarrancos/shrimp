@@ -59,7 +59,7 @@ public:
 	bool set_type (const std::string& Type);
 	std::string get_type() const;
 
-	//void set_uniform (const bool Type);
+	void set_uniform (const bool IsUniform);
 	bool is_uniform() const;
 
 	bool is_multi_operator() const;
@@ -94,6 +94,7 @@ private:
 
 typedef std::vector<std::string> types_t;
 types_t get_property_types();
+types_t get_property_storage_types();
 
 
 // basic block class
@@ -172,7 +173,7 @@ public:
 	void get_multi_input_child_list (const std::string& Name, std::vector<std::string>& Children) const;
 
 	bool is_input_uniform (const std::string& Name) const;
-	//void set_input_uniform (const std::string& Name, const bool State);
+	void set_input_uniform (const std::string& Name, const bool State);
 
 	bool is_output_uniform (const std::string& Name) const;
 	//void set_output_uniform (const std::string& Name, const bool State);
@@ -192,7 +193,6 @@ public:
 	// shader code
 	std::string m_includes;
 	std::string m_code;
-	std::string m_type;
 	bool m_code_written;
 
 	void set_includes (const std::string& File);
