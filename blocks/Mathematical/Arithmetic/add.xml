@@ -1,8 +1,9 @@
 <shrimp type="function" name="Add" description="Addition block" author="rconstruct">
-	<input name="Addition" description="multiple input" multi="+" type="float color point vector normal" type_parent="val" default="1"/>
-	<output name="val" description="sum of all inputs" type="float color point vector normal"/>
+	<input name="A" description="1st input" type="float color point vector normal" default="1"/>
+	<input name="B" description="2nd or subsequent inputs" type="float color point vector normal" multi="+" default="1"/>
+	<output name="val" description="val = A + B" type="float color point vector normal"/>
 	<code>
-	$(val) = $(Addition);
+	$(val) = $(A) + $(B);
 	</code>
-	<usage>All inputs must be of the same type. All connected inputs are added together.</usage>
+	<usage>All inputs must be of the same type. The operation is done in parallel for each component.</usage>
 </shrimp>
