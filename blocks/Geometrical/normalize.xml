@@ -1,5 +1,5 @@
-<shrimp type="function" name="Normalise" description="Normalise a vector" author="rconstruct">
-	<input name="A" description="Input" type="vector normal" default="1"/>
+<shrimp type="function" name="Normalize" description="Normalize a vector" author="rconstruct">
+	<input name="A" description="Input" type="vector normal" type_parent="val" default="1"/>
 	<output name="val" description="val is a vector of unit length" type="vector normal"/>
 	<code>
 	$(val) = normalize( $(A) );

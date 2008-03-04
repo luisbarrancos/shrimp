@@ -1,7 +1,7 @@
 <shrimp type="function" name="FaceForward" description="Flip a vector s direction" author="rconstruct">
-	<input name="N" description="Vector or Normal to flip" type="normal vector" default="normalize(N)"/>
+	<input name="N" description="Vector or Normal to flip" type="normal vector" type_parent="NN" default="normalize(N)"/>
 	<input name="I" description="Vector to face away from" type="vector" default="normalize(I)"/>
-	<input name="Nref" description="Optional reference vector" type="normal vector" default="Ng"/>
+	<input name="Nref" description="Optional reference vector" type="normal vector" type_parent="NN" default="Ng"/>
 	<output name="NN" description="A vector pointing in the direction oposite to I" type="vector normal"/>
 	<code>
 	$(NN) = faceforward( $(N), $(I), $(Nref) );

@@ -1,5 +1,5 @@
 <shrimp type="function" name="Transform" description="Transform to a different coordinate system" author="rconstruct">
-	<input name="p" description="Point, vector or normal to transform" type="point vector normal" default="P"/>
+	<input name="p" description="Point, vector or normal to transform" type="point vector normal" type_parent="pp" default="P"/>
 	<input name="from_space" description="The coordinate system to transform from" type="string" default="&quot;current&quot;"/>
 	<input name="to_space" description="The coordinate system to transform into" type="string" default="&quot;object&quot;"/>
 	<input name="mmat" description="Use this matrix instead of a predefined coordinate system" type="matrix" default="none"/>

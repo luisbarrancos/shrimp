@@ -1,0 +1,19 @@
+<shrimp type="function" name="PointLight" description="Point light shader" author="rconstruct">
+	<input name="inten" description="Light intensity" type="float" default="200"/>
+	<input name="lcolor" description="Light color" type="color" type_parent="Cl" default="color( 1, .93, .81 )"/>
+	<input name="lpos" description="Light source position" type="point" default="point &quot;shader&quot; ( -15, 10, 5 )"/>
+	<input name="decay" description="Light decay, see help" type="float" default="1"/>
+	<input name="shadowmap" description="Shadow map" type="string" default="&quot;&quot;"/>
+	<input name="blur" description="Shadow map blur" type="float" default="0"/>
+	<input name="width" description="Shadow map filter width" type="float" default="1"/>
+	<input name="samples" description="Shadow map samples" type="float" default="1"/>
+	<input name="bias" description="Shadow map bias" type="float" default="-1"/>
+	<input name="filter" description="Shadow map filter" type="string" default="&quot;gaussian&quot;"/>
+	<output name="Cl" description="Light output" type="color"/>
+	<include>lights.h</include>
+	<code>
+		$(Cl) = spointlight( $(lpos), $(inten), $(decay), $(blur), $(width),
+					$(samples), $(bias), $(shadowmap), $(filter), $(lcolor) );
+	</code>
+<usage>Point light shader. Decay can be 1 = linear, 2 = squared.</usage>
+</shrimp>

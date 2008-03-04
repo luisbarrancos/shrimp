@@ -1,0 +1,11 @@
+<shrimp type="function" name="AreaLight" description="Area light shader" author="rconstruct">
+	<input name="inten" description="Light intensity" type="float" default="1"/>
+	<input name="lcolor" description="Light color" type="color" default="color( 1, .93, .81 )"/>
+	<output name="Cl" description="Light output" type="color"/>
+	<code>
+		illuminate( P, N, 1.570796327 ) {
+			$(Cl) = ( $(inten) / (L.L) ) * transmission( P, Ps) * $(lcolor);
+		}
+	</code>
+<usage>Area light shader, with shadows.</usage>
+</shrimp>

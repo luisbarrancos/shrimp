@@ -15,6 +15,6 @@ surface grid(
 	color cvert = filteredpulse( .05, .95, ss, hblur );
 	color chori = filteredpulse( .05, .95, tt, vblur );
 	
-	Ci = cvert * chori;
+	Ci = cvert * chori * diffuse( faceforward( normalize(N), I));
 }
 

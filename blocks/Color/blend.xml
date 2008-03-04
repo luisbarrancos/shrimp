@@ -1,8 +1,8 @@
 <shrimp type="function" name="Blend" description="Performs a linear blend between A and B" author="rconstruct">
-	<input name="alpha" description="The mixing factor" type="color normal vector point" default="0.5"/>
-	<input name="A" description="1st Input" type="float color point vector normal" default="0"/>
-	<input name="B" description="2nd Input" type="float color point vector normal" default="1"/>
-	<output name="out" description="The resulting mix between A and B" type="float color point vector normal"/>
+	<input name="alpha" description="The mixing factor" type="normal vector point color" default="0.5"/>
+	<input name="A" description="1st Input" type="color point vector normal color" type_parent="out" default="0"/>
+	<input name="B" description="2nd Input" type="color point vector normal color" type_parent="out" default="1"/>
+	<output name="out" description="The resulting mix between A and B" type="float point vector color"/>
 	<code>
 		$(out) = ( $(A) * (1 - $(alpha)) + $(B) * $(alpha) );
 	</code>
