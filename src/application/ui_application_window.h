@@ -22,6 +22,7 @@
 #ifndef _ui_application_window_h_
 #define _ui_application_window_h_
 
+#include <fltk/Choice.h>
 #include <fltk/DoubleBufferWindow.h>
 #include <fltk/Group.h>
 #include <fltk/InvisibleBox.h>
@@ -33,8 +34,12 @@
 #include <fltk/ToggleItem.h>
 #include <fltk/Window.h>
 
+#include "../shading/preferences.h"
 #include "../shading/scene.h"
 #include "ui_scene_view.h"
+
+class application_window;
+static application_window* application_pointer = 0;
 
 class application_window : public fltk::Window {
 
@@ -42,6 +47,11 @@ class application_window : public fltk::Window {
 	fltk::Slider m_zoom_slider;
 	fltk::PopupMenu m_block_menu;
 	fltk::Button m_custom_block;
+
+	// renderer list
+	general_options::renderers_t m_renderers;
+	// display list
+	fltk::Choice* m_renderer_display_chooser;
 
 public:
 	application_window();
@@ -80,6 +90,8 @@ private:
 	void on_custom_block();
 	void on_preview();
 
+	void on_renderer_choice (fltk::Widget* W, void* Data);
+
 	static void block_menu_callback(fltk::Widget* o, void* v)
 	{
 		((application_window*)(o->parent()))->block_menu_action(o, v);
@@ -112,6 +124,8 @@ private:
 	static void cb_custom_block(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_custom_block(); }
 	static void cb_preview(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_preview(); }
 
+	static void cb_renderer (fltk::Widget* W, void* Data) { application_pointer->on_renderer_choice (W, Data); }
+
 	static void on_menu_file_options(fltk::Widget*, void*);
 	static void on_menu_file_close(fltk::Widget*, void*);
 	static void on_menu_file_quit(fltk::Widget*, void*);
@@ -122,8 +136,6 @@ private:
 	void save_scene_as();
 
 };
-
-static application_window* application_pointer = 0;
 
 
 #endif // _ui_application_window_h_

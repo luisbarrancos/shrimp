@@ -57,15 +57,6 @@ static fltk::Input* s_pixelsamples_x;
 static fltk::Input* s_pixelsamples_y;
 static fltk::Choice* s_scene;
 
-// all renderers must be referenced here (couldn't make FLTK callback handle them)
-// those codes also serve as renderer identifiers through the -DRENDERER=... option
-static const char _3delight[] = "_3delight";
-static const char air[] = "air";
-static const char aqsis[] = "aqsis";
-static const char entropy[] = "entropy";
-static const char pixie[] = "pixie";
-static const char prman[] = "prman";
-static const char renderdotc[] = "renderdotc";
 
 static std::vector<std::string> s_renderers;
 
@@ -340,6 +331,7 @@ public:
 			compiled_shader_extension = r->second.compiled_shader_extension;
 			renderer_symbol = r->second.renderer_symbol;
 			renderer = r->second.renderer_command;
+			// TODO: handle display list
 		}
 
 		s_compilation->text (shader_compiler.c_str());

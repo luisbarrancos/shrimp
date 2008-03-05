@@ -80,7 +80,7 @@ int main(int argc, char** argv) {
 
 	// create main
 	log() << aspect << "Creating main window" << std::endl;
-	application_pointer = new application_window();
+	application_window* application = new application_window();
 
 	// if a scene name was given as a command-line parameter, try to load it
 	int nargs = 0;
@@ -89,14 +89,14 @@ int main(int argc, char** argv) {
 		log() << aspect << "Trying to load scene from '" << argv[1] << "'" << std::endl;
 
 		++nargs;
-		application_pointer->load_scene (file);
+		application->load_scene (file);
 	}
 
 	// show the window (minus Shrimp's parameters)
 	if (nargs > 0) {
 		argv[nargs] = argv[0];
 	}
-	application_pointer->show (argc - nargs, &argv[nargs]);
+	application->show (argc - nargs, &argv[nargs]);
 
 	if (splash_window) {
 

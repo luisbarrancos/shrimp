@@ -234,13 +234,35 @@ void application_window::on_preview() {
 }
 
 
-application_window::application_window() :// 415 406
+void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
+
+	const std::string renderer_name ((const char*)Data);
+	general_options::renderers_t::const_iterator r = m_renderers.find (renderer_name);
+	if (r == m_renderers.end()) {
+		log() << error << "unknown renderer: '" << renderer_name << "'" << std::endl;
+		return;
+	}
+
+	// update the display chooser according to the current renderer
+	m_renderer_display_chooser->remove_all();
+	m_renderer_display_chooser->begin();
+	for (general_options::displays_t::const_iterator display = r->second.displays.begin(); display != r->second.displays.end(); ++display) {
+		//new fltk::Item (display->c_str(), 0, cb_display, (void*)display->c_str());
+		new fltk::Item (display->c_str());
+	}
+	m_renderer_display_chooser->end();
+}
+
+
+application_window::application_window() :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 700, 550, "Scene", true),
 	m_zoom_slider (80, 525, 400, 19, "Zoom"),
 	m_block_menu (20, 22, 80, 24,"Add block"),
 	m_custom_block (110, 22, 100, 24, "Custom block")
 {
 	log() << aspect << "Application window constructor" << std::endl;
+
+	application_pointer = this;
 
 	// create material structure
 	log() << aspect << "Creating default material" << std::endl;
@@ -364,11 +386,32 @@ application_window::application_window() :// 415 406
 		// renderer chooser
 		general_options prefs;
 		prefs.load();
-		general_options::renderers_t renderers = prefs.get_renderer_list();
+		m_renderers = prefs.get_renderer_list();
 		fltk::Choice* renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
 
+		renderer_chooser->begin();
+		for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i) {
+			if (r_i->first == _3delight)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)_3delight);
+			else if (r_i->first == air)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)air);
+			else if (r_i->first == aqsis)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)aqsis);
+			else if (r_i->first == entropy)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)entropy);
+			else if (r_i->first == pixie)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
+			else if (r_i->first == prman)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
+			else if (r_i->first == renderdotc)
+				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
+			else
+				log() << error << "unknown renderer: " << r_i->second.name << std::endl;
+		}
+		renderer_chooser->end();
+
 		// renderer display chooser
-		fltk::Choice* renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
+		m_renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
 
 		// preview button
 		fltk::Button* preview_button = new fltk::Button (580, 22, 100, 24, "Preview");

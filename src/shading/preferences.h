@@ -30,6 +30,16 @@
 #include <fstream>
 #include <string>
 
+// all renderers must be referenced here, they're used by FLTK's callbacks
+// and serve as renderer identifiers through the -DRENDERER=... option
+static const char _3delight[] = "_3delight";
+static const char air[] = "air";
+static const char aqsis[] = "aqsis";
+static const char entropy[] = "entropy";
+static const char pixie[] = "pixie";
+static const char prman[] = "prman";
+static const char renderdotc[] = "renderdotc";
+
 class general_options
 {
 	const std::string m_preferences_file;
@@ -38,6 +48,7 @@ class general_options
 
 public:
 	// renderer list
+	typedef std::vector<std::string> displays_t;
 	typedef struct renderer_t {
 
 		std::string name;
@@ -45,6 +56,7 @@ public:
 		std::string compiled_shader_extension;
 		std::string renderer_symbol;
 		std::string renderer_command;
+		displays_t displays;
 	};
 	typedef std::map<std::string, renderer_t> renderers_t;
 	renderers_t m_renderers;
@@ -68,8 +80,8 @@ public:
 		return m_rib_scene_dir;
 	}
 
-	bool load()
-	{
+	bool load() {
+
 		// set defaults in case some values are not yet present in the loaded file
 		set_defaults();
 
@@ -337,6 +349,19 @@ public:
 					new_renderer.compiled_shader_extension = c->FirstChild()->ToText()->Value();
 				} else if (element == "renderer_command") {
 					new_renderer.renderer_command = c->FirstChild()->ToText()->Value();
+				} else if (element == "displays") {
+					const std::string list = c->FirstChild()->ToText()->Value();
+					std::istringstream stream (list);
+
+					std::string new_display;
+					stream >> new_display;
+					new_renderer.displays.push_back (new_display);
+					while (!stream.eof()) {
+						stream >> new_display;
+						new_renderer.displays.push_back (new_display);
+					}
+				} else {
+					log() << error << "unknown renderer attribute: " << element << std::endl;
 				}
 			}
 
