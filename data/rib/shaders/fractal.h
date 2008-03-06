@@ -769,7 +769,7 @@ vector vRidged( point p; float t, filtwidth, maxoctaves, lacunarity,
 void
 voronoi_f1_3d(  point P;
 	            float jitter;
-				float dtype; /* 1=euclidian,2=manhattan */
+				float dtype; /* 0=tchebychev,1=manhattan,2=euclidian */
 	            output float f1;
 	            output point pos1;
     )
@@ -793,11 +793,21 @@ voronoi_f1_3d(  point P;
 				dy = abs(ycomp(offset));
 				dz = abs(zcomp(offset));
 				
-				/* Minkowski distance, since with p = 1 = euclidian,
-                 * p = 2 = manhattan, plus higher levels of p */
-                dist = (dtype == 1) ? dx + dy + dz :
-                        pow( pow(dx, dtype) + pow(dy, dtype) +
-                             pow(dz, dtype), 1/dtype);
+				/* dtype = 0 = Tchebychev distanc metric, non 0 = Minkowski
+				 * distance metric, dtype being Minkowski's P parameter, for 
+				 * P = 1 = Euclidian distance metric, P = 2 = Manhattan
+				 * distance metric, and allowing higher orders of P, increasing
+				 * towards Tchebychev results. */
+				if (dtype == 0) {
+					dist = max( dx, dy, dz );
+				}
+				if (dtype == 1) {
+					dist = dx + dy + dz;
+				}			
+				if (dtype >= 2) {
+					dist = pow( pow( dx, dtype) + pow( dy, dtype) +
+								pow( dz, dtype), 1 / dtype);
+				}
                 dist *= dist;
 
 				if (dist < f1 ) {
@@ -814,7 +824,7 @@ voronoi_f1_3d(  point P;
 void
 voronoi_f1f2_3d(    point P;
 		            float jitter;
-                    float dtype; /* 1=euclidian,2=manhattan */
+                    float dtype; /* 0=tchebychev,1=manhattan,2=euclidian */
 		            output float f1;  output point pos1;
 		            output float f2;  output point pos2;
     )
@@ -825,7 +835,7 @@ voronoi_f1f2_3d(    point P;
 	pos1 = pos2 = 0;
     f1 = f2 = 1000;
     uniform float i, j, k;
-    float dx, dy, dz;
+    float dx, dy, dz, dist;
 
     for (i = -1;  i <= 1;  i += 1) {
         for (j = -1;  j <= 1;  j += 1) {
@@ -839,13 +849,23 @@ voronoi_f1f2_3d(    point P;
                 dx = abs(xcomp(offset));
                 dy = abs(ycomp(offset));
                 dz = abs(zcomp(offset));
-
-                /* Minkowski distance, p = 1 = euclidian, 2 = manhattan,
-                 * + higher levels of p */
-                float dist = (dtype == 1) ? dx + dy + dz :
-                        pow( pow(dx, dtype) + pow(dy, dtype) +
-                             pow(dz, dtype), 1/dtype);
-                dist *= dist;
+				
+				/* dtype = 0 = Tchebychev distance metric, non 0 = Minkowski,
+				 * dtype being Minkowski's P parameter, for P = 1 = Euclidian
+				 * distance metric, P = 2 = Manhattan distance metric, and
+				 * allowing higher orders of P, increasing towards Tchebychev
+				 * results */
+				if (dtype == 0) {
+					dist = max( dx, dy, dz );
+				}
+				if (dtype == 1) {
+					dist = dx + dy + dz;
+				}
+				if (dtype >= 2) {
+					dist = pow( pow( dx, dtype) + pow( dy, dtype) +
+							pow( dz, dtype), 1 / dtype);
+				}
+				dist *= dist;
 
                 if (dist < f1) {
                     f2 = f1;  pos2 = pos1;
@@ -864,7 +884,7 @@ voronoi_f1f2_3d(    point P;
 void
 voronoi_f1_2d(  float ss, tt;
 	            float jitter;
-                float dtype; /* 1=euclidian, 2=manhattan */
+                float dtype; /* 0=tchebychev,1=manhattan, 2=euclidian */
 	            output float f1;
 	            output float spos1, tpos1;
     )
@@ -885,12 +905,22 @@ voronoi_f1_2d(  float ss, tt;
         /* absolute delta components */
 	    float dx = abs(spos - ss);
 	    float dy = abs(tpos - tt);
+		float dist;
 
-        /* Minkowski distance, since with p=1=euclidian,
-         * p=2=manhattan, + higher levels of p */
-        float dist = (dtype == 1) ? dx + dy :
-                pow( pow(dx, dtype) + pow(dy, dtype), 1/dtype);
-        dist *= dist;
+		/* dtype = 0 = Tchebychev distance metric, non 0 dtype = Minkowski
+		 * distance metric, dtype being Minkowski's P parameter, for P = 1 =
+		 * Euclidian distanc emetric, P = 2 = Manhattan distance metric, and
+		 * allowing higher orders of P, increasing towards Tchebychev. */
+		if (dtype == 0) {
+			dist = max( dx, dy );
+		}
+		if (dtype == 1) {
+			dist = dx + dy;
+		}
+		if (dtype >= 2) {
+			dist = pow( pow( dx, dtype) + pow( dy, dtype), 1 / dtype);
+		}
+		dist *= dist;
         
 	    if (dist < f1) {
 		f1 = dist;
@@ -905,7 +935,7 @@ voronoi_f1_2d(  float ss, tt;
 void
 voronoi_f1f2_2d(    float ss, tt;
 		            float jitter;
-                    float dtype;
+                    float dtype; /* 0=tchebychev,1=manhattan,2=euclidian*/
 		            output float f1;
 		            output float spos1, tpos1;
 		            output float f2;
@@ -929,11 +959,21 @@ voronoi_f1f2_2d(    float ss, tt;
         /* absolute delta components */
 	    float dx = abs(spos - ss);
 	    float dy = abs(tpos - tt);
-        
-	    /* Minkowski distance, since with p=1=euclidian,
-         * p=2=manhattan, + higher levels of p */
-        float dist = (dtype == 1) ? dx + dy :
-                pow( pow(dx, dtype) + pow(dy, dtype), 1/dtype);
+		float dist;
+
+		/* dtype = 0 = Tchebychev distance metric, non 0 = Minkowski, dtype
+		 * being Minkowski's P parameter, for P = 1 = Euclidian distance
+		 * metric, P = 2 = Manhattan distance metric, and allowing higher
+		 * orders of P, increasing towards Tchebychev results. */
+		if (dtype == 0) {
+			dist = max( dx, dy );
+		}
+		if (dtype == 1) {
+			dist = dx + dy;
+		}
+		if (dtype >= 2) {
+			dist = pow( pow( dx, dtype) + pow( dy, dtype), 1 / dtype);
+		}
         dist *= dist;
 
 	    if (dist < f1) {

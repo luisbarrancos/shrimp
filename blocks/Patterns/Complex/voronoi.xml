@@ -1,7 +1,7 @@
 <shrimp type="function" name="Voronoi" description="Voronoi example" author="rconstruct">
 	<input name="p" description="point to sample Voronoi at" type="point" default="P"/>
-	<input name="jitter" description="Jitter" type="float" default="0.1"/>
-	<input name="dtype" description="Minkowski P parameter, see help" type="float" default="2"/>
+	<input name="jitter" description="Jitter" type="float" default="1"/>
+	<input name="dtype" description="Distance metric, see help" type="float" default="2"/>
     <input name="squiggle" description="Squiggliness" type="float" default="2"/>
     <input name="freq" description="Frequency" type="float" default="10"/>
     <input name="scale" description="Scale" type="float" default="2"/>
@@ -27,7 +27,8 @@
         $(pp) = $(po) / $(scale) + $(squiggle) * vfBm( $(po) / $(scale) *
                         $(freq), $(fwidth), $(octaves), $(lacun), $(gain) );
 
-        voronoi_f1f2_3d( $(pp), $(jitter), $(f1), $(pos1), $(f2), $(pos2) );
+        voronoi_f1f2_3d( $(pp), $(jitter), $(dtype), $(f1), $(pos1),
+									$(f2), $(pos2) );
 
         $(cc) = color cellnoise( vector(10, 0, 0) + $(pos1) );
         $(sfactor) = distance( $(pos1), $(pos2) ) / distance( $(pos1), $(pp) )
@@ -37,5 +38,5 @@
 
         $(val) = $(cc);
 	</code>
-	<usage>Voronoi example shader. Can be constructed with the cell noise and voronoi blocks, as can be seen in an example scene, but we'll provide it in a block form for convenience as well. Uses Minkowski distance metric, so when dtype = 1, distance metric is Euclidian, when dtype = 2, distance metric is Manhattan.</usage> 
+	<usage>Voronoi example shader. Can be constructed with the cell noise and voronoi blocks, as can be seen in an example scene, but we'll provide it in a block form for convenience as well. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski's P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P, as P increases, towards Tchebychev results.</usage> 
 </shrimp>

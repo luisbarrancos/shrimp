@@ -2,7 +2,7 @@
 	<input name="ss" description="s coordinate" type="float" default="s"/>
     <input name="tt" description="t coordinate" type="float" default="t"/>
 	<input name="jitter" description="Jitter" type="float" default="1"/>
-	<input name="dtype" description="Minkowski P parameter, see help" type="float" default="2"/>
+	<input name="dtype" description="Distance metric, see help" type="float" default="2"/>
     <output name="f1" description="feature 1" type="float"/>
     <output name="spos1" description="s position 1" type="float"/>
     <output name="tpos1" description="t position 1" type="float"/>
@@ -14,5 +14,5 @@
     voronoi_f1f2_2d( $(ss), $(tt), $(jitter), $(dtype), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
 	</code>
-	<usage>2D Voronoi cell noise, 2 feature version. Uses Minkowski distance metric, so when dtype = 1, distance metric is Euclidian, when dtype = 2, distance metric = Manhattan.</usage> 
+	<usage>2D Voronoi cell noise, 2 feature version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski's P parameter, with P = 1, as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, the metric tends towards a Tchebychev result.</usage> 
 </shrimp>
