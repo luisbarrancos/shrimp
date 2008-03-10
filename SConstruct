@@ -1,16 +1,24 @@
 # scons configuration file
 
-import os
+import os, platform
 
 opts = Options([os.path.abspath('options.cache'), os.path.abspath('custom.py')])
 opts.Add('fltk_include_path', 'Point to the fltk header files', '')
 opts.Add('fltk_lib_path', 'Point to the fltk library files', '')
 
+
 # OpenGL setup
 env = Environment()
-env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
+
+if platform.system() == 'Linux':
+	env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
+elif platform.system() == 'Darwin':
 # OS X
-#env.Append(CPPPATH = ['/System/Library/Frameworks/OpenGL.framework/Headers', '$fltk_include_path', '/usr/local/include/fltk/compat'])
+	env.Append(CPPPATH = ['/System/Library/Frameworks/OpenGL.framework/Headers', '$fltk_include_path', '/usr/local/include/fltk/compat'])
+else:
+	print "Unknown platform: " + platform.system()
+	Exit(1)
+
 
 conf = Configure(env)
 if not conf.CheckCHeader('gl.h') or not conf.CheckCHeader('glu.h'):
@@ -58,9 +66,11 @@ shrimp_files = Split("""
 """)
 
 
-debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xinerama', 'Xext', 'Xft', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'], CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
-# OS X
-# debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xinerama', 'Xext', 'Xft', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LINKFLAGS = ['-framework', 'Cocoa', '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '/opt/local/lib', '$fltk_lib_path'], CPPPATH = ['/usr/local/include/fltk/compat', '/System/Library/Frameworks/OpenGL.framework/Headers', 'src/application', 'src/miscellaneous', 'src/shading'])
+if platform.system() == 'Linux':
+	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xinerama', 'Xext', 'Xft', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'], CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
+elif platform.system() == 'Darwin':
+	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xinerama', 'Xext', 'Xft', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LINKFLAGS = ['-framework', 'Cocoa', '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '/opt/local/lib', '$fltk_lib_path'], CPPPATH = ['/usr/local/include/fltk/compat', '/System/Library/Frameworks/OpenGL.framework/Headers', 'src/application', 'src/miscellaneous', 'src/shading'])
+
 
 SourceSignatures('timestamp')
 
