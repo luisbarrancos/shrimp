@@ -96,7 +96,8 @@ void scene_view::set_size (const double Size) {
 	if (Size > 0)
 		m_size = Size;
 	else
-		log () << error << "Invalid scene size : " << Size << std::endl;
+		// set minimal size
+		m_size = 0.1;
 }
 
 

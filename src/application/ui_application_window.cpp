@@ -247,10 +247,16 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 	m_renderer_display_chooser->remove_all();
 	m_renderer_display_chooser->begin();
 	for (general_options::displays_t::const_iterator display = r->second.displays.begin(); display != r->second.displays.end(); ++display) {
-		//new fltk::Item (display->c_str(), 0, cb_display, (void*)display->c_str());
-		new fltk::Item (display->c_str());
+		new fltk::Item (display->c_str(), 0, cb_renderer_display, (void*)display->c_str());
 	}
 	m_renderer_display_chooser->end();
+}
+
+
+void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data) {
+
+	const std::string display_name ((const char*)Data);
+log() << error << "Display : " << display_name << std::endl;
 }
 
 
@@ -434,7 +440,7 @@ application_window::application_window() :
 		// zoom slider
 		m_zoom_slider.labelfont (fltk::HELVETICA_BOLD);
 		m_zoom_slider.labelcolor ((fltk::Color)136);
-		m_zoom_slider.minimum (0.1);
+		m_zoom_slider.minimum (0);
 		m_zoom_slider.maximum (5);
 		m_zoom_slider.step (0.02);
 		m_zoom_slider.value (4);
@@ -511,7 +517,7 @@ int application_window::handle (int event) {
 	if (new_zoom != 0) {
 
 		double current_value = m_zoom_slider.value();
-		m_zoom_slider.value(current_value + new_zoom);
+		m_zoom_slider.value (current_value + new_zoom);
 
 		m_scene_view->reset_zoom_change();
 	}

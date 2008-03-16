@@ -71,11 +71,11 @@ private:
 	fltk::ToggleItem* m_menu_snap_to_grid;
 	fltk::ToggleItem* m_menu_overview;
 
-	void on_menu_file_new(fltk::Widget*);
-	void on_menu_file_open(fltk::Widget*);
-	void on_menu_file_save(fltk::Widget*);
-	void on_menu_file_save_as(fltk::Widget*);
-	void on_menu_file_export_shader(fltk::Widget*);
+	void on_menu_file_new (fltk::Widget*);
+	void on_menu_file_open (fltk::Widget*);
+	void on_menu_file_save (fltk::Widget*);
+	void on_menu_file_save_as (fltk::Widget*);
+	void on_menu_file_export_shader (fltk::Widget*);
 
 	void on_menu_shader_properties (fltk::Widget*);
 	void on_menu_code_preview (fltk::Widget*);
@@ -85,31 +85,31 @@ private:
 	void on_menu_view_toggle_grid_snap (fltk::Widget*);
 	void on_menu_view_toggle_overview (fltk::Widget*);
 
-	void on_zoom(fltk::Slider*, void* Data);
-	void on_button_fit_scene(fltk::Widget*);
+	void on_zoom (fltk::Slider*, void* Data);
+	void on_button_fit_scene (fltk::Widget*);
 	void on_custom_block();
 	void on_preview();
 
 	void on_renderer_choice (fltk::Widget* W, void* Data);
+	void on_renderer_display_choice (fltk::Widget* W, void* Data);
 
-	static void block_menu_callback(fltk::Widget* o, void* v)
-	{
-		((application_window*)(o->parent()))->block_menu_action(o, v);
+	static void block_menu_callback(fltk::Widget* o, void* v) {
+		((application_window*)(o->parent()))->block_menu_action (o, v);
 	}
-	void block_menu_action(fltk::Widget* w, void*);
+	void block_menu_action (fltk::Widget* w, void*);
 
 
-	void build_menu(const std::string& name, scene::default_block_list_t& list);
+	void build_menu (const std::string& name, scene::default_block_list_t& list);
 
 	// override the window's handle() function
 	int handle (int event);
 
 	// callback functions
-	static void cb_menu_file_new(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new(W); }
-	static void cb_menu_file_open(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open(W); }
-	static void cb_menu_file_save(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save(W); }
-	static void cb_menu_file_save_as(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as(W); }
-	static void cb_menu_file_export_shader(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_shader(W); }
+	static void cb_menu_file_new (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new(W); }
+	static void cb_menu_file_open (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open(W); }
+	static void cb_menu_file_save (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save(W); }
+	static void cb_menu_file_save_as (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as(W); }
+	static void cb_menu_file_export_shader (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_shader(W); }
 
 	static void cb_menu_shader_properties (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_shader_properties (W); }
 	static void cb_menu_code_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_code_preview (W); }
@@ -119,17 +119,18 @@ private:
 	static void cb_menu_view_toggle_grid_snap (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid_snap (W); }
 	static void cb_menu_view_toggle_overview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_overview (W); }
 
-	static void cb_button_fit_scene(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_button_fit_scene(W); }
-	static void cb_zoom_slider(fltk::Slider* W, void* Data) { ((application_window*)Data)->on_zoom(W, Data); }
-	static void cb_custom_block(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_custom_block(); }
-	static void cb_preview(fltk::Widget* W, void* Data) { ((application_window*)Data)->on_preview(); }
+	static void cb_button_fit_scene (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_button_fit_scene(W); }
+	static void cb_zoom_slider (fltk::Slider* W, void* Data) { ((application_window*)Data)->on_zoom(W, Data); }
+	static void cb_custom_block (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_custom_block(); }
+	static void cb_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_preview(); }
 
 	static void cb_renderer (fltk::Widget* W, void* Data) { application_pointer->on_renderer_choice (W, Data); }
+	static void cb_renderer_display (fltk::Widget* W, void* Data) { application_pointer->on_renderer_display_choice (W, Data); }
 
-	static void on_menu_file_options(fltk::Widget*, void*);
-	static void on_menu_file_close(fltk::Widget*, void*);
-	static void on_menu_file_quit(fltk::Widget*, void*);
-	static void on_menu_help_about(fltk::Widget*, void*);
+	static void on_menu_file_options (fltk::Widget*, void*);
+	static void on_menu_file_close (fltk::Widget*, void*);
+	static void on_menu_file_quit (fltk::Widget*, void*);
+	static void on_menu_help_about (fltk::Widget*, void*);
 
 
 	// internal functions
