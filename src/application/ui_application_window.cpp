@@ -92,7 +92,7 @@ void application_window::on_menu_file_open (fltk::Widget*) {
 
 	// choose shader file
 	const char* file = fltk::file_chooser ("Open Shader", "*.xml", result);
-	if(!file)
+	if (!file)
 		return;
 
 	load_scene (file);
@@ -123,7 +123,7 @@ void application_window::on_menu_shader_properties (fltk::Widget*) {
 
 	std::string name (m_scene->name());
 	std::string description (m_scene->description());
-	if(shader_properties::sp_dialog (name, description)) {
+	if (shader_properties::sp_dialog (name, description)) {
 
 		m_scene->set_name (shader_properties::name->value());
 		m_scene->set_description (shader_properties::description->text());
@@ -161,8 +161,8 @@ void application_window::on_menu_file_export_shader (fltk::Widget*) {
 	log() << error << "unimplemented - File -> Export Shader" << std::endl;
 
 	// Choose export name
-	//const char* file = fltk::file_chooser("Export Shader As", "*.sl", result);
-	//m_scene_view->get_scene()->export_shader_as("test.sl");
+	//const char* file = fltk::file_chooser ("Export Shader As", "*.sl", result);
+	//m_scene_view->get_scene()->export_shader_as ("test.sl");
 }
 
 // File menu : Quit
@@ -199,9 +199,9 @@ void application_window::on_menu_help_about (fltk::Widget*, void*) {
 	o->show();
 }
 
-void application_window::on_zoom(fltk::Slider* o, void*) {
+void application_window::on_zoom (fltk::Slider* o, void*) {
 
-	m_scene_view->set_size((double)o->value());
+	m_scene_view->set_size ((double)o->value());
 	m_scene_view->redraw();
 }
 
@@ -237,6 +237,7 @@ void application_window::on_preview() {
 void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 
 	const std::string renderer_name ((const char*)Data);
+
 	general_options::renderers_t::const_iterator r = m_renderers.find (renderer_name);
 	if (r == m_renderers.end()) {
 		log() << error << "unknown renderer: '" << renderer_name << "'" << std::endl;
@@ -250,6 +251,13 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 		new fltk::Item (display->c_str(), 0, cb_renderer_display, (void*)display->c_str());
 	}
 	m_renderer_display_chooser->end();
+
+	// set first value
+	if (r->second.displays.size() > 0)
+		m_renderer_display_chooser->value (0);
+
+	// refresh
+	redraw();
 }
 
 
@@ -276,8 +284,8 @@ application_window::application_window() :
 	m_scene_file = "";
 
 	// create UI
-	log() << aspect << "Creating UI" << std::endl;
-	user_data((void*)(this));
+	log() << aspect << "creating UI" << std::endl;
+	user_data ((void*)(this));
 	begin();
 
 		// main menu bar
@@ -288,81 +296,81 @@ application_window::application_window() :
 			fltk::ItemGroup* menu_file = new fltk::ItemGroup ("&File");
 			menu_file->begin();
 
-				fltk::Item* menu_file_new = new fltk::Item("New");
-				menu_file_new->shortcut(fltk::CTRL + 'n');
-				menu_file_new->callback((fltk::Callback*)cb_menu_file_new, this);
+				fltk::Item* menu_file_new = new fltk::Item ("New");
+				menu_file_new->shortcut (fltk::CTRL + 'n');
+				menu_file_new->callback ((fltk::Callback*)cb_menu_file_new, this);
 
-				fltk::Item* menu_file_open = new fltk::Item("Open");
-				menu_file_open->shortcut(fltk::CTRL + 'o');
-				menu_file_open->callback((fltk::Callback*)cb_menu_file_open, this);
-
-				new fltk::Divider();
-
-				fltk::Item* menu_file_save = new fltk::Item("Save");
-				menu_file_save->shortcut(fltk::CTRL + 's');
-				menu_file_save->callback((fltk::Callback*)cb_menu_file_save, this);
-
-				fltk::Item* menu_file_save_as = new fltk::Item("Save as...");
-				menu_file_save_as->shortcut(fltk::SHIFT + fltk::CTRL + 's');
-				menu_file_save_as->callback((fltk::Callback*)cb_menu_file_save_as, this);
+				fltk::Item* menu_file_open = new fltk::Item ("Open");
+				menu_file_open->shortcut (fltk::CTRL + 'o');
+				menu_file_open->callback ((fltk::Callback*)cb_menu_file_open, this);
 
 				new fltk::Divider();
 
-				fltk::Item* menu_file_shader_properties = new fltk::Item("Shader Properties");
-				menu_file_shader_properties->shortcut(fltk::CTRL + 'p');
-				menu_file_shader_properties->callback((fltk::Callback*)cb_menu_shader_properties, this);
+				fltk::Item* menu_file_save = new fltk::Item ("Save");
+				menu_file_save->shortcut (fltk::CTRL + 's');
+				menu_file_save->callback ((fltk::Callback*)cb_menu_file_save, this);
 
-				fltk::Item* menu_file_code_preview = new fltk::Item("Code Preview");
-				menu_file_code_preview->shortcut(fltk::CTRL + 'w');
-				menu_file_code_preview->callback((fltk::Callback*)cb_menu_code_preview, this);
-
-				fltk::Item* menu_file_export_shader = new fltk::Item("Export Shader");
-				menu_file_export_shader->shortcut(fltk::CTRL + 'e');
-				menu_file_export_shader->callback((fltk::Callback*)cb_menu_file_export_shader, this);
+				fltk::Item* menu_file_save_as = new fltk::Item ("Save as...");
+				menu_file_save_as->shortcut (fltk::SHIFT + fltk::CTRL + 's');
+				menu_file_save_as->callback ((fltk::Callback*)cb_menu_file_save_as, this);
 
 				new fltk::Divider();
 
-				fltk::Item* menu_file_options = new fltk::Item("Options");
-				menu_file_options->shortcut(fltk::CTRL + 't');
-				menu_file_options->callback((fltk::Callback*)on_menu_file_options, this);
+				fltk::Item* menu_file_shader_properties = new fltk::Item ("Shader Properties");
+				menu_file_shader_properties->shortcut (fltk::CTRL + 'p');
+				menu_file_shader_properties->callback ((fltk::Callback*)cb_menu_shader_properties, this);
+
+				fltk::Item* menu_file_code_preview = new fltk::Item ("Code Preview");
+				menu_file_code_preview->shortcut (fltk::CTRL + 'w');
+				menu_file_code_preview->callback ((fltk::Callback*)cb_menu_code_preview, this);
+
+				fltk::Item* menu_file_export_shader = new fltk::Item ("Export Shader");
+				menu_file_export_shader->shortcut (fltk::CTRL + 'e');
+				menu_file_export_shader->callback ((fltk::Callback*)cb_menu_file_export_shader, this);
 
 				new fltk::Divider();
 
-				fltk::Item* menu_file_quit = new fltk::Item("Quit");
-				menu_file_quit->shortcut(fltk::CTRL + 'q');
-				menu_file_quit->callback((fltk::Callback*)on_menu_file_quit);
+				fltk::Item* menu_file_options = new fltk::Item ("Options");
+				menu_file_options->shortcut (fltk::CTRL + 't');
+				menu_file_options->callback ((fltk::Callback*)on_menu_file_options, this);
+
+				new fltk::Divider();
+
+				fltk::Item* menu_file_quit = new fltk::Item ("Quit");
+				menu_file_quit->shortcut (fltk::CTRL + 'q');
+				menu_file_quit->callback ((fltk::Callback*)on_menu_file_quit);
 
 			menu_file->end();
 
 			// view menu
-			fltk::ItemGroup* menu_view = new fltk::ItemGroup("&View");
+			fltk::ItemGroup* menu_view = new fltk::ItemGroup ("&View");
 			menu_view->begin();
 
-				m_menu_show_grid = new fltk::ToggleItem("Show grid");
-				m_menu_show_grid->shortcut(fltk::CTRL + 'g');
-				m_menu_show_grid->callback((fltk::Callback*)cb_menu_view_toggle_grid, this);
+				m_menu_show_grid = new fltk::ToggleItem ("Show grid");
+				m_menu_show_grid->shortcut (fltk::CTRL + 'g');
+				m_menu_show_grid->callback ((fltk::Callback*)cb_menu_view_toggle_grid, this);
 
-				m_menu_snap_to_grid = new fltk::ToggleItem("Snap blocks");
-				m_menu_snap_to_grid->shortcut(fltk::CTRL + 'a');
-				m_menu_snap_to_grid->callback((fltk::Callback*)cb_menu_view_toggle_grid_snap, this);
+				m_menu_snap_to_grid = new fltk::ToggleItem ("Snap blocks");
+				m_menu_snap_to_grid->shortcut (fltk::CTRL + 'a');
+				m_menu_snap_to_grid->callback ((fltk::Callback*)cb_menu_view_toggle_grid_snap, this);
 
-				m_menu_overview = new fltk::ToggleItem("Overview");
-				m_menu_overview->shortcut(fltk::CTRL + 'v');
-				m_menu_overview->callback((fltk::Callback*)cb_menu_view_toggle_overview, this);
+				m_menu_overview = new fltk::ToggleItem ("Overview");
+				m_menu_overview->shortcut (fltk::CTRL + 'v');
+				m_menu_overview->callback ((fltk::Callback*)cb_menu_view_toggle_overview, this);
 
 			menu_view->end();
 
 		left_menu_bar->end();
 
 		// help menu
-		fltk::MenuBar* right_menu_bar = new fltk::MenuBar(650, 0, 39, 20);
+		fltk::MenuBar* right_menu_bar = new fltk::MenuBar (650, 0, 39, 20);
 		right_menu_bar->begin();
 
-			fltk::ItemGroup* menu_help = new fltk::ItemGroup("&Help");
+			fltk::ItemGroup* menu_help = new fltk::ItemGroup ("&Help");
 			menu_help->begin();
 
-				fltk::Item* menu_help_about = new fltk::Item("About");
-				menu_help_about->callback((fltk::Callback*)on_menu_help_about);
+				fltk::Item* menu_help_about = new fltk::Item ("About");
+				menu_help_about->callback ((fltk::Callback*)on_menu_help_about);
 
 			menu_help->end();
 
@@ -395,22 +403,45 @@ application_window::application_window() :
 		m_renderers = prefs.get_renderer_list();
 		fltk::Choice* renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
 
+		unsigned long renderer_menu_number = 0;
+		unsigned long current_menu_number = 0;
 		renderer_chooser->begin();
-		for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i) {
-			if (r_i->first == _3delight)
+		for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i, ++current_menu_number) {
+			if (r_i->first == _3delight) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)_3delight);
-			else if (r_i->first == air)
+				if (prefs.m_renderer_code == _3delight)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == air) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)air);
-			else if (r_i->first == aqsis)
+				if (prefs.m_renderer_code == air)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == aqsis) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)aqsis);
-			else if (r_i->first == entropy)
+				if (prefs.m_renderer_code == aqsis)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == entropy) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)entropy);
-			else if (r_i->first == pixie)
+				if (prefs.m_renderer_code == entropy)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == pixie) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
-			else if (r_i->first == prman)
+				if (prefs.m_renderer_code == pixie)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == prman) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
-			else if (r_i->first == renderdotc)
+				if (prefs.m_renderer_code == prman)
+					renderer_menu_number = current_menu_number;
+			}
+			else if (r_i->first == renderdotc) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
+				if (prefs.m_renderer_code == renderdotc)
+					renderer_menu_number = current_menu_number;
+			}
 			else
 				log() << error << "unknown renderer: " << r_i->second.name << std::endl;
 		}
@@ -418,6 +449,11 @@ application_window::application_window() :
 
 		// renderer display chooser
 		m_renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
+
+		// set preferences values
+		renderer_chooser->value (renderer_menu_number);
+		on_renderer_choice (this, (void*)prefs.m_renderer_code.c_str());
+
 
 		// preview button
 		fltk::Button* preview_button = new fltk::Button (580, 22, 100, 24, "Preview");
@@ -429,8 +465,8 @@ application_window::application_window() :
 
 			fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 692, 450);
 			frame->box (fltk::DOWN_BOX);
-			frame->color ((fltk::Color)(56));
-			frame->selection_color ((fltk::Color)(69));
+			frame->color ((fltk::Color) (56));
+			frame->selection_color ((fltk::Color) (69));
 
 			m_scene_view = new scene_view (2, 2, 692, 450);
 
@@ -523,7 +559,7 @@ int application_window::handle (int event) {
 	}
 
 	// do overriden function's work
-	return fltk::Window::handle(event);
+	return fltk::Window::handle (event);
 }
 
 
@@ -535,7 +571,7 @@ void application_window::save_scene_as() {
 
 	// choose shader file
 	const char* file = fltk::file_chooser ("Save Shader As", "*.xml", result);
-	if(!file)
+	if (!file)
 		return;
 
 	// automatically add the .xml extension

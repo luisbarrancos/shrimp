@@ -79,6 +79,8 @@ private:
 	typedef std::vector<scene_t> scenes_t;
 	scenes_t m_scenes;
 
+	std::string m_hidden_renderer_code;
+
 public:
 	dialog() {
 
@@ -145,7 +147,7 @@ public:
 
 			const int start = 30;
 
-			s_renderer = new fltk::Choice(90,start, 120,25, "renderer");
+			s_renderer = new fltk::Choice (90,start, 120,25, "renderer");
 			s_renderer->begin();
 				new fltk::Item ("set defaults...");
 
@@ -232,6 +234,9 @@ public:
 			cb->callback (cb_cancel, (void*)this);
 
 		w->end();
+
+		// initialize renderer code
+		m_hidden_renderer_code = m_renderer_code;
 	}
 
 	~dialog() {
@@ -275,6 +280,7 @@ public:
 	void on_ok (fltk::Widget* W) {
 
 		// save values
+		m_renderer_code = m_hidden_renderer_code;
 		m_shader_compiler = trim (s_compilation->value());
 		m_compiled_shader_extension = trim (s_shader_extension->value());
 		m_renderer_symbol = trim (s_renderer_symbol->value());
@@ -324,7 +330,8 @@ public:
 		std::string renderer ("");
 		std::string renderer_display ("");
 
-		renderers_t::const_iterator r = m_renderers.find (std::string ((const char*)Data));
+		m_hidden_renderer_code = std::string ((const char*)Data);
+		renderers_t::const_iterator r = m_renderers.find (m_hidden_renderer_code);
 		if (r != m_renderers.end()) {
 
 			shader_compiler = r->second.shader_compiler;

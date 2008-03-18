@@ -101,7 +101,18 @@ public:
 			for (TiXmlNode* c = xml_prefs.FirstChild()->FirstChild(); c; c = c->NextSibling()) {
 
 				const std::string element(c->Value());
-				if (element == "compilation_command") {
+				if (element == "renderer") {
+
+					for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
+
+						const std::string name (a->Name());
+						if (name == "code") {
+
+							m_renderer_code = trim (a->Value());
+						}
+					}
+				}
+				else if (element == "compilation_command") {
 
 					for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
 
@@ -189,6 +200,10 @@ public:
 	bool save() {
 
 		xml::element prefs ("shrimp_prefs");
+
+		xml::element renderer ("renderer");
+		renderer.push_attribute ("code", m_renderer_code);
+		prefs.push_child (renderer);
 
 		xml::element compilation ("compilation_command");
 		compilation.push_attribute ("compiled_extension", m_compiled_shader_extension);
@@ -386,6 +401,7 @@ private:
 public:
 	bool m_splash_screen;
 
+	std::string m_renderer_code;
 	std::string m_shader_compiler;
 	std::string m_compiled_shader_extension;
 	std::string m_renderer_symbol;
