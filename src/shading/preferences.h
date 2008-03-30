@@ -389,6 +389,32 @@ public:
 		return m_renderers;
 	}
 
+	void set_renderer (const std::string& RendererCode) {
+
+		std::string shader_compiler ("");
+		std::string compiled_shader_extension ("");
+		std::string renderer_symbol ("");
+		std::string renderer ("");
+
+		renderers_t::const_iterator r = m_renderers.find (RendererCode);
+		if (r == m_renderers.end()) {
+
+			log() << error << "unknown renderer code: " << RendererCode << std::endl;
+			return;
+		}
+
+		m_renderer_code = RendererCode;
+		m_shader_compiler = r->second.shader_compiler;
+		m_compiled_shader_extension = r->second.compiled_shader_extension;
+		m_renderer_symbol = r->second.renderer_symbol;
+		m_renderer = r->second.renderer_command;
+	}
+
+	void set_display (const std::string& RendererDisplay) {
+
+		m_renderer_display = RendererDisplay;
+	}
+
 private:
 	const std::string preferences_file() {
 

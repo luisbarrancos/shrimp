@@ -244,17 +244,36 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 		return;
 	}
 
+	// load the preferences and the display name
+	general_options prefs;
+	prefs.load();
+	const std::string display_name = prefs.m_renderer_display;
+	unsigned long display_number = 10000;
+
 	// update the display chooser according to the current renderer
 	m_renderer_display_chooser->remove_all();
 	m_renderer_display_chooser->begin();
-	for (general_options::displays_t::const_iterator display = r->second.displays.begin(); display != r->second.displays.end(); ++display) {
-		new fltk::Item (display->c_str(), 0, cb_renderer_display, (void*)display->c_str());
+	unsigned long current_display_number = 0;
+	for (general_options::displays_t::const_iterator current_display = r->second.displays.begin(); current_display != r->second.displays.end(); ++current_display, ++current_display_number) {
+		new fltk::Item (current_display->c_str(), 0, cb_renderer_display, (void*)current_display->c_str());
+
+		if (*current_display == display_name) {
+			display_number = current_display_number;
+		}
 	}
 	m_renderer_display_chooser->end();
 
 	// set first value
-	if (r->second.displays.size() > 0)
-		m_renderer_display_chooser->value (0);
+	if (r->second.displays.size() > 0) {
+		if (display_number == 10000)
+			m_renderer_display_chooser->value (0);
+		else
+			m_renderer_display_chooser->value (display_number);
+	}
+
+	// save the renderer parameters
+	prefs.set_renderer (renderer_name);
+	prefs.save();
 
 	// refresh
 	redraw();
@@ -264,7 +283,12 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data) {
 
 	const std::string display_name ((const char*)Data);
-log() << error << "Display : " << display_name << std::endl;
+
+	// save the display value
+	general_options prefs;
+	prefs.load();
+	prefs.set_display (display_name);
+	prefs.save();
 }
 
 
