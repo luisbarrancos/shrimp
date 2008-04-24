@@ -524,7 +524,8 @@ color schlickspec(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Cook-Torrance specular microfacet BRDF //////////////////////////////////////
+// Cook-Torrance specular term, with Beckmann microfacet distribution //////////
+// function. ///////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // microfacet distribution function, Beckmann distribution
@@ -535,8 +536,7 @@ float beckmanndistro(
         )
 {
     float ndoth = Nf.Hv;
-    float beta = acos( ndoth );
-    float tanbeta = tan( beta );
+	float tanbeta = sqrt( max( 0.0, 1 - (ndoth*ndoth))) / ndoth;
     float tanbeta_over_m = tanbeta / roughness;
 
     float out = exp( -( tanbeta_over_m * tanbeta_over_m ) );
@@ -593,6 +593,62 @@ color cooktorrance(
     cook /= Vf.Nf;
     cook /= PI;
     return cook;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Cook-Torrance BRDF, with Heidrich-Seidel anisotropic microfacet /////////////
+// microfacet distribution function. ///////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+float heidrich(
+				normal Nf;
+				vector Hv, Vf, Ln, dir;
+				float roughness;
+		)
+{
+	/* Heidrich-Seidel distribution, anisotropic, needs a fiber direction and
+	 * it's meant to be used with a isotropic specular term such as Phong for
+	 * instance, to give correct specular highlights. */
+	
+	vector xdir = normalize( Nf ^ dir );
+	float ldott = Ln.xdir;
+	float vdott = Vf.xdir;
+	float sinalpha = sqrt( max( 0.0, 1.0 - (ldott * ldott) ) );
+	float sinbeta = sqrt( max( 0.0, 1.0 - (vdott * vdott) ) );
+	return pow( sinalpha * sinbeta - (ldott * ldott), roughness);
+}
+
+color
+anisocooktorrance(
+					normal Nf;
+					vector In, dir;
+					float ior, roughness, exponent;
+		)
+{
+	vector Vf = -normalize(In);
+	color cook = 0;
+	
+	extern point P;
+	illuminance( P, Nf, 1.570796327)
+	{
+		uniform float nonspec = 0;
+		lightsource("__nonspecular", nonspec);
+		if (nonspec < 1) {
+			extern vector L;
+			extern color Cl;
+			vector Ln = normalize(L);
+			vector Hn = normalize(Ln + Vf);
+
+			float D = heidrich( Nf, Hn, Vf, Ln, dir, roughness);
+			float G = geoattenuation( Nf, Hn, Ln, Vf );
+			float F = schlickfresnel( Nf, Vf, ior);
+
+			cook += Cl * (1 - nonspec) * (D * G * F);
+		}
+	}
+	cook /= Vf.Nf;
+	cook /= PI;
+	return cook;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
