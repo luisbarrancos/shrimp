@@ -622,7 +622,7 @@ color
 anisocooktorrance(
 					normal Nf;
 					vector In, dir;
-					float ior, roughness, exponent;
+					float ior, roughness;
 		)
 {
 	vector Vf = -normalize(In);
@@ -639,7 +639,7 @@ anisocooktorrance(
 			vector Ln = normalize(L);
 			vector Hn = normalize(Ln + Vf);
 
-			float D = heidrich( Nf, Hn, Vf, Ln, dir, roughness);
+			float D = heidrich( Nf, Hn, Vf, Ln, dir, 1/roughness);
 			float G = geoattenuation( Nf, Hn, Ln, Vf );
 			float F = schlickfresnel( Nf, Vf, ior);
 

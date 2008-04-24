@@ -4,7 +4,7 @@
     <input name="Ks" description="Specular coefficient" type="float" default="1"/>
     <input name="specularcolor" description="Specular color" type="color" default="1.0"/>
     <input name="model" description="BRDF model" type="float" default="2"/>
-    <input name="colormatrix" description="Color matrix metal/skin" type="color" default="2"/>
+    <input name="colormatrix" description="Color matrix metal/skin" type="float" default="2"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
     <input name="dir" description="Surface direction tangent" type="vector" default="dPdu"/>

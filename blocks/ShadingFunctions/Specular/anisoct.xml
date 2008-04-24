@@ -1,7 +1,6 @@
 <shrimp name="AnisoCTorrance" type="function" description="Cook-Torrance, with Heidrich-Seidel distribution" author="rconstruct">
     <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
-    <input name="roughness" description="The anisotropic roughness" type="float" default="0.3"/>
-	<input name="exponent" description="The specular exponent" type="float" default="55"/>
+    <input name="roughness" description="The anisotropic roughness" type="float" default="0.7"/>
     <input name="ior" description="Index of refraction" type="float" default="4"/>
     <input name="Cspec" description="Specular color" type="color" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
@@ -12,7 +11,7 @@
 	<code>
 
         $(Ci) = $(Ks) * $(Cspec) * anisocooktorrance( $(N), $(I), $(dir),
-							$(ior), $(roughness), (exponent) );
+							$(ior), $(roughness) );
 	</code>
     <usage>Cook-Torrance shading model, with Heidrich-Seidel microfacet distribution function, meant to be coupled with an isotropic specular term, such as Phong for instance. Specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.</usage>
 </shrimp>
