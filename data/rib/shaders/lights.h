@@ -130,43 +130,6 @@ slideprojector(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Environment light shader, from The RenderMan Repository /////////////////////
-// http://www.renderman.org ////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
-/* hdri2, slightly tweaked to fit shrimp's structure and needs */
-
-color
-hdri2enviro(
-				string envname, envspace;
-				float envblur, envsamples;
-				uniform string shadowname, shadowfilter;
-				float shadowblur, shadowsamples, shadowwidth, shadowbias;
-		)
-{
-	extern point P, Ps;
-
-	vector Lenv = vtransform( envspace, P - Ps);
-	
-	color C = 0;
-	illuminate( P ) {
-		if (envname != "") {
-			C = environment( envname, Lenv, "blur", envblur, "samples",
-					envsamples);
-		} else {
-			C = 0;
-		}
-
-		if (shadowname != "") {
-			C *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
-								"blur", shadowblur, "width", shadowwidth,
-								"filter", shadowfilter, "bias", shadowbias);
-		}
-	}
-	return C;
-}
-
-////////////////////////////////////////////////////////////////////////////////
 // Distant light shader, with shadows //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
