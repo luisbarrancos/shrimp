@@ -378,9 +378,11 @@ application_window::application_window() :
 				m_menu_snap_to_grid->shortcut (fltk::CTRL + 'a');
 				m_menu_snap_to_grid->callback ((fltk::Callback*)cb_menu_view_toggle_grid_snap, this);
 
+/*
 				m_menu_overview = new fltk::ToggleItem ("Overview");
 				m_menu_overview->shortcut (fltk::CTRL + 'v');
 				m_menu_overview->callback ((fltk::Callback*)cb_menu_view_toggle_overview, this);
+*/
 
 			menu_view->end();
 
