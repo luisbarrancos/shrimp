@@ -33,6 +33,8 @@
 #include <fltk/TextEditor.h>
 #include <fltk/Window.h>
 
+#include <fltk/ask.h>
+
 #include <string>
 
 namespace add_input
@@ -40,13 +42,10 @@ namespace add_input
 
 static fltk::Input* s_name = 0;
 static fltk::Choice* s_type = 0;
+static fltk::Choice* s_storage = 0;
 static fltk::Input* s_default_value = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
 static fltk::TextEditor* s_description = 0;
-
-typedef std::string type_t;
-typedef std::vector<type_t> types_t;
-static types_t s_types;
 
 // trick for FLTK's callback
 class dialog;
@@ -58,25 +57,44 @@ private:
 	fltk::Window* w;
 	shader_block* m_block;
 
+	// make sure the list isn't destroyed before the dialog closes
+	types_t m_types;
+	types_t m_storage_types;
+
 public:
 	dialog() {
 
 		// build type array
-		s_types = get_property_types();
+		m_types = get_property_types();
 
 		// build dialog window
 		w = new fltk::Window (400, 300, "Add input");
 		w->begin();
 
+			// name
 			s_name = new fltk::Input (90,10, 250,23, "Name");
 			w->add (s_name);
 			s_name->tooltip ("Input name");
 
-			s_type = new fltk::Choice (90,40, 120,25, "Type");
-			s_type->begin();
-				for (types_t::const_iterator t = s_types.begin(); t != s_types.end(); ++t) {
+			// storage
+			s_storage = new fltk::Choice (90,40, 90,23, "Type");
+			s_storage->begin();
+				m_storage_types = get_property_storage_types();
+				for (types_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i) {
 
-					new fltk::Item (t->c_str());
+					new fltk::Item (st_i->c_str());
+				}
+			s_storage->end();
+			w->add (s_storage);
+			s_storage->tooltip ("Input variable storage type");
+
+			// type
+			s_type = new fltk::Choice (180,40, 120,23, "");
+			s_type->begin();
+				m_types = get_property_types();
+				for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i) {
+
+					new fltk::Item (t_i->c_str());
 				}
 			s_type->end();
 			w->add (s_type);
@@ -132,7 +150,8 @@ public:
 
 		// get user values
 		const std::string name = s_name->value();
-		const std::string type = s_types[s_type->value()];
+		const std::string type = m_types[s_type->value()];
+		const std::string storage = m_storage_types[s_storage->value()];
 		const std::string default_value = s_default_value->value();
 		const std::string description = s_description->text();
 		const bool shader_parameter = s_shader_parameter->value();
@@ -143,10 +162,13 @@ public:
 		// check that the default value matches the input type
 		// TODO
 
-		//if tests OK...
-		{
+		if (name.empty()) {
+
+			// don't allow empty names
+			fltk::alert ("Input name is empty!");
+		} else {
 			// create the input
-			m_block->add_input (name, type, description, default_value, "", shader_parameter);
+			m_block->add_input (name, storage + ' ' + type, description, default_value, "", shader_parameter);
 
 			// close the dialog
 			W->window()->make_exec_return(false);

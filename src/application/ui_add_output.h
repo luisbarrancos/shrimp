@@ -43,10 +43,6 @@ static fltk::Choice* s_type;
 static fltk::CheckButton* s_shader_output;
 static fltk::TextEditor* s_description;
 
-typedef std::string type_t;
-typedef std::vector<type_t> types_t;
-static types_t s_types;
-
 // trick for FLTK's callback
 class dialog;
 dialog* dialog_instance;
@@ -57,11 +53,14 @@ private:
 	fltk::Window* w;
 	shader_block* m_block;
 
+	// make sure the list isn't destroyed before the dialog closes
+	types_t m_types;
+
 public:
 	dialog() {
 
 		// build type array
-		s_types = get_property_types();
+		m_types = get_property_types();
 
 		// build dialog window
 		w = new fltk::Window (400, 300, "Add output");
@@ -73,7 +72,7 @@ public:
 
 			s_type = new fltk::Choice (90,40, 120,25, "Type");
 			s_type->begin();
-				for (types_t::const_iterator t = s_types.begin(); t != s_types.end(); ++t) {
+				for (types_t::const_iterator t = m_types.begin(); t != m_types.end(); ++t) {
 
 					new fltk::Item (t->c_str());
 				}
@@ -124,15 +123,18 @@ public:
 
 		// get user values
 		const std::string name = s_name->value();
-		const std::string type = s_types[s_type->value()];
+		const std::string type = m_types[s_type->value()];
 		const bool shader_output = s_shader_output->value();
 		const std::string description = s_description->text();
 
 		// check that the name isn't already used in this block
 		// TODO
 
-		//if tests OK...
-		{
+		if (name.empty()) {
+
+			// don't allow empty names
+			fltk::alert ("Output name is empty!");
+		} else {
 			// create the output
 			m_block->add_output (name, type, description, shader_output);
 
