@@ -778,7 +778,7 @@ voronoi_f1_3d(  point P;
 			    floor(zcomp(P))+0.5);
     f1 = 1000;
     uniform float i, j, k;
-	float dx, dy, dz, dist;
+	float dx, dy, dz, dist = 0;
 
     for (i = -1;  i <= 1;  i += 1) {
         for (j = -1;  j <= 1;  j += 1) {
@@ -835,7 +835,7 @@ voronoi_f1f2_3d(    point P;
 	pos1 = pos2 = 0;
     f1 = f2 = 1000;
     uniform float i, j, k;
-    float dx, dy, dz, dist;
+    float dx, dy, dz, dist = 0;
 
     for (i = -1;  i <= 1;  i += 1) {
         for (j = -1;  j <= 1;  j += 1) {
@@ -905,11 +905,11 @@ voronoi_f1_2d(  float ss, tt;
         /* absolute delta components */
 	    float dx = abs(spos - ss);
 	    float dy = abs(tpos - tt);
-		float dist;
+		float dist = 0;
 
 		/* dtype = 0 = Tchebychev distance metric, non 0 dtype = Minkowski
 		 * distance metric, dtype being Minkowski's P parameter, for P = 1 =
-		 * Euclidian distanc emetric, P = 2 = Manhattan distance metric, and
+		 * Euclidian distance metric, P = 2 = Manhattan distance metric, and
 		 * allowing higher orders of P, increasing towards Tchebychev. */
 		if (dtype == 0) {
 			dist = max( dx, dy );
@@ -959,7 +959,7 @@ voronoi_f1f2_2d(    float ss, tt;
         /* absolute delta components */
 	    float dx = abs(spos - ss);
 	    float dy = abs(tpos - tt);
-		float dist;
+		float dist = 0;
 
 		/* dtype = 0 = Tchebychev distance metric, non 0 = Minkowski, dtype
 		 * being Minkowski's P parameter, for P = 1 = Euclidian distance
