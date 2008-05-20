@@ -309,7 +309,7 @@ application_window::application_window() :
 
 	// create UI
 	log() << aspect << "creating UI" << std::endl;
-	user_data ((void*)(this));
+
 	begin();
 
 		// main menu bar
@@ -403,6 +403,7 @@ application_window::application_window() :
 		right_menu_bar->end();
 
 		// block menu
+		m_block_menu.tooltip ("Add a predefined block to the scene");
 		m_block_menu.callback ((fltk::Callback*)block_menu_callback);
 		m_block_menu.begin();
 
@@ -421,6 +422,7 @@ application_window::application_window() :
 		m_block_menu.end();
 
 		// custom block button
+		m_custom_block.tooltip ("Create a brand new block");
 		m_custom_block.callback ((fltk::Callback*)cb_custom_block, this);
 
 		// renderer chooser
@@ -428,6 +430,7 @@ application_window::application_window() :
 		prefs.load();
 		m_renderers = prefs.get_renderer_list();
 		fltk::Choice* renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
+		renderer_chooser->tooltip ("Choose an installed RenderMan engine");
 
 		unsigned long renderer_menu_number = 0;
 		unsigned long current_menu_number = 0;
@@ -473,8 +476,9 @@ application_window::application_window() :
 		}
 		renderer_chooser->end();
 
-		// renderer display chooser
+		// display chooser
 		m_renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
+		m_renderer_display_chooser->tooltip ("Select one of the renderer's displays");
 
 		// set preferences values
 		renderer_chooser->value (renderer_menu_number);
@@ -484,6 +488,7 @@ application_window::application_window() :
 		// preview button
 		fltk::Button* preview_button = new fltk::Button (580, 22, 100, 24, "Preview");
 		preview_button->callback ((fltk::Callback*)cb_preview, this);
+		preview_button->tooltip ("Click to preview the shader using selected renderer and display");
 
 		// OpenGL view
 		fltk::Group* main_view = new fltk::Group (2, 48, 692, 450);
@@ -509,12 +514,16 @@ application_window::application_window() :
 		m_zoom_slider.callback ((fltk::Callback*)cb_zoom_slider, this);
 		m_zoom_slider.align (fltk::ALIGN_LEFT);
 		m_zoom_slider.type (fltk::Slider::TICK_ABOVE);
+		m_zoom_slider.tooltip ("Drag to zoom in or out");
 
 		// fit scene button
 		fltk::Button* fit_button = new fltk::Button (490, 520, 100, 24, "Fit scene");
 		fit_button->callback ((fltk::Callback*)cb_button_fit_scene, this);
+		fit_button->tooltip ("Click to fit the block scene to the current view");
 
 	end();
+
+	// additional tooltips
 
 	// setup view
 	log() << aspect << "Setting default shader" << std::endl;
