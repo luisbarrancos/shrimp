@@ -81,6 +81,9 @@ public:
 	// show a preview of current scene
 	void show_preview (const std::string& TempDir);
 
+	// export scene (RIB file and shaders)
+	void export_scene (const std::string& Directory);
+
 	// the type of root block (constant: RIB)
 	const std::string root_type;
 

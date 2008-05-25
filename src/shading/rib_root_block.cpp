@@ -151,7 +151,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			// make sure there's something to build
 			if (!Ci_parent && !Oi_parent) {
 
-				log() << error << "there's no surface block connected to the root block." << std::endl;
+				log() << info << "there's no surface block connected to the root block." << std::endl;
 				return "";
 			}
 
@@ -172,7 +172,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			// make sure there's something to build
 			if (!N_parent && !P_parent) {
 
-				log() << error << "there's no displacement block connected to the root block." << std::endl;
+				log() << info << "there's no displacement block connected to the root block." << std::endl;
 				return "";
 			}
 
@@ -193,7 +193,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			// make sure there's something to build
 			if (!Cl_parent && !Ol_parent) {
 
-				log() << error << "there's no light block connected to the root block." << std::endl;
+				log() << info << "there's no light block connected to the root block." << std::endl;
 				return "";
 			}
 
@@ -214,7 +214,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			// make sure there's something to build
 			if (!Cv_parent && !Ov_parent) {
 
-				log() << error << "there's no atmosphere block connected to the root block." << std::endl;
+				log() << info << "there's no atmosphere block connected to the root block." << std::endl;
 				return "";
 			}
 
@@ -838,6 +838,50 @@ void rib_root_block::show_preview (const std::string& TempDir) {
 		}
 	}
 */
+}
+
+
+void rib_root_block::export_scene (const std::string& Directory) {
+
+	// copy default light shaders
+	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
+	//std::string light1_compilation = shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path);
+	//std::string light2_compilation = shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path);
+
+	// build RenderMan shaders
+	std::string surface_shader ("");
+	std::string displacement_shader ("");
+	std::string light_shader ("");
+	std::string atmosphere_shader ("");
+
+	if (has_surface_network()) {
+
+		surface_shader = "preview_surface";
+		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
+	}
+
+	if (has_displacement_network()) {
+
+		displacement_shader = "preview_displacement";
+		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
+	}
+
+	if (has_light_network()) {
+
+		light_shader = "preview_light";
+		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
+	}
+
+	if (has_atmosphere_network()) {
+
+		atmosphere_shader = "preview_atmosphere";
+		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
+	}
+
+	// output scene
+	std::string rib_preview = Directory + '/' + "preview.rib";
+
+	write_RIB (rib_preview, Directory, surface_shader, displacement_shader, light_shader, atmosphere_shader);
 }
 
 

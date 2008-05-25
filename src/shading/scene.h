@@ -179,6 +179,7 @@ public:
 
 	std::string get_shader_code();
 	void show_preview (const std::string& TempDir);
+	void export_scene (const std::string& Directory);
 
 	//////////// Misc
 

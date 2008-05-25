@@ -154,15 +154,19 @@ void application_window::on_menu_file_options (fltk::Widget*, void*) {
 }
 
 
-// File menu : Export Shader...
-void application_window::on_menu_file_export_shader (fltk::Widget*) {
+// File menu : Export Scene...
+void application_window::on_menu_file_export_scene (fltk::Widget*) {
 
-// TODO
-	log() << error << "unimplemented - File -> Export Shader" << std::endl;
+	// choose directory
+	char result[2048];
+	fltk::filename_absolute (result, 2048, ".");
+	const char* directory = fltk::dir_chooser ("Export Scene To", result);
+	if (!directory)
+		return;
 
-	// Choose export name
-	//const char* file = fltk::file_chooser ("Export Shader As", "*.sl", result);
-	//m_scene_view->get_scene()->export_shader_as ("test.sl");
+	// export scene
+	log() << aspect << "exporting scene to : " << directory << std::endl;
+	m_scene_view->get_scene()->export_scene (directory);
 }
 
 // File menu : Quit
@@ -348,9 +352,9 @@ application_window::application_window() :
 				menu_file_code_preview->shortcut (fltk::CTRL + 'w');
 				menu_file_code_preview->callback ((fltk::Callback*)cb_menu_code_preview, this);
 
-				fltk::Item* menu_file_export_shader = new fltk::Item ("Export Shader");
-				menu_file_export_shader->shortcut (fltk::CTRL + 'e');
-				menu_file_export_shader->callback ((fltk::Callback*)cb_menu_file_export_shader, this);
+				fltk::Item* menu_file_export_scene = new fltk::Item ("Export Scene");
+				menu_file_export_scene->shortcut (fltk::CTRL + 'e');
+				menu_file_export_scene->callback ((fltk::Callback*)cb_menu_file_export_scene, this);
 
 				new fltk::Divider();
 

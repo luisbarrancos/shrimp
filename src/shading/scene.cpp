@@ -246,6 +246,15 @@ void scene::show_preview (const std::string& TempDir) {
 }
 
 
+void scene::export_scene (const std::string& Directory) {
+
+	if (rib_root_block* rib_block = dynamic_cast<rib_root_block*>(m_rib_root_block)) {
+		rib_block->export_scene (Directory);
+	}
+
+}
+
+
 void scene::bounding_box (double& Left, double& Right, double& Bottom, double& Top) {
 
 	if (m_blocks.empty())

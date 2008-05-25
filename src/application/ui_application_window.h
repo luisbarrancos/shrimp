@@ -75,7 +75,7 @@ private:
 	void on_menu_file_open (fltk::Widget*);
 	void on_menu_file_save (fltk::Widget*);
 	void on_menu_file_save_as (fltk::Widget*);
-	void on_menu_file_export_shader (fltk::Widget*);
+	void on_menu_file_export_scene (fltk::Widget*);
 
 	void on_menu_shader_properties (fltk::Widget*);
 	void on_menu_code_preview (fltk::Widget*);
@@ -105,11 +105,11 @@ private:
 	int handle (int event);
 
 	// callback functions
-	static void cb_menu_file_new (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new(W); }
-	static void cb_menu_file_open (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open(W); }
-	static void cb_menu_file_save (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save(W); }
-	static void cb_menu_file_save_as (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as(W); }
-	static void cb_menu_file_export_shader (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_shader(W); }
+	static void cb_menu_file_new (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new (W); }
+	static void cb_menu_file_open (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open (W); }
+	static void cb_menu_file_save (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save (W); }
+	static void cb_menu_file_save_as (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as (W); }
+	static void cb_menu_file_export_scene (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_scene (W); }
 
 	static void cb_menu_shader_properties (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_shader_properties (W); }
 	static void cb_menu_code_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_code_preview (W); }
