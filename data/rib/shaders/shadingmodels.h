@@ -621,7 +621,7 @@ cooktorrance(
 			if (geomodel == 0) {
 				G = torrance_sparrow( costheta, cosalpha, cospsi, cospsi2 );
 			} else if (geomodel == 1) {
-				G = smith( cospsi, roughness );
+				G = smith( cospsi, costheta, roughness );
 			} else {
 				/* requires erfc()/erfcf() shadeop */
 				G = he_torrance( costheta, cospsi, roughness );
