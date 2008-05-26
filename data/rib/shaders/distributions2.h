@@ -78,12 +78,16 @@ torrance_sparrow(
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Smith geometric selfshadowing/masking */
+/* Product of 2 attenuation terms, between incident vector and microstructure
+ * normal, and viewer and microstructure normal. */
 
 float smith(
-				float cospsi, roughness;
+				float cospsi, costheta, roughness;
 				)
 {
-	return cospsi / (roughness + (1 - roughness) * cospsi);
+	float g1 = cospsi / (roughness + (1 - roughness) * cospsi);
+	float g2 = costheta / (roughness + (1 - roughness) * costheta);
+	return g1 * g2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
