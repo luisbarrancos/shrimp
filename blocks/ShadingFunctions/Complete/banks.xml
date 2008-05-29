@@ -1,0 +1,21 @@
+<shrimp name="Banks" type="function" description="Banks anisotropic model" author="rconstruct">
+	<input name="cdiff" description="Surface color" type="color" default="0.5"/>
+	<input name="cspec" description="Specular color" type="color" default="1"/>
+	<input name="Ka" description="Ambient light coefficient" type="float" default="0"/>
+	<input name="Kd" description="Diffuse light coefficient" type="float" default=".5"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
+    <input name="roughness" description="Gooch cool color factor" type="float" default="0.25"/>
+	<input name="adir" description="Anisotropy direction" type="vector" default="dPdu"/>
+	<input name="opac" description="Surface opacity" type="color" default="Os"/>
+    <input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
+    <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
+    <output name="Ci" description="Shaded color" type="color"/>
+	<output name="Oi" description="Shaded opacity" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+		$(Oi) = Os;
+		$(Ci) = $(Oi) * ( $(cdiff) * $(Ka) * ambient() + banksaniso( $(cdiff),
+				$(cspec), $(Kd), $(Ks), $(roughness), $(NN), $(IN), $(adir) ));
+	</code>
+    <usage>David C. Banks fast anisotropic model.</usage>
+</shrimp>
