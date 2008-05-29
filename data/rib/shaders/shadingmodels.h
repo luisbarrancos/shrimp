@@ -2198,7 +2198,8 @@ rtglass(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// David C. Banks fast anisotropic model. //////////////////////////////////////
+// David C. Banks fast anisotropic model, from: ////////////////////////////////
+// "Illumination in Diverse Codimensions". /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 color
@@ -2242,3 +2243,109 @@ banksaniso(
 	return C;
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Paul S.Strauss empirical BRDF, from :  //////////////////////////////////////
+// "A Realistic Lighting Model for Computer Animators" /////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* Model constants */
+#define KF	1.12	/* Fresnel adjustment constant */
+#define KG	1.01	/* Geometric attenuation adjustment constant */
+#define	KJ	0.10	/* Specular reflectivity adjustment constant */
+
+/* Surface white color */
+#define CWHITE	color( 1, 1, 1)
+
+/* Strauss's fresnel approximation (expects angles in radians, not cosine
+ * of angles, which are then divided by PI/2 to fit the expected parameter
+ * range [0,1], and the same for the geometric attenuation approximation. */
+float straussfresnel( float x; )
+{
+	float f1 = 4 * SQR(KF-1) * x * (x-PI*KF);
+	float f2 = (2*KF-1) * SQR(2*x-PI*KF);
+	return -(f1 / f2);
+}
+
+/* Strauss's geometric attenuation approximation */
+float straussgeoatten( float x; )
+{
+	float g1 = SQR(KG) * (2*x-PI) * (2*x-2*PI*KG+PI);
+	float g2 = (2*KG-1) * SQR(2*x-PI*KG);
+	return g1 / g2;
+}
+
+color strauss(
+				color Cdiff;
+				/* smoothness [0,1] = perfect diffuse/specular
+				 * metalness  [0,1] = perfect nonmetal/metal */
+				float smoothness, metalness;
+				float transparency;
+				normal Nn; vector In; /* normalized normal/viewer */
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+
+	/* preset quantities */
+	float cosgamma = Vf.Nf;
+	
+	/* attenuate diffuse reflection for metallic surfaces */
+	float d = (1 - metalness * smoothness);
+	
+	/* diffuse reflectivity as function of roughness and transparency */
+	float rd = (1 - pow( smoothness, 3)) * (1 - transparency);
+
+	/* specular reflectivity at normal incidence */
+	float rn = (1 - transparency) - rd;
+	/* shininess exponent h */
+	float h = 3 / (1-smoothness);
+
+	extern point P;
+	color C = 0;
+
+	illuminance( P, Nf, PI/2 )
+	{
+		uniform float nondiff = 0, nonspec = 0;
+		lightsource("__nondiffuse", nondiff);
+		lightsource("__nonspecular", nonspec);
+
+		extern vector L;
+		extern color Cl;
+
+		vector Ln = normalize(L);
+		/* preset quantities */
+		float cosalpha = Ln.Nf;
+
+		/* diffuse contribution */
+		if (nondiff < 1) {
+			C += Cl * (1-nondiff) * Cdiff * rd * d * cosalpha;
+		}
+		
+		/* specular contribution */
+		if (nonspec < 1) {
+			
+			vector Hn = normalize(Ln + Vf);
+
+			/* preset quantities */
+			float ralpha = acos( cosalpha );
+
+			/* reflectivity adjustment to account for off-specular peaks */
+			float F = straussfresnel( ralpha );
+			float j = F * straussgeoatten( ralpha ) *
+							straussgeoatten( acos( cosgamma ) );
+			
+			/* adjusted reflectivity */
+			float rj = min( 1, rn + (rn + KJ) * j);
+
+			/* specular reflectivity */
+			float rs = pow( max( 0, Nf.Hn), h) * rj;
+
+			/* specular color, approaching white at grazing angles */
+			color Csw = CWHITE + metalness * (1-F) * (Cdiff - CWHITE);
+
+			C += Cl * (1-nonspec) * rs * Csw * cosalpha;
+		}
+	}
+	return C;
+}
+		
