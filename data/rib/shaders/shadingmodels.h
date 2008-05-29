@@ -2198,5 +2198,47 @@ rtglass(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// David C. Banks fast anisotropic model. //////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
+color
+banksaniso(
+			color cdiff, cspec;
+			float Kd, Ks, roughness;
+			normal Nn;
+			vector In, adir;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+	vector xdir = normalize( adir );
+
+	float costheta = Vf.xdir;
+
+	extern point P;
+	color C = 0;
+
+	illuminance( P, Nf, PI/2 )
+	{
+		extern vector L;
+		extern color Cl;
+
+		vector Ln = normalize(L);
+		float cospsi = Ln.xdir;
+
+		uniform float nonspec = 0;
+		lightsource("__nonspecular", nonspec);
+
+		if (nonspec < 1) {
+
+			float pd = sqrt( 1 - cospsi * cospsi );
+			float ps = sqrt( 1 - costheta * costheta );
+
+			C += Cl * (1-nonspec) * Ln.Nf * ( (Kd * cdiff * pd) +
+					(Ks * cspec * pow( pd*ps - cospsi*costheta,
+											   1/roughness)) );
+		}
+	}
+	return C;
+}
 
