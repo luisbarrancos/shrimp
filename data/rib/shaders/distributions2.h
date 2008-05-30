@@ -38,8 +38,8 @@ trowbridge_reitz(
 {
 	float cosalpha2 = cosalpha * cosalpha;
 	float m2 = roughness * roughness;
-	float d = m2 / (1 + (m2 - 1) * cosalpha2 );
-	return d * d;
+	float d2 = 1 + (m2 -1) * cosalpha2;
+	return m2 / (d2 * d2 );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
