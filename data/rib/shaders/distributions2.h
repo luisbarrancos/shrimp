@@ -30,16 +30,23 @@ float ward(
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Trowbridge-Reitz distribution */
+/* Note: seems this function, like the gaussian distribution, needs an
+ * normalization term. How do we get the normalization term? Empirically?
+ * To make matters worse, the original paper, by Trowbridge and Reitz,
+ * "Average irregularity representations of a roughened surface", is hard
+ * to find, to put it mildly. So we'll just set this normalization term to be
+ * a constant, until i can find more information on this term. */
 
 float
 trowbridge_reitz(
 					float cosalpha, roughness;
 					)
 {
+	float NORMALIZATION = 10;
 	float cosalpha2 = cosalpha * cosalpha;
 	float m2 = roughness * roughness;
-	float d2 = 1 + (m2 -1) * cosalpha2;
-	return m2 / (d2 * d2 );
+	float d2 = m2 / (1 + (m2 -1) * cosalpha2);
+	return NORMALIZATION * d * d;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
