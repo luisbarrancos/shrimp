@@ -42,11 +42,11 @@ trowbridge_reitz(
 					float cosalpha, roughness;
 					)
 {
-	float NORMALIZATION = 10;
+	float NORMALIZATION = PI*2;
 	float cosalpha2 = cosalpha * cosalpha;
 	float m2 = roughness * roughness;
 	float d2 = m2 / (1 + (m2 -1) * cosalpha2);
-	return NORMALIZATION * d * d;
+	return NORMALIZATION * d2 * d2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
