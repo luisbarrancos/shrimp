@@ -1,3 +1,4 @@
+////////////////////////////////////////////////////////////////////////////////
 
 #include "shrimp_helpers.h"
 #include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
@@ -105,7 +106,7 @@ Minnaert(
 ////////////////////////////////////////////////////////////////////////////////
 // Hapke-Lommel-Seeliger lunar surface BRDF ////////////////////////////////////
 // Szymon Rusinkiewicz's implementation, based on "A Theoretical photometric ///
-// function for the Lunar Surface", in Journal of Geophysical Researc, vol.68 //
+// function for the Lunar Surface", in Journal of Geophysical Research,vol.68 //
 // no.15, 1963 /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // slightly tweaked to fit shrimp's structure //////////////////////////////////
@@ -179,7 +180,7 @@ color Hapke(
 
 ////////////////////////////////////////////////////////////////////////////////
 // Oren-Nayar generalization of Lambert's reflection model /////////////////////
-// implementation by Szymon Rusinkiewicz? //////////////////////////////////////
+// implementation by Szymon Rusinkiewicz  //////////////////////////////////////
 // from http://unix.math2.us.edu.pl/~perry/mp/wyklBRDF.pdf /////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 // slighly tweaked to fit shrimp's structure ///////////////////////////////////
@@ -551,6 +552,91 @@ color schlickspec(
     }
     return C;
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// Anisotropic version of Cristophe Schlick's BRDF, with geometric /////////////
+// attenuation, based on his paper: 'An inexpensive BRDF model for /////////////
+// physically based rendering', Eurographics'94, published in Computer /////////
+// Graphics Forum, v13, n3, p199-162, September 1994. //////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* Approximation of the Smith geometric attenuation function */
+float sgeoattenuation(
+						float costheta, roughness;
+		)
+{
+	float g1 = roughness - roughness * costheta + costheta;
+	return costheta / g1;
+}
+
+/* Angle dependence */
+float angledependence(
+						float cosbeta, isotropy;
+		)
+{
+	float i2 = isotropy * isotropy;
+	float cosbeta2 = cosbeta * cosbeta;
+	return sqrt( isotropy / (i2 - i2 * cosbeta2 + cosbeta2));
+}
+
+/* Zenith dependence */
+float zenithdependence(
+						float cosbeta, roughness;
+		)
+{
+	float cosbeta2 = cosbeta * cosbeta;
+	float zz = 1 - (1 - roughness) * cosbeta2;
+	return roughness / (zz * zz);
+}
+
+/* */
+color aschlick(
+				float roughness, isotropy, ior;
+				normal Nn;
+				vector In, dir;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+	vector xdir = normalize(Nf ^ dir);
+
+	float costheta = Vf.Nf;
+
+	extern point P;
+	color C = 0;
+
+	illuminance( P, Nf, PI/2 )
+	{
+		uniform float nonspec = 0;
+		lightsource("__nonspecular", nonspec);
+
+		if (nonspec < 1) {
+			
+			extern vector L;
+			extern color Cl;
+
+			vector Ln = normalize(L);
+			vector Hn = normalize(Vf + Ln);
+
+			float cospsi = Ln.Nf;
+			float cosbeta = Hn.xdir;
+
+			/* self-obscuration */
+			float G = sgeoattenuation( costheta, roughness) *
+						sgeoattenuation( cospsi, roughness );
+			/* anisotropy */
+			float A = angledependence( cosbeta, isotropy );
+			float Z = zenithdependence( Nf.Hn, roughness );
+			
+			float D = Z * A * G / (4 * cospsi * costheta) * cospsi;
+
+			C += Cl * (1-nonspec) * D;
+		}
+	}
+	float F = schlickfresnel( Nf, Vf, ior );
+
+	return F*C;
+}				
 
 ////////////////////////////////////////////////////////////////////////////////
 // Cook-Torrance specular term. With Beckmann, Trowbridge-Reitz, Ward, and /////

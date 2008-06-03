@@ -11,5 +11,5 @@
 	<code>
         $(Ci) = $(Ks) * $(Cspec) * LocIllumWardAnisotropic( $(N), $(I), $(dir), $(uroughness), $(vroughness) );
 	</code>
-    <usage>Gregory J. Ward's anisotropic specular term. This is meant to be combined in a network with ambient and diffuse terms. Note that Cs isn't taken into consideration here, nor is Os, these must be included in your network.</usage>
+    <usage>Gregory J. Ward's anisotropic specular term. Uroughness and Vroughness control the apparent surface roughness in the anisotropy direction, and anisotropy perpendicular direction dir, which defaults to dPdv.</usage>
 </shrimp>

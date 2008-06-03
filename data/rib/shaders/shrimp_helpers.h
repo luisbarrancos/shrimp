@@ -5,7 +5,7 @@
 #define SQR(X)	( (X) * (X) )
 #endif
 
-#define ENUMBER 2.718281828459045 // Euler's number
+#define ENUMBER 2.718281828459045
 
 ////////////////////////////////////////////////////////////////////////////////
 /* 
@@ -134,14 +134,11 @@ topolar2d( float x, y;
 ////////////////////////////////////////////////////
 
 float schlickfresnel(
-                        normal Nn;
-                        vector V;
+                        normal Nf;
+                        vector Vf;
                         float ior;
         )
 {
-    normal Nf = faceforward( Nn, V );
-    vector Vf = -normalize(V);
-    
     float kr = ( ior - 1.0 ) / ( ior + 1.0 );
     kr *= kr;
     return kr + ( 1.0 - kr ) * pow( 1.0 - (Nf.Vf), 5);
@@ -535,5 +532,43 @@ float gain( float x, val)
 {
 	return 0.5 * ((x < 0.5) ? bias (2*x, 1-val): (2-bias(2-2*x, 1-val)));
 }
+
+////////////////////////////////////////////////////////////////////////////////
+// An fast lookup table implemention of the error function follows, ////////////
+// courtesy of Mario Marengo (thanks once again). //////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* Error function (approximated as a lookup table) */
+
+float erf(	float x; )
+{
+	float ax = abs(x);
+	float ret = 0;
+
+	if (ax >= 4.0) {
+		ret = 1.0;
+	} else {
+		ret = spline( "linear", ax/ 4.0,
+				0.000000, 0.112463, 0.222703, 0.328627, 0.428392,
+				0.520500, 0.603856, 0.677801, 0.742101, 0.796908,
+				0.842701, 0.880205, 0.910314, 0.934008, 0.952285,
+				0.966105, 0.976348, 0.983790, 0.989091, 0.992790,
+				0.995322, 0.997021, 0.998137, 0.998857, 0.999311,
+				0.999593, 0.999764, 0.999866, 0.999925, 0.999959,
+				0.999978, 0.999988, 0.999994, 0.999997, 0.999998,
+				0.999999, 1.000000, 1.000000, 1.000000, 1.000000,
+				1.000000 );
+	}
+	return ret;
+}
+
+/* Complementary error function */
+
+float erfc( float x; ) {
+	return 1 - erf(x);
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
 
 

@@ -1,0 +1,19 @@
+<shrimp name="SchlickAniso" type="function" description="Schlick anisotropic specular term." author="rconstruct">
+    <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
+    <input name="roughness" description="The apparent surface roughness." type="float" default="0.2"/>
+	<input name="isotropy" description="Surface isotropy" type="float" default="0.1"/>
+	<input name="ior" description="Index of refraction" type="float" default="2.0"/>
+    <input name="Cspec" description="Specular color" type="color" default="1"/>
+	<input name="dir" description="Anisotropy direction" type="vector" default="normalize(dPdu)"/>
+	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="-normalize(I)"/>
+	<output name="Ci" description="Shaded color" type="color"/>
+	<include>shadingmodels.h</include>
+	<code>
+
+        $(Ci) = $(Ks) * $(Cspec) * aschlick( $(roughness), $(isotropy),
+				$(ior), $(N), $(I), $(dir) );
+
+	</code>
+    <usage>Christope Schlick's anisotropic specular term. Isotropy controls surface isotropy, 0 being anisotropic, 1 being isotropic. Roughness controls apparent surface roughness, 0 being smooth, 1 being rough. Index of refraction controls the reflection coefficient contribution from the fresnel term. Dir is the anisotropy direction, defaults to dPdu.</usage>
+</shrimp>

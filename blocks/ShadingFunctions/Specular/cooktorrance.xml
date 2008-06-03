@@ -15,5 +15,5 @@
         $(Ci) = $(Ks) * $(Cspec) * cooktorrance( $(N), $(I), $(Dir), $(ior),
 			$(roughness), $(distro), $(geo) );
 	</code>
-    <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. This latest geometric attenuation function makes use of a shadeop to access glibc's erfc()/erfcf() complementary error function.  In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). This should be composited in a network with an ambient and a diffuse term.</usage>
+    <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf().</usage>
 </shrimp>

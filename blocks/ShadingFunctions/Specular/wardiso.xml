@@ -9,5 +9,5 @@
 	<code>
         $(Ci) = $(Ks) * $(Cspec) * Wardisotropy( $(N), $(I), $(roughness) );
 	</code>
-    <usage>Gregory J. Ward's anisotropic specular term. This is meant to be combined in a network with ambient and diffuse terms. Note that Cs isn't taken into consideration here, nor is Os, these must be included in your network.</usage>
+    <usage>Simplified isotropic version of Greg Ward's anisotropic specular term. Note that you can get equivalent results with the anisotropic shader, by passing identical values to the surface roughness along the anisotropy direction, and anisotropy perpendicular direction. Roughness controls the apparent surface roughness.</usage>
 </shrimp>

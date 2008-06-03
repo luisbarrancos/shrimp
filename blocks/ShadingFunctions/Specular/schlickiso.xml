@@ -11,5 +11,5 @@
         $(Ci) = $(Ks) * $(Cspec) * schlickspec( $(N), $(I), $(roughness) );
 
 	</code>
-    <usage>Christope Schlick's isotropic specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.</usage>
+    <usage>Christope Schlick's isotropic specular term. Roughness controls the apparent surface roughness.</usage>
 </shrimp>

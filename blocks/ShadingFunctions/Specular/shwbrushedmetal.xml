@@ -10,5 +10,5 @@
 	<code>
         $(Ci) = $(Ks) * $(Cspec) * shw_brushed_metal( $(roughness), $(N), $(I), $(tangent) );
 	</code>
-    <usage>Stephen Westin's anisotropic specular term, using Kajiya's Phong-like highlight from a cylinder (Siggraph 89) coupled with an arbitrary shadowing/masking function. This is meant to be combined in a network with ambient and diffuse terms. Note that Cs isn't taken into consideration here, nor is Os, these must be included in your network.</usage>
+    <usage>Stephen Westin's anisotropic specular term, using Kajiya's Phong-like highlight from a cylinder (Siggraph 89) coupled with an arbitrary shadowing/masking function. Roughness controls the apparent surface roughness, tangent is the anisotropy direction, defaulting to dPdu.</usage>
 </shrimp>

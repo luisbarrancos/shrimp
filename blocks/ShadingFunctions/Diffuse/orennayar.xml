@@ -8,5 +8,5 @@
 	<code>	
         $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
 	</code>
-    <usage>Oren-Nayar diffuse term. Kd controls overall intensity. Note that this is meant to be used in a network with an ambient term, and/or a specular term, if desired. A good starting point might be an Blinn specular term. Note that Cs and Os aren't taken into consideration, and must be added in your network, where proper/desired.</usage>
+    <usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz's implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection.</usage>
 </shrimp>

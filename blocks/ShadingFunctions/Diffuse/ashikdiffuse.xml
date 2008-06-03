@@ -9,5 +9,5 @@
 	<code>
         $(Ci) = anisophongdiff( $(N), $(I), $(Ks), $(Kd) );
 	</code>
-	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley model. Meant to be used with the respective specular term. Ks is used, since diffuse and specular terms vary with one another. Color and opacity aren't included, arrange for these in your network.</usage>
+	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley model, diffuse term only.</usage>
 </shrimp>

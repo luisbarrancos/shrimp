@@ -15,5 +15,5 @@
         $(Ci) = $(Oi) * subsurfaceSkin( $(I), $(N), $(Cs), $(sheencolor), 1/$(ior), $(thickness) );
         
 	</code>
-	<usage>Based on Matt Pharr's skin shader, a surface shader that implements a shading model that should have a visual appearance generally similar to that of skin. Based on phenomenological information about skin reflectance from Hanrahan and Krueger Reflection from layered surfaces due to subsurface scattering.</usage>
+	<usage>Based on Matt Pharr's skin shader, a surface shader that implements a shading model that should have a visual appearance generally similar to that of skin. Based on phenomenological information about skin reflectance from Hanrahan and Krueger "Reflection from layered surfaces due to subsurface scattering", proceedings of SIGGRAPH 1993. The parameters are the skin base color, the oily surface sheen color, the ratio of the indices of refraction of incoming ray to transmitted ray, and the skin layer thickness.</usage>
 </shrimp>

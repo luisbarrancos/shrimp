@@ -12,5 +12,5 @@
         $(Ci) = anisophongspec( $(N), $(I), $(nu), $(nv), $(ior) );
 
 	</code>
-	<usage>Based on Szymon Rusinkiewicz's implementation of the Ashikmin-Shirley model. Meant to be used with the respective diffuse term, altough you have the freedom to experiment. Color and opacity aren't included, arrange for these in your network.</usage>
+	<usage>Based on Peter Stuart's implementation of the Ashikmin-Shirley anisotropic BRDF, here, the isolated specular term only. Nu and Nv control the specularity in the anisotropy, and anisotropy perpendicular directions, while ior contains the index of refraction for the fresnel.</usage>
 </shrimp>

@@ -45,5 +45,5 @@
         $(Ci) = $(Oi) * $(Cs) * LocIllumGranier( Nf, Nl, Vf, spec[0], spec[1],
 				 d, iorrgb, lambda, $(Kd), $(Ks) );
 	</code>
-    <usage>Based on Peter Stuart's implementation of the Granier-Heidrich thin-film interference BRDF.</usage>
+    <usage>Peter Stuart's implementation of the Granier-Heidrich thin-film interference BRDF, as described in "A Simple Layered RGB BRDF Model", by Granier and Heidrich. The parameter drange controls the minimum and maximum substrate thickness, with ior, the RGB index of refraction of the substrate. The parameter spec, controls the minimum and maximum specular exponent of the rays reflected on the substrate, with freq as the minimum and maximum frequency of the perlin noise, and dev, the deviation of the normals in the range [0,1].</usage>
 </shrimp>

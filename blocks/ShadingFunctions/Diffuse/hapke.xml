@@ -10,5 +10,5 @@
 	<code>
         $(Ci) = $(Kd) * Hapke( $(sden), $(fscat), $(refl), $(N), $(I) );
 	</code>
-    <usage>Based on Szymon Rusinkiewicz's implementation of the Hapke-Lommel-Seeliger lunar surface BRDF, with Schonberg backstattering and Hapke retrodirective function. This is meant to be used as a diffuse term, and integrated in a network with ambient term (or if you wish, an specular term as well, altough originally wasn't meant to have any specular term at all.). Cs isn't included, nor is Os, make proper arrangements in your shading network to take Cs and Os into consideration where required.</usage>
+    <usage>Based on Szymon Rusinkiewicz's implementation of the Hapke-Lommel-Seeliger lunar surface BRDF, with Schonberg backstattering and Hapke retrodirective function. The sden parameter controls the density of the surface. The fscat parameter, controls the forward scattering of the surface, and the refl parameter, the surface reflectivity.</usage>
 </shrimp>

@@ -6,5 +6,5 @@
 	<code>
 	$(col) = specular( $(norm), $(viewer), $(roughness) );
 	</code>
-<usage>Specular term, using implementation-dependent specularbrdf. This is meant to be combined in your network, with an ambient and/or diffuse term, as needed. Cs isn't taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).</usage>
+<usage>Specular term, using specular() call. Note that what is a standard specular() might vary with the renderer you're using.</usage>
 </shrimp>
