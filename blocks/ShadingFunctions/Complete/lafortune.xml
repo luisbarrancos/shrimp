@@ -15,6 +15,10 @@
 	<include>shadingmodels.h</include>
 	<code>
 
+	/* Following lobe data taken from Ryan Heniser's implementation of the
+		the Lafortune model (via C shadeop, that is available at 
+		The RenderMan Academy (www.rendermanacademy.com). */
+		
     /* spray-painted latex blue paint */
     uniform float $(blockname)_coeff_1[27] = { 0.877276, 0.801226, 21.88889,
                                   0.857255, 0.774290, 18.597755,
@@ -25,6 +29,7 @@
                                   -1.031545, 0.706734, 66.899060,
                                   -1.029426, 0.696530, 63.767912,
                                   -1.026588, 0.687715, 57.489181 };
+								  
     /* matte finished steel */
     uniform float $(blockname)_coeff_2[27] = { -1.11854, 1.01272, 15.8708,
                                   -1.11845, 1.01469, 15.6489,
@@ -35,6 +40,7 @@
                                   -1.01684, 1.00132, 180.181,
                                   -1.01635, 1.00112, 184.152,
                                   -1.01529, 1.00108, 195.773 };
+								  
     /* primer gray */ 
     uniform float $(blockname)_coeff_3[27] = { -0.399286, 0.167504, 2.466633, 
                                   -1.033473, 0.009545, 7.637253, 
@@ -56,6 +62,7 @@
                                  -1.020153,  0.703913, 63.919687,
                                  -1.027479,  0.573625, 43.809866,
                                  -0.998888,  0.857998, 64.208486 };
+								 
     /* skin_2 - asian male (Only two lobes were used in this approximation,
      * so we make cx=cy=cz=0 for the third lobe) 
      */
@@ -68,6 +75,7 @@
                                   0.000000, 0.000000, 1.00000,
                                   0.000000, 0.000000, 1.00000,
                                   0.000000, 0.000000, 1.00000 };
+								  
     /* clay */
     uniform float $(blockname)_coeff_6[27] = { -1.089701, -1.354682, 17.968505,
                                   -1.102701, -2.714801, 11.024489,
@@ -78,20 +86,45 @@
                                   -1.010548, 0.910783, 152.912795, 
                                   -1.012378, 0.885239, 141.937171, 
                                   -1.011263, 0.892451, 201.046802 };
+								  
+	/* skin 3, from Stephen Westin's test rib for his lafortune shader */
+	uniform float $(blockname)_coeff_7[27] = { -0.966019, -1.222419, 3.524889,
+								-1.016939, -1.462488, 3.699932,
+								-1.131747, -1.209182, 6.421658,
+								-0.638934, 0.437367, 4.539742,
+								-0.643533, 0.410559, 4.266495,
+								-0.546570, 0.380123, 3.685044,
+								-1.027479, 0.573625, 43.809866,
+								-1.020153, 0.703913, 63.919687,
+								-0.998888, 0.8579998, 64.208486 };
+	
+	/* flat blue paint, from Stephen Westin's lafortune shader */
+	uniform float $(blockname)_coeff_8[27] = { -0.870567, 0.803624, 21.820103,
+								-0.85725, 0.774290, 18.597755,
+								-0.670982, 0.586674, 7.472717,
+								0.451218, 0.023123, 2.774499,
+								0.406681, 0.017624, 2.581499,
+								0.477976, 0.227295, 3.677653,
+								1.031545, 0.706734, 66.899060,
+								1.029426, 0.696530, 63.767912,
+								1.026588, 0.687715, 57.489181 };
+								
     /* color matrix for: blue paint, matte finished steel */ 
     uniform float $(blockname)_colormatrix_1[9] = { 1, 0, 0, 0, 1, 0, 0, 0, 1 };
+	
     /* color matrix for: primer grey, skin_1, skin_2, clay */
-    uniform float $(blockname)_colormatrix_2[9] = { 1.063302,  0.382044, -0.445346,
-                                      -0.298125,  1.667665, -0.369540,
-                                      -1.322302, -0.446321,  2.768624 };
+    uniform float $(blockname)_colormatrix_2[9] = { 1.063302,  0.382044,
+								-0.445346, -0.298125,  1.667665, -0.369540,
+								-1.322302, -0.446321,  2.768624 };
 
         $(Oi) = $(Os);
 
-        color out = lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs), $(specularcolor),
-		$(blockname)_coeff_$(model) , $(blockname)_colormatrix_$(colormatrix), $(N), $(I), $(dir) );
-
-        $(Ci) = $(Os) * out;
+		/* make sure the coeff and colormatrix variables to valid range */
+        $(Ci) = $(Os) * lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs),
+				$(specularcolor), $(blockname)_coeff_$(model),
+				$(blockname)_colormatrix_$(colormatrix),
+				$(N), $(I), $(dir) );
 
 	</code>
-    <usage>Based on Stephen H. Westin's implementation of the Lafortune model. BRDFs 1-7, color matrix 1-2 for metal or skin. Note that coefficient model and colormatrix values need to be absolute.</usage>
+    <usage>Based on Stephen H. Westin's implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. BRDFs 1-7, color matrix 1-2 for metal or skin. Note that coefficient model and colormatrix values need to be absolute.</usage>
 </shrimp>
