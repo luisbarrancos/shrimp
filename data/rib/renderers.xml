@@ -35,7 +35,7 @@
 		<displays>framebuffer</displays>
 	</pixie>
 	<prman name="Photorealistic RenderMan">
-		<shader_compiler>shader -O2 -I%i %s -o %o</shader_compiler>
+		<shader_compiler>shader -O2 -lintlt -I%i -o %o %s</shader_compiler>
 		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
 		<compiled_shader_extension>slo</compiled_shader_extension>
 		<renderer_command>prman %s</renderer_command>
