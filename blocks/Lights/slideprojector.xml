@@ -12,7 +12,7 @@
 	<input name="shadowsamples" description="Shadow map samples" type="float" default="1"/>
 	<input name="shadowwidth" description="Shadow map filter width" type="float" default="1"/>
 	<input name="shadowbias" description="Shadow map bias" type="float" default="-1"/>
-	<output name="Cl" description="Light output" type="color"/>
+	<output name="Cl" description="Light ray color" type="color"/>
 	<include>lights.h</include>
 	<code>
 		$(Cl) = $(inten) * $(lcolor) * slideprojector( radians( $(fov)),

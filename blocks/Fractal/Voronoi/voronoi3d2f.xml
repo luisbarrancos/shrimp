@@ -8,6 +8,8 @@
 	<output name="pos2" description="pos2" type="point"/>
 	<include>fractal.h</include>
 	<code>
+	/* initialize */
+	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 	</code>

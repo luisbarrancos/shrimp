@@ -1,5 +1,5 @@
 <shrimp type="function" name="Bias" description="Adjust bias." author="rconstruct">
-	<input name="nput" description="Input to be adjusted" type="float color" default="1"/>
+	<input name="nput" description="Input to be adjusted" type="float color" type_parent="val"default="1"/>
 	<input name="bias" description="Bias value" type="float" default="0.5"/>
 	<output name="val" description="Adjusted value." type="float color"/>
 	<include>shrimp_helpers.h</include>
@@ -8,9 +8,9 @@
 	#ifdef $(val)_float
 		$(val) = ($(bias) > 0) ? pow($(nput), log($(bias)) / log(0.5)) : 0;
 	#else
-		float xtmp = xcomp( $(val:type) $(nput));
-		float ytmp = ycomp( $(val:type) $(nput));
-		float ztmp = zcomp( $(val:type) $(nput));
+		float xtmp = comp( $(val:type) $(nput), 0);
+		float ytmp = comp( $(val:type) $(nput), 1);
+		float ztmp = comp( $(val:type) $(nput), 1);
 		$(val) = $(val:type) (bias(xtmp, $(bias)), bias(ytmp, $(bias)), bias(ztmp, $(bias)));
 	#endif
 	</code>

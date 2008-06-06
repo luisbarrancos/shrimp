@@ -1,7 +1,7 @@
 <shrimp name="Schlick_Fresnel" type="function" description="Shlick fresnel approximation" author="rconstruct">
 	<input name="ior" description="Index of refraction" type="float" default="1.5"/>
 	<input name="N" description="Surface normal" type="normal" default="normalize(N)"/>
-	<input name="V" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<input name="V" description="Direction of viewer" type="vector" default="-normalize(I)"/>
 	<output name="Kr" description="Output value" type="float"/>
 	<include>shadingmodels.h</include>
 	<code>

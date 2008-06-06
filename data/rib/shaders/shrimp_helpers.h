@@ -237,7 +237,8 @@ color scurvature(
 
 	// greyscale or color
     if ( greyscale == 1.0 ) {
-        out = 1 - spline( result, cmin, cmax, 0, 1 );
+        float g = 1 - spline( result, cmin, cmax, 0, 1 );
+		out = color(g);
     } else {
 		// rgb
 		color c1 = color( 1, 0, 0 ),
@@ -540,7 +541,7 @@ float gain( float x, val)
 
 /* Error function (approximated as a lookup table) */
 
-float erf(	float x; )
+float mm_erf(	float x; )
 {
 	float ax = abs(x);
 	float ret = 0;
@@ -564,11 +565,9 @@ float erf(	float x; )
 
 /* Complementary error function */
 
-float erfc( float x; ) {
-	return 1 - erf(x);
+float mm_erfc( float x; ) {
+	return 1 - mm_erf(x);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
-
 

@@ -11,6 +11,9 @@
     <output name="tpos2" description="t position 2" type="float"/>
 	<include>fractal.h</include>
 	<code>
+	/* initialize */
+	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;
+	$(f2) = 0; $(spos2) = 0; $(tpos2) = 0;
     voronoi_f1f2_2d( $(ss), $(tt), $(jitter), $(dtype), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
 	</code>

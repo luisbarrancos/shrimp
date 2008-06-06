@@ -14,7 +14,9 @@
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * VLfBm( $(x), $(y), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
 	#else
-		$(val) = $(amplitude) * $(val:type) VLvfBm( $(x), $(y), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );		
+		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(x), $(y),
+					$(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) ) );
+
 	#endif
 	</code>
 	<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.

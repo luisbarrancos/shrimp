@@ -3,7 +3,7 @@
 	<output name="out" description="Output" type="float"/>
 	<include>shrimp_helpers.h</include>
 	<code>
-	$(out) = erfc( $(x) );
+	$(out) = mm_erfc( $(x) );
 	</code>
 <usage>Complementary error function, based on Mario Marengo's fast lookup table implementation of the error function.</usage>
 </shrimp>

@@ -31,22 +31,17 @@ float ward(
 ////////////////////////////////////////////////////////////////////////////////
 /* Trowbridge-Reitz distribution */
 /* Note: seems this function, like the gaussian distribution, needs an
- * normalization term. How do we get the normalization term? Empirically?
- * To make matters worse, the original paper, by Trowbridge and Reitz,
- * "Average irregularity representations of a roughened surface", is hard
- * to find, to put it mildly. So we'll just set this normalization term to be
- * a constant, until i can find more information on this term. */
+ * normalization term. How do we get the normalization term? */
 
 float
 trowbridge_reitz(
 					float cosalpha, roughness;
 					)
 {
-	float NORMALIZATION = PI*2;
 	float cosalpha2 = cosalpha * cosalpha;
 	float m2 = roughness * roughness;
 	float d2 = m2 / (1 + (m2 -1) * cosalpha2);
-	return NORMALIZATION * d2 * d2;
+	return d2 * d2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -99,7 +94,6 @@ float smith(
 
 ////////////////////////////////////////////////////////////////////////////////
 /* He-Torrance geometric selfshadowing/masking */
-/* (uses glibc erfc for point types, erfcf for float types, via shadeop) */
 
 float he_torrance(
 					float costheta, cosalpha, roughness;
@@ -112,8 +106,8 @@ float he_torrance(
 	float hnl = cosalpha2 / (2 * m2 * (1 - cosalpha2) );
 	float hnv = costheta2 / (2 * m2 * (1 - costheta2) );
 
-	float gnl = sqrt( PI * hnl * (2 - erfc( sqrt( hnl ))));
-	float gnv = sqrt( PI * hnv * (2 - erfc( sqrt( hnv ))));
+	float gnl = sqrt( PI * hnl * (2 - mm_erfc( sqrt( hnl ))));
+	float gnv = sqrt( PI * hnv * (2 - mm_erfc( sqrt( hnv ))));
 
 	return (gnl / (gnl +1) ) * (gnv / (gnv + 1) );
 }

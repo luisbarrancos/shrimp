@@ -440,11 +440,14 @@ float wood2(
    frequency = frequency of blotches (P*freq)
    offset = blotch center offset towards white, 0 = hollow, 1 = solid
    jitter = controls voronoi cell noise jittering, which affects blotches
-   distribution
+   distribution.
+   Dtype = distance metric, when != 0, Minkowski, being dtype Minkowski's 
+   P parameter, with P = 1 as Manhattan metric, P = 2 as Euclidian, and 
+   as P increases, tends towards Tchebychev. 
    */
 
 float blotches(
-                float radius, frequency, offset, jitter;
+                float radius, frequency, offset, jitter, dtype;
                 point pp;
         )
 {
@@ -454,7 +457,7 @@ float blotches(
     
     point pp1 = pp * frequency;
     
-    voronoi_f1_3d( pp1, jitter, f1, pos1);
+    voronoi_f1_3d( pp1, jitter, dtype, f1, pos1);
     
     if (f1 <= radius) {
         mixfactor = smoothstep( radius - offset, radius + offset, f1);

@@ -5,21 +5,23 @@
 	<input name="sbase" description="Controls ray origin jittering" type="float" default="1"/>
 	<input name="adapt" description="Turns adaptive sampling on/off" type="float" default="1"/>
 	<input name="minsamp" description="Minimum number of samples to use" type="float" default="64"/>
-	<input name="useaxis" description="Use light casting direction on/off" type="float" default="0"/>
-	<input name="axis" description="Direction of light casting hemisphere" type="vector" default="0" />
     <input name="maxdist" description="Maximum distance" type="float" default="15"/>
 	<input name="bias" description="Bias to control self-intersection" type="float" default="0.01" />
 	<input name="coneangle" description="Cone angle" type="float" default="1.570796327"/>
 	<input name="distribution" description="Distribution" type="string" default="&quot;cosine&quot;"/>
-	<input name="hitsides" description="Side of surface to consider by a ray hit" type="string" default="&quot;front&quot;"/>
+	<input name="axis" description="Direction of light casting hemisphere" type="vector" default="0"/>
+	<input name="hitsides" description="Side of surface to consider by a ray hit" type="string" default="&quot;both&quot;"/>
 	<input name="envmap" description="Environment map" type="string" default="&quot;pisa.tdl&quot;"/>
 	<input name="envspace" description="Environment space" type="string" default="&quot;world&quot;"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<output name="Envcolor" description="Environment color lookup result" type="color" />
 	<output name="Envdir" description="Average unoccluded direction" type="vector" />
 	<code>
-    #define vaxis_$(useaxis)
-    #ifdef vaxis_0
+	
+	/* initialize */
+	$(Envcolor) = 0; $(Envdir) = 0;
+
+	#if RENDERER == prman
 	$(Ci) = 1 - occlusion( $(inpoint),
 					$(indir),
 					$(samples),
@@ -35,24 +37,18 @@
 					"distribution", $(distribution),
 					"environmentcolor", $(Envcolor),
 					"environmentdir", $(Envdir) );
-    #else
-	$(Ci) = 1 - occlusion( $(inpoint),
-					$(indir),
-					$(samples),
-					"samplebase", $(sbase),
-					"adaptive", $(adapt),
-					"minsamples", $(minsamp),
-					"coneangle", $(coneangle),
-					"axis", $(axis),
-					"bias", $(bias),
-					"maxdist", $(maxdist),
-					"hitsides", $(hitsides),
-					"environmentmap", $(envmap),
-					"environmentspace", $(envspace),
-					"distribution", $(distribution),
-					"environmentcolor", $(Envcolor),
-					"environmentdir", $(Envdir) );
-    #endif
+	#else
+	$(Ci) = 1 - occlusion( $(inpoint), $(indir), $(samples),
+				"samplebase", $(sbase), "adaptive", $(adapt),
+				"minsamples", $(minsamp), "coneangle", $(coneangle),
+				"axis", $(axis),
+				"bias", $(bias), "maxdist", $(maxdist), "hitsides",
+				$(hitsides), "environmentmap", $(envmap),
+				"environmentspace", $(envspace), "distribution",
+				$(distribution), "environmentcolor", $(Envcolor),
+				"environmentdir", $(Envdir) );
+	#endif
+	
 	</code>
     <usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you'll have ambient occlusion, or reflection occlusion. Sbase controls the ray origin jittering, in micropolygon size, which defaults to 1. Hitsides controls which side of the surface to consider by a ray hit, defaults to "front", being the other possible values, "back" and "both". Adaptive enables or disables adaptive sampling. If it's enabled, then the minsamp variable is used to define the minimum samples to use. Note that minimum samples used default to 64, if minsamples is lower than samples, and samples/4 if it's greater.</usage>
 </shrimp>

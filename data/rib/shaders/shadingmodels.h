@@ -635,15 +635,15 @@ color aschlick(
 	}
 	float F = schlickfresnel( Nf, Vf, ior );
 
-	return F*C;
+	return clamp(F*C, color(0), color(1));
 }				
 
 ////////////////////////////////////////////////////////////////////////////////
 // Cook-Torrance specular term. With Beckmann, Trowbridge-Reitz, Ward, and /////
 // Heidrich-Seidel microfacet distribution functions, and the default //////////
 // Torrance-Sparrow geometric attenuation, Smith attenuation, and He-Torrance //
-// attenuation (this last one requires the erfc()/erfcf() shadeop though. //////
-// TODO: Add the Kelemen distribution as Mario Marengo suggested. //////////////
+// attenuation. ////////////////////////////////////////////////////////////////
+// TODO: Check Kelemen's paper. ////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 color
@@ -730,10 +730,10 @@ cooktorrance(
 			 * least for the Heidrich-Seidel case. */
 			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
 				cospsi + ( (distromodel == 3) ?
-					specularbrdf( Ln, Nf, Vf, roughness*.5) : 0 ) );
+					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0) ) );
 		}
 	}
-	return clamp(Ccook, 0, 1);
+	return clamp(Ccook, color(0), color(1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -817,7 +817,7 @@ anisophongspec(
 			C += Cl * (1-nonspec) * ndotl * (speccont * (nh / nhmax));
 		}
     }
-    return C * schlickfresnel( Nn, In, ior );
+    return C * schlickfresnel( Nn, Vf, ior );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1034,7 +1034,7 @@ color SampleEnvironment(
     color C = 0;
     if (envname != "") {
         vector Rnn;
-        Rnn = vtransform("_environment", "object", Rn);
+        Rnn = vtransform("current", "object", Rn);
         C = color environment(envname, Rnn);
     } else {
         C = trace(Pp, Rn);
@@ -1412,14 +1412,14 @@ color KMOverGlossy(	normal Nn;
 	lightsource("__nondiffuse", nondiff);
 	
 	if (nondiff < 1) {
-		Kdnew = KMComposeR(R1, T1, Kd, color 0.);
+		Kdnew = KMComposeR(R1, T1, Kd, color(0.));
 	}
 	
 	uniform float nonspec = 0;
 	lightsource("__nonspecular", nonspec);
 	
 	if (nonspec < 1) {
-	    Ksnew = KMComposeR(0., T1, Ks, color 0.);
+	    Ksnew = KMComposeR( color(0.), T1, Ks, color(0.));
 	}
 
     float KsRatio = comp(Ks, 0) / comp(Ksnew, 0);
@@ -2214,21 +2214,24 @@ rtglass(
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
 	vector refldir = 0, refrdir = 0;
-	float kr, kt;
+	float kr = 0, kt = 0;
 
 	/* if I.N>0, ray is entering the medium, else ray is exiting and eta is the
 	   reverse of the ior when ray is entering the medium. */
 	float entering = (idotn > 0) ? 1 : 0;
 	float eta = (idotn > 0) ? ior : 1/ior;
 
-	fresnel( In, Nf, eta, kr, kt, refldir, refrdir);
+	/* If we're inside medium, reverse the normals for internal reflections */
+	normal Tn = (entering == 1) ? -Nn : Nn ;
+
+	fresnel( In, Tn, eta, kr, kt, refldir, refrdir);
 
 	kt = 1 - kr; /* physically incorrect but portable */
 	kr *= Kr; kt *= Kt;
 
 	/* get current ray depth and scale down samples as ray depth goes up */
 	/* if needed */
-	uniform float raydepth;
+	uniform float raydepth = 0;
 	rayinfo("depth", raydepth);
 	uniform float rsamples = (raydepth > 1) ? max( 1, samples /
 								pow( 2, raydepth)) : samples ;
@@ -2242,27 +2245,30 @@ rtglass(
 	float ks = (raydepth > sbounces || entering == 1) ? 0 : Ks;
 	kr = (raydepth > rbounces) ? 0 : kr;
 
-	/* reflections, if active */
-	color crefl = (kr > 0) ?
-		environment( "raytrace", refldir, "samples", rsamples,
-					 "blur", krblur, "maxdist", reflmaxdist) : 0;
-	/* refractions, if active */
-	color crefr = (kt > 0) ?
-		environment( "raytrace", refrdir, "samples", rsamples,
-					 "blur", ktblur, "maxdist", refrmaxdist) : 0;
+	color crefl = 0, crefr = 0;
+
+	if (kr > 0) /* reflections, if active */
+		crefl = environment( "raytrace", refldir, "samples", rsamples,
+					"blur", krblur, "maxdist", reflmaxdist );
+	if (kt > 0) /* refractions, if active */
+		crefr = environment( "raytrace", refrdir, "samples", rsamples,
+					"blur", ktblur, "maxdist", refrmaxdist );
+
 
 	/* attenuation, when there are ray hits */
+	extern vector I; /* we just passed the normalized viewer as argument
+						but we need the ray lenght */
 	color attenrefl = 1, attenrefr = 1;
-	if (kr > 0 || kt > 0) {
-		float ilen = length(In);
+	if (raydepth > 0 && (kr > 0 || kt > 0)) {
+		float ilen = length(I);
 		float d = (aamp == 1) ? ilen * aexp : pow( ilen, aamp) * aexp;
-		if (ilen < 1e30) { /* consider ray hits only */
+		if (ilen < 1e38) { /* consider ray hits only (restrict to maxdist?) */
 			color atten = (attencolor != color(1)) ?
-				1-color( exp( attencolor[0] * -ilen),
-						 exp( attencolor[1] * -ilen),
-						 exp( attencolor[2] * -ilen) ) : 1;
-			attenrefr *= (kt > 0 && entering == 0) ? atten : 1;
-			attenrefl *= (kr > 0 && entering == 1) ? atten : 1;
+				color( exp( attencolor[0] * -d),
+						 exp( attencolor[1] * -d),
+						 exp( attencolor[2] * -d) ) : color(1);
+			attenrefr *= (kt > 0 && entering == 0) ? atten : color(1);
+			attenrefl *= (kr > 0 && entering == 1) ? atten : color(1);
 		}
 	}
 

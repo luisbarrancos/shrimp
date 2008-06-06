@@ -8,7 +8,7 @@
 	<code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * $(val:type) filteredvnoisexy( $(p), $(t),
+		$(val) = $(amplitude) * $(val:type) filterednoisexy( $(p), $(t),
 															 $(width) );
 	#else
 		$(val) = $(amplitude) * $(val:type) filteredvnoisexy( $(p), $(t),

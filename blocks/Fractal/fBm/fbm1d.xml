@@ -10,9 +10,11 @@
 	<code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * fBm( $(x), $(fwidth), $(octaves), $(lacunarity),$(gain) );
+		$(val) = $(amplitude) * fBm( $(x), $(fwidth), $(octaves),
+					$(lacunarity),$(gain) );
 	#else
-		$(val) = $(amplitude) * $(val:type) vfBm( $(x), $(fwidth), $(octaves), $(lacunarity),$(gain) );		
+		$(val) = $(amplitude) * $(val:type) (vector vfBm( $(x), $(fwidth),
+					$(octaves), $(lacunarity),$(gain) ) );		
 	#endif
 	</code>
 	<usage>fBm is a sumation of noises at different frequencies. Note that the output is not clamped and may exceed +1 or -1.

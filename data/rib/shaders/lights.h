@@ -24,18 +24,18 @@ color
 sig2kshadowspot(
 				 float intensity; color lightcolor;
 				 point from, to;
-				 float coneangle, conedeltaangle, beamdistribution;
+				 uniform float coneangle, conedeltaangle, beamdistribution;
 				 uniform string shadowname, shadowfilter;
 				 float shadowsamples, shadowblur, shadowbias, atten,
 				 shadowwidth;
 		)
 {
 	float attenuation, cosangle;
-	uniform vector A = (to - from) / length(to - from);
+	vector A = (to - from) / length(to - from);
 	uniform float cosoutside = cos( coneangle ),
 				  cosinside = cos( coneangle - conedeltaangle );
 
-	color C = 0;
+	color C = color(0);
 	illuminate( from, A, coneangle ) {
 		extern vector L;
 		extern point Ps;
@@ -81,13 +81,13 @@ sig2kshadowspot(
 
 color
 slideprojector(
-				float fieldofview;
+				uniform float fieldofview;
 				point from, to, up;
 				uniform string slidename, shadowname, shadowfilter;
 				float shadowblur, shadowsamples, shadowwidth, shadowbias;
 		)
 {
-	uniform vector reIT, /* normalized direction vector */
+	varying vector reIT, /* normalized direction vector */
 				   reIU, /* "vertical" perspective of surface point */
 				   reIV; /* "horizontal perspective of surface point */
 
@@ -106,7 +106,7 @@ slideprojector(
 	reIV = normalize( reIT ^ reIU );
 	reIU = reIV ^ reIT;
 
-	color C = 0;
+	color C = color(0);
 	illuminate( from, vector( reIT), atan( 1.414213562 / spread)) /* sqrt(2) */
 	{
 		extern vector L;
@@ -142,9 +142,10 @@ sdistantlight(
 				color lightcolor;
 		)
 {
+
 	extern point Ps;
 
-	color C = 0;
+	color C = color(0);
 	solar( to - from, 0) {
 		C = intensity * lightcolor;
 		if (shadowname != "") {
@@ -168,12 +169,14 @@ spointlight(
 				color lightcolor;
 		)
 {
-	extern vector L;
-	extern point Ps;
 
-	color C = 0;
+	color C = color(0);
 
 	illuminate( from ) {
+	
+		extern vector L;
+		extern point Ps;
+		
 		float l2 = L . L;
 		if (decay == 1.0) {
 			C = intensity * ( lightcolor / l2 );

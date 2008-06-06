@@ -16,7 +16,7 @@ shDisc( float ox, oy, x, y, radius, blur)
 {
     float d, opacity;
      
-    d = distance( ( ox, oy, 0 ), ( x, y, 0 ) );
+    d = distance( point ( ox, oy, 0 ), point ( x, y, 0 ) );
     opacity = 1 - smoothstep( radius - blur, radius, d );
     return opacity;
 }
@@ -28,7 +28,7 @@ shRing ( float ox, oy, x, y, radius, thickness, blur )
 {
     float d, opacity;
 
-    d = distance( ( ox, oy, 0 ), ( x, y, 0 ) );
+    d = distance( point ( ox, oy, 0 ), point ( x, y, 0 ) );
     opacity = filteredpulse( radius - thickness, radius , d, blur );
     return opacity;
 }

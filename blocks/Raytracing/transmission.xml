@@ -1,15 +1,15 @@
 <shrimp name="Transmission" type="function" description="Determines visibility between point 1 and point 2" author="rconstruct">
-    <input name="pointfrom" description="From point" type="point" default="P"/>
+    <input name="pointfrom" description="From point" type="point" default="0"/>
 	<input name="pointto" description="To point" type="point" default="1"/>
 	<input name="samples" description="Samples" type="float" default="1"/>
-	<input name="samplecone" description="Sample cone" type="float" default="0.0"/>
+	<input name="samplecone" description="Sample cone" type="float" default="0.1"/>
     <input name="bias" description="Ray bias" type="float" default="-1"/>
-    <input name="maxdist" description="Maximum distance" type="float" default="100"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<input name="hitsides" description="Which sides to hit" type="string" default="&quot;both&quot;"/>
+	<output name="Ctr" description="Shaded color" type="color"/>
 	<code>
-
-		$(Ci) = transmission( $(pointfrom), $(pointto), "bias", $(bias),
-					"samplecone", $(samplecone), "samples", $(samples) );
+		$(Ctr) = transmission( $(pointfrom), $(pointto), "bias", $(bias),
+				"hitsides", $(hitsides), "samplecone", $(samplecone),
+				"samples", $(samples) );
 
 	</code>
     <usage>Returns the color that flows from point 1 to point 2. Returns 1 if not implemented, or if raytracing is not available.</usage>

@@ -11,11 +11,11 @@
 	<code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * turbulence( $(p), $(t), $(fwidth),
-										$(octaves), $(lacunarity), $(gain) );
+		$(val) = $(amplitude) * turbulence( $(p), $(t), $(fwidth), $(octaves),
+					$(lacunarity), $(gain) );
 	#else
-		$(val) = $(amplitude) * $(val:type) vturbulence( $(p), $(t), $(fwidth),
-										$(octaves), $(lacunarity), $(gain) );
+		$(val) = $(amplitude) * $(val:type) ( vector vturbulence( $(p), $(t),
+					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 	</code>
 	<usage>This is the Perlin turbulence function.

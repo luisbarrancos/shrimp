@@ -11,11 +11,11 @@
 	<code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(amplitude) * turbulence( $(x), $(y), $(fwidth),
-										$(octaves), $(lacunarity), $(gain));
+		$(val) = $(amplitude) * turbulence( $(x), $(y), $(fwidth), $(octaves),
+					$(lacunarity), $(gain));
 	#else
-		$(val) = $(amplitude) * $(val:type) vturbulence( $(x), $(y), $(fwidth),
-										$(octaves), $(lacunarity), $(gain));
+		$(val) = $(amplitude) * $(val:type) ( vector vturbulence( $(x), $(y),
+					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 
 	</code>

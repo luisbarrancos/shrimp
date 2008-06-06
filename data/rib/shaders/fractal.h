@@ -665,13 +665,12 @@ vector vRidged( point p;
 		amp *= gain;
 		pp *= lacunarity; fw *= lacunarity;
 		weight = signal * 2.0;
-		weight = clamp( weight, 0.0, 1.0 );
+		weight = clamp( weight, vector(0), vector(1) );
 
 	}
 
 	return ( value );
 }
-
 
 vector vRidged( float x, filtwidth, maxoctaves, lacunarity, offset, gain )
 {
@@ -692,12 +691,13 @@ vector vRidged( float x, filtwidth, maxoctaves, lacunarity, offset, gain )
 		amp *= gain;
 		xx *= lacunarity; fw *= lacunarity;
 		weight = signal * 2.0;
-		weight = clamp( weight, 0.0, 1.0 );
+		weight = clamp( weight, vector(0), vector(1) );
 
 	}
 
 	return ( value );
 }
+
 
 
 vector vRidged( float x, y, filtwidth, maxoctaves, lacunarity, offset, gain )
@@ -721,7 +721,7 @@ vector vRidged( float x, y, filtwidth, maxoctaves, lacunarity, offset, gain )
 		xx *= lacunarity; yy *= lacunarity;
 		fw *= lacunarity;
 		weight = signal * 2.0;
-		weight = clamp( weight, 0.0, 1.0 );
+		weight = clamp( weight, vector(0), vector(1) );
 
 	}
 
@@ -750,7 +750,7 @@ vector vRidged( point p; float t, filtwidth, maxoctaves, lacunarity,
 		pp *= lacunarity; tt *= lacunarity;
 		fw *= lacunarity;
 		weight = signal * 2.0;
-		weight = clamp( weight, 0.0, 1.0 );
+		weight = clamp( weight, vector(0), vector(1) );
 
 	}
 
