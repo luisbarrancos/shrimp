@@ -723,14 +723,29 @@ cooktorrance(
 			 * the classical fresnel. */
 			float Krf = 0, Ktf = 0;
 			fresnel( Ln, Hn, 1/ior, Krf, Ktf );
+
+			/* Aqsis produced some strange results when getting the amount
+			 * of reflected light from the microfacets. Apparent solution
+			 * seems to clamp the value. */
+#if RENDERER == aqsis
+			F = clamp( Krf, 0, 1 );
+#else
 			F = Krf;
+#endif
 
 			/* If the microfacets distribution is anisotropic, then it
-			 * needs to be coupled with an isotropic specular term, at
-			 * least for the Heidrich-Seidel case. */
+			 * needs to be coupled with an isotropic specular term. We
+			 * could leave it to the user discretion though. */
+
+			/* no specularbrdf() in Aqsis? */
+#if RENDERER == aqsis
+			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
+					cospsi);
+#else
 			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
 				cospsi + ( (distromodel == 3) ?
 					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0) ) );
+#endif
 		}
 	}
 	return clamp(Ccook, color(0), color(1));
@@ -2207,6 +2222,7 @@ rtglass(
 			uniform string spectype;
 			uniform float rbounces, sbounces, krefl, krefr;
 			vector In; normal Nn;
+			uniform string envmap;
 	   )
 
 {
@@ -2247,11 +2263,12 @@ rtglass(
 
 	color crefl = 0, crefr = 0;
 
+	/* should be raytrace, but added envmap, just in case */
 	if (kr > 0) /* reflections, if active */
-		crefl = environment( "raytrace", refldir, "samples", rsamples,
+		crefl = environment( envmap, refldir, "samples", rsamples,
 					"blur", krblur, "maxdist", reflmaxdist );
 	if (kt > 0) /* refractions, if active */
-		crefr = environment( "raytrace", refrdir, "samples", rsamples,
+		crefr = environment( envmap, refrdir, "samples", rsamples,
 					"blur", ktblur, "maxdist", refrmaxdist );
 
 
@@ -2264,15 +2281,38 @@ rtglass(
 		float d = (aamp == 1) ? ilen * aexp : pow( ilen, aamp) * aexp;
 		if (ilen < 1e38) { /* consider ray hits only (restrict to maxdist?) */
 			color atten = (attencolor != color(1)) ?
-				color( exp( attencolor[0] * -d),
-						 exp( attencolor[1] * -d),
-						 exp( attencolor[2] * -d) ) : color(1);
+				color( exp( comp( attencolor,0) * -d),
+					   exp( comp( attencolor,1) * -d),
+					   exp( comp( attencolor,2) * -d) ) : color(1);
 			attenrefr *= (kt > 0 && entering == 0) ? atten : color(1);
 			attenrefl *= (kr > 0 && entering == 1) ? atten : color(1);
 		}
 	}
 
 	color C = 0;
+
+	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
+	 * just leave everything in place. */
+#if RENDERER == aqsis
+	if (Ka > 0) C =  Ka * ambient();
+	if (Kd > 0) C += Kd * diffuse(Nf);
+	if (Ks > 0) {
+		if (spectype == "glossy") C += locillumglassy( Nf, -In, roughness,
+				sharpness);
+		else C+= specular(Nf, -In, roughness);
+	}
+	/* attenuation blends */
+	if (Kr > 0) {
+		if (krefl > 0) C += mix( kr * crefl, kr * crefl * attenrefl, krefl);
+		else C += kr * crefl;
+	}
+	if (Kt > 0) {
+		if (krefr > 0) C += mix( kt * crefr, kt * crefr * attenrefr, krefr);
+		else C += kt * crefr;
+	}
+	
+#else	
+	
 	/* set illumination terms, if active */
 	C  = (ka == 0) ? color(0) : ka * ambient();
 	C += (kd == 0) ? color(0) : kd * diffuse(Nf);
@@ -2285,6 +2325,8 @@ rtglass(
 			mix( kr * crefl, kr * crefl * attenrefl, krefl ) ) ;
 	C += (kt == 0) ? color(0) : ( (krefr == 0) ? kt * crefr :
 			mix( kt * crefr, kt * crefr * attencolor * attenrefr, krefr ) );
+	
+#endif
 	
 	return C;
 }
