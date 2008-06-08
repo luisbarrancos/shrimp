@@ -709,8 +709,17 @@ cooktorrance(
 			} else if (geomodel == 1) {
 				G = smith( cospsi, costheta, roughness );
 			} else {
-				/* requires erfc()/erfcf() shadeop */
+				/* for some reason, Pixie seems to hate big spline() calls
+				 * so we have a problem here with the lookup error function
+				 * version. spline
+				 * "f=Sffffffffffffffffffffffffffffffffffffffffff") ret
+				 * "linear" temporary_23 .... disable this for the time being
+				 * just make it use the Smith attenuation. */
+#if RENDERER == pixie
+				G = smith( cospsi, costheta, roughness );
+#else
 				G = he_torrance( costheta, cospsi, roughness );
+#endif
 			}
 
 			/* We could use the Schlick fresnel approximation, but the
@@ -724,7 +733,7 @@ cooktorrance(
 			float Krf = 0, Ktf = 0;
 			fresnel( Ln, Hn, 1/ior, Krf, Ktf );
 
-			/* Aqsis produced some strange results when getting the amount
+			/* Aqsis produced some strange artifacs when getting the amount
 			 * of reflected light from the microfacets. Apparent solution
 			 * seems to clamp the value. */
 #if RENDERER == aqsis
@@ -1340,6 +1349,8 @@ color subsurfaceSkin(
  * RenderMan 3: Render Harder," for notes and background information.
  */
 
+/* Note: this seems to kill both aqsis (1.4phase2) and pixie (r1162), but
+ * this behaviour exists for quite some time */
 void sinhcosh(float t; output float sinh, cosh;)
 {
     float t2 = t;
@@ -1472,6 +1483,7 @@ color KMOverGlossy(	normal Nn;
  * Ks: specular coefficient
 */
 
+/* this kills pixie r1162 */
 color
 LocIllumGranier(
 					normal Nn, N1; vector Vf;
@@ -1557,6 +1569,8 @@ LocIllumGranier(
 ////////////////////////////////////////////////////////////////////////////////
 // Slightly tweaked for Shrimp's structure /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+/* this kills pixie r1162 */
 
 /*
  * lafortune.sl -- Implement the BRDF representation of Lafortune et al.
@@ -1849,10 +1863,10 @@ color tshair(
 color kajiyakay(
 					float Ka, Kd, Ks; //ambient, diffuse, specular coefficients
 					float rough; // specular roughness
-					color Cd; // "hidden" surface color,sometimes bound to geo
+					color Cdd; // "hidden" surface color,sometimes bound to geo
 					color Cbase; // hair base color
 					color Ctip; // hair tip color
-					color Cs; // specular color
+					color Css; // specular color
 					normal Nn; // normal vector
 					vector Vf; // viewer vector
 		)
@@ -1899,7 +1913,8 @@ color kajiyakay(
 		}
 	}
 	// blend base color and tip color based on v coordinate
-	return Cd * mix( Cbase, Ctip, v) *(Ka*ambient() + Kd*Cdiff) + Ks*Cs*Cspec;
+	return Cdd * mix( Cbase, Ctip, v) * (Ka * ambient() + Kd * Cdiff) +
+			(Ks * Css * Cspec);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2168,8 +2183,10 @@ woodreflectance(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Larry Gritz's glass shader, from The RenderMan Repository ///////////////////
-// http://www.renderman.org ////////////////////////////////////////////////////
+// Raytraced glass shader, based on Larry Gritz's glass shader, and on Mario ///
+// Marengo's glass shader (altough not even remotely as good/complete as ///////
+// Mario's VEX shader). The Larry Gritz glass shader was taken from ////////////
+// The RenderMan Repository - http://www.renderman.org  ////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /* Tweaked to fit Shrimp's structure and needs, added attenuation, blend
@@ -2226,6 +2243,9 @@ rtglass(
 	   )
 
 {
+#if RENDERER == pixie
+	color C = 0; /* Needed to keep pixie's parser out of this block */
+#else
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
@@ -2271,7 +2291,6 @@ rtglass(
 		crefr = environment( envmap, refrdir, "samples", rsamples,
 					"blur", ktblur, "maxdist", refrmaxdist );
 
-
 	/* attenuation, when there are ray hits */
 	extern vector I; /* we just passed the normalized viewer as argument
 						but we need the ray lenght */
@@ -2290,9 +2309,9 @@ rtglass(
 	}
 
 	color C = 0;
-
+	
 	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
-	 * just leave everything in place. */
+	 * just leave everything in place (there's always frankenrender) */
 #if RENDERER == aqsis
 	if (Ka > 0) C =  Ka * ambient();
 	if (Kd > 0) C += Kd * diffuse(Nf);
@@ -2328,6 +2347,110 @@ rtglass(
 	
 #endif
 	
+#endif
+	return C;
+}
+
+/* Pixie doesn't likes binary conditionals, so it needs a custom version */
+/* glass body */
+
+color
+rtglasspixie(
+			float Ka, Kd, Ks, Kr, Kt, ior, roughness, sharpness;
+			color basecolor, attencolor;
+			float krblur, ktblur, aexp, aamp;
+			uniform float samples, refrmaxdist, reflmaxdist;
+			uniform string spectype;
+			uniform float rbounces, sbounces, krefl, krefr;
+			vector In; normal Nn;
+			uniform string envmap;
+	   )
+
+{
+	normal Nf = faceforward( Nn, In );
+	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
+
+	vector refldir = 0, refrdir = 0;
+	float kr = 0, kt = 0;
+
+	/* if I.N>0, ray is entering the medium, else ray is exiting and eta is the
+	   reverse of the ior when ray is entering the medium. */
+	float entering = 0;
+	float eta = 1 / ior;
+	normal Tn = Nn;
+
+	if (idotn > 0) {
+		entering = 1; eta = ior;
+		Tn = -Nn; /* we're inside the medium, so reverse surface normals */
+	}
+
+	fresnel( In, Tn, eta, kr, kt, refldir, refrdir);
+
+	kt = 1 - kr; /* physically incorrect but portable */
+	kr *= Kr; kt *= Kt;
+
+	/* get current ray depth and scale down samples as ray depth goes up */
+	/* if needed */
+	uniform float raydepth = 0;
+	rayinfo("depth", raydepth);
+	uniform float rsamples = samples;
+	if (raydepth > 1) rsamples = max(1, samples/pow( 2, raydepth));
+
+	/* we don't need ambient nor diffuse at higher ray levels (if at all?).
+	 * As for speculars, restricted to number of specular bounces, if faces
+	 * are facing outwards only. Note: scale specular by fresnel term?
+	 * What about diffuse? (as in the Ashikhmin-Shirley model) ? */
+	float ka = Ka, kd = Kd, ks = Ks;
+	if (raydepth > 0) {
+		kd = 0; kd = 0;
+	}
+	if (raydepth > sbounces || entering == 1) ks = 0;
+	if (raydepth > rbounces) kr = 0;
+
+	color crefl = 0, crefr = 0;
+
+	/* should be raytrace, but added envmap, just in case */
+	if (kr > 0) /* reflections, if active */
+		crefl = environment( envmap, refldir, "samples", rsamples,
+					"blur", krblur, "maxdist", reflmaxdist );
+	if (kt > 0) /* refractions, if active */
+		crefr = environment( envmap, refrdir, "samples", rsamples,
+					"blur", ktblur, "maxdist", refrmaxdist );
+
+
+	/* attenuation, when there are ray hits */
+	extern vector I; /* we just passed the normalized viewer as argument
+						but we need the ray lenght */
+	color attenrefl = 1, attenrefr = 1;
+	if (raydepth > 0 && (kr > 0 || kt > 0)) {
+		float ilen = length(I);
+		float d = pow( ilen, aamp) * aexp;
+		color atten = color ( exp( comp( attencolor, 0) * -d),
+								exp( comp( attencolor, 1) * -d),
+								exp( comp( attencolor, 2) * -d) );
+		if (kt > 0 && entering == 0) attenrefr *= atten;
+		if (kr > 0 && entering == 1) attenrefl *= atten;
+	}
+
+	color C = 0;
+
+	if (ka > 0) C =  Ka * ambient();
+	if (kd > 0) C += Kd * diffuse(Nf);
+	if (ks > 0) {
+		if (spectype == "glossy") C += locillumglassy( Nf, -In, roughness,
+				sharpness);
+		else C+= specular(Nf, -In, roughness);
+	}
+	/* attenuation blends */
+	if (kr > 0) {
+		if (krefl > 0) C += mix( kr * crefl, kr * crefl * attenrefl, krefl);
+		else C += kr * crefl;
+	}
+	if (kt > 0) {
+		if (krefr > 0) C += mix( kt * crefr, kt * crefr * attenrefr, krefr);
+		else C += kt * crefr;
+	}
+		
 	return C;
 }
 

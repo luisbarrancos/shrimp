@@ -33,7 +33,9 @@ find_penrose_rhomb(
 	uniform float basisS[5] = { 1, -cos36, cos72, cos72, -cos36 };
 	uniform float basisT[5] = { 0, -sin36, sin72, -sin72, sin36 };
 
-	float originalPt[5] = 0, pt[5] = 0;
+	/* Pixie and Aqsis expect arrays to be assigned with all elements */
+	float originalPt[5] = { 0, 0, 0, 0, 0 };
+	float pt[5] = { 0, 0, 0, 0, 0 };
 
 	for(i = 0; i < 5; i += 1)
 	{
