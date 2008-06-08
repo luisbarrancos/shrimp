@@ -1,49 +1,42 @@
 <renderers>
 	<_3delight name="3Delight">
-		<shader_compiler>shaderdl -w2 -O3 -I%i -d $HOME/.shrimp/temp %s</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>shaderdl -DRENDERER=%r -w2 -O3 -I%i -d $HOME/.shrimp/temp %s</shader_compiler>
 		<compiled_shader_extension>sdl</compiled_shader_extension>
 		<renderer_command>renderdl -p 2 -id %s</renderer_command>
 		<displays>bmp cineon dsm eps exr framebuffer ghost idisplay iff maya_render_view null pic png psd radiance shadowmap tiff zfile</displays>
 	</_3delight>
 	<air name="Air">
-		<shader_compiler>shaded -I%i %s -o %o</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>shaded -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>slb</compiled_shader_extension>
 		<renderer_command>air -d %s</renderer_command>
 		<displays>tiff png jpeg bmp sgi tga zfile framebuffer airshow shadow rpf texture hdr psd exr</displays>
 	</air>
 	<aqsis name="Aqsis">
-		<shader_compiler>aqsl -I%i %s -o %o</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>aqsl -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>slx</compiled_shader_extension>
 		<renderer_command>aqsis %s -shaders=%i</renderer_command>
 		<displays>file framebuffer zfile zframebuffer shadow tiff xpm exr debugdd</displays>
 	</aqsis>
 	<entropy name="Entropy">
-		<shader_compiler>sle -v -I%i %s -o %o</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>sle -DRENDERER=%r -v -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sle</compiled_shader_extension>
 		<renderer_command>entropy -d %s</renderer_command>
 		<displays>framebuffer</displays>
 	</entropy>
 	<pixie name="Pixie">
-		<shader_compiler>sdrc -I%i %s -o %o</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>sdrc -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sdr</compiled_shader_extension>
 		<renderer_command>rndr -d %s</renderer_command>
 		<displays>framebuffer</displays>
 	</pixie>
 	<prman name="Photorealistic RenderMan">
-		<shader_compiler>shader -O2 -lintlt -I%i %s</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>shader -DRENDERER=%r -O2 -lintlt -I%i %s</shader_compiler>
 		<compiled_shader_extension>slo</compiled_shader_extension>
 		<renderer_command>prman %s</renderer_command>
 		<displays>x11 windows tiff sgif alias targa cineon softimage mayaiff shadow zfile deepshad openexr texture pointcloud rib wavefrontobj</displays>
 	</prman>
 	<renderdotc name="RenderDotC">
-		<shader_compiler>shaderdc -I%i %s</shader_compiler>
-		<renderer_symbol>-DRENDERER=%s</renderer_symbol>
+		<shader_compiler>shaderdc -DRENDERER=%r -I%i %s</shader_compiler>
 		<compiled_shader_extension>so</compiled_shader_extension>
 		<renderer_command>renderdc %s</renderer_command>
 		<displays>framebuffer</displays>

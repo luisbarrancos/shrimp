@@ -54,7 +54,6 @@ public:
 		std::string name;
 		std::string shader_compiler;
 		std::string compiled_shader_extension;
-		std::string renderer_symbol;
 		std::string renderer_command;
 		displays_t displays;
 	};
@@ -119,8 +118,6 @@ public:
 						const std::string name (a->Name());
 						if (name == "compiled_extension") {
 							m_compiled_shader_extension = trim (a->Value());
-						} else if (name == "renderer_symbol") {
-							m_renderer_symbol = trim (a->Value());
 						}
 					}
 
@@ -207,7 +204,6 @@ public:
 
 		xml::element compilation ("compilation_command");
 		compilation.push_attribute ("compiled_extension", m_compiled_shader_extension);
-		compilation.push_attribute ("renderer_symbol", m_renderer_symbol);
 		compilation.set_text (m_shader_compiler);
 		prefs.push_child (compilation);
 
@@ -242,8 +238,7 @@ public:
 
 		m_shader_compiler = "aqsl -I%i %s -o %o";
 		m_compiled_shader_extension = "slx";
-		m_renderer_symbol = "-DRENDERER=aqsis";
-		m_renderer = "aqsis %s -shaders=%i";
+		m_renderer = "aqsis -DRENDERER=%r %s -shaders=%i";
 		m_renderer_display = "framebuffer";
 
 		m_output_width = 256;
@@ -353,13 +348,6 @@ public:
 
 				if (element == "shader_compiler") {
 					new_renderer.shader_compiler = c->FirstChild()->ToText()->Value();
-				} else if (element == "renderer_symbol") {
-
-					// update the option with the renderer's code name
-					std::string option = c->FirstChild()->ToText()->Value();
-					replace_variable (option, "%s", renderer);
-					new_renderer.renderer_symbol = option;
-
 				} else if (element == "compiled_shader_extension") {
 					new_renderer.compiled_shader_extension = c->FirstChild()->ToText()->Value();
 				} else if (element == "renderer_command") {
@@ -393,7 +381,6 @@ public:
 
 		std::string shader_compiler ("");
 		std::string compiled_shader_extension ("");
-		std::string renderer_symbol ("");
 		std::string renderer ("");
 
 		renderers_t::const_iterator r = m_renderers.find (RendererCode);
@@ -406,7 +393,6 @@ public:
 		m_renderer_code = RendererCode;
 		m_shader_compiler = r->second.shader_compiler;
 		m_compiled_shader_extension = r->second.compiled_shader_extension;
-		m_renderer_symbol = r->second.renderer_symbol;
 		m_renderer = r->second.renderer_command;
 	}
 
@@ -430,7 +416,6 @@ public:
 	std::string m_renderer_code;
 	std::string m_shader_compiler;
 	std::string m_compiled_shader_extension;
-	std::string m_renderer_symbol;
 	std::string m_renderer;
 	std::string m_renderer_display;
 

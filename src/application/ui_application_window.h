@@ -50,7 +50,9 @@ class application_window : public fltk::Window {
 
 	// renderer list
 	general_options::renderers_t m_renderers;
-	// display list
+	// renderer chooser
+	fltk::Choice* m_renderer_chooser;
+	// display chooser
 	fltk::Choice* m_renderer_display_chooser;
 
 public:
@@ -76,6 +78,7 @@ private:
 	void on_menu_file_save (fltk::Widget*);
 	void on_menu_file_save_as (fltk::Widget*);
 	void on_menu_file_export_scene (fltk::Widget*);
+	void on_menu_file_options (fltk::Widget*);
 
 	void on_menu_shader_properties (fltk::Widget*);
 	void on_menu_code_preview (fltk::Widget*);
@@ -101,6 +104,10 @@ private:
 
 	void build_menu (const std::string& name, scene::default_block_list_t& list);
 
+	// update renderer and display choosers
+	void set_renderer_chooser_value (const std::string RendererCode);
+	void set_display_chooser_value (const std::string RendererName, const std::string DisplayName);
+
 	// override the window's handle() function
 	int handle (int event);
 
@@ -110,6 +117,7 @@ private:
 	static void cb_menu_file_save (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save (W); }
 	static void cb_menu_file_save_as (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save_as (W); }
 	static void cb_menu_file_export_scene (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_export_scene (W); }
+	static void cb_menu_file_options (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_options (W); }
 
 	static void cb_menu_shader_properties (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_shader_properties (W); }
 	static void cb_menu_code_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_code_preview (W); }
@@ -127,7 +135,6 @@ private:
 	static void cb_renderer (fltk::Widget* W, void* Data) { application_pointer->on_renderer_choice (W, Data); }
 	static void cb_renderer_display (fltk::Widget* W, void* Data) { application_pointer->on_renderer_display_choice (W, Data); }
 
-	static void on_menu_file_options (fltk::Widget*, void*);
 	static void on_menu_file_close (fltk::Widget*, void*);
 	static void on_menu_file_quit (fltk::Widget*, void*);
 	static void on_menu_help_about (fltk::Widget*, void*);

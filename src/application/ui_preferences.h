@@ -44,11 +44,11 @@ static bool answer;
 
 static fltk::LightButton* s_splash_screen;
 static fltk::Choice* s_renderer;
+static fltk::Output* s_renderer_code;
 static fltk::Input* s_compilation;
 static fltk::Input* s_shader_extension;
-static fltk::Output* s_renderer_symbol;
 static fltk::Input* s_rendering;
-static fltk::Input* s_renderer_display;
+static fltk::Choice* s_renderer_display;
 
 static fltk::Input* s_render_width;
 static fltk::Input* s_render_height;
@@ -172,23 +172,23 @@ public:
 			w->add (s_renderer);
 			s_renderer->tooltip ("overwrite current rendering settings with another renderer");
 
-			s_compilation = new fltk::Input (120,start + 30, 250,23,"compilation");
+			s_renderer_code = new fltk::Output (120,start + 30, 200,23,"renderer code");
+			w->add (s_renderer_code);
+			s_renderer_code->tooltip ("renderer code (not editable, it's an option for the shader compiler)");
+
+			s_compilation = new fltk::Input (120,start + 60, 250,23,"compilation");
 			w->add (s_compilation);
 			s_compilation->tooltip ("shader compilation command");
 
-			s_shader_extension = new fltk::Input (120,start + 60, 50,23,"shader extension");
+			s_shader_extension = new fltk::Input (120,start + 90, 50,23,"shader extension");
 			w->add (s_shader_extension);
 			s_shader_extension->tooltip ("compiled shader extension");
-
-			s_renderer_symbol = new fltk::Output (120,start + 90, 200,23,"renderer symbol");
-			w->add (s_renderer_symbol);
-			s_renderer_symbol->tooltip ("renderer symbol (not editable, option for shader compiler)");
 
 			s_rendering = new fltk::Input (120,start + 120, 250,23,"rendering");
 			w->add (s_rendering);
 			s_rendering->tooltip ("scene rendering command");
 
-			s_renderer_display = new fltk::Input (120,start + 150, 250,23,"display");
+			s_renderer_display = new fltk::Choice (120,start + 150, 250,23,"display");
 			w->add (s_renderer_display);
 			s_renderer_display->tooltip ("renderer display for preview output");
 
@@ -252,9 +252,9 @@ public:
 		// set values
 		s_compilation->text (m_shader_compiler.c_str());
 		s_shader_extension->text (m_compiled_shader_extension.c_str());
-		s_renderer_symbol->text (m_renderer_symbol.c_str());
+		s_renderer_code->text (m_renderer_code.c_str());
 		s_rendering->text (m_renderer.c_str());
-		s_renderer_display->text (m_renderer_display.c_str());
+		set_display_chooser (m_renderer_code.c_str(), m_renderer_display);
 
 		std::string render_width = string_cast (m_output_width);
 		std::string render_height = string_cast (m_output_height);
@@ -283,9 +283,8 @@ public:
 		m_renderer_code = m_hidden_renderer_code;
 		m_shader_compiler = trim (s_compilation->value());
 		m_compiled_shader_extension = trim (s_shader_extension->value());
-		m_renderer_symbol = trim (s_renderer_symbol->value());
 		m_renderer = trim (s_rendering->value());
-		m_renderer_display = trim (s_renderer_display->value());
+		m_renderer_display = get_display_chooser_value (m_hidden_renderer_code);
 
 		std::string render_width = trim (s_render_width->value());
 		std::string render_height = trim (s_render_height->value());
@@ -324,33 +323,73 @@ public:
 
 	void on_renderer_choice (fltk::Widget* W, void* Data) {
 
+		std::string renderer_code ("");
 		std::string shader_compiler ("");
 		std::string compiled_shader_extension ("");
-		std::string renderer_symbol ("");
 		std::string renderer ("");
 		std::string renderer_display ("");
+
+		std::string old_renderer_code = m_hidden_renderer_code;
 
 		m_hidden_renderer_code = std::string ((const char*)Data);
 		renderers_t::const_iterator r = m_renderers.find (m_hidden_renderer_code);
 		if (r != m_renderers.end()) {
 
+			renderer_code = m_hidden_renderer_code;
 			shader_compiler = r->second.shader_compiler;
 			compiled_shader_extension = r->second.compiled_shader_extension;
-			renderer_symbol = r->second.renderer_symbol;
 			renderer = r->second.renderer_command;
-			// TODO: handle display list
+			renderer_display = get_display_chooser_value (old_renderer_code);
 		}
 
+		s_renderer_code->text (renderer_code.c_str());
 		s_compilation->text (shader_compiler.c_str());
 		s_shader_extension->text (compiled_shader_extension.c_str());
-		s_renderer_symbol->text (renderer_symbol.c_str());
 		s_rendering->text (renderer.c_str());
-		s_renderer_display->text (renderer_display.c_str());
+		set_display_chooser (renderer_code, renderer_display);
 	}
 
 	static void cb_renderer (fltk::Widget* W, void* Data) {
 
 		dialog_instance->on_renderer_choice (W, Data);
+	}
+
+	void set_display_chooser (const std::string RendererCode, const std::string Value = "") {
+
+		unsigned long display_number = 0;
+
+		general_options::renderers_t::const_iterator r = m_renderers.find (RendererCode);
+
+		s_renderer_display->remove_all();
+		s_renderer_display->begin();
+		unsigned long current_display_number = 0;
+		for (general_options::displays_t::const_iterator current_display = r->second.displays.begin(); current_display != r->second.displays.end(); ++current_display, ++current_display_number) {
+			new fltk::Item (current_display->c_str());
+
+			if (*current_display == Value) {
+				display_number = current_display_number;
+			}
+		}
+		s_renderer_display->end();
+
+		// set value
+		if (r->second.displays.size() > 0) {
+
+			s_renderer_display->value (display_number);
+		}
+	}
+
+	std::string get_display_chooser_value (const std::string RendererCode) {
+
+		const unsigned long list_number = s_renderer_display->value();
+
+		general_options::renderers_t::const_iterator r = m_renderers.find (RendererCode);
+		if (r->second.displays.size() > list_number) {
+
+			return r->second.displays[list_number];
+		}
+
+		return "";
 	}
 };
 

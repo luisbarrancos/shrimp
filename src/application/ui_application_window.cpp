@@ -147,10 +147,19 @@ void application_window::on_menu_code_preview (fltk::Widget*) {
 }
 
 // File menu : Render Options...
-void application_window::on_menu_file_options (fltk::Widget*, void*) {
+void application_window::on_menu_file_options (fltk::Widget*) {
 
 	preferences::dialog d;
 	d.pref_dialog();
+
+	// update the renderer and display choosers according to the preferences
+	general_options prefs;
+	prefs.load();
+	const std::string renderer_code = prefs.m_renderer_code;
+	const std::string display_name = prefs.m_renderer_display;
+
+	set_renderer_chooser_value (renderer_code);
+	set_display_chooser_value (renderer_code, display_name);
 }
 
 
@@ -252,28 +261,8 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 	general_options prefs;
 	prefs.load();
 	const std::string display_name = prefs.m_renderer_display;
-	unsigned long display_number = 10000;
 
-	// update the display chooser according to the current renderer
-	m_renderer_display_chooser->remove_all();
-	m_renderer_display_chooser->begin();
-	unsigned long current_display_number = 0;
-	for (general_options::displays_t::const_iterator current_display = r->second.displays.begin(); current_display != r->second.displays.end(); ++current_display, ++current_display_number) {
-		new fltk::Item (current_display->c_str(), 0, cb_renderer_display, (void*)current_display->c_str());
-
-		if (*current_display == display_name) {
-			display_number = current_display_number;
-		}
-	}
-	m_renderer_display_chooser->end();
-
-	// set first value
-	if (r->second.displays.size() > 0) {
-		if (display_number == 10000)
-			m_renderer_display_chooser->value (0);
-		else
-			m_renderer_display_chooser->value (display_number);
-	}
+	set_display_chooser_value (renderer_name, display_name);
 
 	// save the renderer parameters
 	prefs.set_renderer (renderer_name);
@@ -360,7 +349,7 @@ application_window::application_window() :
 
 				fltk::Item* menu_file_options = new fltk::Item ("Options");
 				menu_file_options->shortcut (fltk::CTRL + 't');
-				menu_file_options->callback ((fltk::Callback*)on_menu_file_options, this);
+				menu_file_options->callback ((fltk::Callback*)cb_menu_file_options, this);
 
 				new fltk::Divider();
 
@@ -433,12 +422,12 @@ application_window::application_window() :
 		general_options prefs;
 		prefs.load();
 		m_renderers = prefs.get_renderer_list();
-		fltk::Choice* renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
-		renderer_chooser->tooltip ("Choose an installed RenderMan engine");
+		m_renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
+		m_renderer_chooser->tooltip ("Choose an installed RenderMan engine");
 
 		unsigned long renderer_menu_number = 0;
 		unsigned long current_menu_number = 0;
-		renderer_chooser->begin();
+		m_renderer_chooser->begin();
 		for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i, ++current_menu_number) {
 			if (r_i->first == _3delight) {
 				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)_3delight);
@@ -478,14 +467,14 @@ application_window::application_window() :
 			else
 				log() << error << "unknown renderer: " << r_i->second.name << std::endl;
 		}
-		renderer_chooser->end();
+		m_renderer_chooser->end();
 
 		// display chooser
 		m_renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
 		m_renderer_display_chooser->tooltip ("Select one of the renderer's displays");
 
 		// set preferences values
-		renderer_chooser->value (renderer_menu_number);
+		m_renderer_chooser->value (renderer_menu_number);
 		on_renderer_choice (this, (void*)prefs.m_renderer_code.c_str());
 
 
@@ -582,6 +571,81 @@ void application_window::block_menu_action (fltk::Widget* w, void*) {
 
 		// refresh
 		m_scene_view->redraw();
+	}
+}
+
+void application_window::set_renderer_chooser_value (const std::string RendererCode) {
+
+	unsigned long renderer_menu_number = 0;
+	unsigned long current_menu_number = 0;
+	m_renderer_chooser->begin();
+	for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i, ++current_menu_number) {
+		if (r_i->first == _3delight) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)_3delight);
+			if (RendererCode == _3delight)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == air) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)air);
+			if (RendererCode == air)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == aqsis) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)aqsis);
+			if (RendererCode == aqsis)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == entropy) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)entropy);
+			if (RendererCode == entropy)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == pixie) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
+			if (RendererCode == pixie)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == prman) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
+			if (RendererCode == prman)
+				renderer_menu_number = current_menu_number;
+		}
+		else if (r_i->first == renderdotc) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
+			if (RendererCode == renderdotc)
+				renderer_menu_number = current_menu_number;
+		}
+		else
+			log() << error << "unknown renderer: " << r_i->second.name << std::endl;
+	}
+	m_renderer_chooser->end();
+
+	// set preferences values
+	m_renderer_chooser->value (renderer_menu_number);
+}
+
+void application_window::set_display_chooser_value (const std::string RendererName, const std::string DisplayName) {
+
+	unsigned long display_number = 0;
+
+	general_options::renderers_t::const_iterator r = m_renderers.find (RendererName);
+
+	m_renderer_display_chooser->remove_all();
+	m_renderer_display_chooser->begin();
+	unsigned long current_display_number = 0;
+	for (general_options::displays_t::const_iterator current_display = r->second.displays.begin(); current_display != r->second.displays.end(); ++current_display, ++current_display_number) {
+		new fltk::Item (current_display->c_str(), 0, cb_renderer_display, (void*)current_display->c_str());
+
+		if (*current_display == DisplayName) {
+			display_number = current_display_number;
+		}
+	}
+	m_renderer_display_chooser->end();
+
+	// set value
+	if (r->second.displays.size() > 0) {
+
+		m_renderer_display_chooser->value (display_number);
 	}
 }
 

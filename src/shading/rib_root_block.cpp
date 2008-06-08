@@ -629,12 +629,10 @@ std::string rib_root_block::shader_compilation_command (const std::string& Shade
 	std::string compiled_shader = DestinationName + '.' + prefs.m_compiled_shader_extension;
 
 	std::string command = prefs.m_shader_compiler;
+	replace_variable (command, "%r", prefs.m_renderer_code);
 	replace_variable (command, "%i", IncludePath);
 	replace_variable (command, "%s", ShaderPath + '/' + Shader);
 	replace_variable (command, "%o", DestinationPath + '/' + compiled_shader);
-
-	// add renderer specific symbol
-	command += ' ' + prefs.m_renderer_symbol;
 
 	log() << aspect << " Shader compilation command : " << command << std::endl;
 
