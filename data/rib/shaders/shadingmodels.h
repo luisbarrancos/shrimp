@@ -2605,4 +2605,156 @@ color strauss(
 	}
 	return C;
 }
-		
+
+////////////////////////////////////////////////////////////////////////////////
+// Fur surface shader, by Clint Hanson and Armin Bruderlin, from ///////////////
+// The RenderMan Repository - www.renderman.org ////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* slightly tweaked to fit shrimp's structure */
+
+/* Renamed to SIG2k_srf_fur to be consistent with the RMR
+ * -- tal AT renderman DOT org
+ * */
+
+/* fur shader shader, wich clumping and specular model, by Clint Hanson,
+ * and Armin Bruderlin. */
+
+color
+fnc_diffuselgt(
+				color Cin; /* Light color */
+				vector Lin; /* Light position */
+				vector Nin; /* Surface normal */
+		)
+{
+	color Cout = Cin;
+	vector LN, NN;
+	float Atten;
+
+	/* normalize the stuff */
+	LN = normalize( Lin );
+	NN = normalize( Nin );
+
+	/* diffuse calculation */
+	Atten = max( 0, LN.NN );
+
+	Cout *= Atten;
+	
+	return (Cout);
+}
+
+#ifndef luminance
+#define luminance(c)	comp(c,0)*0.299 + comp(c,1)*0.587 + comp(c,2)*.114
+#endif
+
+/* main */
+
+color
+SIG2k_srf_fur(
+				float Ka, Kd, Ks; /* usual meaning */
+				float roughness1, roughness2, spec1, spec2;
+				float start_spec, end_spec, spec_size_fade;
+				float illum_width, var_fade_start, var_fade_end;
+				float clump_dark_strength;
+				/* Hair color */
+				color rootcolor, tipcolor, specularcolor, static_ambient;
+				/* Variables passed from the RIB */
+				uniform float hair_col_var, hair_length, hair_id;
+				uniform normal surface_normal;
+				varying vector clump_vect;
+		)
+{
+	extern vector dPdv, I; /* we're in a function */
+	
+	vector T = normalize(dPdv); /* tangent along length of hair */
+	vector V = -normalize(I); /* view vector */
+	color Cspec = color(0), Cdiff = color(0); /* specular & diffuse storage */
+	float Kspec = Ks;
+	
+	vector nL;
+	varying normal nSN = normalize( surface_normal );
+	vector S = nSN^T; /* Cross product of tangent along hair & surface normal */
+	vector N_hair = (T^S) ; /* normal for hair oriented away from surface */
+	vector norm_hair;
+
+	float l = clamp( nSN.T, 0, 1 ); /* T and surface normal dot for blend */
+	float clump_darkening = 1.0;
+	float T_Dot_nL = 0;
+	float T_Dot_e = 0;
+	float Alpha = 0, Beta = 0, Kajiya = 0, darkening = 1.0;
+	varying color final_c;
+
+	/* values from light */
+	uniform float nonspecular = 0;
+	uniform color SpecularColor = 1;
+
+	/* When the hair is exactly perpendicular to the surface, use the surface
+	 * normal, when the hair is exactly tangent to the surface, use the hair
+	 * normal, otherwise, blend between the two normals in a linear fashion. */
+	norm_hair = (l * nSN) + ( (1-l) * N_hair);
+	norm_hair = normalize( norm_hair );
+
+	/* Make the specular only hit in certain parts of the hair. V is along the
+	 * length o fthe hair. */
+	extern float v;
+	Kspec *= min( smoothstep( start_spec, start_spec + spec_size_fade, v),
+				1 - smoothstep( end_spec, end_spec - spec_size_fade, v ) );
+
+	/* Loop over lights, catch highlights as if this was a thin cylinder.
+	 * Specular illumination model from James T. Kajiya and Timothy L. Kay,
+	 * (1989) "Rendering Fur with Three Dimensional Textures", Computer
+	 * Graphics 23, 3, 271-280. */
+
+	extern point P;
+	color C = 0;
+	
+	illuminance( P, norm_hair, radians( illum_width ) )
+	{
+		extern vector L;
+		extern color Cl;
+
+		nL = normalize(L);
+
+		T_Dot_nL = T.nL;
+		T_Dot_e = T.V;
+		Alpha = acos( T_Dot_nL );
+		Beta = acos( T_Dot_e );
+
+		Kajiya = T_Dot_nL * T_Dot_e + sin( Alpha ) * sin( Beta );
+
+		/* Calculate diffuse components */
+		if ( clump_dark_strength > 0.0 ) {
+			clump_darkening = 1 - ( clump_dark_strength *
+					abs( clamp( nL.normalize(-1 * clump_vect), -1, 0 )));
+		} else {
+			clump_darkening = 1.0;
+		}
+
+		/* Get light source parameters */
+		if ( lightsource("__nonspecular", nonspecular) == 0)
+			nonspecular = 0;
+		if ( lightsource("__SpecularColor", SpecularColor) == 0)
+			SpecularColor = color(1);
+
+		Cspec += (1 - nonspecular) * SpecularColor * clump_darkening *
+			( (spec1 * Cl * pow( Kajiya, 1/roughness1)) +
+			  (spec2 * Cl * pow( Kajiya, 1/roughness2)));
+
+		Cdiff += clump_darkening * fnc_diffuselgt( Cl, L, norm_hair );
+	}
+
+	darkening = clamp( hair_col_var, 0, 1);
+	darkening = (1 - ( smoothstep( var_fade_end, var_fade_start,
+					abs( luminance( Kd * Cdiff ))) * darkening ));
+
+	final_c = mix( rootcolor, tipcolor, v ) * darkening;
+
+	C = ( (Ka * ambient() + Kd * Cdiff + static_ambient) * final_c +
+			( (v) * Kspec * Cspec * specularcolor ));
+	
+	return clamp( C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+
+
