@@ -656,9 +656,6 @@ std::string rib_root_block::scene_rendering_command (const std::string& RIBFile,
 
 void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName, const std::string& DisplacementName, const std::string& LightName, const std::string& AtmosphereName, const std::string& ImagerName) {
 
-	// output image
-	std::string tmptif = TempDir + "/preview.tif";
-
 	// open file
 	std::ofstream file (RIBFile.c_str());
 
@@ -726,6 +723,12 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	replace_variable (scene_template, "$(imager_shader)", imager_shader);
 	replace_variable (scene_template, "$(shaders)", other_shaders);
 
+	// prepare display (defaults to "framebuffer")
+	std::string display = prefs.m_renderer_display;
+	if (display.empty()) {
+		display = "framebuffer";
+	}
+
 	// prepare AOV preview (if connected)
 	std::string parent_name ("");
 	bool AOV = get_AOV() && has_AOV_input (parent_name);
@@ -733,8 +736,12 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	// write the RIB file
 	file << "# Shrimp preview scene\n";
 	file << "\n";
-	file << "Display \"outputimage\" \"framebuffer\" \"" << (AOV ? parent_name : "rgb") << "\"\n";
-	file << "Display \"+" + tmptif + "\" \"file\" \"" << (AOV ? parent_name : "rgba") << "\"\n";
+	file << "Display \"outputimage\" \"" << display << "\" \"rgb\"\n";
+	if (AOV) {
+		// AOV output image
+		std::string tmptif = TempDir + "/" + parent_name + ".tif";
+		file << "Display \"+aov_" + tmptif + "\" \"file\" \"" << parent_name << "\"\n";
+	}
 	file << "\n";
 	file << m_general_statements << "\n";
 	file << "\n";
@@ -750,14 +757,24 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 void rib_root_block::show_preview (const std::string& TempDir) {
 
-	// compile default light shaders
 	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
+
+	// compile the shaders from the template scene
+	general_options prefs;
+	prefs.load();
+	std::string scene_template (prefs.get_RIB_scene());
+	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Surface");
+	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Displacement");
+	parse_and_build_shader_type (scene_template, shader_path, TempDir, "LightSource");
+	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Atmosphere");
+
+	// build the default shaders
 	std::string light1_compilation = shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", TempDir, shader_path);
 	system_functions::execute_command(light1_compilation);
 	std::string light2_compilation = shader_compilation_command("distantlight.sl", shader_path, "distantlight", TempDir, shader_path);
 	system_functions::execute_command(light2_compilation);
 
-	// build RenderMan shaders
+	// build Shrimp generated shaders
 	std::string surface_shader ("");
 	std::string displacement_shader ("");
 	std::string light_shader ("");
@@ -916,6 +933,35 @@ void rib_root_block::set_AOV (const bool State) {
 bool rib_root_block::get_AOV() {
 
 	return m_AOV;
+}
+
+void rib_root_block::parse_and_build_shader_type (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType) {
+
+	// find shaders
+	size_t pos = 0;
+	do {
+		pos = RIBscene.find (ShaderType, pos);
+		if (pos != RIBscene.npos) {
+			pos += 7;
+			while (RIBscene[pos] != '"' && pos < RIBscene.size()) {
+				++pos;
+			}
+			size_t name_start = pos++;
+			while (RIBscene[pos] != '"' && pos < RIBscene.size()) {
+				++pos;
+			}
+			size_t name_end = pos++;
+
+			if (name_start < name_end && name_end < RIBscene.size()) {
+
+				const std::string shader_name = RIBscene.substr (name_start + 1, name_end - name_start - 1);
+				std::string shader_compilation = shader_compilation_command(shader_name + ".sl", ShaderPath, shader_name, TempDir, ShaderPath);
+				system_functions::execute_command(shader_compilation);
+			}
+
+		}
+	}
+	while (pos != RIBscene.npos);
 }
 
 

@@ -95,6 +95,10 @@ public:
 
 	void set_AOV (const bool State);
 	bool get_AOV();
+
+private:
+	// parse shaders in the RIB scene and build them
+	void parse_and_build_shader_type (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType);
 };
 
 
