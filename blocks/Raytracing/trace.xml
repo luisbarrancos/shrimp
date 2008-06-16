@@ -1,26 +1,65 @@
 <shrimp name="Trace" type="function" description="Returns light reaching point P from direction R" author="rconstruct">
     <input name="inpoint" description="Surface point" type="point" default="P"/>
 	<input name="indir" description="Direction" type="vector" default="reflect(I, normalize(N))"/>
-    <input name="bias" description="Ray bias" type="float" default="-1"/>
-    <input name="maxdist" description="Maximum distance" type="float" default="100"/>
-	<input name="label" description="Label associated to the ray" type="string" default="&quot;&quot;"/>
-	<input name="subset" description="Set of objects available for ray computations" type="string" default="&quot;&quot;"/>
-	<output name="val" description="Trace color" type="float color"/>
+    <input name="bias" description="Ray bias" storage="uniform" type="float" default="-1"/>
+    <input name="maxdist" description="Maximum distance" storage="uniform" type="float" default="1e38"/>
+	<input name="samples" description="Ray samples" type="float" default="1"/>
+	<input name="coneangle" description="Cone angle" type="float" default="0"/>
+	<input name="blur" description="Amount of blur" type="float" default="0.001"/>
+	<input name="label" description="Label associated to the ray" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="subset" description="Set of objects available for ray computations" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="hitmode" description="Ray hit mode" storage="uniform" type="string" default="&quot;default&quot;"/>
+	<input name="hitsides" description="Hit sides" storage="uniform" type="string" default="&quot;both&quot;"/>
+	<input name="majoraxis" description="Anisotropy axis" type="vector" default="dPdu"/>
+	<input name="majorblur" description="Anisotropy blur" type="float" default="0.01"/>
+	<input name="weight" description="Weight for importance sampling" type="float" default="1"/>
+	<output name="val" description="Trace value" type="float color"/>
+	<output name="dist" description="Optional ray distance" type="float"/>
+	<output name="alpha" description="Unoccluded fraction of trace" type="float"/>
 	<code>
+	#ifdef RAYOPTIONS
+	#undef RAYOTIONS
+	#endif
+
+	#if RENDERER==pixie
+	#define RAYOPTIONS	"bias", $(bias), "samples", \
+						$(samples), "samplecone", $(coneangle)
+	#elif RENDERER==_3delight
+	#define RAYOPTIONS	"label", $(label), "subset", $(subset), "bias", \
+						$(bias), "hitmode", $(hitmode), "maxdist", $(maxdist)
+	#elif RENDERER==prman
+	#define RAYOPTIONS	"samplecone", $(coneangle), "bias", $(bias), "label", \
+						$(label), "subset", $(subset), "hitmode", $(hitmode), \
+						"hitsides", $(hitsides)
+	#elif RENDERER==air
+	#define RAYOPTIONS	"bias", $(bias), "blur", $(blur), "label", $(label), \
+						"maxdist", $(maxdist), "samples", $(samples), \
+						"subset", $(subset), "majoraxis", $(majoraxis), \
+						"majorblur", $(majorblur), "weight", $(weight), \
+						"alpha", $(alpha)
+	#else
+	#define RAYOPTIONS	"bias", $(bias)
+	#endif
+	
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
-		$(val) = $(val:type) trace( $(inpoint), $(indir) );
+	$(val) = $(val:type) trace( $(inpoint), $(indir) );
 	#else
-	#if RENDERER == prman
-		$(val) = $(val:type) trace( $(inpoint), $(indir) );
+	$(val) = $(val:type) trace( $(inpoint), $(indir), RAYOPTIONS );
+	#endif
+
+	#if RENDERER==_3delight
+	$(dist) = $(dist);
 	#else
-		$(val) = $(val:type) trace( $(inpoint), $(indir),
-									"label", $(label),
-									"subset", $(subset),
-									"bias", $(bias),
-									"maxdist", $(maxdist) );
+	$(dist) = 0;
 	#endif
+
+	#if RENDERER==air
+	$(alpha) = $(alpha);
+	#else
+	$(alpha) = 0;
 	#endif
+
 	</code>
-    <usage>Returns the incident light reaching a point P from a given direction R. If raytracing isn't supported, trace will return 0. Bias specifies the bias for the ray starting point. Maxdist specifies are distance after which no intersections are checked. If the float version is used, then the distance to the nearest ray intersection is returned instead.</usage>
+    <usage>Returns the incident light reaching a point P from a given direction R. If raytracing isn't supported, trace will return 0. Bias specifies the bias for the ray starting point, and defaults to -1. Maxdist specifies are distance after which no intersections are checked. If the float version is used, then the distance to the nearest ray intersection is returned instead. Note also that the parameters passed are dependent on the trace() implementation, so check your renderer's documentation regarding the specifics of the trace() shadeop, which may vary considerably from renderer to renderer.</usage>
 </shrimp>
