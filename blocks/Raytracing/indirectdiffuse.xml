@@ -1,39 +1,88 @@
-<shrimp name="IndirectDiffuse" type="function" description="Diffuse-to-diffuse light transport" author="rconstruct">
+<shrimp name="IndirectDiffuse" type="function" description="Computes indirect lighting" author="rconstruct">
     <input name="inpoint" description="Surface point" type="point" default="P"/>
-	<input name="indir" description="Direction" type="vector normal" default="normalize(N)" />
-	<input name="samples" description="Samples" type="float" default="16" />
-	<input name="sbase" description="Controls ray origin jittering" type="float" default="1"/>
-	<input name="adapt" description="Toggles adaptive sampling" type="float" default="1"/>
-	<input name="minsamp" description="Minimum number of samples to use" type="float" default="16"/>
-	<input name="coneangle" description="Cone angle" type="float" default="1.57"/>
-	<input name="axis" description="Light casting hemisphere direction" type="vector" default="0"/>
-	<input name="hitsides" description="Side of surface to consider by a ray hit" type="string" default="&quot;both&quot;"/>
-	<input name="bias" description="Ray bias" type="float" default="-1"/>
-	<input name="maxdist" description="Maximum ray distance" type="float" default="100"/>
-	<input name="envmap" description="Environment map" type="string" default="&quot;pisa.tdl&quot;"/>
-	<input name="envspace" description="Environment space" type="string" default="&quot;world&quot;"/>
-	<input name="distribution" description="Distribution type" type="string" default="&quot;cosine&quot;"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<input name="indir" description="Direction" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
+	<input name="adapt" description="Turns adaptive sampling on/off" type="float" default="1"/>
+	<input name="minsamp" description="Minimum number of samples to use" type="float" default="16"/>	
+    <input name="samples" description="Samples" type="float" default="32"/>
+	<input name="samplebase" description="Controls ray origin jittering" type="float" default="1"/>
+    <input name="maxdist" description="Maximum distance" type="float" default="1e38"/>
+	<input name="maxpixeldist" description="Maximum samples distance" type="float" default="-1"/>
+	<input name="maxsangle" description="Maximum solid angle, in steradians" type="float" default="0.05"/>
+	<input name="maxerror" description="Quality vs speed" type="float" default="-1"/>
+	<input name="bias" description="Bias to control self-intersection" type="float" default="0.01" />
+	<input name="coneangle" description="Cone angle" type="float" default="1.570796327"/>
+	<input name="axis" description="Direction of light casting hemisphere" storage="uniform" type="vector" default="vector(0)"/>
+	<input name="distribution" description="Distribution" storage="uniform" type="string" default="&quot;cosine&quot;"/>
+	<input name="hitsides" description="Side of surface to consider by a ray hit" storage="uniform" type="string" default="&quot;both&quot;"/>
+	<input name="hitmode" description="Ray hit mode" storage="uniform" type="string" default="&quot;default&quot;"/>
+	<input name="label" description="Ray lavel" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="subset" description="Objects subset considered" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
+	<input name="usept" description="Toggle point based irradiance" storage="uniform" type="float" default="0"/>
+	<input name="pfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="coordsys" description="Point cloud coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
+	<input name="clamp" description="Clamp excessive occlusion" storage="uniform" type="float" default="0"/>
+	<output name="Ci" description="Occlusion value" type="color"/>
+	<output name="Envcolor" description="Environment color lookup result" storage="varying" type="color" />
+	<output name="Envdir" description="Average unoccluded direction" storage="varying" type="vector" />
+	<output name="Occ" description="Occlusion amount" storage="varying" type="float"/>
 	<code>
 	
-	#if RENDERER == prman
-		$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
-				"bias", $(bias), "coneangle", $(coneangle),
-				"samplebase", $(sbase),
+	/* initialize */
+	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Occ) = 0;
+	
+	#if RENDERER==prman
+	$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
+					"adapt", $(adapt), "minsamples", $(minsamp),
+					"coordsystem", $(coordsys), "distribution", $(distribution),
+					"maxdist", $(maxdist), "coneangle", $(coneangle),
+					"samplebase", $(samplebase), "hitmode", $(hitmode),
+					"hitsides", $(hitsides), "subset", $(subset),
+					"label", $(label), "environmentmap", $(envmap),
+					"environmentspace", $(envspace), "bias", $(bias),
+					"maxpixeldist", $(maxpixeldist), "maxerror", $(maxerror),
+					"pointbased", $(usept), "filename", $(pfile),
+					"maxsolidangle", $(maxsangle), "clamp", $(clamp),
+					"environmentcolor", $(Envcolor),
+					"environmentdir", $(Envdir), "occlusion", $(Occ) );
+	
+	#elif RENDERER==pixie
+	$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
+				"coordsystem", $(coordsys), "maxdist", $(maxdist),
+				"coneangle", $(coneangle), "samplebase", $(samplebase),
+				"label", $(label), "bias", $(bias), "maxerror", $(maxerror),
+				"pointbased", $(usept), "environmentmap", $(envmap),
+				"filename", $(pfile), "maxpixeldist", $(maxpixeldist),
+				"maxsolidangle", $(maxsangle),
+				"occlusion", $(Occ) );
+	
+	#elif RENDERER==_3delight
+	$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
+				"label", $(label), "subset", $(subset), "bias", $(bias),
+				"hitmode", $(hitmode), "coneangle", $(coneangle),
+				"axis", $(axis), "samplebase", $(samplebase),
 				"maxdist", $(maxdist), "environmentmap", $(envmap),
-				"environmentspace", $(envspace), "distribution",
-				$(distribution), "adaptive", $(adapt), "minsamples",
-				$(minsamp), "hitsides", $(hitsides) );
+				"environmentspace", $(envspace),
+				"distribution", $(distribution),
+				"adaptive", $(adapt),
+				"minsamples", $(minsamp), "pointbased", $(usept),
+				"filename", $(pfile), "hitsides", $(hitsides),
+				"maxsolidangle", $(maxsangle), "clamp", $(clamp),
+				"coordsystem", $(coordsys), "occlusion", $(Occ) );
+	
+	#elif RENDERER==air
+	$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
+				"environmentmap", $(envmap), "environmentspace", $(envspace),
+				"label", $(label), "subset", $(subset) );
+	
 	#else
-		$(Ci) = indirectdiffuse( $(inpoint), $(indir), $(samples),
-				"bias", $(bias), "coneangle", $(coneangle),
-				"axis", $(axis), "samplebase", $(sbase),
-				"maxdist", $(maxdist), "environmentmap", $(envmap),
-				"environmentspace", $(envspace), "distribution",
-				$(distribution), "adaptive", $(adapt), "minsamples",
-				$(minsamp), "hitsides", $(hitsides) );
+	$(Ci) = 0;		
+				
 	#endif
 
+	$(Occ) = 1 - $(Occ);
+	
 	</code>
-    <usage>Indirect diffuse retrieves diffuse illumination from indirect illumination, allowing effects such as color bleeding. You can use an environment map, in which case indirectdiffuse returns the irradiance coming from the supplied environment map along the given unitary direction vector. Ray distribution can be cosine or uniform.</usage>
+    <usage>Indirect diffuse retrieves the diffuse illumination from indirect light, allowing effects such as color bleeding.  Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. You can also use point-based indirectdiffuse. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer's documentation for details.</usage>
 </shrimp>

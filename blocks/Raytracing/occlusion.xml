@@ -21,17 +21,18 @@
 	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="occmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
-	<input name="usept" description="Point based occlusion use toggle" storage="uniform" type="float" default="0"/>
+	<input name="usept" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
 	<input name="pfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="coordsys" description="Point cloud coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="clamp" description="Clamp excessive occlusion" storage="uniform" type="float" default="0"/>
 	<output name="Occ" description="Occlusion value" type="float"/>
 	<output name="Envcolor" description="Environment color lookup result" storage="varying" type="color" />
 	<output name="Envdir" description="Average unoccluded direction" storage="varying" type="vector" />
+	<output name="Irrad" description="Irradiance" storage="varying" type="color"/>
 	<code>
 	
 	/* initialize */
-	$(Envcolor) = color(0); $(Envdir) = vector(0);
+	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Irrad) = color(0);
 	
 	#if RENDERER==prman
 	$(Occ) = 1 - occlusion( $(inpoint), $(indir), $(samples),
@@ -83,10 +84,10 @@
 	$(Occ) = 1 - occlusion( $(occmap), $(inpoint), $(indir), $(samples),
 				"blur", $(blur), "bias", $(bias) );
 	#else
-	$(Occ) = 1;		
+	$(Occ) = 0;		
 				
 	#endif
 	
 	</code>
-    <usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you'll have ambient occlusion, or reflection occlusion. Sbase controls the ray origin jittering, in micropolygon size, which defaults to 1. Hitsides controls which side of the surface to consider by a ray hit, defaults to "front", being the other possible values, "back" and "both". Adaptive enables or disables adaptive sampling. If it's enabled, then the minsamp variable is used to define the minimum samples to use. Note that minimum samples used default to 64, if minsamples is lower than samples, and samples/4 if it's greater.</usage>
+    <usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you'll have ambient occlusion, or reflection occlusion. You can also use point-based occlusion, or Aqsis's implementation which uses multiple shadow maps. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer's documentation for details.</usage>
 </shrimp>
