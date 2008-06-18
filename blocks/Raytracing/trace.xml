@@ -21,6 +21,9 @@
 	#undef RAYOTIONS
 	#endif
 
+	/* default output */
+	$(dist) = 0; $(alpha) = 0;
+
 	#if RENDERER==pixie
 	#define RAYOPTIONS	"bias", $(bias), "samples", \
 						$(samples), "samplecone", $(coneangle)
@@ -46,18 +49,6 @@
 	$(val) = $(val:type) trace( $(inpoint), $(indir) );
 	#else
 	$(val) = $(val:type) trace( $(inpoint), $(indir), RAYOPTIONS );
-	#endif
-
-	#if RENDERER==_3delight
-	$(dist) = $(dist);
-	#else
-	$(dist) = 0;
-	#endif
-
-	#if RENDERER==air
-	$(alpha) = $(alpha);
-	#else
-	$(alpha) = 0;
 	#endif
 
 	</code>
