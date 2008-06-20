@@ -1,5 +1,5 @@
 <shrimp type="function" name="Time" description="Current shutter time" author="rconstruct">
-	<output name="time" description="Current shutter time" type="float"/>
+	<output name="time" description="Current shutter time" storage="uniform" type="float"/>
 	<code>
 	$(time) = time;
 	</code>

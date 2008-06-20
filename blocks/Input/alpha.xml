@@ -1,5 +1,5 @@
 <shrimp type="function" name="alpha" description="Fractional pixel coverage" author="rconstruct">
-    <output name="alpha" description="Fractional pixel coverage" type="float"/>
+    <output name="alpha" description="Fractional pixel coverage" storage="uniform" type="float"/>
     <code>
     $(alpha) = alpha;
     </code>

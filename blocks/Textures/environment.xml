@@ -17,6 +17,8 @@
         $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
 								"blur", $(blur),
 								"width", $(width),
+								"swidth", $(swidth),
+								"twidth", $(twidth),
 								"samples", $(samples),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;

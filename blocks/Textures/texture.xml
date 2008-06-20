@@ -17,6 +17,8 @@
         $(val) = $(val:type) texture( $(texname), $(xcoord), $(ycoord),
 								"blur", $(blur),
 								"width", $(width),
+								"swidth", $(swidth),
+								"twidth", $(twidth),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
     #else

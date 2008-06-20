@@ -1,0 +1,32 @@
+<shrimp type="function" name="Bake3d" description="Bakes associated data" author="rconstruct">
+	<input name="bakefile" description="Baked map filename" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="ss" description="X coordinate" type="float" default="s"/>
+	<input name="tt" description="Y coordinate" type="float" default="t"/>
+	<input name="bdata" description="Data to bake" type="point color float" default="0"/>
+	<input name="ascii" description="ASCII/binary file toggle" type="float" default="1"/>
+	<output name="status" description="Status" type="float"/>
+	<code>
+	#if RENDERER==aqsis
+		bake( $(bakefile), $(ss), $(tt), $(bdata) );
+		$(status) = 1;
+		
+	#elif RENDERER==_3delight
+	
+	/* default is to save in ASCII format */
+	#define bakeformat_$(ascii)
+	#ifdef bakeformat_1
+		bake( $(bakefile), $(ss), $(tt), $(bdata) );
+		$(status) = 1;
+	#else
+		bake( concat( $(bakefile), "&binary"), $(ss), $(tt), $(bdata) );
+		$(status) = 1;
+	#endif
+		
+	#else
+	/* bake() is only supported on Aqsis and 3delight apparently */
+		$(status) = 0;
+	#endif
+			
+	</code>
+<usage>Bakes the supplied data channel into a bakefile. Note that this shadeop is only supported in Aqsis and 3Delight; you can use bake3d in other implementations. In 3Delight's case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default.</usage>
+</shrimp>

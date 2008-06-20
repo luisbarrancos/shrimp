@@ -1,0 +1,8 @@
+<shrimp name="MPSurf" type="function" description="Name of the shader" author="rconstruct">
+    <input name="stype" description="Shader type" storage="uniform" type="string" default="&quot;&quot;"/>
+	<output name="result" description="Query value" storage="uniform" type="string"/>
+	<code>
+		$(result) = shadername( $(stype) ;
+	</code>
+    <usage>Returns the name of the shader being evaluated, with shader type values as displacement, lightsource, surface, atmosphere, interior and exterior. Returns an empty string if no shader of the specified shader type, is assigned to the primitive being shaded.</usage>
+</shrimp>
