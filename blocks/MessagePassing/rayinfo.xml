@@ -1,5 +1,5 @@
 <shrimp name="Rayinfo" type="function" description="Provides information on the current ray" author="rconstruct">
-    <input name="field" description="Ray info fields, see help." type="string" default="&quot;depth&quot;"/>
+    <input name="field" description="Ray info fields, see help." storage="uniform" type="string" default="&quot;depth&quot;"/>
 	<output name="status" description="Exit status" type="float"/>
 	<output name="result" description="Query value" type="float string"/>
 	<code>

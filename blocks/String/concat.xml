@@ -1,7 +1,7 @@
 <shrimp type="function" name="Concat" description="Concatenates two or more strings" author="rconstruct">
-	<input name="stra" description="First string" type="string" default="&quot;&quot;"/>
-	<input name="strb" description="Second and subsequent strings" type="string" default="&quot;&quot;" multi=","/>
-	<output name="val" description="Concatenated string" type="string"/>
+	<input name="stra" description="First string" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="strb" description="Second and subsequent strings" storage="uniform" type="string" default="&quot;&quot;" multi=","/>
+	<output name="val" description="Concatenated string" storage="uniform" type="string"/>
 	<code>
 		$(val) = concat( $(stra), $(strb) );
 	</code>

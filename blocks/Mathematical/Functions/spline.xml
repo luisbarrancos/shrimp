@@ -1,11 +1,11 @@
 <shrimp type="function" name="Spline" description="Fits a Spline to the given control points" author="rconstruct">
-	<input name="basis" description="The basis function" type="string" default="&quot;catmull-rom&quot;"/>
+	<input name="basis" description="The basis function" storage="uniform" type="string" default="&quot;catmull-rom&quot;"/>
 	<input name="x" description="The value to test the spline at" type="float" default="0"/>
-	<input name="cp1" description="The 1st Control Point" type="float point vector color" type_parent="val" default="0"/>
-	<input name="cp2" description="The 2nd Control Point" type="float point vector color" type_parent="val" default="0.2"/>
-	<input name="cp3" description="The 3rd Control Point" type="float point vector color" type_parent="val" default="0.8"/>
-	<input name="cp4" description="The 4th or subsequent Control Points" type="float point vector color" multi="," type_parent="val" default="1"/>
-	<output name="val" description="The value of the spline at x" type="float point vector color"/>
+	<input name="cp1" description="The 1st Control Point" type="point vector color float" type_parent="val" default="0"/>
+	<input name="cp2" description="The 2nd Control Point" type="point vector color float" type_parent="val" default="0.2"/>
+	<input name="cp3" description="The 3rd Control Point" type="point vector color float" type_parent="val" default="0.8"/>
+	<input name="cp4" description="The 4th or subsequent Control Points" type="point vector color float" multi="," type_parent="val" default="1"/>
+	<output name="val" description="The value of the spline at x" type="point vector color float"/>
 	<code>
 	$(val) = spline( $(basis), $(x), $(cp1), $(cp2), $(cp3), $(cp4) );
 	</code>

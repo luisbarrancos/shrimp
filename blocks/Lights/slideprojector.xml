@@ -5,9 +5,9 @@
 	<input name="from" description="Light source position" type="point" default="point ( -15, 10, 5 )"/>
 	<input name="to" description="Light source target" type="point" default="point( 0, 0, 0 )"/>
 	<input name="up" description="Up position" type="point" default="point &quot;eye&quot; ( 0, 1, 0 )"/>
-	<input name="slidename" description="Slide map name" type="string" default="&quot;&quot;"/>
-	<input name="shadowname" description="Shadow map name" type="string" default="&quot;&quot;"/>
-	<input name="shadowfilter" description="Shadow map filter" type="string" default="&quot;gaussian&quot;"/>
+	<input name="slidename" description="Slide map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="shadowname" description="Shadow map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="shadowfilter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<input name="shadowblur" description="Shadow map blur" type="float" default="0"/>
 	<input name="shadowsamples" description="Shadow map samples" type="float" default="1"/>
 	<input name="shadowwidth" description="Shadow map filter width" type="float" default="1"/>

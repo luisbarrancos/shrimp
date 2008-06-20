@@ -1,5 +1,5 @@
 <shrimp name="SCurve" type="function" description="Surface curvature" author="rconstruct">
-    <input name="ctype" description="Curvature type, see usage." type="string" default="&quot;amean&quot;"/>
+    <input name="ctype" description="Curvature type, see usage." storage="uniform" type="string" default="&quot;amean&quot;"/>
 	<input name="cmin" description="Minimum" type="float" default="-1"/>
     <input name="cmax" description="Maximum" type="float" default="1"/>
     <input name="greys" description="Greyscale on/off" type="float" default="0"/>

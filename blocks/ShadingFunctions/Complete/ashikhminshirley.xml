@@ -6,7 +6,7 @@
     <input name="nv" description="Specularity along V direction" type="float" default="10"/>
 	<input name="Kr" description="Reflection coefficient" type="float" default="0.1"/>
 	<input name="rsamples" description="Environment samples" type="float" default="0"/>
-    <input name="envmap" description="Environment map" type="string" default="&quot;&quot;"/>
+    <input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<input name="xdir" description="Direction vector" type="vector" default="normalize(dPdu)"/>

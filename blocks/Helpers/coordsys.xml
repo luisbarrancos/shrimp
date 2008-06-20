@@ -1,12 +1,12 @@
 <shrimp type="function" name="Coordsys" description="Coordinate systems" author="rconstruct">
-	<output name="current" description="Current coordinate system, see help." type="string"/>
-	<output name="object" description="Object coordinate system, see help." type="string"/>
-	<output name="shader" description="Shader coordinate system, see help." type="string"/>
-	<output name="world" description="World coordinate system, see help." type="string"/>
-	<output name="camera" description="Camera coordinate system, see help." type="string"/>
-	<output name="screen" description="Screen coordinate system, see help." type="string"/>
-	<output name="raster" description="Raster coordinate system, see help." type="string"/>
-	<output name="ndc" description="NDC coordinate system, see help." type="string"/>
+	<output name="current" description="Current coordinate system, see help." storage="uniform" type="string"/>
+	<output name="object" description="Object coordinate system, see help." storage="uniform" type="string"/>
+	<output name="shader" description="Shader coordinate system, see help." storage="uniform" type="string"/>
+	<output name="world" description="World coordinate system, see help." storage="uniform" type="string"/>
+	<output name="camera" description="Camera coordinate system, see help." storage="uniform" type="string"/>
+	<output name="screen" description="Screen coordinate system, see help." storage="uniform" type="string"/>
+	<output name="raster" description="Raster coordinate system, see help." storage="uniform" type="string"/>
+	<output name="ndc" description="NDC coordinate system, see help." storage="uniform" type="string"/>
 	<code>
 	$(current) = "current";
 	$(object) = "object";

@@ -1,5 +1,5 @@
 <shrimp type="function" name="Printf" description="Prints values of variables" author="rconstruct">
-	<input name="str" description="String to use, see help" type="string" default="&quot;Content of var =&quot;"/>
+	<input name="str" description="String to use, see help" storage="uniform" type="string" default="&quot;Content of var =&quot;"/>
 	<input name="var" description="Variable input" type="float color normal vector point matrix string" default="0"/>
 	<output name="val" description="Variable output" type="float color normal vector point matrix string"/>
 	<output name="status" description="Status" type="float" />

@@ -1,5 +1,5 @@
 <shrimp name="MPDisp" type="function" description="Displacement shader message passing" author="rconstruct">
-    <input name="sparam" description="Shader parameter to query" type="string" default="&quot;&quot;"/>
+    <input name="sparam" description="Shader parameter to query" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="result" description="Query value" type="float color normal vector point string"/>
 	<output name="status" description="Exit status" type="float"/>
 	<code>

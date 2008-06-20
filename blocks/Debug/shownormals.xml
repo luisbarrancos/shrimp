@@ -1,5 +1,5 @@
 <shrimp type="function" name="ShowNormals" description="Show surface normals" author="rconstruct">
-	<input name="cspace" description="Coordinate space" type="string" default="&quot;world&quot;"/>
+	<input name="cspace" description="Coordinate space" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="crange" description="Mapping to range 0-1 on/off" type="float" default="1"/>
 	<output name="Ci" description="Output value" type="color"/>
 	<code>

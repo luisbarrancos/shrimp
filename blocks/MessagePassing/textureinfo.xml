@@ -1,5 +1,5 @@
 <shrimp name="TextureInfo" type="function" description="Returns information about the texture" author="rconstruct">
-	<input name="tex" description="Texture name" type="string" default="&quot;&quot;"/>
+	<input name="tex" description="Texture name" storage="uniform" type="string" default="&quot;&quot;"/>
     <input name="sparam" description="Texture data to query, see help." type="string" default="&quot;&quot;"/>
 <output name="result" description="Query value" type="float string matrix"/>
 	<output name="status" description="Exit status" type="float"/>

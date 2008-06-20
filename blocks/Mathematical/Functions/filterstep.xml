@@ -3,7 +3,7 @@
 	<input name="min" description="position of step" type="float" default="0"/>
     <input name="max" description="optional 2nd value for range filtering" type="float" default="0"/>
     <input name="width" description="filtering width" type="float" default="0.1"/>
-    <input name="filter" description="filter type" type="string" default="&quot;catmull-rom&quot;"/>
+    <input name="filter" description="filter type" storage="uniform" type="string" default="&quot;catmull-rom&quot;"/>
 	<output name="val" description="value of step function at x" type="float"/>
 	<code>
 		#define s2_$(max)

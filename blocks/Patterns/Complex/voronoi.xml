@@ -10,7 +10,7 @@
     <input name="octaves" description="fBm octaves" type="float" default="2"/>
     <input name="lacun" description="fBm lacunarity" type="float" default="0.05"/>
     <input name="gain" description="fBm gain" type="float" default="0.5"/>
-    <input name="cspace" description="Coordinate space" type="string" default="&quot;object&quot;"/>
+    <input name="cspace" description="Coordinate space" storage="uniform" type="string" default="&quot;object&quot;"/>
     <output name="val" description="Output color" type="color"/>
     <output name="f1" description="1st feature" type="float"/>
     <output name="f2" description="2nd feature" type="float" />

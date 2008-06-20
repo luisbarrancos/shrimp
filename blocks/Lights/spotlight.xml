@@ -6,8 +6,8 @@
 	<input name="coneangle" description="Cone angle" type="float" default="30"/>
 	<input name="conedelta" description="Cone delta angle" type="float" default="5"/>
 	<input name="bdist" description="Beam distribution" type="float" default="2"/>
-	<input name="shadowname" description="Shadow map name" type="string" default="&quot;&quot;"/>
-	<input name="filtername" description="Filter type" type="string" default="&quot;gaussian&quot;"/>
+	<input name="shadowname" description="Shadow map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="filtername" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<input name="samples" description="Shadow map samples" type="float" default="16"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
 	<input name="width" description="Shadow map filter width" type="float" default="1"/>

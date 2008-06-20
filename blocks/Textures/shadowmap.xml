@@ -1,5 +1,5 @@
 <shrimp type="function" name="ShadowMaps" description="Access a shadow map" author="rconstruct">
-	<input name="texname" description="Texture map name" type="string" default="&quot;&quot;"/>
+	<input name="texname" description="Texture map name" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="inpoint" description="Surface point" type="point" default="P"/>
     <input name="blur" description="Texture blur" type="float" default="0"/>
     <input name="sblur" description="Blur along S" type="float" default="0"/>
@@ -9,24 +9,19 @@
     <input name="twidth" description="Blur filter width along T" type="float" default="0"/>
     <input name="samples" description="Sampling rate" type="float" default="16"/>
 	<input name="bias" description="Shadow bias" type="float" default="0.225"/>
-    <input name="filter" description="Filter type" type="string" default="&quot;gaussian&quot;"/>
+    <input name="filter" description="Filter type" type="string" storage="uniform" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="color float"/>
 	<code>
-	#define $(val)_$(val:type)
-    #ifdef $(val)_float
+    #if RENDERER==pixie
         $(val) = $(val:type) shadow( $(texname), $(inpoint),
 								"blur", $(blur),
-								"sblur", $(sblur),
-								"tblur", $(tblur),
 								"width", $(width),
-								"swidth", $(swidth),
-								"twidth", $(twidth),
 								"samples", $(samples),
 								"bias", $(bias),
                                 "filter", $(filter) ) ;
     #else
-        $(val) = color shadow( $(texname)[$(channel)], $(inpoint),
+        $(val) = $(val:type) shadow( $(texname)[$(channel)], $(inpoint),
 								"blur", $(blur),
 								"sblur", $(sblur),
 								"tblur", $(tblur),

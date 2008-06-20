@@ -16,7 +16,7 @@
 	<input name="samples" description="Ray samples" type="float" default="1"/>
 	<input name="refrmaxdist" description="Maximum refraction ray distance" type="float" default="1e38"/>
 	<input name="reflmaxdist" description="Maximum reflection ray distance" type="float" default="1e38"/>
-	<input name="spectype" description="Specular type, glossy or standard specular" type="string" default="&quot;glossy&quot;"/>
+	<input name="spectype" description="Specular type, glossy or standard specular" storage="uniform" type="string" default="&quot;glossy&quot;"/>
 	<input name="rbounces" description="Maximum number of reflection bounces" type="float" default="1"/>
 	<input name="sbounces" description="Maximum number of specular bounces" type="float" default="1"/>
 	<input name="krefl" description="Reflection blend factor" type="float" default="1"/>

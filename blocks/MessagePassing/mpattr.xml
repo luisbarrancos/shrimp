@@ -1,5 +1,5 @@
 <shrimp name="MPAttr" type="function" description="Returns primitive attribute state data" author="rconstruct">
-    <input name="sparam" description="Primitive attribute data to query, see help." type="string" default="&quot;&quot;"/>
+    <input name="sparam" description="Primitive attribute data to query, see help." storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="result" description="Query value" type="float color normal vector point string"/>
 	<output name="status" description="Exit status" type="float"/>
 	<code>
