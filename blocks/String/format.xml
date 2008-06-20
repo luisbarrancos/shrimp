@@ -1,7 +1,7 @@
 <shrimp type="function" name="Format" description="Formats a string" author="rconstruct">
 	<input name="stra" description="String pattern" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="strb" description="String to search" storage="uniform" type="string" default="&quot;&quot;" multi=","/>
-	<output name="val" description="Formatted string" storage="uniform" type="string"/>
+	<output name="val" description="Formatted string" type="string"/>
 	<code>
 		$(val) = format( $(stra), $(strb) );
 	</code>

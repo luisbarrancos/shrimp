@@ -1,9 +1,9 @@
 <shrimp type="function" name="Clamp" description="clamp the input between to values" author="rconstruct">
-	<input name="a" description="Input value" type_parent="out" type="point vector normal color float" type_parent="out" default="1"/>
-	<input name="min" description="minimum value" type_parent="out" type="point vector normal color float" type_parent="out" default="0.0"/>
-	<input name="max" description="maximum value" type_parent="out" type="point vector normal color float" type_parent="out" default="1.0"/>
+	<input name="a" description="Input value" type_parent="out" type="point vector normal color float" default="1"/>
+	<input name="min" description="minimum value" type_parent="out" type="point vector normal color float" default="0.0"/>
+	<input name="max" description="maximum value" type_parent="out" type="point vector normal color float" default="1.0"/>
 	<output name="out" description="Clamp a between min and max" type="point vector normal color float"/>
 	<code>
-	$(out) = clamp( $(a), $(min), $(max) );
+		$(out) = clamp( $(a), $(min), $(max) );
 	</code>
 </shrimp>

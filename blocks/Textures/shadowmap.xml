@@ -9,7 +9,7 @@
     <input name="twidth" description="Blur filter width along T" type="float" default="0"/>
     <input name="samples" description="Sampling rate" type="float" default="16"/>
 	<input name="bias" description="Shadow bias" type="float" default="0.225"/>
-    <input name="filter" description="Filter type" type="string" storage="uniform" default="&quot;gaussian&quot;"/>
+    <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="color float"/>
 	<code>

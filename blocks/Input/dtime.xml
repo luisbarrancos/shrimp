@@ -1,5 +1,5 @@
 <shrimp type="function" name="dTime" description="The amount of time covered by this shading sample" author="rconstruct">
-	<output name="dtime" description="The amount of time covered by this shading sample" storage="uniform" type="float"/>
+	<output name="dtime" description="The amount of time covered by this shading sample" type="float"/>
 	<code>
 	$(dtime) = dtime;
 	</code>

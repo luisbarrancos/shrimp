@@ -18,7 +18,7 @@
 	<input name="usespace" description="Use named space reference" type="float" default="0"/>
     <input name="spacename" description="Reference named space" type="string" default="&quot;world&quot;"/>
     <output name="mout" description="Matrix" type="matrix"/>
-	<output name="mstr" description="Optional space name string" storage="uniform" type="string"/>
+	<output name="mstr" description="Optional space name string" type="string"/>
     <code>
     #define usespace_$(usespace)
     

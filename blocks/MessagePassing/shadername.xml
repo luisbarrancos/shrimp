@@ -1,6 +1,6 @@
 <shrimp name="Shadername" type="function" description="Name of the shader" author="rconstruct">
     <input name="stype" description="Shader type" storage="uniform" type="string" default="&quot;&quot;"/>
-	<output name="result" description="Query value" storage="uniform" type="string"/>
+	<output name="result" description="Query value" type="string"/>
 	<code>
 		$(result) = shadername( $(stype) ;
 	</code>
