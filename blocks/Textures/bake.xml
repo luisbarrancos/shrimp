@@ -1,14 +1,14 @@
-<shrimp type="function" name="Bake3d" description="Bakes associated data" author="rconstruct">
+<shrimp type="function" name="Bake" description="Bakes associated data" author="rconstruct">
 	<input name="bakefile" description="Baked map filename" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="ss" description="X coordinate" type="float" default="s"/>
 	<input name="tt" description="Y coordinate" type="float" default="t"/>
-	<input name="bdata" description="Data to bake" type="point color float" default="0"/>
+	<input name="bdata" description="Data to bake" type="point color float" type_parent="bdataout" default="0"/>
 	<input name="ascii" description="ASCII/binary file toggle" type="float" default="1"/>
-	<output name="status" description="Status" type="float"/>
+	<output name="bdataout" description="Baked data" type="point color float" />
 	<code>
 	#if RENDERER==aqsis
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
-		$(status) = 1;
+		$(bdataout) = $(bdata);
 		
 	#elif RENDERER==_3delight
 	
@@ -16,15 +16,15 @@
 	#define bakeformat_$(ascii)
 	#ifdef bakeformat_1
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
-		$(status) = 1;
+		$(bdataout) = $(bdata);
 	#else
 		bake( concat( $(bakefile), "&binary"), $(ss), $(tt), $(bdata) );
-		$(status) = 1;
+		$(bdataout) = $(bdata);
 	#endif
 		
 	#else
 	/* bake() is only supported on Aqsis and 3delight apparently */
-		$(status) = 0;
+		$(bdataout) = $(bdata);
 	#endif
 			
 	</code>

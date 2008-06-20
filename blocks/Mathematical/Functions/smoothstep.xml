@@ -4,7 +4,7 @@
 	<input name="max" description="position of top of step" type="float" default="1"/>
 	<output name="val" description="value of smoothstep function at x" type="float"/>
 	<code>
-	$(val) = smoothstep( $(min), $(max), $(x) );
+		$(val) = smoothstep( $(min), $(max), $(x) );
 	</code>
 	<usage>val is zero if x is less than min, one if x is greater than max, otherwise it is interpolated between zero and one with a smooth hermite curve.
 	</usage>

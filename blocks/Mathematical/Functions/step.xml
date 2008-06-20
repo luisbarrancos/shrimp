@@ -3,7 +3,7 @@
 	<input name="min" description="position of step" type="float" default="1"/>
 	<output name="val" description="value of step function at x" type="float"/>
 	<code>
-	$(val) = step( $(min), $(x) );
+		$(val) = step( $(min), $(x) );
 	</code>
 	<usage>val is zero if x is less than min, otherwise it is one.</usage>
 </shrimp>

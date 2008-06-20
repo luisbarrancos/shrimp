@@ -7,7 +7,7 @@
 	<input name="filterscale" description="Filter scale" type="float" default="1"/>
 	<input name="interpolate" description="Toggle interpolation" type="float" default="1"/>
 	<input name="maxdepth" description="Maximum lookup depth" type="float" default="1"/>
-	<input name="datachannel" descriptioN="Data channel to query" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="datachannel" description="Data channel to query" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="value" description="Value associated with data channel" type="float point vector normal color matrix"/>
 	<output name="status" description="Status" type="float"/>
 	<code>

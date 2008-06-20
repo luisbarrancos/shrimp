@@ -1,9 +1,9 @@
 <shrimp type="function" name="Deriv" description="Compute Derivative" author="rconstruct">
-	<input name="num" description="Value to compute derivative at" type="float color vector point" default="0"/>
-	<input name="den" description="Value to compute derivative with respect to" type="float color vector point" default="1"/>
+	<input name="num" description="Value to compute derivative at" type_parent="val" type="color vector point float" default="0"/>
+	<input name="den" description="Value to compute derivative with respect to" type="float" default="1"/>
 	<output name="val" description="Derivative of num with respect to den" type="float color vector point"/>
 	<code>
-	$(val) = Deriv( $(num), $(den) );
+		$(val) = Deriv( $(num), $(den) );
 	</code>
 <usage>Computes the derivative of the first argument in regard to the second argument.</usage>
 </shrimp>
