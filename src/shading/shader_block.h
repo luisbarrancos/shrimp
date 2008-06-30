@@ -46,6 +46,10 @@ public:
 		VECTOR
 	} variable_t;
 
+	typedef enum {
+		VARYING, // default
+		UNIFORM
+	} storage_t;
 
 	std::string m_name;
 	std::string m_description;
@@ -59,6 +63,8 @@ public:
 	bool set_type (const std::string& Type);
 	std::string get_type() const;
 
+	bool set_storage (const std::string& Storage);
+	std::string get_storage() const;
 	void set_uniform (const bool IsUniform);
 	bool is_uniform() const;
 
@@ -76,16 +82,19 @@ private:
 	variable_t m_current_type;
 	std::set<variable_t> m_possible_types;
 
-	variable_t from_string (const std::string& Type);
-	std::string to_string (variable_t Type) const;
+	variable_t convert_type (const std::string& Type);
+	std::string convert_type (variable_t Type) const;
+
+	// storage type
+	storage_t m_current_storage;
+	std::set<storage_t> m_possible_storages;
+
+	storage_t convert_storage (const std::string& Storage);
+	std::string convert_storage (storage_t Storage) const;
 
 	// name of a parent property,
 	// a parent type change applies to its children
 	std::string m_type_parent;
-
-	// storage type: either 'varying' or 'uniform',
-	// stored as a boolean for 'uniform' since the default is 'varying'
-	bool m_uniform;
 
 	// value
 	std::string m_value;
@@ -94,7 +103,8 @@ private:
 
 typedef std::vector<std::string> types_t;
 types_t get_property_types();
-types_t get_property_storage_types();
+typedef std::vector<std::string> storages_t;
+storages_t get_property_storage_types();
 
 
 // basic block class
@@ -137,7 +147,7 @@ public:
 
 	void add_input (const std::string& Name, const std::string& Type, const std::string& Description, const std::string& Default, const std::string& Multi, const bool ShaderParameter = true);
 	std::string add_multi_input (const std::string& ParentName);
-	void add_output (const std::string& Name, const std::string& Type, const std::string& Description, const bool ShaderOutput = false);
+	void add_output (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const bool ShaderOutput = false);
 
 	std::string input_type (const std::string& Name) const;
 	std::string output_type (const std::string& Name) const;
@@ -152,6 +162,9 @@ public:
 	bool set_input_type (const std::string& Name, const std::string& Type);
 	std::string get_input_type (const std::string& Name) const;
 
+	bool set_input_storage (const std::string& Name, const std::string& Storage);
+	std::string get_input_storage (const std::string& Name) const;
+
 	void set_input_parent (const std::string& Name, const std::string& Parent);
 	std::string get_input_parent (const std::string& Name) const;
 
@@ -160,6 +173,9 @@ public:
 
 	bool set_output_type (const std::string& Name, const std::string& Type);
 	std::string get_output_type (const std::string& Name) const;
+
+	bool set_output_storage (const std::string& Name, const std::string& Type);
+	std::string get_output_storage (const std::string& Name) const;
 
 	bool is_shader_output (const std::string& Name) const;
 	void set_shader_output (const std::string& Name, const bool State);

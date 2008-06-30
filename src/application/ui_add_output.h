@@ -124,6 +124,7 @@ public:
 		// get user values
 		const std::string name = s_name->value();
 		const std::string type = m_types[s_type->value()];
+		const std::string storage = "varying";//m_storages[s_type->value()];
 		const bool shader_output = s_shader_output->value();
 		const std::string description = s_description->text();
 
@@ -136,7 +137,7 @@ public:
 			fltk::alert ("Output name is empty!");
 		} else {
 			// create the output
-			m_block->add_output (name, type, description, shader_output);
+			m_block->add_output (name, type, storage, description, shader_output);
 
 			// close the dialog
 			W->window()->make_exec_return (false);

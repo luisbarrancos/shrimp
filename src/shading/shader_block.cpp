@@ -35,8 +35,8 @@ property::property (const std::string& Name, const std::string& Description) :
 	m_multi_operator (""),
 	m_multi_operator_parent_name (""),
 	m_shader_output (false),
+	m_current_storage (VARYING),
 	m_type_parent (""),
-	m_uniform (false),
 	m_value ("")
 {
 }
@@ -54,13 +54,13 @@ int property::add_possible_types (const std::string& Types) {
 
 		std::string new_type;
 		stream >> new_type;
-		m_possible_types.insert (from_string (new_type));
-		m_current_type = from_string (new_type);
+		m_possible_types.insert (convert_type (new_type));
+		m_current_type = convert_type (new_type);
 
 		while (!stream.eof()) {
 
 			stream >> new_type;
-			m_possible_types.insert (from_string (new_type));
+			m_possible_types.insert (convert_type (new_type));
 		}
 	}
 
@@ -89,13 +89,9 @@ bool property::set_type (const std::string& Type) {
 			std::string new_token;
 			stream >> new_token;
 
-			if (new_token == "uniform") {
-				m_uniform = true;
-			} else {
-				variable_t nt = from_string (new_token);
-				if (nt != UNKNOWN) {
-					new_type = nt;
-				}
+			variable_t nt = convert_type (new_token);
+			if (nt != UNKNOWN) {
+				new_type = nt;
 			}
 
 		} while (!stream.eof());
@@ -119,7 +115,21 @@ bool property::set_type (const std::string& Type) {
 
 std::string property::get_type() const {
 
-	return to_string (m_current_type);
+	return convert_type (m_current_type);
+}
+
+
+bool property::set_storage (const std::string& Storage) {
+
+	m_current_storage = convert_storage (Storage);
+
+	return true;
+}
+
+
+std::string property::get_storage() const {
+
+	return convert_storage (m_current_storage);
 }
 
 
@@ -255,7 +265,7 @@ std::string property::value_as_sl_string() const {
 }
 
 
-property::variable_t property::from_string (const std::string& Type) {
+property::variable_t property::convert_type (const std::string& Type) {
 
 	const std::string type_l = Type; // strtolower ?
 	if ("color" == type_l || "colour" == type_l)
@@ -273,14 +283,14 @@ property::variable_t property::from_string (const std::string& Type) {
 	if ("vector" == type_l)
 		return VECTOR;
 
-	log() << warning << "unknown type (from_string) : " << Type << std::endl;
+	log() << warning << "unknown type (convert_type) : '" << Type << "' for property '" << m_name << "'" << std::endl;
 
 	//return UNKNOWN;
 	return FLOAT;
 }
 
 
-std::string property::to_string (variable_t Type) const {
+std::string property::convert_type (variable_t Type) const {
 
 	switch (Type) {
 
@@ -293,21 +303,50 @@ std::string property::to_string (variable_t Type) const {
 		case VECTOR: return "vector";
 
 		default:
-			log() << warning << "unknown type (to_string)" << std::endl;
+			log() << warning << "unhandled type (convert_type) for property '" << m_name << "'" << std::endl;
 			return "unknown";
+	}
+}
+
+
+property::storage_t property::convert_storage (const std::string& Storage) {
+
+	if ("varying" == Storage)
+		return VARYING;
+	if ("uniform" == Storage)
+		return UNIFORM;
+
+	if (Storage.size()) {
+		log() << warning << "empty storage (convert_storage) for property '" << m_name << "'" << std::endl;
+	}
+
+	return VARYING;
+}
+
+
+std::string property::convert_storage (storage_t Storage) const {
+
+	switch (Storage) {
+
+		case VARYING: return "varying";
+		case UNIFORM: return "uniform";
+
+		default:
+			log() << warning << "unhandled storage (convert_storage) for property '" << m_name << "'" << std::endl;
+			return "varying";
 	}
 }
 
 
 void property::set_uniform (const bool IsUniform) {
 
-	m_uniform = IsUniform;
+	m_current_storage = UNIFORM;
 }
 
 
 bool property::is_uniform() const {
 
-	return m_uniform;
+	return m_current_storage == UNIFORM;
 }
 
 
@@ -408,13 +447,16 @@ std::string shader_block::add_multi_input (const std::string& ParentName) {
 }
 
 
-void shader_block::add_output (const std::string& Name, const std::string& Type, const std::string& Description, const bool ShaderOutput) {
+void shader_block::add_output (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const bool ShaderOutput) {
 
 	bool ok = true;
 
 	property p (Name, Description);
 	p.add_possible_types (Type);
 	if (!p.set_type (Type)) {
+		ok = false;
+	}
+	if (!p.set_storage (Storage)) {
 		ok = false;
 	}
 
@@ -615,6 +657,37 @@ std::string shader_block::get_input_type (const std::string& Name) const {
 }
 
 
+bool shader_block::set_input_storage (const std::string& Name, const std::string& Storage) {
+
+	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->set_storage (Storage);
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+	return false;
+}
+
+
+std::string shader_block::get_input_storage (const std::string& Name) const {
+
+	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->get_storage();
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+
+	return "";
+}
+
+
 void shader_block::set_input_parent (const std::string& Name, const std::string& Parent) {
 
 	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
@@ -717,6 +790,36 @@ std::string shader_block::get_output_type (const std::string& Name) const {
 }
 
 
+bool shader_block::set_output_storage (const std::string& Name, const std::string& Storage) {
+
+	// look for the output and set its storage
+	for (properties_t::iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->set_storage (Storage);
+		}
+	}
+
+	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
+	return false;
+}
+
+
+std::string shader_block::get_output_storage (const std::string& Name) const {
+
+	for (properties_t::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->get_storage();
+		}
+	}
+
+	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
+
+	return "";
+}
 bool shader_block::is_shader_output (const std::string& Name) const {
 
 	for (properties_t::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
@@ -1044,32 +1147,31 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 			std::string input_value ("");
 			std::string input_multi_operator ("");
 			std::string input_multi_operator_parent ("");
-			bool input_uniform = false;
 			bool shader_parameter_input = false;
 			std::string input_type_parent = "";
 
 			for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
 
 				const std::string name (a->Name());
-				if (name == "name")
+				if (name == "name") {
 					input_name = a->Value();
-				else if (name == "type")
+				}
+				else if (name == "type") {
 					input_type = a->Value();
+				}
 				else if (name == "storage") {
-					// DON'T WRITE 'if (a->Value() == "uniform")' it always returns false!
-					const std::string value = a->Value();
-					if (value == "uniform") {
-						input_uniform = true;
-					}
+					input_storage = a->Value();
 				}
 				else if (name == "shader_parameter") {
 					const std::string state = a->Value();
 					shader_parameter_input = !state.empty();
 				}
-				else if (name == "description")
+				else if (name == "description") {
 					input_description = a->Value();
-				else if (name == "default" || name == "value")
+				}
+				else if (name == "default" || name == "value") {
 					input_value = a->Value();
+				}
 				else if (name == "multi") {
 					input_multi_operator = a->Value();
 				}
@@ -1096,8 +1198,8 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 
 			std::string output_name = "";
 			std::string output_type = "";
+			std::string output_storage = "";
 			std::string output_description = "";
-			bool output_uniform = false;
 			bool shader_output = false;
 
 			for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
@@ -1112,13 +1214,10 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					output_description = a->Value();
 				}
 				else if (name == "storage") {
-					// DON'T WRITE 'if (a->Value() == "uniform")' it always returns false!
-					const std::string value = a->Value();
-					if (value == "uniform") {
-						output_uniform = true;
-					}
+					output_storage = a->Value();
 				}
 				else if (name == "shader_output") {
+					// DON'T WRITE 'if (a->Value() != "")' it always returns true!
 					const std::string value = a->Value();
 					if (value != "") {
 						shader_output = true;
@@ -1128,10 +1227,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					log() << error << "unhandled output attribute : '" << name << "'" << std::endl;
 			}
 
-			if (output_uniform) {
-				output_type = "uniform " + output_type;
-			}
-			add_output (output_name, output_type, output_description, shader_output);
+			add_output (output_name, output_type, output_storage, output_description, shader_output);
 		}
 		else if (element == "include") {
 
