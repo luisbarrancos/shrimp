@@ -338,18 +338,6 @@ std::string property::convert_storage (storage_t Storage) const {
 }
 
 
-void property::set_uniform (const bool IsUniform) {
-
-	m_current_storage = UNIFORM;
-}
-
-
-bool property::is_uniform() const {
-
-	return m_current_storage == UNIFORM;
-}
-
-
 bool property::is_multi_operator() const {
 
 	return !m_multi_operator.empty();
@@ -407,7 +395,7 @@ shader_block::shader_block (const std::string& Name, const std::string& Descript
 }
 
 
-void shader_block::add_input (const std::string& Name, const std::string& Type, const std::string& Description, const std::string& DefaultValue, const std::string& Multi, const bool ShaderParameter) {
+void shader_block::add_input (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const std::string& DefaultValue, const std::string& Multi, const bool ShaderParameter) {
 
 	bool ok = true;
 
@@ -416,6 +404,7 @@ void shader_block::add_input (const std::string& Name, const std::string& Type, 
 	if (!p.set_type (Type)) {
 		ok = false;
 	}
+	p.set_storage (Storage);
 	p.set_value (DefaultValue);
 	p.m_multi_operator = Multi;
 	p.m_shader_parameter = ShaderParameter;
@@ -439,7 +428,7 @@ std::string shader_block::add_multi_input (const std::string& ParentName) {
 
 	// create a new one (with a parent)
 	const std::string new_name = get_unique_input_name (ParentName);
-	add_input (new_name, input_type (ParentName), "", "", "", false);
+	add_input (new_name, input_type (ParentName), "", "", "", "", false);
 	set_input_parent (new_name, ParentName);
 
 	// return the new input name
@@ -536,6 +525,21 @@ std::string shader_block::input_type (const std::string& Name) const {
 }
 
 
+std::string shader_block::input_storage (const std::string& Name) const {
+
+	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->get_storage();
+		}
+	}
+
+	log() << warning << "unknown input : " << Name << std::endl;
+	return std::string ("");
+}
+
+
 std::string shader_block::output_type (const std::string& Name) const {
 
 	for (properties_t::const_iterator o = m_outputs.begin(); o != m_outputs.end(); ++o) {
@@ -543,6 +547,21 @@ std::string shader_block::output_type (const std::string& Name) const {
 		if (o->m_name == Name) {
 
 			return o->get_type();
+		}
+	}
+
+	log() << warning << "unknown output : " << Name << std::endl;
+	return std::string ("");
+}
+
+
+std::string shader_block::output_storage (const std::string& Name) const {
+
+	for (properties_t::const_iterator o = m_outputs.begin(); o != m_outputs.end(); ++o) {
+
+		if (o->m_name == Name) {
+
+			return o->get_storage();
 		}
 	}
 
@@ -937,68 +956,6 @@ void shader_block::get_multi_input_child_list (const std::string& Name, std::vec
 }
 
 
-bool shader_block::is_input_uniform (const std::string& Name) const {
-
-	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
-
-		if (i->m_name == Name) {
-
-			return i->is_uniform();
-		}
-	}
-
-	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
-
-	return false;
-}
-
-
-void shader_block::set_input_uniform (const std::string& Name, const bool State) {
-
-	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
-
-		if (i->m_name == Name) {
-
-			i->set_uniform (State);
-			return;
-		}
-	}
-
-	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
-}
-
-
-bool shader_block::is_output_uniform (const std::string& Name) const {
-
-	for (properties_t::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
-
-		if (i->m_name == Name) {
-
-			return i->is_uniform();
-		}
-	}
-
-	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
-
-	return false;
-}
-
-
-/*void shader_block::set_output_uniform (const std::string& Name, const bool State) {
-
-	for (properties_t::iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {
-
-		if (i->m_name == Name) {
-
-			i->set_uniform (State);
-			return;
-		}
-	}
-
-	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
-}*/
-
-
 std::string shader_block::get_unique_input_name (const std::string& Name) const {
 
 	if (!is_input (Name))
@@ -1188,7 +1145,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					log() << error << "unhandled input attribute : '" << name << "'" << std::endl;
 			}
 
-			add_input (input_name, input_type, input_description, input_value, input_multi_operator, shader_parameter_input);
+			add_input (input_name, input_type, input_storage, input_description, input_value, input_multi_operator, shader_parameter_input);
 			if (!input_multi_operator_parent.empty()) {
 				set_input_multi_operator_parent (input_name, input_multi_operator_parent);
 			}

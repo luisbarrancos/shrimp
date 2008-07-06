@@ -36,6 +36,7 @@ namespace edit_output
 
 static fltk::Output* s_name = 0;
 static fltk::Choice* s_type = 0;
+static fltk::Choice* s_storage = 0;
 static fltk::LightButton* s_shader_output = 0;
 
 
@@ -46,6 +47,7 @@ private:
 	shader_block* m_shader_block;
 	std::string m_edited_output;
 	types_t m_types;
+	storages_t m_storage_types;
 
 public:
 	dialog (shader_block* Block) :
@@ -60,8 +62,21 @@ public:
 			w->add (s_name);
 			s_name->tooltip ("Edited output name");
 
+			// storage edition
+			s_storage = new fltk::Choice (70,32, 90,23, "Type");
+			s_storage->begin();
+				// make sure the list isn't destroyed before the dialog closes
+				m_storage_types = get_property_storage_types();
+				for (types_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i) {
+
+					new fltk::Item (st_i->c_str());
+				}
+			s_storage->end();
+			w->add (s_storage);
+			s_storage->tooltip ("Input variable storage type");
+
 			// type edition
-			s_type = new fltk::Choice (70,32, 120,23, "Type");
+			s_type = new fltk::Choice (160,32, 120,23, "");
 			s_type->begin();
 				// make sure the list isn't destroyed before the dialog closes
 				m_types = get_property_types();
@@ -104,12 +119,16 @@ public:
 		// set name
 		s_name->text (OutputName.c_str());
 
-		// set type
-		std::string type = m_shader_block->get_output_type (m_edited_output);
-		if (m_shader_block->is_output_uniform (m_edited_output)) {
-			type = "uniform " + type;
+		// set types
+		const std::string storage = m_shader_block->get_output_storage (m_edited_output);
+		int storage_type_number = 0;
+		for (storages_t::const_iterator s_i = m_storage_types.begin(); s_i != m_storage_types.end(); ++s_i, ++storage_type_number) {
+
+			if (storage == *s_i)
+				s_storage->value (storage_type_number);
 		}
 
+		const std::string type = m_shader_block->get_output_type (m_edited_output);
 		int type_number = 0;
 		for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i, type_number++) {
 
@@ -120,14 +139,20 @@ public:
 		// set shader output state
 		s_shader_output->value (m_shader_block->is_shader_output (OutputName));
 
-
 		// show the dialog
 		w->exec();
 	}
 
 	void on_ok (fltk::Widget* W) {
 
-		// save type
+		// save types
+		types_t storage_list = get_property_storage_types();
+		const unsigned int storage_type_number = s_storage->value();
+		if (storage_type_number >= 0 && storage_type_number < storage_list.size()) {
+
+			m_shader_block->set_output_storage (m_edited_output, storage_list[storage_type_number]);
+		}
+
 		types_t list = get_property_types();
 		const unsigned int type_number = s_type->value();
 		if (type_number >= 0 && type_number < list.size()) {
@@ -138,6 +163,7 @@ public:
 		// save shader output state
 		//m_shader_block->set_shader_output (m_edited_output, s_shader_output->value());
 
+		// close the dialog
 		W->window()->make_exec_return (false);
 	}
 

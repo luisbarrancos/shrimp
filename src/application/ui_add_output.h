@@ -40,6 +40,7 @@ namespace add_output
 
 static fltk::Input* s_name;
 static fltk::Choice* s_type;
+static fltk::Choice* s_storage = 0;
 static fltk::CheckButton* s_shader_output;
 static fltk::TextEditor* s_description;
 
@@ -55,6 +56,7 @@ private:
 
 	// make sure the list isn't destroyed before the dialog closes
 	types_t m_types;
+	types_t m_storage_types;
 
 public:
 	dialog() {
@@ -66,11 +68,25 @@ public:
 		w = new fltk::Window (400, 300, "Add output");
 		w->begin();
 
+			// name
 			s_name = new fltk::Input (90,10, 250,23, "Name");
 			w->add (s_name);
 			s_name->tooltip ("Output name");
 
-			s_type = new fltk::Choice (90,40, 120,25, "Type");
+			// storage
+			s_storage = new fltk::Choice (90,40, 90,23, "Type");
+			s_storage->begin();
+				m_storage_types = get_property_storage_types();
+				for (types_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i) {
+
+					new fltk::Item (st_i->c_str());
+				}
+			s_storage->end();
+			w->add (s_storage);
+			s_storage->tooltip ("Input variable storage type");
+
+			// type
+			s_type = new fltk::Choice (180,40, 120,23, "");
 			s_type->begin();
 				for (types_t::const_iterator t = m_types.begin(); t != m_types.end(); ++t) {
 
@@ -80,6 +96,7 @@ public:
 			w->add (s_type);
 			s_type->tooltip ("Output type");
 
+			// shader output checkbox
 			s_shader_output = new fltk::CheckButton (90,70, 100,23, "Shader output");
 			w->add (s_shader_output);
 			s_shader_output->tooltip ("Input's default value");
@@ -91,6 +108,7 @@ public:
 			w->resizable (s_description);
 
 
+			// OK / Cancel
 			fltk::ReturnButton* rb = new fltk::ReturnButton (150, 250, 70, 25, "OK");
 			rb->label ("Ok");
 			rb->callback (cb_ok, (void*)this);
@@ -124,17 +142,25 @@ public:
 		// get user values
 		const std::string name = s_name->value();
 		const std::string type = m_types[s_type->value()];
-		const std::string storage = "varying";//m_storages[s_type->value()];
+		const std::string storage = m_storage_types[s_storage->value()];
 		const bool shader_output = s_shader_output->value();
 		const std::string description = s_description->text();
-
-		// check that the name isn't already used in this block
-		// TODO
 
 		if (name.empty()) {
 
 			// don't allow empty names
 			fltk::alert ("Output name is empty!");
+
+		} else if (m_block->is_input (name)) {
+
+			// an input with the same name already exists
+			fltk::alert ("An input with the same name already exists!");
+
+		} else if (m_block->is_output (name)) {
+
+			// an output with the same name already exists
+			fltk::alert ("An output with the same name already exists!");
+
 		} else {
 			// create the output
 			m_block->add_output (name, type, storage, description, shader_output);

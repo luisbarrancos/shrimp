@@ -333,9 +333,7 @@ xml::element scene::xml_network() {
 			xml::element xml_input ("input");
 			xml_input.push_attribute ("name", name);
 			xml_input.push_attribute ("type", input->get_type());
-			if (input->is_uniform()) {
-				xml_input.push_attribute ("storage", std::string ("uniform"));
-			}
+			xml_input.push_attribute ("storage", input->get_storage());
 			if (input->is_multi_operator()) {
 				xml_input.push_attribute ("multi", input->m_multi_operator);
 			}
@@ -382,10 +380,8 @@ xml::element scene::xml_network() {
 			xml::element xml_output ("output");
 			xml_output.push_attribute ("name", name);
 			xml_output.push_attribute ("type", output->get_type());
+			xml_output.push_attribute ("storage", output->get_storage());
 			xml_output.push_attribute ("description", output->m_description);
-			if (output->is_uniform()) {
-				xml_output.push_attribute ("storage", std::string ("uniform"));
-			}
 			if (output->m_shader_output) {
 				xml_output.push_attribute ("shader_output", std::string ("1"));
 			}

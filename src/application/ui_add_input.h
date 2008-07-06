@@ -156,9 +156,6 @@ public:
 		const std::string description = s_description->text();
 		const bool shader_parameter = s_shader_parameter->value();
 
-		// check that the name isn't already used in this block
-		// TODO
-
 		// check that the default value matches the input type
 		// TODO
 
@@ -166,9 +163,20 @@ public:
 
 			// don't allow empty names
 			fltk::alert ("Input name is empty!");
+
+		} else if (m_block->is_input (name)) {
+
+			// an input with the same name already exists
+			fltk::alert ("An input with the same name already exists!");
+
+		} else if (m_block->is_output (name)) {
+
+			// an output with the same name already exists
+			fltk::alert ("An output with the same name already exists!");
+
 		} else {
 			// create the input
-			m_block->add_input (name, storage + ' ' + type, description, default_value, "", shader_parameter);
+			m_block->add_input (name, type, storage, description, default_value, "", shader_parameter);
 
 			// close the dialog
 			W->window()->make_exec_return(false);

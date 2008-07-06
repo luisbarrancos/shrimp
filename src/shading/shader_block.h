@@ -65,8 +65,6 @@ public:
 
 	bool set_storage (const std::string& Storage);
 	std::string get_storage() const;
-	void set_uniform (const bool IsUniform);
-	bool is_uniform() const;
 
 	bool is_multi_operator() const;
 
@@ -145,12 +143,14 @@ public:
 	properties_t m_inputs;
 	properties_t m_outputs;
 
-	void add_input (const std::string& Name, const std::string& Type, const std::string& Description, const std::string& Default, const std::string& Multi, const bool ShaderParameter = true);
+	void add_input (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const std::string& Default, const std::string& Multi, const bool ShaderParameter = true);
 	std::string add_multi_input (const std::string& ParentName);
 	void add_output (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const bool ShaderOutput = false);
 
 	std::string input_type (const std::string& Name) const;
+	std::string input_storage (const std::string& Name) const;
 	std::string output_type (const std::string& Name) const;
+	std::string output_storage (const std::string& Name) const;
 
 	bool is_input (const std::string& Name) const;
 	bool is_output (const std::string& Name) const;
@@ -187,12 +187,6 @@ public:
 	bool set_input_multi_operator_parent (const std::string& Name, const std::string& Parent);
 
 	void get_multi_input_child_list (const std::string& Name, std::vector<std::string>& Children) const;
-
-	bool is_input_uniform (const std::string& Name) const;
-	void set_input_uniform (const std::string& Name, const bool State);
-
-	bool is_output_uniform (const std::string& Name) const;
-	//void set_output_uniform (const std::string& Name, const bool State);
 
 	std::string get_unique_input_name (const std::string& Name) const;
 

@@ -38,17 +38,17 @@ rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
 {
 
 	// add inputs
-	add_input ("Ci", "color", "Incident ray colour", "0", "");
-	add_input ("Oi", "color", "Incident ray opacity", "1", "");
-	add_input ("P", "point", "Displaced surface position", "P", "");
-	add_input ("N", "normal", "Displaced surface shading normal", "N", "");
-	add_input ("Cl", "color", "Outgoing light ray colour", "0", "");
-	add_input ("Ol", "color", "Outgoing light ray opacity", "1", "");
-	add_input ("Cv", "color", "Attenuated ray colour", "0", "");
-	add_input ("Ov", "color", "Attenuated ray opacity", "1", "");
-	add_input ("Cm", "color", "Output pixel colour", "0", "");
-	add_input ("Om", "color", "Output pixel opacity", "1", "");
-	add_input ("AOV", "color", "AOV preview output", "1", "");
+	add_input ("Ci", "color", "varying", "Incident ray colour", "0", "");
+	add_input ("Oi", "color", "varying", "Incident ray opacity", "1", "");
+	add_input ("P", "point", "varying", "Displaced surface position", "P", "");
+	add_input ("N", "normal", "varying", "Displaced surface shading normal", "N", "");
+	add_input ("Cl", "color", "varying", "Outgoing light ray colour", "0", "");
+	add_input ("Ol", "color", "varying", "Outgoing light ray opacity", "1", "");
+	add_input ("Cv", "color", "varying", "Attenuated ray colour", "0", "");
+	add_input ("Ov", "color", "varying", "Attenuated ray opacity", "1", "");
+	add_input ("Cm", "color", "varying", "Output pixel colour", "0", "");
+	add_input ("Om", "color", "varying", "Output pixel opacity", "1", "");
+	add_input ("AOV", "color", "varying", "AOV preview output", "1", "");
 }
 
 
@@ -284,10 +284,9 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 						sb->sl_name() + "_" + output->m_name + ";\n";
 			} else {
 				shader_outputs += "\t\toutput ";
-				if (output->is_uniform()) {
-					shader_outputs += "uniform ";
-				} else {
-					shader_outputs += "varying ";
+				const std::string storage = sb->output_storage (output->m_name);
+				if (storage != "varying") {
+					shader_outputs += storage + " ";
 				}
 				shader_outputs += sb->output_type (output->m_name) + " " + output->m_name;
 				shader_outputs += " = 0;\n";
