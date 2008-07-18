@@ -1,0 +1,233 @@
+<shrimp name="new_scene">
+	<about/>
+	<network>
+		<block id="Add" position_x="-2.1076923076923" position_y="-1.4" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="VLfBm3D" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="+" value=".8" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+				</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="CellContour" position_x="3.72980769230769" position_y="1.11153846153846" author="rconstruct">
+			<input name="p1" type="point" storage="varying" value="0" description="First point position">
+				<connection parent="SetComp" output="out"/>
+			</input>
+			<input name="p2" type="point" storage="varying" value="1" description="Second point position">
+				<connection parent="SetComp_2" output="out"/>
+			</input>
+			<input name="f1" type="float" storage="varying" value="0" description="Primary feature">
+				<connection parent="VoronoiKM2D2F" output="f1"/>
+			</input>
+			<input name="f2" type="float" storage="varying" value="1" description="Secondary feature">
+				<connection parent="VoronoiKM2D2F" output="f2"/>
+			</input>
+			<input name="lthick" type="float" storage="varying" value="3" description="Contour line thickness"/>
+			<input name="P" type="point" storage="varying" value="P" description="Surface point"/>
+			<output name="val" type="float" storage="varying" description="Output value"/>
+			<code>
+		$(val) = step( $(lthick) * (
+					distance( $(p1), $(p2) ) / (
+					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
+					$(f2) - $(f1) );
+				</code>
+			<include>shrimp_helpers.h			</include>
+			<usage/>
+		</block>
+		<block id="Multiply" position_x="-2.83076923076922" position_y="1.1076923076923" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="st" output="s"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" shader_parameter="1" value="5" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+				</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_2" position_x="-2.87692307692307" position_y="0.0307692307692282" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="st" output="t"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" shader_parameter="1" value="5" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+				</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_3" position_x="-4.35384615384614" position_y="-3.26153846153846" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Transform" output="pp"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="*" value="5" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="point" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+				</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Root block" position_x="5.62167832167831" position_y="1.13339160839161" author="" root="RIB" AOV_preview="1">
+			<rib_statements/>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="CellContour" output="val"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<code/>
+			<include/>
+			<usage/>
+		</block>
+		<block id="SetComp" position_x="1.59038461538462" position_y="2.13461538461538" author="rconstruct">
+			<input name="x" type="float" storage="varying" value="0" description="x component">
+				<connection parent="VoronoiKM2D2F" output="spos1"/>
+			</input>
+			<input name="y" type="float" storage="varying" value="0" description="y component">
+				<connection parent="VoronoiKM2D2F" output="tpos1"/>
+			</input>
+			<input name="z" type="float" storage="varying" value="0" description="z component"/>
+			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
+			<code>
+	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
+				</code>
+			<include/>
+			<usage>Sets xyz components of a point, vector, or normal.			</usage>
+		</block>
+		<block id="SetComp_2" position_x="1.71826923076923" position_y="-0.562500000000001" author="rconstruct">
+			<input name="x" type="float" storage="varying" value="0" description="x component">
+				<connection parent="VoronoiKM2D2F" output="spos2"/>
+			</input>
+			<input name="y" type="float" storage="varying" value="0" description="y component">
+				<connection parent="VoronoiKM2D2F" output="tpos2"/>
+			</input>
+			<input name="z" type="float" storage="varying" value="0" description="z component"/>
+			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
+			<code>
+	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
+				</code>
+			<include/>
+			<usage>Sets xyz components of a point, vector, or normal.			</usage>
+		</block>
+		<block id="Transform" position_x="-4.36923076923076" position_y="-1.6" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;object&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
+			<code>
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+				</code>
+			<include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
+		</block>
+		<block id="VLfBm3D" position_x="-2.1076923076923" position_y="-2.50769230769231" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P*5" description="point to sample VLfBm at">
+				<connection parent="Multiply_3" output="val"/>
+			</input>
+			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
+			<input name="octaves" type="float" storage="varying" value="2" description="Maximum octaves of noise"/>
+			<input name="lacunarity" type="float" storage="varying" value="3" description="Controls the smoothness of the VLfBm"/>
+			<input name="scale" type="float" storage="varying" value="1" description="VL scale"/>
+			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the VLfBm"/>
+			<input name="amplitude" type="float" storage="varying" value=".2" description="Amplitude of VLfBm"/>
+			<output name="val" type="float" storage="varying" description="VLfBm value at p"/>
+			<code>
+	#define $(val)_$(val:type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
+	#else
+		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
+					$(octaves), $(lacunarity),$(gain),$(scale) ) );
+	#endif
+				</code>
+			<include>fractal.h			</include>
+			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
+				</usage>
+		</block>
+		<block id="VoronoiKM2D2F" position_x="-0.529697276407804" position_y="0.923813029076187" author="rconstruct">
+			<input name="ss" type="float" storage="varying" value="s" description="s coordinate">
+				<connection parent="Multiply" output="val"/>
+			</input>
+			<input name="tt" type="float" storage="varying" value="t" description="t coordinate">
+				<connection parent="Multiply_2" output="val"/>
+			</input>
+			<input name="jitter" type="float" storage="varying" value="1" description="Jitter">
+				<connection parent="Add" output="val"/>
+			</input>
+			<output name="f1" type="float" storage="varying" description="feature 1"/>
+			<output name="spos1" type="float" storage="varying" description="s position 1"/>
+			<output name="tpos1" type="float" storage="varying" description="t position 1"/>
+			<output name="f2" type="float" storage="varying" description="feature 2"/>
+			<output name="spos2" type="float" storage="varying" description="s position 2"/>
+			<output name="tpos2" type="float" storage="varying" description="t position 2"/>
+			<code>
+	/* initialize */
+	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;
+	$(f2) = 0; $(spos2) = 0; $(tpos2) = 0;
+    voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
+								 $(tpos1), $(f2), $(spos2), $(tpos2));
+				</code>
+			<include>extrapatterns.h			</include>
+			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.			</usage>
+		</block>
+		<block id="p" position_x="-4.41538461538461" position_y="-0.676923076923079" author="rconstruct">
+			<output name="P" type="point" storage="varying" description="Surface position"/>
+			<code>
+    $(P) = P;
+    			</code>
+			<include/>
+			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
+		</block>
+		<block id="st" position_x="-4.95384615384615" position_y="0.738461538461535" author="rconstruct">
+			<output name="s" type="float" storage="varying" description="S texture coordinate"/>
+			<output name="t" type="float" storage="varying" description="T texture coordinate"/>
+			<code>
+    $(s) = s;
+    $(t) = t;
+    			</code>
+			<include/>
+			<usage/>
+		</block>
+	</network>
+</shrimp>

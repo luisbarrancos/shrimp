@@ -575,4 +575,67 @@ oaktexture(
 
 ////////////////////////////////////////////////////////////////////////////////
 
+/* Voronoi diagram, Karlsruhe (Moscow) metric */
 
+void
+voronoi_km_f1f2_2d(
+						float ss, tt;
+		            	float jitter;
+			            output float f1;
+			            output float spos1, tpos1;
+			            output float f2;
+		    	        output float spos2, tpos2;
+    )
+{
+    float sthiscell = floor(ss)+0.5, tthiscell = floor(tt)+0.5;
+	spos1 = tpos1 = spos2 = tpos2 = 0;
+    f1 = f2 = 1000;
+    uniform float i, j;
+
+    for (i = -1;  i <= 1;  i += 1) {
+	float stestcell = sthiscell + i;
+        for (j = -1;  j <= 1;  j += 1) {
+	    float ttestcell = tthiscell + j;
+	    float spos = stestcell +
+		   jitter * (cellnoise(stestcell, ttestcell) - 0.5);
+	    float tpos = ttestcell +
+		   jitter * (cellnoise(stestcell+23, ttestcell-87) - 0.5);
+
+		/* Karlsruhe-metric (Moscow metric)
+		 * (r,s) = polar coordinate of p (np)
+		 * (ri,si) = polar coordinate of p(i) (npos) 
+		 * q = min( r, ri)
+		 * e(s, si) = min( |s-si|, 6.28-|s-si|)
+		 * if s >= 0 && s <= 2
+		 * distance(p, p(i)) = q * e(s, s(i)) + |r-r(i)| )
+		 * else
+		 * distance(p, p(i)) = r + r(i)
+		 * */
+
+		float nspos = 0, nss = 0, ntpos = 0, ntt = 0;
+		topolar2d( ss, tt, nss, ntt );
+		topolar2d( spos, tpos, nspos, ntpos );
+
+		float qx = min( nss, nspos );
+		float qy = min( abs(ntt - ntpos), 6.28 - abs(ntt - ntpos) );
+
+		float dist = 0;
+		if ( ntt >= 0 && ntt <= 2) {
+			dist = qx * qy + abs(nss - nspos);
+		} else {
+			dist = nss + nspos;
+		}
+
+	    if (dist < f1) {
+		f2 = f1;  spos2 = spos1;  tpos2 = tpos1;
+		f1 = dist;  spos1 = spos;  tpos1 = tpos;
+	    } else if (dist < f2) {
+		f2 = dist;
+		spos2 = spos;  tpos2 = tpos;
+    	    }
+	    }
+    }
+    f1 = sqrt(f1);  f2 = sqrt(f2);
+}
+
+			
