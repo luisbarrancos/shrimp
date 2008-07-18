@@ -189,6 +189,10 @@ private:
 	static void cb_select_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_select_block (W, Data); }
 	void on_deselect_block (fltk::Widget* W, void* Data);
 	static void cb_deselect_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_deselect_block (W, Data); }
+	void on_roll_block (fltk::Widget* W, void* Data);
+	static void cb_roll_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_roll_block (W, Data); }
+	void on_unroll_block (fltk::Widget* W, void* Data);
+	static void cb_unroll_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_unroll_block (W, Data); }
 	void on_group_selection (fltk::Widget* W, void* Data);
 	static void cb_group_selection(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_group_selection (W, Data); }
 	void on_clear_selection (fltk::Widget* W, void* Data);

@@ -28,8 +28,9 @@ bool scene::is_selected (const shader_block* Block) {
 
 	std::string name = Block->name();
 	selection_t::const_iterator i = m_selection.find (name);
-	if (i == m_selection.end())
+	if (i == m_selection.end()) {
 		return false;
+	}
 
 	return true;
 }
@@ -56,9 +57,9 @@ void scene::set_block_selection (shader_block* Block, const bool Selection) {
 
 	const std::string block_name = Block->name();
 	if (Selection) {
-		m_selection.insert(block_name);
+		m_selection.insert (block_name);
 	} else {
-		m_selection.erase(block_name);
+		m_selection.erase (block_name);
 	}
 }
 

@@ -378,22 +378,33 @@ void scene_view::draw_shader () {
 
 				} else {
 
-					// property not found, may be part of a group
+					// property not found, may be part of a group or rolled block
 					const int block_group = m_scene->group (block);
-					if (!block_group) {
+					const bool rolled_block = m_scene->is_rolled (block);
+
+					if (block_group) {
+
+						// set group's position
+						group_position_t::const_iterator p = m_group_positions.find (block_group);
+						if (p == m_group_positions.end ()) {
+							log () << error << "group '" << block_group << "' not found." << std::endl;
+							continue;
+						}
+
+						to_x = p->second.position_x;
+						to_y = p->second.position_y;
+
+					} else if (rolled_block) {
+
+						to_x = block->m_position_x + block->m_width / 2;
+						to_y = block->m_position_y - block->m_width / 2;
+
+					} else {
+
 						log () << error << "start property '" << to.first << "-" << to.second << "' not found." << std::endl;
 						continue;
 					}
 
-					// set group's position
-					group_position_t::const_iterator p = m_group_positions.find (block_group);
-					if (p == m_group_positions.end ()) {
-						log () << error << "group '" << block_group << "' not found." << std::endl;
-						continue;
-					}
-
-					to_x = p->second.position_x;
-					to_y = p->second.position_y;
 				}
 			}
 			else {
@@ -404,22 +415,34 @@ void scene_view::draw_shader () {
 			const positions_t::const_iterator from_property = property_positions.find (from);
 			if (property_positions.end () == from_property) {
 
-				// property not found, may be part of a group
-				const int block_group = m_scene->group (m_scene->get_block (from.first));
-				if (!block_group) {
+				const shader_block* block = m_scene->get_block (from.first);
+
+				// property not found, may be part of a group or rolled block
+				const int block_group = m_scene->group (block);
+				const bool rolled_block = m_scene->is_rolled (block);
+
+				if (block_group) {
+
+					// set group's position
+					group_position_t::const_iterator p = m_group_positions.find (block_group);
+					if (p == m_group_positions.end ()) {
+						log () << error << "group '" << block_group << "' not found." << std::endl;
+						continue;
+					}
+
+					from_x = p->second.position_x;
+					from_y = p->second.position_y;
+
+				} else if (rolled_block) {
+
+					from_x = block->m_position_x + block->m_width / 2;
+					from_y = block->m_position_y - block->m_width / 2;
+
+				} else {
+
 					log () << error << "end property '" << from.first << "-" << from.second << "' not found." << std::endl;
 					continue;
 				}
-
-				// set group's position
-				group_position_t::const_iterator p = m_group_positions.find (block_group);
-				if (p == m_group_positions.end ()) {
-					log () << error << "group '" << block_group << "' not found." << std::endl;
-					continue;
-				}
-
-				from_x = p->second.position_x;
-				from_y = p->second.position_y;
 			}
 			else
 			{
@@ -434,7 +457,7 @@ void scene_view::draw_shader () {
 	glEnd ();
 
 	// draw groups
-	draw_groups ();
+	draw_groups();
 
 	// draw connection in progress
 	if (m_connection_start.first != "") {
@@ -741,9 +764,14 @@ void scene_view::transform_scene () {
 
 void scene_view::draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions) {
 
-	draw_block_body (Block, X, Y);
-	draw_block_name (Block, X, Y);
-	draw_block_properties (Block, X, Y, PropertyPositions);
+	if (!m_scene->is_rolled (Block)) {
+		draw_block_body (Block, X, Y);
+		draw_block_name (Block, X, Y);
+		draw_block_properties (Block, X, Y, PropertyPositions);
+	} else {
+		draw_block_body (Block, X, Y);
+		draw_block_name (Block, X, Y);
+	}
 }
 
 
@@ -753,7 +781,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	const unsigned long max_properties = std::max (Block->input_count(), Block->m_outputs.size());
 
 	// set minimal block height
-	const double height1 = width * (1.0 / 3.0) * static_cast<double> (max_properties);
+	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.0) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;
@@ -979,7 +1007,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 	}
 }
 
-void scene_view::draw_groups () {
+void scene_view::draw_groups() {
 
 	if (!m_scene) {
 
@@ -1064,6 +1092,28 @@ void scene_view::on_deselect_block (fltk::Widget* W, void* Data) {
 		s->set_block_selection (block, false);
 	} else {
 		log () << error << "block deselection: view's scene is empty." << std::endl;
+	}
+}
+
+
+void scene_view::on_roll_block (fltk::Widget* W, void* Data) {
+
+	if (scene* s = get_scene ()) {
+		shader_block* block = m_scene->get_block (m_active_block);
+		s->set_block_rolled_state (block, true);
+	} else {
+		log () << error << "block roll: view's scene is empty." << std::endl;
+	}
+}
+
+
+void scene_view::on_unroll_block (fltk::Widget* W, void* Data) {
+
+	if (scene* s = get_scene ()) {
+		shader_block* block = m_scene->get_block (m_active_block);
+		s->set_block_rolled_state (block, false);
+	} else {
+		log () << error << "block unroll: view's scene is empty." << std::endl;
 	}
 }
 

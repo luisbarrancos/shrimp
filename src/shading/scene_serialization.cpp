@@ -117,6 +117,13 @@ bool scene::load (const std::string& Scene) {
 				root_block = true;
 			}
 
+			bool rolled_block = false;
+			std::string rolled_value ("");
+			if (xml::get_attribute (*e->ToElement(), "rolled", rolled_value)) {
+
+				rolled_block = true;
+			}
+
 			std::string position_sx;
 			std::string position_sy;
 			xml::get_attribute (*e->ToElement(), "position_x", position_sx);
@@ -170,6 +177,9 @@ bool scene::load (const std::string& Scene) {
 			add_block (id, "", new_block);
 			new_block->set_name (id);
 			new_block->set_position (position_x, position_y);
+			if (rolled_block) {
+				set_block_rolled_state (new_block, true);
+			}
 
 			// load input and output properties
 			if (!root_block) {
@@ -310,6 +320,9 @@ xml::element scene::xml_network() {
 		xml_block.push_attribute ("position_x", block->m_position_x);
 		xml_block.push_attribute ("position_y", block->m_position_y);
 		xml_block.push_attribute ("author", block->m_author);
+		if (is_rolled (block)) {
+			xml_block.push_attribute ("rolled", std::string ("1"));
+		}
 		if (block->m_root_block) {
 			if (rib_root_block* rib_block = dynamic_cast<rib_root_block*> (block)) {
 				xml_block.push_attribute ("root", rib_block->root_type);

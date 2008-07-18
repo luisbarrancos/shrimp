@@ -149,6 +149,11 @@ int scene_view::handle (int Event) {
 									if (m_scene->selection_size() > 1) {
 										new fltk::Item ("Group selection", 0, cb_group_selection, (void*)this);
 									}
+									if (m_scene->is_rolled (block)) {
+										new fltk::Item ("Unroll", 0, cb_unroll_block, (void*)this);
+									} else {
+										new fltk::Item ("Roll", 0, cb_roll_block, (void*)this);
+									}
 								}
 
 								new fltk::Item ("Info", 0, cb_block_info, (void*)this);
@@ -190,18 +195,19 @@ int scene_view::handle (int Event) {
 					} else {
 
 						// mouse's over nothing...
-						fltk::PopupMenu group_menu (fltk::event_x(), fltk::event_y(), 0, 0, "Menu");
-						group_menu.type (fltk::PopupMenu::POPUP3);
-						group_menu.begin();
-						if (m_scene) {
-							if (m_scene->selection_size() > 1) {
+						if (m_scene->selection_size() > 1) {
+
+							fltk::PopupMenu group_menu (fltk::event_x(), fltk::event_y(), 0, 0, "Menu");
+							group_menu.type (fltk::PopupMenu::POPUP3);
+							group_menu.begin();
+							if (m_scene) {
 								new fltk::Item ("Group selection", 0, cb_group_selection, (void*)this);
 								new fltk::Item ("Clear selection", 0, cb_clear_selection, (void*)this);
 							}
-						}
-						group_menu.end();
+							group_menu.end();
 
-						group_menu.popup();
+							group_menu.popup();
+						}
 					}
 				}
 			}

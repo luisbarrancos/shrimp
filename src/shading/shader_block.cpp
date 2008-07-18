@@ -1074,7 +1074,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 			m_author = a->Value();
 		}
 		else if (name == "id" || name == "position_x" || name == "position_y"
-			|| name == "root" || name == "custom") {
+			|| name == "root" || name == "rolled") {
 
 			// ignore them
 		}

@@ -68,10 +68,13 @@ public:
 	block_tree_t m_block_tree;
 
 
-	//////////// Selection and group data structures
+	//////////// Selection, rolled blocks and group data structures
 
 	typedef std::set<std::string> selection_t;
 	selection_t m_selection;
+
+	typedef std::set<std::string> rolled_blocks_t;
+	rolled_blocks_t m_rolled_blocks;
 
 	typedef std::map<std::string, int> groups_t;;
 	groups_t m_groups;
@@ -153,6 +156,21 @@ public:
 
 	// toggle block selection state
 	void set_block_selection (shader_block* Block, const bool Selection);
+
+
+	//////////// Rolled blocks
+
+	// returns whether a block is rolled
+	bool is_rolled (const shader_block* Block);
+
+	// returns the number of rolled blocks
+	int rolled_block_count();
+
+	// unroll all blocks
+	void unroll_all_blocks();
+
+	// toggle block rolled / unrolled (normal)
+	void set_block_rolled_state (shader_block* Block, const bool Rolled);
 
 
 	//////////// Grouping

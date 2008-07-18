@@ -165,6 +165,7 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 
 	// update selection and groups
 	m_selection.erase (old_name);
+	m_rolled_blocks.erase (old_name);
 	m_groups.erase (old_name);
 
 	// we can now safely rename the block
@@ -176,14 +177,6 @@ void scene::connect (const io_t& Input, const io_t& Output) {
 
 	shader_block* input_block = get_block (Input.first);
 	shader_block* output_block = get_block (Output.first);
-/*
-std::cerr << "Connecting : " << std::endl;
-if(input_block)
-input_block->dump_structure();
-std::cerr << " -------------------- " << std::endl;
-if(output_block)
-output_block->dump_structure();
-*/
 
 	if (input_block && output_block) {
 
@@ -313,6 +306,46 @@ void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
 				upward_blocks (new_block, List);
 			}
 		}
+	}
+}
+
+
+bool scene::is_rolled (const shader_block* Block) {
+
+	std::string name = Block->name();
+	rolled_blocks_t::const_iterator i = m_rolled_blocks.find (name);
+	if (i == m_rolled_blocks.end()) {
+		return false;
+	}
+
+	return true;
+}
+
+
+int scene::rolled_block_count() {
+
+	return m_rolled_blocks.size();
+}
+
+
+void scene::unroll_all_blocks() {
+
+	m_rolled_blocks.clear();
+}
+
+
+void scene::set_block_rolled_state (shader_block* Block, const bool Rolled) {
+
+	if (!Block) {
+		log() << error << "no block given for roll/unroll." << std::endl;
+		return;
+	}
+
+	const std::string block_name = Block->name();
+	if (Rolled) {
+		m_rolled_blocks.insert (block_name);
+	} else {
+		m_rolled_blocks.erase (block_name);
 	}
 }
 
