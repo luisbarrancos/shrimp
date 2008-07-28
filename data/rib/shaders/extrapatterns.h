@@ -129,8 +129,19 @@ painted_tiling(
 
     float distanceToBoundary = min( tileX, 1-tileX, tileY, 1-tileY);
     float intensity = smoothstep( 0, .1, distanceToBoundary);
+
+	/* Seems Aqsis & Pixie don't like binary evaluations */
+#if RENDERER == aqsis || RENDERER == pixie
+	color tileColor = 0;
+	if (tileType == 0) {
+		tileColor = intensity * cskinny;
+	} else {
+		tileColor = intensity * cfat;
+	}
+#else
     color tileColor = intensity *
         ((tileType == 0) ? cskinny : cfat );
+#endif
     
     return tileColor;
 }
@@ -413,24 +424,22 @@ float wood2(
                 point ip;
                 )
 {
-    point pp, pq; /* shading space point to be computed */
-    float r, r2, my_t;
-
     /* calculate in shader space */
-    pp = txtscale * transform("shader", ip);
+    point pp = txtscale * transform("shader", ip);
 
-    my_t = zcomp(pp)/ringscale;
-    pq = point( xcomp(pp) * 8, ycomp(pp) * 8, zcomp(pp) );
+    float my_t = zcomp(pp) / ringscale;
+	/* shading space point to be computed */
+    point pq = point( xcomp(pp) * 8, ycomp(pp) * 8, zcomp(pp) );
     my_t += noise(pq) / 16;
 
     pq = point( xcomp(pp), my_t, ycomp(pp) + 12.93);
-    r = ringscale * noise(pq);
+    float r = ringscale * noise(pq);
     r -= floor(r);
-    r = 0.2 + 0.8 * smoothstep( 0.2, 0.55, r)*(1-smoothstep( 0.75, 0.8, r));
+    r = 0.2 + 0.8 * smoothstep( 0.2, 0.55, r) * (1-smoothstep( 0.75, 0.8, r));
 
     /* \/-- extra line added for fine grain */
-    pq = point( xcomp(pp)*128 + 5, zcomp(pp)*8-3, ycomp(pp)*128+1);
-    r2 = grainy * (1.3 - noise(pq)) + (1-grainy);
+    pq = point( xcomp(pp) * 128 + 5, zcomp(pp) * 8 - 3, ycomp(pp) * 128 + 1 );
+    float r2 = grainy * (1.3 - noise(pq)) + (1 - grainy);
     return r * r2 * r2;
 }
 
