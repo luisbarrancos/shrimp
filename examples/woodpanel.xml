@@ -15,7 +15,7 @@
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Add_2" position_x="10" position_y="-2" author="rconstruct">
+		<block id="Add_2" position_x="11" position_y="-2" author="rconstruct">
 			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Multiply_2" output="val"/>
 			</input>
@@ -46,7 +46,7 @@
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Bump" position_x="9" position_y="-8" author="rconstruct">
+		<block id="Bump" position_x="9" position_y="4" author="rconstruct">
 			<input name="P" type="point" storage="varying" value="P" description="The surface point to be bumped"/>
 			<input name="Dir" type="normal" storage="varying" value="normalize(N)" description="The surface normal" type_parent="NN"/>
 			<input name="Scale" type="float" storage="varying" value="0.5" description="Amplitude of the bumping">
@@ -60,7 +60,7 @@
 			<usage>This is exactly like the displace function except that the new surface position is not computed.
 				</usage>
 		</block>
-		<block id="Constant" position_x="-6" position_y="-2" author="rconstruct">
+		<block id="Constant" position_x="-8" position_y="-3" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .45, .15, .08 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<code>
@@ -69,7 +69,7 @@
 			<include/>
 			<usage>Useful for supplying multiple inputs with the same value.			</usage>
 		</block>
-		<block id="Constant_2" position_x="2" position_y="-5" author="rconstruct">
+		<block id="Constant_2" position_x="4" position_y="-4" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .72, .42, .22 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<code>
@@ -91,7 +91,7 @@
 			<include/>
 			<usage>Transforms the color C from fromspace to tospace. If fromspace isnt passed, its assumed to be RGB. Color spaces are rgb (red, green, and blue), hsv (hue, saturation, value), hsl (hue, saturation, lightness), xyz or XYZ (CIE XYZ coordinates), xyY (CIE xy and Y), and YIQ (NTSC coordinates).			</usage>
 		</block>
-		<block id="Ctransform_2" position_x="2" position_y="-3" author="rconstruct">
+		<block id="Ctransform_2" position_x="4" position_y="-2" author="rconstruct">
 			<input name="incolor" type="color" storage="varying" value="0" description="color to transform" type_parent="val">
 				<connection parent="SetCol" output="col"/>
 			</input>
@@ -105,7 +105,7 @@
 			<usage>Transforms the color C from fromspace to tospace. If fromspace isnt passed, its assumed to be RGB. Color spaces are rgb (red, green, and blue), hsv (hue, saturation, value), hsl (hue, saturation, lightness), xyz or XYZ (CIE XYZ coordinates), xyY (CIE xy and Y), and YIQ (NTSC coordinates).			</usage>
 		</block>
 		<block id="Environment" position_x="4" position_y="-5" author="rconstruct">
-			<input name="texname" type="string" storage="uniform" value="&quot;/home/cgwork/RSL/pisa.tdl&quot;" description="Texture map name"/>
+			<input name="texname" type="string" storage="uniform" value="&quot;$HOME/.shrimp/temp/beach_envlatl_ldr.tif&quot;" description="Texture map name"/>
 			<input name="dir" type="vector" storage="varying" value="reflect( I, normalize(N))" description="Direction vector">
 				<connection parent="Transform" output="pp"/>
 			</input>
@@ -146,26 +146,7 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="FVLNoise3D" position_x="0" position_y="7" author="rconstruct">
-			<input name="p" type="point" storage="varying" value="P" description="point to sample noise at"/>
-			<input name="scale" type="float" storage="varying" value="1" description="Scale"/>
-			<input name="width" type="float" storage="varying" value="0" description="Filter width"/>
-			<input name="amplitude" type="float" storage="varying" value="1" description="Amplitude of noise"/>
-			<output name="val" type="float" storage="varying" description="Noise value at p"/>
-			<code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
-		$(val) = $(amplitude) * filteredVLNoise( $(p), $(width), $(scale) );
-	#else
-		$(val) = $(amplitude) * $(val:type) filteredvsnoise(
-				filteredvsnoise( $(p), $(width) ) * $(scale) + $(p), $(width));
-	#endif
-				</code>
-			<include>fractal.h			</include>
-			<usage>Filtered 3D Ken Musgrave VLNoise.
-				</usage>
-		</block>
-		<block id="Fresnel" position_x="-0" position_y="-8" author="rconstruct">
+		<block id="Fresnel" position_x="0" position_y="-7" author="rconstruct">
 			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Incident vector">
 				<connection parent="Normalize_2" output="val"/>
 			</input>
@@ -198,7 +179,7 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="I" position_x="-2" position_y="-6" author="rconstruct">
+		<block id="I" position_x="-2" position_y="-5" author="rconstruct">
 			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
 			<code>
 	$(I) = I;
@@ -206,7 +187,7 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="Mix" position_x="5" position_y="-3" author="rconstruct">
+		<block id="Mix" position_x="7" position_y="-2" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
 				<connection parent="Subtract_3" output="val"/>
 			</input>
@@ -223,7 +204,7 @@
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).			</usage>
 		</block>
-		<block id="Multiply" position_x="-2" position_y="-1" author="rconstruct">
+		<block id="Multiply" position_x="-2" position_y="-0" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Voronoi3D2F_2" output="f1"/>
 			</input>
@@ -236,7 +217,7 @@
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="Multiply_2" position_x="6" position_y="-0" author="rconstruct">
+		<block id="Multiply_2" position_x="9" position_y="-2" author="rconstruct">
 			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="OrenNayar" output="Ci"/>
 			</input>
@@ -251,7 +232,7 @@
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="Multiply_3" position_x="7" position_y="-5" author="rconstruct">
+		<block id="Multiply_3" position_x="7" position_y="-4" author="rconstruct">
 			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Environment" output="val"/>
 			</input>
@@ -266,7 +247,7 @@
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="Multiply_4" position_x="7" position_y="-6" author="rconstruct">
+		<block id="Multiply_4" position_x="9" position_y="-4" author="rconstruct">
 			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Multiply_3" output="val"/>
 			</input>
@@ -281,7 +262,7 @@
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="Multiply_5" position_x="7" position_y="-8" author="rconstruct">
+		<block id="Multiply_5" position_x="7" position_y="4" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Subtract_3" output="val"/>
 			</input>
@@ -294,7 +275,7 @@
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="N" position_x="-2" position_y="-9" author="rconstruct">
+		<block id="N" position_x="-2" position_y="-8" author="rconstruct">
 			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
 			<code>
     $(N) = N;
@@ -302,7 +283,7 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="Normalize" position_x="-2" position_y="-8" author="rconstruct">
+		<block id="Normalize" position_x="-2" position_y="-7" author="rconstruct">
 			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
 				<connection parent="N" output="N"/>
 			</input>
@@ -313,7 +294,7 @@
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
-		<block id="Normalize_2" position_x="-2" position_y="-7" author="rconstruct">
+		<block id="Normalize_2" position_x="-2" position_y="-6" author="rconstruct">
 			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
 				<connection parent="I" output="I"/>
 			</input>
@@ -324,7 +305,7 @@
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
-		<block id="OrenNayar" position_x="4" position_y="0" author="rconstruct">
+		<block id="OrenNayar" position_x="7" position_y="0" author="rconstruct">
 			<input name="Kd" type="float" storage="varying" value="1" description="Diffuse light coefficient"/>
 			<input name="roughness" type="float" storage="varying" value="0.05" description="roughness">
 				<connection parent="Voronoi3D2F_2" output="f2"/>
@@ -360,7 +341,7 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="SchlickIso" position_x="8" position_y="1" author="rconstruct">
+		<block id="SchlickIso" position_x="9" position_y="1" author="rconstruct">
 			<input name="Ks" type="float" storage="varying" value="1" description="Specular light coefficient">
 				<connection parent="Voronoi3D2F_2" output="f2"/>
 			</input>
@@ -396,12 +377,12 @@
 			<include/>
 			<usage/>
 		</block>
-		<block id="Subtract" position_x="-2" position_y="2" author="rconstruct">
+		<block id="Subtract" position_x="-2" position_y="4" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
-				<connection parent="p" output="P"/>
+				<connection parent="Transform_2" output="pp"/>
 			</input>
 			<input name="B" type="point" storage="varying" value="1" description="2nd input" type_parent="val">
-				<connection parent="fBm3D" output="val"/>
+				<connection parent="Transform_3" output="pp"/>
 			</input>
 			<output name="val" type="point" storage="varying" description="val = A - B"/>
 			<code>
@@ -410,7 +391,7 @@
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Subtract_2" position_x="1" position_y="2" author="rconstruct">
+		<block id="Subtract_2" position_x="2" position_y="3" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Voronoi3D2F_2" output="f2"/>
 			</input>
@@ -424,7 +405,7 @@
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Subtract_3" position_x="3" position_y="4" author="rconstruct">
+		<block id="Subtract_3" position_x="4" position_y="4" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
 				<connection parent="Wood" output="val"/>
 			</input>
@@ -438,7 +419,7 @@
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Transform" position_x="2" position_y="-8" author="rconstruct">
+		<block id="Transform" position_x="2" position_y="-5" author="rconstruct">
 			<input name="p" type="vector" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
 				<connection parent="Fresnel" output="R"/>
 			</input>
@@ -472,46 +453,75 @@
 			<include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
-		<block id="VLfBm3D" position_x="-4" position_y="7" author="rconstruct">
-			<input name="p" type="point" storage="varying" value="P" description="point to sample VLfBm at"/>
-			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
-			<input name="octaves" type="float" storage="varying" value="5" description="Maximum octaves of noise"/>
-			<input name="lacunarity" type="float" storage="varying" value="2.17" description="Controls the smoothness of the VLfBm"/>
-			<input name="scale" type="float" storage="varying" value="1" description="VL scale"/>
-			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the VLfBm"/>
-			<input name="amplitude" type="float" storage="varying" value="1" description="Amplitude of VLfBm"/>
-			<output name="val" type="point" storage="varying" description="VLfBm value at p"/>
+		<block id="Transform_2" position_x="-4" position_y="5" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;shader&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
 			<code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
-		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
 	#else
-		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
-					$(octaves), $(lacunarity),$(gain),$(scale) ) );
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
 	#endif
 				</code>
-			<include>fractal.h			</include>
-			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
-				</usage>
+			<include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
-		<block id="Voronoi3D2F" position_x="-2" position_y="7" author="rconstruct">
-			<input name="p" type="point" storage="varying" value="P" description="point to sample Voronoi at"/>
-			<input name="jitter" type="float" storage="varying" value="1" description="Jitter"/>
-			<input name="dtype" type="float" storage="varying" value="2" description="Distanc metric, see help"/>
-			<output name="f1" type="float" storage="varying" description="f1"/>
-			<output name="f2" type="float" storage="varying" description="f2"/>
-			<output name="pos1" type="point" storage="varying" description="pos1"/>
-			<output name="pos2" type="point" storage="varying" description="pos2"/>
+		<block id="Transform_3" position_x="-4" position_y="3" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="fBm3D" output="val"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;shader&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
 			<code>
-	/* initialize */
-	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
-    	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
-							$(pos2) );
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
 				</code>
-			<include>fractal.h			</include>
-			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.			</usage>
+			<include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
-		<block id="Voronoi3D2F_2" position_x="-2" position_y="1" author="rconstruct">
+		<block id="Voronoi3D2F_2" position_x="-2" position_y="2" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="point to sample Voronoi at">
 				<connection parent="Subtract" output="val"/>
 			</input>
@@ -530,24 +540,7 @@
 			<include>fractal.h			</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.			</usage>
 		</block>
-		<block id="Voronoi3D2F_3" position_x="2" position_y="7" author="rconstruct">
-			<input name="p" type="point" storage="varying" value="P" description="point to sample Voronoi at"/>
-			<input name="jitter" type="float" storage="varying" value="1" description="Jitter"/>
-			<input name="dtype" type="float" storage="varying" value="2" description="Distanc metric, see help"/>
-			<output name="f1" type="float" storage="varying" description="f1"/>
-			<output name="f2" type="float" storage="varying" description="f2"/>
-			<output name="pos1" type="point" storage="varying" description="pos1"/>
-			<output name="pos2" type="point" storage="varying" description="pos2"/>
-			<code>
-	/* initialize */
-	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
-    	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
-							$(pos2) );
-				</code>
-			<include>fractal.h			</include>
-			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.			</usage>
-		</block>
-		<block id="Wood" position_x="1.52" position_y="4.62" author="rconstruct">
+		<block id="Wood" position_x="2" position_y="5" author="rconstruct">
 			<input name="ringscale" type="float" storage="varying" value="25" description="Ring scale factor"/>
 			<input name="txtscale" type="float" storage="varying" value="1" description="Texture scale"/>
 			<input name="grainy" type="float" storage="varying" value="1" description="Grainyness">
@@ -561,13 +554,13 @@
 			<include>extrapatterns.h			</include>
 			<usage>Wood pattern block, based on wood2.sl shader by Larry Gritz.			</usage>
 		</block>
-		<block id="fBm3D" position_x="-4" position_y="1" author="rconstruct">
+		<block id="fBm3D" position_x="-6" position_y="3" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="point to sample fBm at"/>
 			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
 			<input name="octaves" type="float" storage="varying" value="6" description="Maximum octaves of noise"/>
-			<input name="lacunarity" type="float" storage="varying" value="3" description="Controls the smoothness of the fBm"/>
+			<input name="lacunarity" type="float" storage="varying" shader_parameter="1" value="3" description="Controls the smoothness of the fBm"/>
 			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the fBm"/>
-			<input name="amplitude" type="float" storage="varying" value="1" description="Amplitude of fBm"/>
+			<input name="amplitude" type="float" storage="varying" shader_parameter="1" value="1" description="Amplitude of fBm"/>
 			<output name="val" type="point" storage="varying" description="fBm value at p"/>
 			<code>
 	#define $(val)_$(val:type)
@@ -583,7 +576,7 @@
 			<usage>fBm is a sumation of noises at different frequencies. Note that the output is not clamped and may exceed +1 or -1.
 				</usage>
 		</block>
-		<block id="p" position_x="-4" position_y="2" author="rconstruct">
+		<block id="p" position_x="-6" position_y="4" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
 			<code>
     $(P) = P;
