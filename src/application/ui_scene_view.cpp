@@ -81,11 +81,11 @@ void scene_view::set_scene (scene* Scene) {
 
 	m_scene = Scene;
 
-	fit_scene ();
+	fit_scene();
 }
 
 
-scene* scene_view::get_scene () {
+scene* scene_view::get_scene() {
 
 	return m_scene;
 }
@@ -101,16 +101,16 @@ void scene_view::set_size (const double Size) {
 }
 
 
-double scene_view::fit_scene () {
+double scene_view::fit_scene() {
 
 	if (!m_scene) {
 
-		log () << error << "Calling fit_scene () without any defined scene." << std::endl;
+		log() << error << "Calling fit_scene() without any defined scene." << std::endl;
 		return 0;
 	}
 
 	// make sure the projection is correct since below computations are based on it
-	update_projection ();
+	update_projection();
 
 	// get shaders' bounding-box
 	double left;
@@ -145,7 +145,7 @@ double scene_view::fit_scene () {
 	// move to the scene centre
 	center_scene (center_x, center_y);
 
-	redraw ();
+	redraw();
 
 	return m_size;
 }
@@ -168,7 +168,7 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 
 	if (!block) {
 
-		log () << error << "active block '" << m_active_block << "' not found." << std::endl;
+		log() << error << "active block '" << m_active_block << "' not found." << std::endl;
 		return;
 	}
 
@@ -179,7 +179,7 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 
 void scene_view::move_all_blocks (const double XOffset, const double YOffset) {
 
-	for (scene::shader_blocks_t::iterator block = m_scene->m_blocks.begin (); block != m_scene->m_blocks.end (); ++block) {
+	for (scene::shader_blocks_t::iterator block = m_scene->m_blocks.begin(); block != m_scene->m_blocks.end(); ++block) {
 
 		block->second->m_position_x += XOffset;
 		block->second->m_position_y += YOffset;
@@ -191,7 +191,7 @@ void scene_view::move_block_to_view_center (shader_block* Block) {
 
 	if (!Block) {
 
-		log () << error << "no block supplied! (move_block_to_view_center)" << std::endl;
+		log() << error << "no block supplied! (move_block_to_view_center)" << std::endl;
 		return;
 	}
 
@@ -216,18 +216,18 @@ void scene_view::move_active_group (const double XOffset, const double YOffset) 
 
 	if (!m_active_group) {
 
-		log () << error << "there's no group to move!" << std::endl;
+		log() << error << "there's no group to move!" << std::endl;
 		return;
 	}
 
 	if (!m_scene) {
 
-		log () << error << "there's no active scene!" << std::endl;
+		log() << error << "there's no active scene!" << std::endl;
 		return;
 	}
 
 	// move all the group's shaders
-	for (scene::groups_t::const_iterator g = m_scene->m_groups.begin (); g != m_scene->m_groups.end (); ++g) {
+	for (scene::groups_t::const_iterator g = m_scene->m_groups.begin(); g != m_scene->m_groups.end(); ++g) {
 		if (g->second == m_active_group) {
 
 			shader_block* block = m_scene->get_block (g->first);
@@ -237,7 +237,7 @@ void scene_view::move_active_group (const double XOffset, const double YOffset) 
 	}
 }
 
-void scene_view::draw_grid () {
+void scene_view::draw_grid() {
 
 	glShadeModel (GL_FLAT);
 	glDisable (GL_LINE_SMOOTH);
@@ -253,7 +253,7 @@ void scene_view::draw_grid () {
 			glVertex3d (-100, i, 0);
 			glVertex3d (100, i, 0);
 		}
-	glEnd ();
+	glEnd();
 
 	// grid's vertical lines
 	glBegin (GL_LINES);
@@ -262,14 +262,14 @@ void scene_view::draw_grid () {
 			glVertex3d (i, -100, 0);
 			glVertex3d (i, 100, 0);
 		}
-	glEnd ();
+	glEnd();
 }
 
-void scene_view::draw_shader () {
+void scene_view::draw_shader() {
 
 	if (!m_scene) {
 
-		log () << error << "there's no active scene!" << std::endl;
+		log() << error << "there's no active scene!" << std::endl;
 		return;
 	}
 
@@ -280,12 +280,12 @@ void scene_view::draw_shader () {
 	glLineWidth (1.5);
 
 	// initialize group positions
-	m_group_positions.clear ();
+	m_group_positions.clear();
 
 	typedef std::map<int, int> group_counts_t;
 	group_counts_t counts;
-	for (scene::groups_t::const_iterator g = m_scene->m_groups.begin ();
-		g != m_scene->m_groups.end (); ++g) {
+	for (scene::groups_t::const_iterator g = m_scene->m_groups.begin();
+		g != m_scene->m_groups.end(); ++g) {
 
 		const std::string block_name = g->first;
 		const int group_number = g->second;
@@ -294,14 +294,14 @@ void scene_view::draw_shader () {
 
 		// count current group
 		group_counts_t::iterator c = counts.find (group_number);
-		if (c == counts.end ())
+		if (c == counts.end())
 			counts.insert (std::make_pair (group_number, 1));
 		else
 			c->second++;
 
 		// store position
 		group_position_t::iterator p = m_group_positions.find (group_number);
-		if (p == m_group_positions.end ()) {
+		if (p == m_group_positions.end()) {
 			m_group_positions.insert (std::make_pair (group_number, position (block->m_position_x, block->m_position_y)));
 		} else {
 			p->second.position_x += block->m_position_x;
@@ -309,10 +309,10 @@ void scene_view::draw_shader () {
 		}
 	}
 
-	for (group_position_t::iterator p = m_group_positions.begin (); p != m_group_positions.end (); ++p) {
+	for (group_position_t::iterator p = m_group_positions.begin(); p != m_group_positions.end(); ++p) {
 		group_counts_t::iterator c = counts.find (p->first);
-		if (c == counts.end ()) {
-			log () << error << "Should not be reached." << std::endl;
+		if (c == counts.end()) {
+			log() << error << "Should not be reached." << std::endl;
 			continue;
 		}
 
@@ -323,14 +323,14 @@ void scene_view::draw_shader () {
 
 	// draw blocks
 	positions_t property_positions;
-	for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin (); block_i != m_scene->m_blocks.end (); ++block_i) {
+	for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin(); block_i != m_scene->m_blocks.end(); ++block_i) {
 
 		const shader_block* block = block_i->second;
 
 		// draw blocks that don't belong to any group
 		int group = m_scene->group (block);
 		if (!group) {
-			if (m_snap_to_grid && (block->name () == m_active_block)) {
+			if (m_snap_to_grid && (block->name() == m_active_block)) {
 
 				double x = block->m_position_x;
 				double y = block->m_position_y;
@@ -348,7 +348,7 @@ void scene_view::draw_shader () {
 	// draw connections
 	glColor3f (0.8, 0.8, 0.8);
 	glBegin (GL_LINES);
-		for (scene::dag_t::const_iterator connection = m_scene->m_dag.begin (); connection != m_scene->m_dag.end (); ++connection) {
+		for (scene::dag_t::const_iterator connection = m_scene->m_dag.begin(); connection != m_scene->m_dag.end(); ++connection) {
 
 			const scene::io_t to = connection->first;
 			const scene::io_t from = connection->second;
@@ -359,7 +359,7 @@ void scene_view::draw_shader () {
 			double from_y = 0;
 
 			const positions_t::const_iterator to_property = property_positions.find (to);
-			if (property_positions.end () == to_property) {
+			if (property_positions.end() == to_property) {
 
 				// if the property has a parent, get its position
 				const shader_block* block = m_scene->get_block (to.first);
@@ -386,8 +386,8 @@ void scene_view::draw_shader () {
 
 						// set group's position
 						group_position_t::const_iterator p = m_group_positions.find (block_group);
-						if (p == m_group_positions.end ()) {
-							log () << error << "group '" << block_group << "' not found." << std::endl;
+						if (p == m_group_positions.end()) {
+							log() << error << "group '" << block_group << "' not found." << std::endl;
 							continue;
 						}
 
@@ -401,7 +401,7 @@ void scene_view::draw_shader () {
 
 					} else {
 
-						log () << error << "start property '" << to.first << "-" << to.second << "' not found." << std::endl;
+						log() << error << "start property '" << to.first << "-" << to.second << "' not found." << std::endl;
 						continue;
 					}
 
@@ -413,7 +413,7 @@ void scene_view::draw_shader () {
 			}
 
 			const positions_t::const_iterator from_property = property_positions.find (from);
-			if (property_positions.end () == from_property) {
+			if (property_positions.end() == from_property) {
 
 				const shader_block* block = m_scene->get_block (from.first);
 
@@ -425,8 +425,8 @@ void scene_view::draw_shader () {
 
 					// set group's position
 					group_position_t::const_iterator p = m_group_positions.find (block_group);
-					if (p == m_group_positions.end ()) {
-						log () << error << "group '" << block_group << "' not found." << std::endl;
+					if (p == m_group_positions.end()) {
+						log() << error << "group '" << block_group << "' not found." << std::endl;
 						continue;
 					}
 
@@ -440,7 +440,7 @@ void scene_view::draw_shader () {
 
 				} else {
 
-					log () << error << "end property '" << from.first << "-" << from.second << "' not found." << std::endl;
+					log() << error << "end property '" << from.first << "-" << from.second << "' not found." << std::endl;
 					continue;
 				}
 			}
@@ -454,7 +454,7 @@ void scene_view::draw_shader () {
 			glVertex3d (to_x, to_y, 0);
 			glVertex3d (from_x, from_y, 0);
 		}
-	glEnd ();
+	glEnd();
 
 	// draw groups
 	draw_groups();
@@ -463,33 +463,31 @@ void scene_view::draw_shader () {
 	if (m_connection_start.first != "") {
 
 		const positions_t::const_iterator start_property = property_positions.find (m_connection_start);
-		if (property_positions.end () == start_property) {
-			log () << error << "connection start property '" << m_connection_start.first << "-" << m_connection_start.second << "' not found." << std::endl;
+		if (property_positions.end() == start_property) {
+
+			log() << error << "connection start property '" << m_connection_start.first << "-" << m_connection_start.second << "' not found." << std::endl;
 		}
 		else {
 			// draw a line between the connection start and mouse pointer
 			glColor3f (0.8, 0.0, 0.0);
-			glPushMatrix ();
+			glPushMatrix();
 				glMatrixMode (GL_PROJECTION);
-				glLoadIdentity ();
-				gluOrtho2D (0, static_cast<float> (w ()), 0, static_cast<float> (h ()));
+				glLoadIdentity();
+				gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
 				glBegin (GL_LINES);
-					glVertex2d (static_cast<float> (m_mouse_click_x), h () - static_cast<float> (m_mouse_click_y));
-					glVertex2d (static_cast<float> (m_current_mouse_x), h () - static_cast<float> (m_current_mouse_y));
-					//glVertex2d (static_cast<float> (fltk::event_x ()), h () - static_cast<float> (fltk::event_y ()));
-			//glVertex3d (start_property->second.position_x, start_property->second.position_y, 0);
-			//glVertex3d (from_property->second.position_x, from_property->second.position_y, 0);
-				glEnd ();
-			glPopMatrix ();
+					glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
+					glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
+				glEnd();
+			glPopMatrix();
 		}
 	}
 }
 
 
-void scene_view::update_projection () {
+void scene_view::update_projection() {
 
-	m_view_width = w ();
-	m_view_height = h ();
+	m_view_width = w();
+	m_view_height = h();
 
 	const double ratio = static_cast<double> (m_view_width) / static_cast<double> (m_view_height);
 	const double centre_x = (m_projection_left + m_projection_right) / 2;
@@ -518,17 +516,17 @@ void scene_view::update_projection () {
 }
 
 
-void scene_view::draw () {
+void scene_view::draw() {
 
 	// draw scene
 	glMatrixMode (GL_PROJECTION);
 
-	if (!valid ()) {
+	if (!valid()) {
 
-		update_projection ();
+		update_projection();
 	}
 
-	glLoadIdentity ();
+	glLoadIdentity();
 	glViewport (0, 0, m_view_width, m_view_height);
 
 	glOrtho (m_projection_left, m_projection_right, m_projection_bottom, m_projection_top, m_projection_near, m_projection_far);
@@ -538,18 +536,18 @@ void scene_view::draw () {
 
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-	glPushMatrix ();
-		transform_scene ();
+	glPushMatrix();
+		transform_scene();
 
 		if (m_grid) {
-			draw_grid ();
+			draw_grid();
 		}
 
-		draw_shader ();
-	glPopMatrix ();
+		draw_shader();
+	glPopMatrix();
 }
 
-std::string scene_view::select_object () {
+std::string scene_view::select_object() {
 
 	if (!m_scene)
 		return "";
@@ -564,21 +562,21 @@ std::string scene_view::select_object () {
 	glSelectBuffer (buffer_size, selection_buffer);
 	glRenderMode (GL_SELECT);
 
-	glInitNames ();
-	// push default name, it will be replaced using glLoadName ()
+	glInitNames();
+	// push default name, it will be replaced using glLoadName()
 	glPushName (0);
 
 	glMatrixMode (GL_PROJECTION);
-	glPushMatrix ();
-		glLoadIdentity ();
-		gluPickMatrix ((GLdouble)fltk::event_x (), (GLdouble) (viewport[3] - fltk::event_y ()), 1, 1, viewport);
+	glPushMatrix();
+		glLoadIdentity();
+		gluPickMatrix ((GLdouble)fltk::event_x(), (GLdouble) (viewport[3] - fltk::event_y()), 1, 1, viewport);
 		glOrtho (m_projection_left, m_projection_right, m_projection_bottom, m_projection_top, m_projection_near, m_projection_far);
 
-		transform_scene ();
+		transform_scene();
 
 		std::map<unsigned long, const shader_block*> block_indices;
 		unsigned long index = 1;
-		for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin (); block_i != m_scene->m_blocks.end (); ++block_i) {
+		for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin(); block_i != m_scene->m_blocks.end(); ++block_i) {
 
 			const shader_block* block = block_i->second;
 
@@ -596,9 +594,9 @@ std::string scene_view::select_object () {
 		}
 
 	glMatrixMode (GL_PROJECTION);
-	glPopName ();
-	glPopMatrix ();
-	glFlush ();
+	glPopName();
+	glPopMatrix();
+	glFlush();
 
 	// Get list of picked blocks
 	GLint hits = glRenderMode (GL_RENDER);
@@ -618,10 +616,10 @@ std::string scene_view::select_object () {
 		hits--;
 	}
 
-	return block_indices[closest]->name ();
+	return block_indices[closest]->name();
 }
 
-scene::io_t scene_view::select_property () {
+scene::io_t scene_view::select_property() {
 
 	if (!m_scene) {
 		return scene::io_t ("", "");
@@ -637,21 +635,21 @@ scene::io_t scene_view::select_property () {
 	glSelectBuffer (buffer_size, selection_buffer);
 	glRenderMode (GL_SELECT);
 
-	glInitNames ();
-	// push default name, it will be replaced using glLoadName ()
+	glInitNames();
+	// push default name, it will be replaced using glLoadName()
 	glPushName (0);
 
 	glMatrixMode (GL_PROJECTION);
-	glPushMatrix ();
-		glLoadIdentity ();
-		gluPickMatrix ((GLdouble)fltk::event_x (), (GLdouble) (viewport[3] - fltk::event_y ()), 1, 1, viewport);
+	glPushMatrix();
+		glLoadIdentity();
+		gluPickMatrix ((GLdouble)fltk::event_x(), (GLdouble) (viewport[3] - fltk::event_y()), 1, 1, viewport);
 		glOrtho (m_projection_left, m_projection_right, m_projection_bottom, m_projection_top, m_projection_near, m_projection_far);
 
-		transform_scene ();
+		transform_scene();
 
-		m_property_indices.clear ();
+		m_property_indices.clear();
 		m_property_index = 1;
-		for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin (); block_i != m_scene->m_blocks.end (); ++block_i) {
+		for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin(); block_i != m_scene->m_blocks.end(); ++block_i) {
 
 			const shader_block* block = block_i->second;
 
@@ -663,9 +661,9 @@ scene::io_t scene_view::select_property () {
 		}
 
 	glMatrixMode (GL_PROJECTION);
-	glPopName ();
-	glPopMatrix ();
-	glFlush ();
+	glPopName();
+	glPopMatrix();
+	glFlush();
 
 	// Get list of picked blocks
 	GLint hits = glRenderMode (GL_RENDER);
@@ -687,12 +685,12 @@ scene::io_t scene_view::select_property () {
 
 	const shader_block* selected_block = m_property_indices[closest].first;
 	if (selected_block)
-		return std::make_pair (m_property_indices[closest].first->name (), m_property_indices[closest].second);
+		return std::make_pair (m_property_indices[closest].first->name(), m_property_indices[closest].second);
 
 	return std::make_pair ("", "");
 }
 
-int scene_view::select_group () {
+int scene_view::select_group() {
 
 	if (!m_scene) {
 
@@ -700,7 +698,7 @@ int scene_view::select_group () {
 	}
 
 	// get group list
-	scene::group_set_t groups = m_scene->group_list ();
+	scene::group_set_t groups = m_scene->group_list();
 
 	// Get current viewport
 	GLint viewport[4];
@@ -712,28 +710,28 @@ int scene_view::select_group () {
 	glSelectBuffer (buffer_size, selection_buffer);
 	glRenderMode (GL_SELECT);
 
-	glInitNames ();
-	// Push default name, it will be replaced using glLoadName ()
+	glInitNames();
+	// Push default name, it will be replaced using glLoadName()
 	glPushName (0);
 
 	glMatrixMode (GL_PROJECTION);
-	glPushMatrix ();
-		glLoadIdentity ();
-		gluPickMatrix ((GLdouble)fltk::event_x (), (GLdouble) (viewport[3] - fltk::event_y ()), 1, 1, viewport);
+	glPushMatrix();
+		glLoadIdentity();
+		gluPickMatrix ((GLdouble)fltk::event_x(), (GLdouble) (viewport[3] - fltk::event_y()), 1, 1, viewport);
 		glOrtho (m_projection_left, m_projection_right, m_projection_bottom, m_projection_top, m_projection_near, m_projection_far);
 
-		transform_scene ();
+		transform_scene();
 
-		for (scene::group_set_t::const_iterator g = groups.begin (); g != groups.end (); ++g) {
+		for (scene::group_set_t::const_iterator g = groups.begin(); g != groups.end(); ++g) {
 
 			glLoadName (*g);
 			draw_group_body (*g);
 		}
 
 	glMatrixMode (GL_PROJECTION);
-	glPopName ();
-	glPopMatrix ();
-	glFlush ();
+	glPopName();
+	glPopMatrix();
+	glFlush();
 
 	// Get list of picked blocks
 	GLint hits = glRenderMode (GL_RENDER);
@@ -757,7 +755,7 @@ int scene_view::select_group () {
 }
 
 
-void scene_view::transform_scene () {
+void scene_view::transform_scene() {
 
 	glScaled (m_size, m_size, m_size);
 }
@@ -787,13 +785,13 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	const double alpha = 0.5;
 
 	// check whether the block's selected
-	scene* s = get_scene ();
+	scene* s = get_scene();
 	const bool is_selected = s->is_selected (Block);
 	// block color
 	if (is_selected)
 		// selected blocks are yellow
 		glColor4f (1.0, 1.0, 0.0, alpha);
-	else if (!Block->m_inputs.size ())
+	else if (!Block->m_inputs.size())
 		// inputs are green
 		glColor4f (0.0, 1.0, 0.0, alpha);
 	else
@@ -805,7 +803,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		glVertex3d (X + width, Y, 0);
 		glVertex3d (X + width, Y - height, 0);
 		glVertex3d (X, Y - height, 0);
-	glEnd ();
+	glEnd();
 
 	glColor3f (1.0, 1.0, 1.0);
 	glBegin (GL_LINES);
@@ -817,7 +815,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		glVertex3d (X, Y - height, 0);
 		glVertex3d (X, Y - height, 0);
 		glVertex3d (X, Y, 0);
-	glEnd ();
+	glEnd();
 }
 
 
@@ -825,7 +823,7 @@ void scene_view::draw_block_name (const shader_block* Block, const double X, con
 
 	// show block name
 	glsetfont (fltk::HELVETICA, 12);
-	fltk::gldrawtext (Block->name ().c_str (), (float)X, (float) (Y + .05), (float)0);
+	fltk::gldrawtext (Block->name().c_str(), (float)X, (float) (Y + .05), (float)0);
 }
 
 
@@ -840,7 +838,7 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 	double start_x = X - property_size / 2;
 	double start_y = Y - property_size / 2;
 
-	for (shader_block::properties_t::const_iterator input = Block->m_inputs.begin (); input != Block->m_inputs.end (); ++input) {
+	for (shader_block::properties_t::const_iterator input = Block->m_inputs.begin(); input != Block->m_inputs.end(); ++input) {
 
 		if (!input->m_multi_operator_parent_name.empty()) {
 
@@ -856,13 +854,13 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 
 		std::string type = Block->input_type (input->m_name);
 
-		if (std::make_pair (Block->name (), input->m_name) == m_active_property)
+		if (std::make_pair (Block->name(), input->m_name) == m_active_property)
 			type = "selected";
 
 		if (input->m_multi_operator_parent_name.empty())
-			draw_property (input->m_name, type, start_x, start_y, property_size, input->is_multi_operator ());
+			draw_property (input->m_name, type, start_x, start_y, property_size, input->is_multi_operator());
 
-		PropertyPositions.insert (std::make_pair (scene::io_t (Block->name (), input->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
+		PropertyPositions.insert (std::make_pair (scene::io_t (Block->name(), input->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
 
 		start_y -= property_size * (3.0/2.0);
 	}
@@ -870,7 +868,7 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 	// output properties
 	start_x = X + width - property_size / 2;
 	start_y = Y - property_size / 2;
-	for (shader_block::properties_t::const_iterator output = Block->m_outputs.begin (); output != Block->m_outputs.end (); ++output) {
+	for (shader_block::properties_t::const_iterator output = Block->m_outputs.begin(); output != Block->m_outputs.end(); ++output) {
 
 		if (Selection) {
 			glLoadName (m_property_index);
@@ -880,11 +878,11 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 
 		std::string type = Block->output_type (output->m_name);
 
-		if (std::make_pair (Block->name (), output->m_name) == m_active_property)
+		if (std::make_pair (Block->name(), output->m_name) == m_active_property)
 			type = "selected";
 
 		draw_property (output->m_name, type, start_x, start_y, property_size);
-		PropertyPositions.insert (std::make_pair (scene::io_t (Block->name (), output->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
+		PropertyPositions.insert (std::make_pair (scene::io_t (Block->name(), output->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
 
 		start_y -= property_size * (3.0/2.0);
 	}
@@ -905,12 +903,12 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y, 0);
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
-		glEnd ();
+		glEnd();
 
 		// show property name
 		glsetfont (fltk::HELVETICA, 12);
 		glColor4f (1.0, 1.0, 1.0, 1.0);
-		fltk::gldrawtext (Name.c_str (), (float) (X + Size * 1.2), (float) (Y - Size), (float)0);
+		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.2), (float) (Y - Size), (float)0);
 	}
 	else if ("colour" == Type || "color" == Type) {
 
@@ -933,7 +931,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y - 2*third, 0);
 			glVertex3d (X + Size, Y - 3*third, 0);
 			glVertex3d (X, Y - 3*third, 0);
-		glEnd ();
+		glEnd();
 	}
 	else if ("point" == Type || "vector" == Type || "normal" == Type) {
 
@@ -944,7 +942,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y, 0);
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
-		glEnd ();
+		glEnd();
 
 		glColor3f (0.0, 0.0, 1.0);
 		glBegin (GL_LINES);
@@ -956,7 +954,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 			glVertex3d (X + Size - small, Y - small, 0);
 			glVertex3d (X + Size - small, Y - small - third, 0);
-		glEnd ();
+		glEnd();
 	}
 	else if ("string" == Type) {
 
@@ -967,7 +965,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y, 0);
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
-		glEnd ();
+		glEnd();
 
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
@@ -976,7 +974,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 			glVertex3d (X + small, Y - 2*third, 0);
 			glVertex3d (X + Size - small, Y - 2*third, 0);
-		glEnd ();
+		glEnd();
 	}
 	else { // float
 		// blank
@@ -986,7 +984,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y, 0);
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
-		glEnd ();
+		glEnd();
 	}
 
 	if (Multi) {
@@ -1003,7 +1001,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 			glVertex3d (X - small, Y - Size - small, 0);
 			glVertex3d (X - small, Y + small, 0);
-		glEnd ();
+		glEnd();
 	}
 }
 
@@ -1014,7 +1012,7 @@ void scene_view::draw_groups() {
 		return;
 	}
 
-	for (group_position_t::const_iterator p = m_group_positions.begin (); p != m_group_positions.end (); ++p) {
+	for (group_position_t::const_iterator p = m_group_positions.begin(); p != m_group_positions.end(); ++p) {
 
 		const int group = p->first;
 		const double x = p->second.position_x;
@@ -1026,15 +1024,15 @@ void scene_view::draw_groups() {
 		glColor3f (1, 1, 1);
 		glsetfont (fltk::HELVETICA, 12);
 		std::string name = m_scene->get_group_name (group);
-		fltk::gldrawtext (name.c_str (), (float) (x), (float) (y), (float)0);
+		fltk::gldrawtext (name.c_str(), (float) (x), (float) (y), (float)0);
 	}
 }
 
 void scene_view::draw_group_body (int Group)
 {
 	group_position_t::const_iterator g = m_group_positions.find (Group);
-	if (g == m_group_positions.end ()) {
-		log () << error << "Unknown group" << std::endl;
+	if (g == m_group_positions.end()) {
+		log() << error << "Unknown group" << std::endl;
 		return;
 	}
 
@@ -1054,7 +1052,7 @@ void scene_view::draw_group_body (const double X, const double Y)
 			const double angle = static_cast<double> (i) * 2 * M_PI / static_cast<double> (sections);
 			glVertex3d (X + radius * cos (angle), Y + radius * sin (angle), 0);
 		}
-	glEnd ();
+	glEnd();
 
 	// draw a white circle around
 	glColor3f (1, 1, 1);
@@ -1070,79 +1068,79 @@ void scene_view::draw_group_body (const double X, const double Y)
 			prev_x = new_x;
 			prev_y = new_y;
 		}
-	glEnd ();
+	glEnd();
 }
 
 
 void scene_view::on_select_block (fltk::Widget* W, void* Data) {
 
-	if (scene* s = get_scene ()) {
+	if (scene* s = get_scene()) {
 		shader_block* block = m_scene->get_block (m_active_block);
 		s->set_block_selection (block, true);
 	} else {
-		log () << error << "block selection: view's scene is empty." << std::endl;
+		log() << error << "block selection: view's scene is empty." << std::endl;
 	}
 }
 
 
 void scene_view::on_deselect_block (fltk::Widget* W, void* Data) {
 
-	if (scene* s = get_scene ()) {
+	if (scene* s = get_scene()) {
 		shader_block* block = m_scene->get_block (m_active_block);
 		s->set_block_selection (block, false);
 	} else {
-		log () << error << "block deselection: view's scene is empty." << std::endl;
+		log() << error << "block deselection: view's scene is empty." << std::endl;
 	}
 }
 
 
 void scene_view::on_roll_block (fltk::Widget* W, void* Data) {
 
-	if (scene* s = get_scene ()) {
+	if (scene* s = get_scene()) {
 		shader_block* block = m_scene->get_block (m_active_block);
 		s->set_block_rolled_state (block, true);
 	} else {
-		log () << error << "block roll: view's scene is empty." << std::endl;
+		log() << error << "block roll: view's scene is empty." << std::endl;
 	}
 }
 
 
 void scene_view::on_unroll_block (fltk::Widget* W, void* Data) {
 
-	if (scene* s = get_scene ()) {
+	if (scene* s = get_scene()) {
 		shader_block* block = m_scene->get_block (m_active_block);
 		s->set_block_rolled_state (block, false);
 	} else {
-		log () << error << "block unroll: view's scene is empty." << std::endl;
+		log() << error << "block unroll: view's scene is empty." << std::endl;
 	}
 }
 
 
 void scene_view::on_group_selection (fltk::Widget* W, void* Data) {
 
-	if (scene* s = get_scene ()) {
-		s->group_selection ();
+	if (scene* s = get_scene()) {
+		s->group_selection();
 	}
 }
 
 
 void scene_view::on_rename_group (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
+	scene* s = get_scene();
 	if (!s || !m_active_group)
 		return;
 
 	std::string name (s->get_group_name (m_active_group));
 	if (edit_group_name::dialog (name)) {
 
-		s->set_group_name (m_active_group, edit_group_name::name->value ());
+		s->set_group_name (m_active_group, edit_group_name::name->value());
 	}
 }
 
 
 void scene_view::on_ungroup (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
+	scene* s = get_scene();
 	if (!s || !m_active_group)
 		return;
 
@@ -1152,18 +1150,18 @@ void scene_view::on_ungroup (fltk::Widget* W, void* Data) {
 
 void scene_view::on_clear_selection (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
+	scene* s = get_scene();
 	if (!s)
 		return;
 
-	s->clear_selection ();
+	s->clear_selection();
 }
 
 
 void scene_view::on_block_info (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
-	if (!s || m_active_block.empty ())
+	scene* s = get_scene();
+	if (!s || m_active_block.empty())
 		return;
 
 	shader_block* block = m_scene->get_block (m_active_block);
@@ -1174,26 +1172,26 @@ void scene_view::on_block_info (fltk::Widget* W, void* Data) {
 
 void scene_view::on_rename_block (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
-	if (!s || m_active_block.empty ())
+	scene* s = get_scene();
+	if (!s || m_active_block.empty())
 		return;
 
 	shader_block* block = m_scene->get_block (m_active_block);
 	edit_block_name::dialog d (s);
-	d.edit_name (block->name ());
+	d.edit_name (block->name());
 }
 
 
 void scene_view::on_delete_block (fltk::Widget* W, void* Data) {
 
-	scene* s = get_scene ();
-	if (!s || m_active_block.empty ())
+	scene* s = get_scene();
+	if (!s || m_active_block.empty())
 		return;
 
 	shader_block* block = m_scene->get_block (m_active_block);
 	if (block) {
-		const std::string message = "Do you really want to delete '" + block->name () + "' block?";
-		if (fltk::ask (message.c_str ())) {
+		const std::string message = "Do you really want to delete '" + block->name() + "' block?";
+		if (fltk::ask (message.c_str())) {
 			m_scene->delete_block (m_active_block);
 		}
 	}
@@ -1229,7 +1227,7 @@ void scene_view::on_edit_pad (fltk::Widget* W, void* Data) {
 	shader_block* active_block = m_scene->get_block (m_active_property.first);
 	if (!active_block) {
 
-		log () << error << "calling on_edit_pad () without any active property." << std::endl;
+		log() << error << "calling on_edit_pad() without any active property." << std::endl;
 		return;
 	}
 
@@ -1254,7 +1252,7 @@ void scene_view::on_edit_RIB (fltk::Widget* W, void* Data) {
 	rib_root_block* root_block = dynamic_cast<rib_root_block*> (block);
 	if (!root_block) {
 
-		log () << error << "trying to edit a non-RIB block as a RIB block." << std::endl;
+		log() << error << "trying to edit a non-RIB block as a RIB block." << std::endl;
 		return;
 	}
 
@@ -1268,7 +1266,7 @@ void scene_view::on_disconnect_pad (fltk::Widget* W, void* Data) {
 	shader_block* active_block = m_scene->get_block (m_active_property.first);
 	if (!active_block) {
 
-		log () << error << "calling on_disconnect_pad () while no pad is active." << std::endl;
+		log() << error << "calling on_disconnect_pad() while no pad is active." << std::endl;
 		return;
 	}
 
@@ -1279,21 +1277,21 @@ void scene_view::on_disconnect_pad (fltk::Widget* W, void* Data) {
 void scene_view::set_grid_state (const bool GridState) {
 
 	m_grid = GridState;
-	redraw ();
+	redraw();
 }
 
 
 void scene_view::set_snap_to_grid_state (const bool SnapState) {
 
 	m_snap_to_grid = SnapState;
-	redraw ();
+	redraw();
 }
 
 
 void scene_view::set_overview_state (const bool OverviewState) {
 
 	m_overview = OverviewState;
-	redraw ();
+	redraw();
 }
 
 

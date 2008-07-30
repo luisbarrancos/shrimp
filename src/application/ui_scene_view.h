@@ -151,9 +151,6 @@ private:
 	// stores scene size
 	double m_size;
 
-	// store mouse position when drag began
-	int m_start_drag_mouse_x;
-	int m_start_drag_mouse_y;
 	// store previous mouse position
 	int m_last_mouse_x;
 	int m_last_mouse_y;
@@ -163,6 +160,9 @@ private:
 	int m_mouse_click_y;
 	int m_current_mouse_x;
 	int m_current_mouse_y;
+	// store connection start position
+	int m_connection_start_x;
+	int m_connection_start_y;
 
 	// store OpenGL camera projection values
 	double m_projection_left;

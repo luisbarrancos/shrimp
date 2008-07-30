@@ -75,8 +75,6 @@ int scene_view::handle (int Event) {
 				m_mouse_click_x = fltk::event_x();
 				m_mouse_click_y = fltk::event_y();
 
-				m_start_drag_mouse_x = fltk::event_x();
-				m_start_drag_mouse_y = fltk::event_y();
 				m_last_mouse_x = fltk::event_x();
 				m_last_mouse_y = fltk::event_y();
 
@@ -98,6 +96,11 @@ int scene_view::handle (int Event) {
 								m_scene->set_block_selection (block, !m_scene->is_selected (block));
 							}
 						}
+					} else if (m_active_property.first.size()) {
+
+						// save connection start
+						m_connection_start_x = m_mouse_click_x;
+						m_connection_start_y = m_mouse_click_y;
 					}
 				}
 
@@ -205,9 +208,18 @@ int scene_view::handle (int Event) {
 						group_menu.end();
 
 						group_menu.popup();
-					} else {
 
+					} else {
 						// mouse's over nothing...
+
+						// clear current actions
+						m_mouse_click = 0;
+						m_active_block = "";
+						m_active_group = 0;
+						m_active_property = std::make_pair ("", "");
+						m_connection_start = std::make_pair ("", "");
+
+						// selection menu
 						if (m_scene->selection_size() > 1) {
 
 							fltk::PopupMenu group_menu (fltk::event_x(), fltk::event_y(), 0, 0, "Menu");
