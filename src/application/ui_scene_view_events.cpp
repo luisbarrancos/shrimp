@@ -114,12 +114,25 @@ int scene_view::handle (int Event) {
 							fltk::PopupMenu mb (fltk::event_x(), fltk::event_y(), 0, 0, "Pad");
 							mb.type (fltk::PopupMenu::POPUP3);
 							mb.begin();
-								if (!is_root)
+								int item_number = 0;
+
+								// add the Edit menu item (except for the root block pads)
+								if (!is_root) {
+									++item_number;
 									new fltk::Item ("Edit", 0, cb_edit_pad, (void*)this);
-								new fltk::Item ("Disconnect", 0, cb_disconnect_pad, (void*)this);
+								}
+
+								// add the Disconnect menu item if the block has a parent
+								std::string foo;
+								if (m_scene->get_parent (m_active_property.first, m_active_property.second, foo)) {
+									++item_number;
+									new fltk::Item ("Disconnect", 0, cb_disconnect_pad, (void*)this);
+								}
 							mb.end();
 
-							mb.popup();
+							if (item_number > 0) {
+								mb.popup();
+							}
 						}
 
 						// clear other actions
