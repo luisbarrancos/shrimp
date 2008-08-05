@@ -1,7 +1,7 @@
 <shrimp type="function" name="Match" description="Searches subject string for pattern string" author="rconstruct">
 	<input name="stra" description="Pattern string" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="strb" description="String to search" storage="uniform" type="string" default="&quot;&quot;"/>
-	<output name="status" description="Return status" type="float"/>
+	<output name="status" description="Return status" storage="uniform" type="float"/>
 	<code>
 		$(status) = match( $(stra), $(strb) );
 	</code>
