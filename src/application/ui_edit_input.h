@@ -24,14 +24,17 @@
 
 #include "../miscellaneous/logging.h"
 
+#include <fltk/Button.h>
 #include <fltk/CheckButton.h>
 #include <fltk/Choice.h>
+#include <fltk/ColorChooser.h>
 #include <fltk/Group.h>
 #include <fltk/Input.h>
 #include <fltk/Output.h>
 #include <fltk/ReturnButton.h>
 #include <fltk/Window.h>
 
+#include <iostream>
 #include <string>
 
 namespace edit_input
@@ -39,10 +42,27 @@ namespace edit_input
 
 static fltk::Output* s_name = 0;
 static fltk::Input* s_value = 0;
+static fltk::Button* s_colour_button = 0;
 static fltk::Choice* s_type = 0;
 static fltk::Choice* s_storage = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
 
+static void cb_colour_chooser (fltk::Widget *w, void *v) {
+
+	uchar r = 0, g = 0, b = 0;
+	//fltk::split_color(current_color, r, g, b);
+
+	if (!fltk::color_chooser("New color:", r,g,b))
+		return;
+
+	// set new colour
+	std::ostringstream new_colour;
+	new_colour << ((float)r/255.0) << " " << ((float)g/255.0) << " " << ((float)b/255.0);
+	s_value->text (new_colour.str().c_str());
+
+	// redraw parent box
+	w->parent()->redraw();
+}
 
 class dialog {
 
@@ -71,6 +91,11 @@ public:
 			w->add (s_value);
 			s_value->tooltip ("Input value");
 
+			s_colour_button = new fltk::Button (200,32, 120,23, "Colour");
+			s_colour_button->callback (cb_colour_chooser);
+			w->add (s_colour_button);
+			s_colour_button->tooltip ("Colour chooser");
+
 			// storage edition
 			s_storage = new fltk::Choice (70,59, 90,23, "Type");
 			s_storage->begin();
@@ -94,6 +119,7 @@ public:
 					new fltk::Item (t_i->c_str());
 				}
 			s_type->end();
+			s_type->callback (cb_type_change);
 			w->add (s_type);
 			s_type->tooltip ("Input variable type");
 
@@ -106,11 +132,11 @@ public:
 			// OK / Cancel
 			fltk::ReturnButton* rb = new fltk::ReturnButton(150,125, 70,25, "OK");
 			rb->label("Ok");
-			rb->callback(cb_ok, (void*)this);
+			rb->callback (cb_ok, (void*)this);
 
 			fltk::Button* cb = new fltk::Button(250,125, 70,25, "Cancel");
 			cb->label("Cancel");
-			cb->callback(cb_cancel, (void*)this);
+			cb->callback (cb_cancel, (void*)this);
 
 		w->end();
 	}
@@ -146,6 +172,12 @@ public:
 
 			if (type == *t_i)
 				s_type->value (type_number);
+
+			// colour button active when the type is 'color'
+			if (type == "color")
+				s_colour_button->activate();
+			else
+				s_colour_button->deactivate();
 		}
 
 		// set shader parameter state
@@ -153,6 +185,20 @@ public:
 
 		// show the dialog
 		w->exec();
+	}
+
+	void on_type_change (fltk::Widget* W) {
+
+		types_t list = get_property_types();
+		const unsigned int type_number = s_type->value();
+		if (type_number >= 0 && type_number < list.size()) {
+
+			const std::string current_type = list[type_number];
+			if (current_type == "color")
+				s_colour_button->activate();
+			else
+				s_colour_button->deactivate();
+		}
 	}
 
 	void on_ok (fltk::Widget* W) {
@@ -184,13 +230,14 @@ public:
 		W->window()->make_exec_return (false);
 	}
 
-	void on_cancel(fltk::Widget* W) {
+	void on_cancel (fltk::Widget* W) {
 
 		W->window()->make_exec_return (false);
 	}
 
-	static void cb_ok(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
-	static void cb_cancel(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
+	static void cb_type_change (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_type_change (W); }
+	static void cb_ok (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok (W); }
+	static void cb_cancel (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel (W); }
 };
 
 }
