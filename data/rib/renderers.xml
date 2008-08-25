@@ -21,7 +21,7 @@
 		<shader_compiler>sle -DRENDERER=%r -v -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sle</compiled_shader_extension>
 		<renderer_command>entropy -d %s</renderer_command>
-		<displays>framebuffer</displays>
+		<displays>tiff shadow zfile iv framebuffer</displays>
 	</entropy>
 	<pixie name="Pixie">
 		<shader_compiler>sdrc -DRENDERER=%r -I%i %s -o %o</shader_compiler>
