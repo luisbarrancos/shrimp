@@ -21,13 +21,13 @@
 		<shader_compiler>sle -DRENDERER=%r -v -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sle</compiled_shader_extension>
 		<renderer_command>entropy -d %s</renderer_command>
-		<displays>tiff shadow zfile iv framebuffer</displays>
+		<displays>file tiff shadow zfile iv framebuffer</displays>
 	</entropy>
 	<pixie name="Pixie">
 		<shader_compiler>sdrc -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sdr</compiled_shader_extension>
 		<renderer_command>rndr -d %s</renderer_command>
-		<displays>framebuffer</displays>
+		<displays>file tiff shadow rgbe tsm OpenEXR framebuffer</displays>
 	</pixie>
 	<prman name="Photorealistic RenderMan">
 		<shader_compiler>shader -DRENDERER=%r -O2 -lintlt -I%i %s</shader_compiler>
