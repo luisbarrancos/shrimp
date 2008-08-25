@@ -1,0 +1,768 @@
+<shrimp name="new_scene">
+	<about/>
+	<network>
+		<block id="Add" position_x="-2" position_y="-4" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Voronoi3D2F" output="f1"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Voronoi3D2F_2" output="f1"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_2" position_x="-1" position_y="-6" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Voronoi3D2F" output="f2"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Voronoi3D2F_2" output="f2"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_3" position_x="-1" position_y="-5" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Voronoi3D2F" output="pos1"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Voronoi3D2F_2" output="pos1"/>
+			</input>
+			<output name="val" type="point" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_4" position_x="-1" position_y="-7" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Voronoi3D2F" output="pos2"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Voronoi3D2F_2" output="pos2"/>
+			</input>
+			<output name="val" type="point" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_5" position_x="-7" position_y="-4" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Ridged3D" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="+" value=".8" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_6" position_x="12" position_y="3" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_3" output="val"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Blinn" output="Ci"/>
+			</input>
+			<output name="val" type="color" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Add_7" position_x="15" position_y="0" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Add_6" output="val"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_6" output="val"/>
+			</input>
+			<output name="val" type="color" storage="varying" description="val = A + B"/>
+			<code>
+	$(val) = $(A) + $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Blinn" position_x="10" position_y="1" author="rconstruct">
+			<input name="Ks" type="float" storage="varying" value="0.8" description="Specular light coefficient">
+				<connection parent="Divide_3" output="val"/>
+			</input>
+			<input name="size" type="float" storage="varying" value="15" description="Specular size.">
+				<connection parent="Multiply_7" output="val"/>
+			</input>
+			<input name="Cspec" type="color" storage="varying" value="1" description="Specular color"/>
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize_3" output="val"/>
+			</input>
+			<input name="I" type="vector" storage="varying" value="-normalize(I)" description="Direction of viewer"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
+			<code>
+
+        $(Ci) = $(Ks) * $(Cspec) * blinn( $(N), $(I), $(size) );
+
+										</code>
+			<include>shadingmodels.h									</include>
+			<usage>Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term.									</usage>
+		</block>
+		<block id="Bump" position_x="10" position_y="-2" author="rconstruct">
+			<input name="P" type="point" storage="varying" value="P" description="The surface point to be bumped"/>
+			<input name="Dir" type="vector" storage="varying" value="normalize(N)" description="The surface normal" type_parent="NN"/>
+			<input name="Scale" type="float" storage="varying" value="0.5" description="Amplitude of the bumping">
+				<connection parent="Multiply" output="val"/>
+			</input>
+			<output name="NN" type="vector" storage="varying" description="The new surface normal"/>
+			<code>
+	$(NN) = normalize( calculatenormal( $(P) + $(Dir)*$(Scale) ) );
+										</code>
+			<include/>
+			<usage>This is exactly like the displace function except that the new surface position is not computed.
+										</usage>
+		</block>
+		<block id="CellContour" position_x="3" position_y="-4" author="rconstruct">
+			<input name="p1" type="point" storage="varying" value="0" description="First point position">
+				<connection parent="Add_3" output="val"/>
+			</input>
+			<input name="p2" type="point" storage="varying" value="1" description="Second point position">
+				<connection parent="Add_4" output="val"/>
+			</input>
+			<input name="f1" type="float" storage="varying" value="0" description="Primary feature">
+				<connection parent="Divide" output="val"/>
+			</input>
+			<input name="f2" type="float" storage="varying" value="1" description="Secondary feature">
+				<connection parent="Divide_2" output="val"/>
+			</input>
+			<input name="lthick" type="float" storage="varying" value="5" description="Contour line thickness"/>
+			<input name="P" type="point" storage="varying" value="P" description="Surface point"/>
+			<output name="val" type="float" storage="varying" description="Output value"/>
+			<code>
+		$(val) = step( $(lthick) * (
+					distance( $(p1), $(p2) ) / (
+					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
+					$(f2) - $(f1) );
+										</code>
+			<include>shrimp_helpers.h									</include>
+			<usage/>
+		</block>
+		<block id="Constant" position_x="-3" position_y="-0" author="rconstruct">
+			<input name="in" type="color" storage="uniform" value="color( .73, .42, .27 )" description="Input" type_parent="out"/>
+			<output name="out" type="color" storage="varying" description="Output = Input"/>
+			<code>
+	$(out) = $(in);
+										</code>
+			<include/>
+			<usage>Useful for supplying multiple inputs with the same value.									</usage>
+		</block>
+		<block id="Constant_2" position_x="-3" position_y="-1" author="rconstruct">
+			<input name="in" type="color" storage="uniform" value="color( .73, .51, .34 )" description="Input" type_parent="out"/>
+			<output name="out" type="color" storage="varying" description="Output = Input"/>
+			<code>
+	$(out) = $(in);
+										</code>
+			<include/>
+			<usage>Useful for supplying multiple inputs with the same value.									</usage>
+		</block>
+		<block id="Constant_3" position_x="-3" position_y="-2" author="rconstruct">
+			<input name="in" type="color" storage="uniform" value="color( .73, .50, .39 )" description="Input" type_parent="out"/>
+			<output name="out" type="color" storage="varying" description="Output = Input"/>
+			<code>
+	$(out) = $(in);
+										</code>
+			<include/>
+			<usage>Useful for supplying multiple inputs with the same value.									</usage>
+		</block>
+		<block id="Constant_4" position_x="-3" position_y="1" author="rconstruct">
+			<input name="in" type="color" storage="uniform" value="color( .7, .33, .23 )" description="Input" type_parent="out"/>
+			<output name="out" type="color" storage="varying" description="Output = Input"/>
+			<code>
+	$(out) = $(in);
+										</code>
+			<include/>
+			<usage>Useful for supplying multiple inputs with the same value.									</usage>
+		</block>
+		<block id="Divide" position_x="-0" position_y="-3" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Add" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" value="2" description="2nd input" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A / B"/>
+			<code>
+	$(val) = $(A) / $(B);
+										</code>
+			<include/>
+			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Divide_2" position_x="1" position_y="-7" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Add_2" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" value="2" description="2nd input" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A / B"/>
+			<code>
+	$(val) = $(A) / $(B);
+										</code>
+			<include/>
+			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Divide_3" position_x="6" position_y="3" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Subtract_3" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="Subtract_2" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A / B"/>
+			<code>
+	$(val) = $(A) / $(B);
+										</code>
+			<include/>
+			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Environment" position_x="11" position_y="-5" author="rconstruct">
+			<input name="texname" type="string" storage="uniform" value="&quot;$HOME/.shrimp/temp/beach_envlatl_ldr.tif&quot;" description="Texture map name"/>
+			<input name="dir" type="vector" storage="varying" value="0" description="Direction vector">
+				<connection parent="Transform_2" output="pp"/>
+			</input>
+			<input name="blur" type="float" storage="varying" value="0" description="Texture blur"/>
+			<input name="sblur" type="float" storage="varying" value="0" description="Blur along S"/>
+			<input name="tblur" type="float" storage="varying" value="0" description="Blur along T"/>
+			<input name="width" type="float" storage="varying" value="0" description="Blur filter width"/>
+			<input name="swidth" type="float" storage="varying" value="0" description="Blur filter width along S"/>
+			<input name="twidth" type="float" storage="varying" value="0" description="Blur filter width along T"/>
+			<input name="samples" type="float" storage="varying" value="4" description="Sampling rate"/>
+			<input name="fill" type="float" storage="varying" value="0" description="Fill value on empty channel"/>
+			<input name="filter" type="string" storage="uniform" value="&quot;gaussian&quot;" description="Filter type"/>
+			<input name="channel" type="float" storage="varying" value="0" description="Channel, in color textures"/>
+			<output name="val" type="color" storage="varying" description="Output color"/>
+			<code>
+    #if RENDERER==pixie
+        $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
+								&quot;blur&quot;, $(blur),
+								&quot;width&quot;, $(width),
+								&quot;swidth&quot;, $(swidth),
+								&quot;twidth&quot;, $(twidth),
+								&quot;samples&quot;, $(samples),
+                                &quot;filter&quot;, $(filter),
+								&quot;fill&quot;, $(fill) ) ;
+    #else
+        $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
+								&quot;blur&quot;, $(blur),
+								&quot;sblur&quot;, $(sblur),
+								&quot;tblur&quot;, $(tblur),
+								&quot;width&quot;, $(width),
+								&quot;swidth&quot;, $(swidth),
+								&quot;twidth&quot;, $(twidth),
+								&quot;samples&quot;, $(samples),
+                                &quot;filter&quot;, $(filter),
+								&quot;fill&quot;, $(fill) ) ;
+    #endif
+										</code>
+			<include/>
+			<usage/>
+		</block>
+		<block id="Fresnel" position_x="7" position_y="-7" author="rconstruct">
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Incident vector">
+				<connection parent="Normalize" output="val"/>
+			</input>
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize_3" output="val"/>
+			</input>
+			<input name="eta" type="float" storage="varying" value="0.75" description="The relative index of refraction"/>
+			<output name="R" type="vector" storage="varying" description="The reflected vector"/>
+			<output name="T" type="vector" storage="varying" description="The refracted vector"/>
+			<output name="Kr" type="float" storage="varying" description="The reflected coefficient"/>
+			<output name="Kt" type="float" storage="varying" description="The refracted coefficient"/>
+			<code>
+        fresnel( $(I), $(N), $(eta), $(Kr), $(Kt), $(R), $(T) );
+										</code>
+			<include/>
+			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient Kt, given an incident direction I, the surface normal N, and the relative index of refraction eta. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the fresnel formula. Optionally, this procedure also returns the reflected (R) and transmitted (T) vectors. The transmitted vector is computed using Snell&apos;s law.									</usage>
+		</block>
+		<block id="GetCol" position_x="4" position_y="1" author="rconstruct">
+			<input name="col" type="color" storage="varying" value="0" description="Colour to split into components">
+				<connection parent="Mix_5" output="out"/>
+			</input>
+			<output name="r" type="float" storage="varying" description="red component"/>
+			<output name="g" type="float" storage="varying" description="green component"/>
+			<output name="b" type="float" storage="varying" description="blue component"/>
+			<code>
+	$(r) = comp( $(col), 0 );
+	$(g) = comp( $(col), 1 );
+	$(b) = comp( $(col), 2 );
+										</code>
+			<include/>
+			<usage/>
+		</block>
+		<block id="I" position_x="5" position_y="-6" author="rconstruct">
+			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
+			<code>
+	$(I) = I;
+										</code>
+			<include/>
+			<usage/>
+		</block>
+		<block id="Mix" position_x="-0" position_y="1" author="rconstruct">
+			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
+				<connection parent="Voronoi3D2F" output="f1"/>
+			</input>
+			<input name="A" type="color" storage="varying" value="0" description="1st Input" type_parent="out">
+				<connection parent="Constant_4" output="out"/>
+			</input>
+			<input name="B" type="color" storage="varying" value="1" description="2nd Input" type_parent="out">
+				<connection parent="Constant" output="out"/>
+			</input>
+			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
+			<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+										</code>
+			<include/>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
+		</block>
+		<block id="Mix_2" position_x="-0" position_y="-1" author="rconstruct">
+			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
+				<connection parent="Voronoi3D2F_2" output="f1"/>
+			</input>
+			<input name="A" type="color" storage="varying" value="0" description="1st Input" type_parent="out">
+				<connection parent="Constant_2" output="out"/>
+			</input>
+			<input name="B" type="color" storage="varying" value="1" description="2nd Input" type_parent="out">
+				<connection parent="Constant_3" output="out"/>
+			</input>
+			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
+			<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+										</code>
+			<include/>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
+		</block>
+		<block id="Mix_3" position_x="2" position_y="0" author="rconstruct">
+			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
+				<connection parent="Ridged3D" output="val"/>
+			</input>
+			<input name="A" type="color" storage="varying" value="0" description="1st Input" type_parent="out">
+				<connection parent="Mix" output="out"/>
+			</input>
+			<input name="B" type="color" storage="varying" value="1" description="2nd Input" type_parent="out">
+				<connection parent="Constant_2" output="out"/>
+			</input>
+			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
+			<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+										</code>
+			<include/>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
+		</block>
+		<block id="Mix_4" position_x="2" position_y="-2" author="rconstruct">
+			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
+				<connection parent="Divide" output="val"/>
+			</input>
+			<input name="A" type="color" storage="varying" value="0" description="1st Input" type_parent="out">
+				<connection parent="Mix_2" output="out"/>
+			</input>
+			<input name="B" type="color" storage="varying" value="1" description="2nd Input" type_parent="out">
+				<connection parent="Constant_2" output="out"/>
+			</input>
+			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
+			<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+										</code>
+			<include/>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
+		</block>
+		<block id="Mix_5" position_x="4" position_y="-1" author="rconstruct">
+			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
+				<connection parent="CellContour" output="val"/>
+			</input>
+			<input name="A" type="color" storage="varying" value="0" description="1st Input" type_parent="out">
+				<connection parent="Mix_4" output="out"/>
+			</input>
+			<input name="B" type="color" storage="varying" value="1" description="2nd Input" type_parent="out">
+				<connection parent="Mix_3" output="out"/>
+			</input>
+			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
+			<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+										</code>
+			<include/>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
+		</block>
+		<block id="Multiply" position_x="8" position_y="-3" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="CellContour" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" value=".002" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_3" position_x="10" position_y="4" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="OrenNayar" output="Ci"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Mix_5" output="out"/>
+			</input>
+			<output name="val" type="color" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_4" position_x="-7" position_y="-1" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Transform" output="pp"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="*" value=".5" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="point" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_5" position_x="-7" position_y="-2" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Transform" output="pp"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="*" value="2" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="point" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_6" position_x="15" position_y="-2" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_8" output="val"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Fresnel" output="Kr"/>
+			</input>
+			<output name="val" type="color" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_7" position_x="8" position_y="1" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Divide_3" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" value="25" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="Multiply_8" position_x="13" position_y="-4" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Environment" output="val"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Subtract_4" output="val"/>
+			</input>
+			<output name="val" type="color" storage="varying" description="val = A * B"/>
+			<code>
+	$(val) = $(A) * $(B);
+										</code>
+			<include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+										</usage>
+		</block>
+		<block id="N" position_x="5" position_y="-9" author="rconstruct">
+			<output name="N" type="vector" storage="varying" description="Surface shading normal"/>
+			<code>
+    $(N) = N;
+    									</code>
+			<include/>
+			<usage/>
+		</block>
+		<block id="Normalize" position_x="5" position_y="-7" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="I" output="I"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<code>
+	$(val) = normalize( $(A) );
+										</code>
+			<include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
+		</block>
+		<block id="Normalize_2" position_x="5" position_y="-8" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="N" output="N"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<code>
+	$(val) = normalize( $(A) );
+										</code>
+			<include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
+		</block>
+		<block id="Normalize_3" position_x="12" position_y="-2" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="Bump" output="NN"/>
+			</input>
+			<output name="val" type="normal" storage="varying" description="val is a vector of unit length"/>
+			<code>
+	$(val) = normalize( $(A) );
+										</code>
+			<include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
+		</block>
+		<block id="OrenNayar" position_x="8" position_y="4" author="rconstruct">
+			<input name="Kd" type="float" storage="varying" value="1" description="Diffuse light coefficient"/>
+			<input name="roughness" type="float" storage="varying" value="0.05" description="roughness">
+				<connection parent="Subtract" output="val"/>
+			</input>
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize_3" output="val"/>
+			</input>
+			<input name="V" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
+			<code>	
+        $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
+										</code>
+			<include>shadingmodels.h									</include>
+			<usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz&apos;s implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection.									</usage>
+		</block>
+		<block id="Ridged3D" position_x="-9" position_y="-4" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="point to sample fractal at">
+				<connection parent="Transform" output="pp"/>
+			</input>
+			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
+			<input name="octaves" type="float" storage="varying" value="6" description="Maximum octaves of noise"/>
+			<input name="lacunarity" type="float" storage="varying" value="5" description="Controls the smoothness of the fractal"/>
+			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the fractal"/>
+			<input name="offset" type="float" storage="varying" value="2" description="Controls the multifractality"/>
+			<input name="amplitude" type="float" storage="varying" value=".2" description="Amplitude of fractal"/>
+			<output name="val" type="float" storage="varying" description="fractal value at p"/>
+			<code>
+	#define $(val)_$(val:type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * Ridged( $(p), $(fwidth), $(octaves),
+						$(lacunarity), $(offset), $(gain) );
+	#else
+		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(p), $(fwidth),
+					$(octaves), $(lacunarity), $(offset), $(gain) ) );
+	#endif
+										</code>
+			<include>fractal.h									</include>
+			<usage>This is Ken Musgrave&apos;s Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
+										</usage>
+		</block>
+		<block id="Root block" position_x="17.9393739703459" position_y="0.0859967051070839" author="" root="RIB" AOV_preview="1">
+			<rib_statements/>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="Add_7" output="val"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<code/>
+			<include/>
+			<usage/>
+		</block>
+		<block id="Subtract" position_x="6" position_y="2" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val"/>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="Divide_3" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A - B"/>
+			<code>
+	$(val) = $(A) - $(B);
+										</code>
+			<include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Subtract_2" position_x="4" position_y="2" author="rconstruct">
+			<input name="A" type="float" storage="varying" value=".8" description="1st input" type_parent="val"/>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="GetCol" output="g"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A - B"/>
+			<code>
+	$(val) = $(A) - $(B);
+										</code>
+			<include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Subtract_3" position_x="4" position_y="3" author="rconstruct">
+			<input name="A" type="float" storage="varying" value=".5" description="1st input" type_parent="val">
+				<connection parent="GetCol" output="g"/>
+			</input>
+			<input name="B" type="float" storage="varying" value=".42" description="2nd input" type_parent="val"/>
+			<output name="val" type="float" storage="varying" description="val = A - B"/>
+			<code>
+	$(val) = $(A) - $(B);
+										</code>
+			<include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Subtract_4" position_x="6" position_y="-5" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val"/>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="CellContour" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A - B"/>
+			<code>
+	$(val) = $(A) - $(B);
+										</code>
+			<include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+		</block>
+		<block id="Transform" position_x="-9" position_y="-2" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;shader&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
+			<code>
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+										</code>
+			<include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
+		</block>
+		<block id="Transform_2" position_x="9" position_y="-7" author="rconstruct">
+			<input name="p" type="vector" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="Fresnel" output="R"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;current&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;world&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="vector" storage="varying" description="The transformed point, vector or normal"/>
+			<code>
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#elif $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#else
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+										</code>
+			<include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
+		</block>
+		<block id="Voronoi3D2F" position_x="-5" position_y="-4" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P*.5" description="point to sample Voronoi at">
+				<connection parent="Multiply_4" output="val"/>
+			</input>
+			<input name="jitter" type="float" storage="varying" value="1" description="Jitter">
+				<connection parent="Add_5" output="val"/>
+			</input>
+			<input name="dtype" type="float" storage="varying" value="2" description="Distanc metric, see help"/>
+			<output name="f1" type="float" storage="varying" description="f1"/>
+			<output name="f2" type="float" storage="varying" description="f2"/>
+			<output name="pos1" type="point" storage="varying" description="pos1"/>
+			<output name="pos2" type="point" storage="varying" description="pos2"/>
+			<code>
+	/* initialize */
+	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
+    	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
+							$(pos2) );
+										</code>
+			<include>fractal.h									</include>
+			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.									</usage>
+		</block>
+		<block id="Voronoi3D2F_2" position_x="-5" position_y="-6" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P*2" description="point to sample Voronoi at">
+				<connection parent="Multiply_5" output="val"/>
+			</input>
+			<input name="jitter" type="float" storage="varying" value="1" description="Jitter">
+				<connection parent="Add_5" output="val"/>
+			</input>
+			<input name="dtype" type="float" storage="varying" value="2" description="Distanc metric, see help"/>
+			<output name="f1" type="float" storage="varying" description="f1"/>
+			<output name="f2" type="float" storage="varying" description="f2"/>
+			<output name="pos1" type="point" storage="varying" description="pos1"/>
+			<output name="pos2" type="point" storage="varying" description="pos2"/>
+			<code>
+	/* initialize */
+	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
+    	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
+							$(pos2) );
+										</code>
+			<include>fractal.h									</include>
+			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.									</usage>
+		</block>
+		<block id="p" position_x="-9" position_y="-1" author="rconstruct">
+			<output name="P" type="point" storage="varying" description="Surface position"/>
+			<code>
+    $(P) = P;
+    									</code>
+			<include/>
+			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.									</usage>
+		</block>
+	</network>
+</shrimp>
