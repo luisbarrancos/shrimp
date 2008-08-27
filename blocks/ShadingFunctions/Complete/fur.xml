@@ -1,7 +1,7 @@
 <shrimp name="Fur" type="function" description="Clint Hanson and Armin Bruderlin&apos;s SIG2k Fur shader" author="rconstruct">
     <input name="Ka" description="Ambient light coefficient" type="float" default="0.0287"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.77"/>
-    <input name="Ks" description="Specular light coefficient" type="float" default="1.285"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
     <input name="rough1" description="Primary specular roughness" type="float" default="0.008"/>
 	<input name="rough2" description="Secondary specular roughness" type="float" default="0.016"/>
 	<input name="spec1" description="SPEC1" type="float" default="0.3"/>
