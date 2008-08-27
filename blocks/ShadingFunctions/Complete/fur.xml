@@ -4,8 +4,8 @@
     <input name="Ks" description="Specular light coefficient" type="float" default="1.285"/>
     <input name="rough1" description="Primary specular roughness" type="float" default="0.008"/>
 	<input name="rough2" description="Secondary specular roughness" type="float" default="0.016"/>
-	<input name="spec1" description="SPEC1" type="float" default="0.01"/>
-	<input name="spec2" description="SPEC2" type="float" default="0.003"/>
+	<input name="spec1" description="SPEC1" type="float" default="0.3"/>
+	<input name="spec2" description="SPEC2" type="float" default="0.7"/>
 	<input name="startspec" description="Specularity start" type="float" default="0.3"/>
 	<input name="endspec" description="Specularity end" type="float" default="0.95"/>
 	<input name="specsizefade" description="Specular size fade" type="float" default="0.1"/>
