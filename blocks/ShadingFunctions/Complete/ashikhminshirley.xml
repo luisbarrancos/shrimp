@@ -14,14 +14,14 @@
 	<include>shadingmodels.h</include>
 	<code>
         #define ver_$(rsamples)
-        $(Ci) = LocIllumAshShir( faceforward( $(N), $(I)), -$(I), $(xdir),
-									$(Kd), $(Ks), $(nu), $(nv) );
+        $(Ci) = LocIllumAshShir( $(N), $(I) $(xdir), $(Kd), $(Ks),
+				 $(nu), $(nv) );
         #ifdef ver_0
 			$(Ci) = $(Ci);
 		#else
-			$(Ci) += $(Kr) * EnvIllumAshShir( faceforward($(N), $(I)), -$(I),
-						$(xdir), $(Kd), $(Ks), $(nu), $(nv),
-						$(rsamples), $(envmap) );
+			$(Ci) += $(Kr) * EnvIllumAshShir( faceforward($(N),
+					$(I)), -$(I), $(xdir), $(Kd), $(Ks),
+					$(nu), $(nv), $(rsamples), $(envmap));
 		#endif
 	</code>
 	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley shading model. If environment samples >0 , then samples environment reflections, if = 0, bypasses this. Notice that the more samples you use, the longer it takes to render. Have in mind that if no environment map is given, then raytracing is used. The parameters Nu and Nv control the specularity along the anisotropy direction, and anisotropy perpendicular direction, being the parameter xdir, the anisotropy direction, which defaults to dPdu.</usage>

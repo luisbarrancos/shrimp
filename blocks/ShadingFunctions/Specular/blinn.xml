@@ -3,7 +3,7 @@
     <input name="size" description="Specular size." type="float" default="15"/>
     <input name="Cspec" description="Specular color" type="color" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
-	<input name="I" description="Direction of viewer" type="vector" default="-normalize(I)"/>
+	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
