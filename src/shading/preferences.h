@@ -238,6 +238,7 @@ public:
 
 		m_shader_compiler = "aqsl -I%i %s -o %o";
 		m_compiled_shader_extension = "slx";
+		m_renderer_code = "aqsis";
 		m_renderer = "aqsis -DRENDERER=%r %s -shaders=%i";
 		m_renderer_display = "framebuffer";
 

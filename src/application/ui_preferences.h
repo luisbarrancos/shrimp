@@ -359,6 +359,9 @@ public:
 		unsigned long display_number = 0;
 
 		general_options::renderers_t::const_iterator r = m_renderers.find (RendererCode);
+		if (m_renderers.end() == r) {
+			log() << error << "unknown renderer (set_display_chooser): '" << RendererCode << "'." << std::endl;
+		}
 
 		s_renderer_display->remove_all();
 		s_renderer_display->begin();
