@@ -1,7 +1,7 @@
 <shrimp type="function" name="Line" description="Returns 1 if on the line, otherwise 0" author="rconstruct">
 	<input name="x" description="x,y give the point to be tested" type="float" default="s"/>
 	<input name="y" description="x,y give the point to be tested" type="float" default="t"/>
-	<input name="x0" description="x0,y0 give the 1st endpoint of the line" type="float"  default="0"/>
+	<input name="x0" description="x0,y0 give the 1st endpoint of the line" type="float" default="0"/>
 	<input name="y0" description="x0,y0 give the 1st endpoint of the line" type="float" default="0"/>
 	<input name="x1" description="x1,y1 give the 2nd endpoint of the line" type="float" default="1"/>
 	<input name="y1" description="x1,y1 give the 2nd endpoint of the line" type="float" default="1"/>

@@ -250,6 +250,11 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	}
 	shader_code += "\n\n";
 
+	/* all blocks should be aware of the AOV macros, so instead of including
+	 * shrimp_aov.h in all blocks, we might as well make it a part of the 
+	 * standard shader body. */
+	shader_code += "#include <shrimp_aov.h>\n";
+
 	// initialize code build process, get includes, parameters and locals
 	std::set<std::string> includes;
 	std::string parameters;
@@ -304,7 +309,10 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	switch (ShaderType) {
 
 		case SURFACE:
-			shader_code += "surface " + ShaderName + " (\n";
+			// Preset AOVs, shader arguments, so we initialize them
+			shader_code += "surface " + ShaderName
+				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+//			shader_code += "surface " + ShaderName + " (\n";
 		break;
 
 		case DISPLACEMENT:
@@ -330,6 +338,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 
 	// open function and write locals
 	shader_code += "{\n";
+	shader_code += "INIT_AOV_PARAMETERS\n";
 	shader_code += locals;
 
 	shader_code += "\n\n";
@@ -692,8 +701,8 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 		other_shaders += "LightSource \"" + LightName + "\" 0\n";
 	} else {
 
-		other_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [ 0.1 ] \"lightcolor\" [1 1 1]\n";
-		other_shaders += "LightSource \"distantlight\" 1 \"intensity\" [ .9 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ -1 1 -1 ] \"to\" [ 0 0 0 ]\n";
+		other_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [ 1.0 ] \"lightcolor\" [1 1 1]\n";
+		other_shaders += "LightSource \"distantlight\" 1 \"intensity\" [ 1.0 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ -1 1 -1 ] \"to\" [ 0 0 0 ]\n";
 		other_shaders += "LightSource \"distantlight\" 2 \"intensity\" [ 0.8 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 1 1 ] \"to\" [ 0 0 0 ]\n";
 		other_shaders += "LightSource \"distantlight\" 3 \"intensity\" [ 0.65 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 -1 -1 ] \"to\" [ 0 0 0 ]\n";
 
@@ -754,9 +763,60 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	file << "\n";
 	file << "Display \"outputimage\" \"" << display << "\" \"rgb\"\n";
 	if (AOV) {
-		// AOV output image
-		std::string tmptif = TempDir + "/" + parent_name + ".tif";
-		file << "Display \"+aov_" + tmptif + "\" \"file\" \"" << parent_name << "\"\n";
+		// standard/predefined AOVs ( from shrimp_aov.h )
+		// the user can create AOV blocks later, but that means updating the 
+		// RIB file, displays type, etc.., so we'll provide for a start, a good
+		// set of presets, such as diffuse, specular, reflection, etc...
+		// note that the string should be
+		// "+/whatever/path/aov_name.tif" "file" "type aov_name"
+		// displays descriptions in renderer .xml file needs to be updated to
+		// include these preset AOVs
+		// AOV presets
+		file << "Display \"+" + TempDir + "/" + "aov_surfacecolor"
+			 + ".tif" + "\" \"file\" \"varying color aov_surfacecolor\" "
+			 + "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_ambient" + ".tif"
+			+ "\" \"file\" \"varying color aov_ambient\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_diffuse" + ".tif"
+			+ "\" \"file\" \"varying color aov_diffuse\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_specular" + ".tif"
+			+ "\" \"file\" \"varying color aov_specular\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_specularcolor" + ".tif"
+			+ "\" \"file\" \"varying color aov_specularcolor\" "
+			+ "\"quantize\" [0 255 0 255]\n";	
+		file << "Display \"+" + TempDir + "/" + "aov_reflection"
+			+ ".tif" + "\" \"file\" \"varying color aov_reflection\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_refraction"
+			+ ".tif" + "\" \"file\" \"varying color aov_refraction\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_rimlighting" + ".tif"
+			+ "\" \"file\" \"varying color aov_rimlighting\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_scattering"
+			+ ".tif" + "\" \"file\" \"varying color aov_scattering\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_translucence"
+			+ ".tif" + "\" \"file\" \"varying color aov_translucence\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_shadows"
+			+ ".tif" + "\" \"file\" \"varying color aov_shadows\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_occlusion"
+			+ ".tif" + "\" \"file\" \"varying float aov_occlusion\" "
+			+ "\"quantize\" [0 255 0 255]\n";
+
+		// this line creates "+aov_/path/..." which isn't correct
+//		std::string tmptif = TempDir + "/" + parent_name + ".tif";
+		// should instead be:
+//		std::string tmptif = TempDir + "/" + "aov_" + parent_name
+//			+ ".tif";
+//		file << "Display \"+aov_" + tmptif + "\" \"file\" \"" << parent_name << "\"\n";
+//		file << "Display \"+" + tmptif + "\" \"file\" \""
+//			<< parent_name << "\"\n";
 	}
 	file << "\n";
 	file << m_general_statements << "\n";

@@ -11,14 +11,13 @@
     <input name="cdiff" description="Diffuse color" type="color" default="color( .45, .3, .12)"/>
     <input name="cfiber" description="Fiber color" type="color" default="color(1, .6, .4)"/>
     <output name="Ci" description="Shaded color" type="color"/>
-    <output name="Oi" description="Shaded opacity" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
-        $(Oi) = Os;
-        $(Ci) = $(Oi) * woodreflectance( $(eta), $(beta), $(roughness),
-                                            $(Ka), $(Kd), $(Ks),
-                                            $(fiberAxis), $(IN), $(NN),
-                                            $(cdiff), $(cfiber) );
+        $(Ci) = woodreflectance(	$(eta), $(beta), $(roughness),
+									$(Ka), $(Kd), $(Ks),
+									$(fiberAxis), $(IN), $(NN),
+									$(cdiff), $(cfiber),
+									DECLARE_AOV_PARAMETERS );
 	</code>
-    <usage>Based on Stephen H. Westin's wood shader, from "Measuring and Modeling the Appearance of Finished Wood", SIGGRAPH2005, by Stephen R. Marschner, Stephen H. Westin, Adam Arbree, and Jonathan T. Moon. Ka, Kd, are the ambient and diffuse coefficients, and Ks is a fudge factor for the surface highlight. FiberAxis, controls the local fiber orientation in local coordinates. Beta controls the width of the specular highlight, in radians. FiberColor controls the anisotropic highlight color, diffuseColor controls the surface color. Eta controls the index of refraction, roughness controls the specular roughness</usage>
+    <usage>Based on Stephen H. Westin's wood shader, from "Measuring and Modeling the Appearance of Finished Wood", SIGGRAPH2005, by Stephen R. Marschner, Stephen H. Westin, Adam Arbree, and Jonathan T. Moon. Ka, Kd, are the ambient and diffuse coefficients, and Ks is a fudge factor for the surface highlight. FiberAxis, controls the local fiber orientation in local coordinates. Beta controls the width of the specular highlight, in radians. FiberColor controls the anisotropic highlight color, diffuseColor controls the surface color. Eta controls the index of refraction, roughness controls the specular roughness. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

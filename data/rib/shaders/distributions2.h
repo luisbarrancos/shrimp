@@ -30,9 +30,8 @@ float ward(
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Trowbridge-Reitz distribution */
-/* Note: seems this function needs a normalization term (free parameter or
- * function?). I can't find the original paper, so going to use the suggestion
- * from Pat Hanrahan's 1995 course handout. */
+/* Note: seems this function, like the gaussian distribution, needs an
+ * normalization term. How do we get the normalization term? */
 
 float
 trowbridge_reitz(
@@ -41,8 +40,8 @@ trowbridge_reitz(
 {
 	float cosalpha2 = cosalpha * cosalpha;
 	float m2 = roughness * roughness;
-	float d2 = (m2 - 1) * cosalpha2 + 1;
-	return m2 / (d2*d2);
+	float d2 = m2 / (1 + (m2 -1) * cosalpha2);
+	return d2 * d2;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

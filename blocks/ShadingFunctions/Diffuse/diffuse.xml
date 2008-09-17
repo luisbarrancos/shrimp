@@ -1,8 +1,12 @@
 <shrimp type="function" name="Diffuse" description="Computes diffuse light at surface" author="rconstruct">
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
+	<input name="Kd" description="The diffuse coefficient" type="float" default="1"/>
 	<input name="norm" description="The surface normal" type="normal" default="normalize(N)"/>
-	<output name="col" description="The amount of diffuse light" type="color"/>
+	<output name="Ci" description="The amount of diffuse light" type="color" />
 	<code>
-	$(col) = diffuse( $(norm) );
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * diffuse( $(norm) );
+		$(Ci) = aov_surfacecolor * aov_diffuse;
 	</code>
-<usage>Lambertian Diffuse term. This is meant to be combined in your network, with an diffuse, and/or specular term, as needed. Cs isn't taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).</usage>
+<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

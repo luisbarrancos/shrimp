@@ -1,15 +1,15 @@
 <shrimp name="SchlickIso" type="function" description="Schlick isotropic specular term." author="rconstruct">
+	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
     <input name="roughness" description="The apparent surface roughness." type="float" default="0.3"/>
-    <input name="Cspec" description="Specular color" type="color" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-
-        $(Ci) = $(Ks) * $(Cspec) * schlickspec( $(N), $(I), $(roughness) );
-
+		aov_specularcolor += $(Cspec);
+		aov_specular += $(Ks) * schlickspec( $(N), $(I), $(roughness) );
+		$(Ci) = aov_specularcolor * aov_specular;
 	</code>
-    <usage>Christope Schlick's isotropic specular term. Roughness controls the apparent surface roughness.</usage>
+    <usage>Christope Schlick's isotropic specular term. Roughness controls the apparent surface roughness. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

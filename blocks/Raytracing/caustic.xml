@@ -5,8 +5,9 @@
 	<input name="estim" description="Photon count" type="float" default="100"/>
 	<output name="val" description="Caustic value" type="color"/>
 	<code>
-		$(val) = caustic( $(PP), $(NN), "lookuptype", $(ltype),
+		aov_caustics += caustic( $(PP), $(NN), "lookuptype", $(ltype),
 							"estimator", $(estim) );
+		$(val) = aov_caustics;
 	</code>
-    <usage>Returns caustics from a caustic photon map lookup, on a surface area defined by surface point P and surface normal N, the name of the caustics photon map and number of photons used, being retrieved from the RIB file (Attribute "photon" "causticmap" and Attribute "photon" "estimator"). Note that you can also add the caustics value using the photonmap block, in which case you'll have to pass the caustics photon map name and photon count, as arguments of the shadeop, instead of having them set in the RIB file.</usage>
+    <usage>Returns caustics from a caustic photon map lookup, on a surface area defined by surface point P and surface normal N, the name of the caustics photon map and number of photons used, being retrieved from the RIB file (Attribute "photon" "causticmap" and Attribute "photon" "estimator"). Note that you can also add the caustics value using the photonmap block, in which case you'll have to pass the caustics photon map name and photon count, as arguments of the shadeop, instead of having them set in the RIB file. The caustics value is passed to aov_caustics AOV preset.</usage>
 </shrimp>

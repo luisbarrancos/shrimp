@@ -7,19 +7,24 @@
 	<code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
+	
 	#ifdef $(p)_point
 	#ifdef mmat_none
 		$(pp) = transform( $(from_space), $(to_space), $(p) );
 	#else
 		$(pp) = transform( $(from_space), $(mmat), $(p) );
 	#endif
-	#elif $(p)_vector
+	#endif
+	
+	#ifdef $(p)_vector
 	#ifdef mmat_none
 		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
 	#else
 		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
 	#endif
-	#else
+	#endif
+	
+	#ifdef $(p)_normal
 	#ifdef mmat_none
 		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
 	#else

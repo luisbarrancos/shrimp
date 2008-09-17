@@ -1,20 +1,22 @@
 <shrimp type="function" name="Environment" description="Access a environment map" author="rconstruct">
-	<input name="texname" description="Texture map name" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="dir" description="Direction vector" type="normal vector" default="0"/>
+	<input name="texname" description="Texture map name" type="string" storage="uniform" default="&quot;&quot;"/>
+	<input name="Kr" description="Environment intensity" type="float" default="1"/>
+	<input name="dir" description="Direction vector" type="normal vector" default="vector(0)"/>
     <input name="blur" description="Texture blur" type="float" default="0"/>
     <input name="sblur" description="Blur along S" type="float" default="0"/>
     <input name="tblur" description="Blur along T" type="float" default="0"/>
-    <input name="width" description="Blur filter width" type="float" default="0"/>
-    <input name="swidth" description="Blur filter width along S" type="float" default="0"/>
-    <input name="twidth" description="Blur filter width along T" type="float" default="0"/>
-	<input name="samples" description="Sampling rate" type="float" default="4"/>
-    <input name="fill" description="Fill value on empty channel" type="float" default="0"/>
-    <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
+    <input name="width" description="Blur filter width" type="float" storage="uniform" default="1"/>
+    <input name="swidth" description="Blur filter width along S" type="float" storage="uniform" default="1"/>
+    <input name="twidth" description="Blur filter width along T" type="float" storage="uniform" default="1"/>
+	<input name="samples" description="Sampling rate" type="float" storage="uniform" default="4"/>
+    <input name="fill" description="Fill value on empty channel" type="float" storage="uniform" default="0"/>
+    <input name="filter" description="Filter type" type="string" storage="uniform" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="color float"/>
 	<code>
     #if RENDERER==pixie
-        $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
+        aov_reflection += $(Kr) *  $(val:type) environment(
+							$(texname)[$(channel)], $(dir),
 								"blur", $(blur),
 								"width", $(width),
 								"swidth", $(swidth),
@@ -22,8 +24,10 @@
 								"samples", $(samples),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
+		$(val) = aov_reflection;
     #else
-        $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
+        aov_reflection += $(Kr) * $(val:type) environment(
+							$(texname)[$(channel)], $(dir),
 								"blur", $(blur),
 								"sblur", $(sblur),
 								"tblur", $(tblur),
@@ -33,6 +37,8 @@
 								"samples", $(samples),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
+		$(val) = aov_reflection;
     #endif
 	</code>
+<usage>This block value is passed to the aov_reflection AOV preset.</usage>
 </shrimp>

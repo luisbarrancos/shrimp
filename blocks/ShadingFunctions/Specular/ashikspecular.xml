@@ -1,16 +1,19 @@
 <shrimp name="AshikminSpec" type="function" description="Ashikmin-Shirley anisotropic specular term" author="rconstruct">
+	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
 	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
     <input name="nu" description="specularity along U direction" type="float" default="100"/>
     <input name="nv" description="specularity along V direction" type="float" default="5"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-
-        $(Ci) = anisophongspec( $(N), $(I), $(nu), $(nv), $(ior) );
+		aov_specularcolor += $(Cspec);
+		aov_specular += $(Ks) * anisophongspec( $(N), $(I), $(nu), $(nv),
+						$(ior) );
+        $(Ci) = aov_specularcolor * aov_specular;
 
 	</code>
-	<usage>Based on Peter Stuart's implementation of the Ashikmin-Shirley anisotropic BRDF, here, the isolated specular term only. Nu and Nv control the specularity in the anisotropy, and anisotropy perpendicular directions, while ior contains the index of refraction for the fresnel.</usage>
+	<usage>Based on Peter Stuart's implementation of the Ashikmin-Shirley anisotropic BRDF, here, the isolated specular term only. Nu and Nv control the specularity in the anisotropy, and anisotropy perpendicular directions, while ior contains the index of refraction for the fresnel. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

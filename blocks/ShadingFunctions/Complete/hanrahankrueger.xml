@@ -1,19 +1,20 @@
 <shrimp name="HanrahanKrueger" type="function" description="Matt Pharr implementation of Hanrahan-Krueger model" author="rconstruct">
-    <input name="Ka" description="Ambient light coefficient" type="float" default="0.5"/>
+	<input name="Ka" description="Ambient coefficient" type="float" default=".1"/>
     <input name="ior" description="Index of refraction" type="float" default="1.4"/>
     <input name="thickness" description="Thickness" type="float" default="0.5"/>
     <input name="sheencolor" description="Sheen color" type="color" default="1.0"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<input name="Cs" description="Surface color" type="color" default="color( .8, .5, .5 )"/>
-    <input name="Os" description="Surface opacity" type="color" default="Os"/>
 	<output name="Ci" description="Shaded color" type="color"/>
-    <output name="Oi" description="Shaded opacity" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
-        $(Oi) = $(Os) ;
-        $(Ci) = $(Oi) * subsurfaceSkin( $(I), $(N), $(Cs), $(sheencolor), 1/$(ior), $(thickness) );
+		aov_surfacecolor += $(Cs);
+		aov_ambient += $(Ka) * ambient();
+		aov_scattering += subsurfaceSkin( $(I), $(N), $(Cs), $(sheencolor),
+								1/$(ior), $(thickness) );
+        $(Ci) = aov_surfacecolor * aov_ambient + aov_scattering;
         
 	</code>
-	<usage>Based on Matt Pharr's skin shader, a surface shader that implements a shading model that should have a visual appearance generally similar to that of skin. Based on phenomenological information about skin reflectance from Hanrahan and Krueger "Reflection from layered surfaces due to subsurface scattering", proceedings of SIGGRAPH 1993. The parameters are the skin base color, the oily surface sheen color, the ratio of the indices of refraction of incoming ray to transmitted ray, and the skin layer thickness.</usage>
+	<usage>Based on Matt Pharr's skin shader, a surface shader that implements a shading model that should have a visual appearance generally similar to that of skin. Based on phenomenological information about skin reflectance from Hanrahan and Krueger "Reflection from layered surfaces due to subsurface scattering", proceedings of SIGGRAPH 1993. The parameters are the skin base color, the oily surface sheen color, the ratio of the indices of refraction of incoming ray to transmitted ray, and the skin layer thickness. This block passes the resulting values to the aov_surfacecolor, aov_ambient and aov_scattering AOV presets.</usage>
 </shrimp>

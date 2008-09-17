@@ -2,16 +2,13 @@
     <input name="Ka" description="Ambient light coefficient" type="float" default="0.05"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.2"/>
     <input name="Ks" description="Specular coefficient" type="float" default="1"/>
-    <input name="specularcolor" description="Specular color" type="color" default="1.0"/>
-    <input name="model" description="BRDF model" type="float" default="2"/>
-    <input name="colormatrix" description="Color matrix metal/skin" type="float" default="2"/>
+    <input name="model" description="BRDF model" type="float" storage="uniform" default="2"/>
+    <input name="colormatrix" description="Color matrix metal/skin" type="float" storage="uniform" default="2"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
     <input name="dir" description="Surface direction tangent" type="vector" default="dPdu"/>
     <input name="Cs" description="Surface color" type="color" default="Cs"/>
-    <input name="Os" description="Surface opacity" type="color" default="Os"/>
 	<output name="Ci" description="Shaded color" type="color"/>
-    <output name="Oi" description="Shaded opacity" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
 
@@ -117,14 +114,12 @@
 								-0.445346, -0.298125,  1.667665, -0.369540,
 								-1.322302, -0.446321,  2.768624 };
 
-        $(Oi) = $(Os);
-
-		/* make sure the coeff and colormatrix variables to valid range */
-        $(Ci) = $(Os) * lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs),
-				$(specularcolor), $(blockname)_coeff_$(model),
-				$(blockname)_colormatrix_$(colormatrix),
-				$(N), $(I), $(dir) );
+        $(Ci) = lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs),
+								$(blockname)_coeff_$(model),
+								$(blockname)_colormatrix_$(colormatrix),
+								$(N), $(I), $(dir),
+								DECLARE_AOV_PARAMETERS );
 
 	</code>
-    <usage>Based on Stephen H. Westin's implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. BRDFs 1-7, color matrix 1-2 for metal or skin. Note that coefficient model and colormatrix values need to be absolute.</usage>
+    <usage>Based on Stephen H. Westin's implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. BRDFs 1-7, color matrix 1-2 for metal or skin.  This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

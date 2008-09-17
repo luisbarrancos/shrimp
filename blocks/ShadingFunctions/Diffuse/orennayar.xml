@@ -1,12 +1,15 @@
 <shrimp name="OrenNayar" type="function" description="OrenNayar diffuse shading model" author="rconstruct">
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
 	<input name="roughness" description="roughness" type="float" default="0.05"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="V" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>	
-        $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
+	<code>
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
+        $(Ci) = aov_surfacecolor * aov_diffuse;
 	</code>
-    <usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz's implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection.</usage>
+    <usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz's implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

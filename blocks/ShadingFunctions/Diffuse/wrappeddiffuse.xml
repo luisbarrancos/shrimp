@@ -1,12 +1,16 @@
 <shrimp type="function" name="WDiffuse" description="Wrapped diffuse lighting model" author="rconstruct">
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
+	<input name="Kd" description="Diffuse coefficient" type="float" default="1"/>
 	<input name="wangle" description="Wrapped angle" type="float" default="15"/>
 	<input name="N" description="The surface normal" type="normal" default="normalize(N)"/>
 	<input name="V" description="The viewer vector" type="vector" default="normalize(I)"/>
-	<output name="col" description="The amount of diffuse light" type="color"/>
+	<output name="Ci" description="The amount of diffuse light" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
-		$(col) = wrappeddiffuse( $(wangle), $(N), $(V) );
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * wrappeddiffuse( $(wangle), $(N), $(V) );
+		$(Ci) = aov_surfacecolor * aov_diffuse;
 	</code>
-<usage>Wrapped diffuse illumination model, allows light to reach beyong 90 degrees on the surface, overcoming one limitation of classical Lambertian diffuse, the steep falloff to shadow areas.</usage>
+<usage>Wrapped diffuse illumination model, allows light to reach beyong 90 degrees on the surface, overcoming one limitation of classical Lambertian diffuse, the steep falloff to shadow areas. The diffuse color value is passed to aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 
 </shrimp>

@@ -12,29 +12,26 @@
 	<input name="ilumwidth" description="Illumination cone" type="float" default="180"/>
 	<input name="varfadestart" description="Fade start" type="float" default="0.005"/>
 	<input name="varfadeend" description="Fade end" type="float" default="0.001"/>
-	<input name="clumpdarkstr" description="Clump darkening strength" type="float" default="0"/>
+	<input name="clumpdarkstr" description="Clump darkening strength"  type="float" default="0"/>
 	<input name="rootcolor" description="Root color" type="color" default="color(.9714, .9714, .9714)"/>
 	<input name="tipcolor" description="Tip color" type="color" default="color( .519, .325, .125 )"/>
 	<input name="speccolor" description="Specular color" type="color" default="color( .7595, .6625, .5625 )"/>
 	<input name="staticamb" description="Static ambient color" type="color" default="color( .057, .057, .057 )"/>
-	<input name="haircolvar" description="RIB hair color variable" type="float" default="0"/>
-	<input name="hairlength" description="RIB hair length" type="float" default="0"/>
-	<input name="surfnorm" description="RIB surface normal" type="normal" default="normal(1)"/>
+	<input name="haircolvar" description="RIB hair color variable" type="float" storage="uniform" default="0"/>
+	<input name="hairlength" description="RIB hair length" type="float" storage="uniform" default="0"/>
+	<input name="surfnorm" description="RIB surface normal" type="normal" storage="uniform" default="normal(1)"/>
 	<input name="vclump" description="RIB clump vector" type="vector" default="vector(0)"/>
-	<input name="hairid" description="RIB hair id" type="float" default="0"/>
-	<input name="Os" description="Surface opacity" type="color" default="Os"/>
-    <output name="Ci" description="Shaded color" type="color"/>
-    <output name="Oi" description="Output opacity" type="color"/>
+	<input name="hairid" description="RIB hair id" type="float" storage="uniform" default="0"/>
+    <output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-		$(Oi) = $(Os);
-		$(Ci) = $(Oi) * SIG2k_srf_fur( $(Ka), $(Kd), $(Ks), $(rough1),
+		$(Ci) = SIG2k_srf_fur( $(Ka), $(Kd), $(Ks), $(rough1),
 				$(rough2), $(spec1), $(spec2), $(startspec), $(endspec),
 				$(specsizefade), $(ilumwidth), $(varfadestart),
 				$(varfadeend), $(clumpdarkstr), $(rootcolor), $(tipcolor),
 				$(speccolor), $(staticamb), $(haircolvar), $(hairlength),
-				$(hairid), $(surfnorm), $(vclump) );
+				$(hairid), $(surfnorm), $(vclump),
+				DECLARE_AOV_PARAMETERS );
 	</code>
-    <usage>Clint Hanson and Armin Bruderlin fur shader, presented at Siggraph2000, taken from The RenderMan Repository - http://www.renderman.org . Note that specular color should be (1+tipcolor)/2.
-	</usage>
+    <usage>Clint Hanson and Armin Bruderlin fur shader, presented at Siggraph2000, taken from The RenderMan Repository - http://www.renderman.org . Note that specular color should be (1+tipcolor)/2. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
 </shrimp>

@@ -3,6 +3,7 @@
 #include "shrimp_helpers.h"
 #include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
 							   Cook-Torrance model */
+#include "shrimp_aov.h"		/* for the AOVs macros */
 
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )
@@ -983,7 +984,9 @@ float fastFresnel(vector Hn, Vf; float f0;)
 color LocIllumAshShir(
                         normal Nn;
                         vector In, xdir;
-		                float rd, rs, nu, nv;
+						color Cdiff, Cspec;
+		                float Kd, Ks, nu, nv;
+						DECLARE_AOV_OUTPUT_PARAMETERS
                         )
 {
 	normal Nf = faceforward( Nn, In );
@@ -998,14 +1001,11 @@ color LocIllumAshShir(
     float rho_d = 0, rho_s = 0;
 
     /* calculations that can be done one time ... */
-    color diff = 0, spec = 0;
-    
-	float diffcont = ( (28*rd) / (23)) * (1-rs) * (1 - pow(1-ndotv/2, 5) );
-	float speccont = sqrt( (nu+1) * (nv+1) ) / 8;
+	
+	float diffcont = ((28*Kd) / 23) * (1-Ks) * (1 - pow( 1-ndotv/2, 5));
+	float speccont = sqrt( (nu+1) * (nv+1)) / 8;
 
-    color C = 0;
     extern point P;
-    extern color Cs;
     
     illuminance(P, Nf, PI/2 )
 	{
@@ -1021,7 +1021,7 @@ color LocIllumAshShir(
         lightsource("__nonspecular", nonspec);
 		
         if (nondiff < 1) {
-			rho_d = diffcont * (1 - pow(1-ndotv/2, 5 ) );
+			rho_d = diffcont * (1 - pow( 1-ndotv/2, 5));
         }
 		
         if (nonspec < 1) {
@@ -1033,13 +1033,16 @@ color LocIllumAshShir(
 							(1 - SQR( ndoth ));
 
 			rho_s = speccont * pow( ndoth, nunv2) / (ndoth * max( ndotv,
-						ndotl)) * fastFresnel( Hn, Vf, rs );
+						ndotl)) * fastFresnel( Hn, Vf, Ks );
         }
 		
-		C += Cl * ((1-nondiff) * Cs * rho_d + ((1-nonspec) * rho_s )) *
-				max( 0, ndotl );
+		float maxndotl = max( 0, ndotl);
+		
+		aov_diffuse += (1-nondiff) * Cl * rho_d * maxndotl;
+		aov_specular += (1-nonspec) * Cl * rho_s * maxndotl;
+		
     }
-    return C;
+    return Cdiff * aov_diffuse + Cspec * aov_specular;
 }
 
 /******* "global" illumination model ********/
@@ -1182,21 +1185,21 @@ color EnvIllumAshShir(
 // modified for inclusion in this header //
 
 color velvet(
-                float backscatter, edginess, roughness;
+                float Ks, backscatter, edginess, roughness;
                 color sheen;
                 normal Nn;
                 vector In;
+				DECLARE_AOV_OUTPUT_PARAMETERS
         )
 
 {
     normal Nf = faceforward( Nn, In);
     vector Vf = -In;
 
-	float ndotv = Nf.Vf;
     float cosine, sine;
 
     extern point P;
-	color C = 0;
+	color rlobe = color(0), horizonscatter = color(0);
 	
     illuminance( P, Nf, PI/2)
 	{
@@ -1208,17 +1211,22 @@ color velvet(
 		
         if (nonspec < 1) {
             vector Ln = normalize(L);
-			float ldotn = Ln.Nf;
 		
             /* Retroreflective lobe */
-            cosine = max( -ndotv, 0);
-            C += pow( cosine, 1.0/roughness) / ldotn * Cl * sheen;
-            cosine = max( ndotv, 0);
-            sine = sqrt( 1.0 - cosine * cosine );
-            C += (1-nonspec) * pow( sine, edginess ) * ldotn * Cl * sheen;
-        }
+			cosine = max( Ln.Vf, 0);
+			rlobe += (1-nonspec) * Cl * sheen * backscatter
+								* pow( cosine, 1/roughness);
+			/* Horizon scattering */
+			cosine = max( Nf.Vf, 0);
+			sine = sqrt( 1.0 - SQR( cosine ));
+			horizonscatter += (1-nonspec) * Cl * sheen * Ln.Nf *
+								pow( sine, edginess );
+		}
     }
-    return C;
+	
+	aov_scattering += Ks * rlobe;
+	aov_rimlighting += Ks * horizonscatter;
+    return aov_scattering + aov_rimlighting;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1299,7 +1307,7 @@ color subsurfaceSkin(
 	
 	float Kr, Kt, Kr2, Kt2;
 	extern point P;
-	color C = 0;
+	color C = color(0);
 
 	vector T = efresnel(Vf, Nf, eta, Kr, Kt);
 	    
@@ -1316,16 +1324,16 @@ color subsurfaceSkin(
 		float hdotn = H.Nf;
 		
 	    if ( hdotn > 0) {
-			C += Kr * sheenColor * Cl * ldotn * pow( hdotn, 4.);
+			C += Kr * sheenColor * Cl * ldotn * pow( hdotn, 4);
 		}
 	    C += Kr * sheenColor * Cl * ldotn * .2;
 
 	    vector T2 = efresnel(-Ln, Nf, eta, Kr2, Kt2);
-		
-	    C += skinColor * Cl * (Ln . Nf) * Kt * Kt2 * 
-		(singleScatter(T, T2, Nf, .8, .8, thickness) +
-		 singleScatter(T, T2, Nf, .3, .5, thickness) +
-		 singleScatter(T, T2, Nf, 0., .4, thickness));
+
+		C += skinColor * Cl * ldotn * Kt * Kt2 *
+				( singleScatter( T, T2, Nf, .8, .8, thickness) +
+				  singleScatter( T, T2, Nf, .3, .5, thickness) +
+				  singleScatter( T, T2, Nf, 0, .4, thickness ) );
 	}
 	return C;
 }
@@ -1333,7 +1341,9 @@ color subsurfaceSkin(
 ////////////////////////////////////////////////////////////////////////////////
 // Matt Pharr's implementation of the Kubelka-Munk model ///////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// Slightly tweaked to fit Shrimp's structure. /////////////////////////////////
+// Slightly tweaked to fit Shrimp's structure - with some notes from ///////////
+// Matt Pharr's presentation at Siggraph2001. See the Siggraph 2001 course /////
+// notes for more details. /////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /* 
@@ -1351,7 +1361,9 @@ color subsurfaceSkin(
 
 /* Note: this seems to kill both aqsis (1.4phase2) and pixie (r1162), but
  * this behaviour exists for quite some time */
-void sinhcosh(float t; output float sinh, cosh;)
+
+/* Hyperbolic sine function */
+void sinhcosh( float t; output float sinh, cosh; )
 {
     float t2 = t;
     if (t2 > 10)
@@ -1363,7 +1375,11 @@ void sinhcosh(float t; output float sinh, cosh;)
     cosh = 0.5 * (ex + invex);
 }
 
-void KMEstimateCoeffs(color Rinf; output color sigma_a, sigma_s;)
+/* This function estimates the attenuation coefficient sigmaA and scattering
+ * coefficient sigmaS, for the Kubelka-Munk shading model, given the
+ * reflectivity of an infinitely thick sample of the layer under consideration.
+ * */
+void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
 {
     if (Rinf == color 0.) {
         sigma_a = color 1.;
@@ -1376,8 +1392,14 @@ void KMEstimateCoeffs(color Rinf; output color sigma_a, sigma_s;)
     }
 }
 
-void KM(color sigma_a, sigma_s; float thickness;
-        output color R, T;)
+/* This function gives the reflection and transmission coefficients for the
+ * layer. Given the reflection value, we might then use it in place of the
+ * diffuse coefficient Kd in a standard light reflection model, such as 
+ * Lambertian diffuse, or Oren-Nayer diffuse. For a thin translucent object
+ * we might use both of them together and gather incident light from both sides
+ * of the object. */
+void KM( color sigma_a, sigma_s; float thickness;
+        output color R, T; )
 {
     float i;
 	extern uniform float ncomps;
@@ -1395,7 +1417,9 @@ void KM(color sigma_a, sigma_s; float thickness;
     }
 }
 
-color KMInfinite(color sigma_a, sigma_s;)
+/* Computing the reflectivity of an infinitely-thin layer from the KM
+ * scattering and attenuation parameters. */
+color KMInfinite( color sigma_a, sigma_s; )
 {
 	float i;
 	extern uniform float ncomps;
@@ -1409,50 +1433,50 @@ color KMInfinite(color sigma_a, sigma_s;)
     return R;
 }
 
-color KMComposeR(color R1, T1, R2, T2)
+/* Given the reflectances and transmittances of two layers, compute the new
+ * aggregate reflectance and transmittance of them together. */
+color KMComposeR( color R1, T1, R2, T2; )
 {
     return R1 + T1*R2*T1 / (color 1. - R1*R2);
 }
 
-color KMComposeT(color R1, T1, R2, T2)
+color KMComposeT( color R1, T1, R2, T2; )
 {
     return T1*T2 / (color 1. - R1*R2);
 }
 
+/* Function that computes shading for a composite surface where a diffuse layer
+ * has been placed on top of a surface with a standard diffuse-glossy specular
+ * shading model. We compute the Kubelka-Munk reflection and transmission
+ * coefficients given sigmaA and sigmaS, and the thickness of the added layer,
+ * compute a new diffuse reflection coefficient Kdnew and then compute
+ * plausible values for the specular coefficients Ksnew and roughness, that
+ * model the effect of the added layer on the light passing through it. */
 color KMOverGlossy(	normal Nn;
 					vector V;
-					color sigma_a, sigma_s, Kd, Ks;
-                   	float thickness, roughness;)
+					color Kd, Ks, thickcolor;
+                   	float thickness, roughness;
+					DECLARE_AOV_OUTPUT_PARAMETERS )
 {
-    color R1 = 0;
-    color T1 = 0;
-	
+    color R1 = 0, T1 = 0, sigma_a = 0, sigma_s = 0;
+
     normal Nf = faceforward( Nn, V, Nn);
-    
+
+	KMEstimateCoeffs( thickcolor, sigma_a, sigma_s );
     KM(sigma_a, sigma_s, thickness, R1, T1);
 
-	color Kdnew = 0;
-	color Ksnew = 0;
-	
-	uniform float nondiff = 0;
-	lightsource("__nondiffuse", nondiff);
-	
-	if (nondiff < 1) {
-		Kdnew = KMComposeR(R1, T1, Kd, color(0.));
-	}
-	
-	uniform float nonspec = 0;
-	lightsource("__nonspecular", nonspec);
-	
-	if (nonspec < 1) {
-	    Ksnew = KMComposeR( color(0.), T1, Ks, color(0.));
-	}
+	color Kdnew = KMComposeR( R1, T1, Kd, color(0) );
+	color Ksnew = KMComposeR( color(0), T1, Ks, color(0) );
 
-    float KsRatio = comp(Ks, 0) / comp(Ksnew, 0);
+    float KsRatio = comp( Ks, 0 ) / comp( Ksnew, 0 );
     float roughnew = roughness * KsRatio;
 
-    return ((1-nondiff)*Kdnew*diffuse(Nf)) + ( (1-nonspec) * Ksnew
-			* specular(Nf, -normalize(V), roughnew));
+	aov_surfacecolor = Kdnew;
+	aov_specularcolor = Ksnew;
+	aov_diffuse = diffuse(Nf);
+	aov_specular = specular(Nf, -V, roughnew);
+	
+	return aov_surfacecolor * aov_diffuse + aov_specularcolor * aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1489,18 +1513,16 @@ LocIllumGranier(
 					normal Nn, N1; vector Vf;
 					float e0, e1, d;
 					float ior[3]; float lambda[3];
+					color Cdiff;
 					float Kd, Ks;
+					DECLARE_AOV_OUTPUT_PARAMETERS
 					)
 {
-	float Kr, Kt;
-	float Kro, Kto;
-	float specf, difff;
-	float td;
-	vector ti, ri, rti;
-	vector to, ro;
+	float Kr, Kt, Kro, Kto;
+	float specf, difff, td;
+	vector ti, ri, rti, to, ro;
  
-	color C = 0;
-	color diff = 0, spec=0;
+	color C = 0, diff = 0, spec = 0;
 
 	/****** perform diffuse first *********/
 	uniform float nondiff = 0;
@@ -1517,7 +1539,6 @@ LocIllumGranier(
 	
 	/****** specular *********/
 	
-	extern color Cs;
 	extern point P;
 
 	illuminance(P, Nn, PI/2 )
@@ -1554,12 +1575,17 @@ LocIllumGranier(
 				setcomp(spec, i, specf);
 			}
 
-			C += Cl * (Cs * (1-nondiff) * Kd * diff + (1-nonspec) * Ks
-					* spec) * max( 0, Nn.Ln);
+			float maxndotl = max( 0, Nn.Ln);
+			
+			aov_diffuse += (1-nondiff) * Kd * Cl * diff * maxndotl;
+			aov_specular += (1-nonspec) * Ks * Cl *spec * maxndotl;
+			
 		}
 	}
+
+	aov_surfacecolor += Cdiff;
 	
-	return C;
+	return aov_surfacecolor * aov_diffuse + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1640,11 +1666,12 @@ LocIllumGranier(
 color
 lafortunersl (
 				float Ka, Kd, Ks;
-				color surfacecolor, specularcolor;
+				color surfacecolor;
 				uniform float coeff[27];
 				uniform float colormatrix[9];
 				normal Nn;
 				vector V, dir;
+				DECLARE_AOV_OUTPUT_PARAMETERS
 				)
 {
 	
@@ -1654,7 +1681,6 @@ lafortunersl (
 	varying float x, z, f; /* subterms */
 	varying float fr=0,fg=0,fb=0;/* RGB components of the non-Lambertian term */
 	uniform float basepointer, j; /* loop counters */
-	varying color C = 0;
 
 	/* Get unit vector in "u" parameter direction */
 	local_x = normalize ( dir );
@@ -1667,16 +1693,14 @@ lafortunersl (
 	/* The first term is the diffuse component. This should be the
 	 * diffuse component in the Lafortune model multiplied by pi. */
 	
-	color cdiff = 0;
+	color cdiff = 0, cspec = 0;
 	uniform float nondiff = 0;
 	
 	lightsource("__nondiffuse", nondiff);
 	if (nondiff < 1) {
 		cdiff = Kd * (1-nondiff) * diffuse(local_z);
 	}
-	
-	C = ( surfacecolor * (Ka*ambient() + cdiff ) );
-	
+		
 	extern point P;
 	
 	illuminance ( P, local_z, PI/2 )
@@ -1735,23 +1759,29 @@ lafortunersl (
 				}
 			}
 
-			C += Cl * (1-nonspec) * Ks * color "rgb" (fr,fg,fb) * (local_z.Ln);
+			cspec += Cl * (1-nonspec) * Ks * color "rgb" (fr,fg,fb)
+						* (local_z.Ln);
 		}
 	}
 	
 	/* Color correction from camera space */
 	/* use dot product with rows of matrix */
 	
-	fr = colormatrix[0]*comp(C,0)
-		+ colormatrix[1]*comp(C,1) + colormatrix[2]*comp(C,2);
-	fg = colormatrix[3]*comp(C,0)
-		+ colormatrix[4]*comp(C,1) + colormatrix[5]*comp(C,2);
-	fb = colormatrix[6]*comp(C,0)
-		+ colormatrix[7]*comp(C,1) + colormatrix[8]*comp(C,2);
+	fr = colormatrix[0]*comp(cspec,0)
+		+ colormatrix[1]*comp(cspec,1) + colormatrix[2]*comp(cspec,2);
+	fg = colormatrix[3]*comp(cspec,0)
+		+ colormatrix[4]*comp(cspec,1) + colormatrix[5]*comp(cspec,2);
+	fb = colormatrix[6]*comp(cspec,0)
+		+ colormatrix[7]*comp(cspec,1) + colormatrix[8]*comp(cspec,2);
 	
-	C = color "rgb" ( fr, fg, fb );
+	cspec = color "rgb" ( fr, fg, fb );
+
+	aov_surfacecolor += surfacecolor;
+	aov_ambient += Ka * ambient();
+	aov_diffuse += cdiff;
+	aov_specular += cspec;
 	
-	return C;
+	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1801,6 +1831,7 @@ color tshair(
                     color Cspec2; // secondary specular color
 					normal Nn; // normal vector
 					vector Vf; // viewer vector
+					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
 	/* We're going to need dPdv for direction, P for the illuminance
@@ -1850,8 +1881,12 @@ color tshair(
 		}
 	}
 
-    return Cdd * mix( Cbase, Ctip, v) * (Ka*ambient() + Kd * Cdd ) +
-                Ks * Css;
+	aov_surfacecolor += mix( Cbase, Ctip, v);
+	aov_ambient += Ka * ambient();
+	aov_diffuse += Kd * Cdd;
+	aov_specular += Ks * Css;
+
+	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1869,6 +1904,7 @@ color kajiyakay(
 					color Css; // specular color
 					normal Nn; // normal vector
 					vector Vf; // viewer vector
+					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
 	/* We're going to need dPdv for direction, P for the illuminance
@@ -1893,6 +1929,7 @@ color kajiyakay(
 		extern color Cl;
 		vector Ln = normalize(L);
 		
+		/* Diffuse term */
 		uniform float nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 		
@@ -1902,6 +1939,7 @@ color kajiyakay(
 			Cdiff += Cl * (1-nondiff) * sdottl;
 		}
 		
+		/* Specular term */
 		uniform float nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
@@ -1912,9 +1950,16 @@ color kajiyakay(
 						*sqrt(1.0 - dottin*dottin), 1.0/rough);
 		}
 	}
-	// blend base color and tip color based on v coordinate
-	return Cdd * mix( Cbase, Ctip, v) * (Ka * ambient() + Kd * Cdiff) +
-			(Ks * Css * Cspec);
+	
+	/* blend base color and tip color based on v coordinate */
+	aov_surfacecolor = Cdd * mix( Cbase, Ctip, v);
+	aov_specularcolor = Css;
+	aov_ambient = Ka * ambient();
+	aov_diffuse = Kd * Cdiff;
+	aov_specular = Ks * Cspec;
+		
+	return aov_surfacecolor * (aov_ambient + aov_diffuse) +
+				(aov_specularcolor * aov_specular);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1954,6 +1999,7 @@ color MKgooch(
                 vector In;
                 float Ka, Kd, Ks, calpha, cbeta, roughness, b, y;
                 color SurfaceColor, SpecularColor;
+				DECLARE_AOV_OUTPUT_PARAMETERS
                 )
 {
     normal Nf = faceforward( Nn, In);
@@ -1980,8 +2026,14 @@ color MKgooch(
         blendval = .5 * (1+ldotn);
         cgooch += mix( kcool, kwarm, blendval);
     }
-    return ((Ka*ambient()+Kd*cgooch + SpecularColor * Ks *
-                specular( Nf, Vf, roughness)));
+	
+	aov_surfacecolor += SurfaceColor;
+	aov_specularcolor += SpecularColor;
+	aov_ambient += Ka * ambient();
+	aov_diffuse += Kd * cgooch;
+	aov_specular += Ks * specular( Nf, Vf, roughness);
+
+	return aov_ambient + aov_diffuse + aov_specularcolor * aov_specular;	
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1993,7 +2045,7 @@ color MKgooch(
 // Slightly tweaked to fit Shrimp's structure. /////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-/* Note: Mario mentioned a problem (and a solution) regarding specifying
+/* Note: Mario Marengo mentioned a problem (and a solution) regarding specifying
  * surface tangents to build the local space of the fiber vectors - we need
  * to extract texture gradients from the geometry. */
 
@@ -2077,6 +2129,7 @@ woodreflectance(
                     vector fiberAxis, In;
                     normal Nn;
                     color diffuseColor, fiberColor;
+					DECLARE_AOV_OUTPUT_PARAMETERS
         )
 {
     uniform float sqrt2pi = 2.5066283;
@@ -2136,7 +2189,7 @@ woodreflectance(
     thOutPrime = asin( ssOutDir.axis);
 
     /* Calculate anisotropic highlight for each light */
-    color C = 0;
+	
     illuminance( P, Nf, PI/2 /* Hemisphere */ ) {
         float dummy, ssAttenOut;
         extern vector L;
@@ -2166,20 +2219,23 @@ woodreflectance(
         fiberFactor *= geometryFactor;
 		
         /* Add in diffuse term, attenuated by surface term. */
-        C += Cl * Kd * diffuseColor * ssFactor;
+        aov_diffuse += Cl * Kd * ssFactor;
 		
         /* Add in fiber highlight, also attenuated. */
-        C += Cl * fiberFactor * highlight * ssFactor;
+        aov_specular += Cl * fiberFactor * highlight * ssFactor;
 		
         /* Second Fresnel call is for strength of surface highlight. */
         vector Hn = normalize( -In + Ln );
         fresnel( In, Hn, 1.0/eta, Kr, Kt);
 		
         /* Blinn/Phong highlight with Fresnel attenuation. */
-        C += Cl * Ks * Kr * pow( max( 0, Hn.local_z), 1/roughness);
+        aov_specular += Cl * Ks * Kr * pow( max( 0, Hn.local_z), 1/roughness);
     }
-    C += Ka * diffuseColor * ambient();
-    return C;
+	
+	aov_surfacecolor += diffuseColor;
+	aov_ambient += Ka * ambient();
+
+	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2240,16 +2296,14 @@ rtglass(
 			uniform float rbounces, sbounces, krefl, krefr;
 			vector In; normal Nn;
 			uniform string envmap;
+			DECLARE_AOV_OUTPUT_PARAMETERS
 	   )
 
 {
-#if RENDERER == pixie
-	color C = 0; /* Needed to keep pixie's parser out of this block */
-#else
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
-	vector refldir = 0, refrdir = 0;
+	vector refldir = vector(0), refrdir = vector(0);
 	float kr = 0, kt = 0;
 
 	/* if I.N>0, ray is entering the medium, else ray is exiting and eta is the
@@ -2281,7 +2335,7 @@ rtglass(
 	float ks = (raydepth > sbounces || entering == 1) ? 0 : Ks;
 	kr = (raydepth > rbounces) ? 0 : kr;
 
-	color crefl = 0, crefr = 0;
+	color crefl = color(0), crefr = color(0);
 
 	/* should be raytrace, but added envmap, just in case */
 	if (kr > 0) /* reflections, if active */
@@ -2307,51 +2361,52 @@ rtglass(
 			attenrefl *= (kr > 0 && entering == 1) ? atten : color(1);
 		}
 	}
-
-	color C = 0;
 	
 	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
 	 * just leave everything in place (there's always frankenrender) */
 #if RENDERER == aqsis
-	if (Ka > 0) C =  Ka * ambient();
-	if (Kd > 0) C += Kd * diffuse(Nf);
+	if (Ka > 0) aov_ambient +=  Ka * ambient();
+	if (Kd > 0) aov_diffuse += Kd * diffuse(Nf);
 	if (Ks > 0) {
-		if (spectype == "glossy") C += locillumglassy( Nf, -In, roughness,
-				sharpness);
-		else C+= specular(Nf, -In, roughness);
+		if (spectype == "glossy")
+			aov_specular += locillumglassy( Nf, -In, roughness, sharpness);
+		else aov_specular += specular(Nf, -In, roughness);
 	}
 	/* attenuation blends */
 	if (Kr > 0) {
-		if (krefl > 0) C += mix( kr * crefl, kr * crefl * attenrefl, krefl);
-		else C += kr * crefl;
+		if (krefl > 0) aov_reflection += mix( kr * crefl, kr * crefl
+						* attenrefl, krefl);
+		else aov_reflection += kr * crefl;
 	}
 	if (Kt > 0) {
-		if (krefr > 0) C += mix( kt * crefr, kt * crefr * attenrefr, krefr);
-		else C += kt * crefr;
+		if (krefr > 0) aov_refraction += mix( kt * crefr, kt * crefr
+						* attenrefr, krefr);
+		else aov_refraction += kt * crefr;
 	}
-	
 #else	
 	
 	/* set illumination terms, if active */
-	C  = (ka == 0) ? color(0) : ka * ambient();
-	C += (kd == 0) ? color(0) : kd * diffuse(Nf);
-	C += (ks == 0) ? color(0) : ks * ( ( spectype == "glossy" ) ?
-					 locillumglassy( Nf, -In, roughness, sharpness) :
-				 	 specular( Nf, -In, roughness) );
+	aov_ambient += (ka == 0) ? color(0) : ka * ambient();
+	aov_diffuse += (kd == 0) ? color(0) : kd * diffuse(Nf);
+	aov_specular += (ks == 0) ? color(0) : ks * ( (spectype == "glossy" ) ?
+					locillumglassy( Nf, -In, roughness, sharpness) :
+					specular( Nf, -In, roughness) );
 	
 	/* blend between pure and attenuated medium */
-	C += (kr == 0) ? color(0) : ( (krefl == 0) ? kr * crefl :
-			mix( kr * crefl, kr * crefl * attenrefl, krefl ) ) ;
-	C += (kt == 0) ? color(0) : ( (krefr == 0) ? kt * crefr :
-			mix( kt * crefr, kt * crefr * attencolor * attenrefr, krefr ) );
+	aov_reflection += (kr == 0) ? color(0) : ( (krefl == 0) ? kr * crefl :
+						mix( kr * crefl, kr * crefl * attenrefl, krefl ) ) ;
+	aov_refraction += (kt == 0) ? color(0) : ( (krefr == 0) ? kt * crefr :
+						mix( kt * crefr, kt * crefr * attencolor
+							* attenrefr, krefr ) );
 	
 #endif
 	
-#endif
-	return C;
+	return aov_ambient + aov_diffuse + aov_specular + aov_reflection
+						+ aov_refraction;
 }
 
-/* Pixie doesn't likes binary conditionals, so it needs a custom version */
+/* Pixie doesn't likes binary conditionals, we might as well make a custom
+ * version (note: check pixie's glass dispersion effect) */
 /* glass body */
 
 color
@@ -2364,13 +2419,14 @@ rtglasspixie(
 			uniform float rbounces, sbounces, krefl, krefr;
 			vector In; normal Nn;
 			uniform string envmap;
+			DECLARE_AOV_OUTPUT_PARAMETERS
 	   )
 
 {
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
-	vector refldir = 0, refrdir = 0;
+	vector refldir = vector(0), refrdir = vector(0);
 	float kr = 0, kt = 0;
 
 	/* if I.N>0, ray is entering the medium, else ray is exiting and eta is the
@@ -2407,7 +2463,7 @@ rtglasspixie(
 	if (raydepth > sbounces || entering == 1) ks = 0;
 	if (raydepth > rbounces) kr = 0;
 
-	color crefl = 0, crefr = 0;
+	color crefl = color(0), crefr = color(0);
 
 	/* should be raytrace, but added envmap, just in case */
 	if (kr > 0) /* reflections, if active */
@@ -2432,26 +2488,27 @@ rtglasspixie(
 		if (kr > 0 && entering == 1) attenrefl *= atten;
 	}
 
-	color C = 0;
-
-	if (ka > 0) C =  Ka * ambient();
-	if (kd > 0) C += Kd * diffuse(Nf);
+	if (ka > 0) aov_ambient +=  Ka * ambient();
+	if (kd > 0) aov_diffuse += Kd * diffuse(Nf);
 	if (ks > 0) {
-		if (spectype == "glossy") C += locillumglassy( Nf, -In, roughness,
-				sharpness);
-		else C+= specular(Nf, -In, roughness);
+		if (spectype == "glossy")
+				aov_specular += locillumglassy( Nf, -In, roughness, sharpness);
+		else aov_specular += specular(Nf, -In, roughness);
 	}
 	/* attenuation blends */
 	if (kr > 0) {
-		if (krefl > 0) C += mix( kr * crefl, kr * crefl * attenrefl, krefl);
-		else C += kr * crefl;
+		if (krefl > 0) aov_reflection += mix( kr * crefl, kr * crefl
+											* attenrefl, krefl);
+		else aov_reflection += kr * crefl;
 	}
 	if (kt > 0) {
-		if (krefr > 0) C += mix( kt * crefr, kt * crefr * attenrefr, krefr);
-		else C += kt * crefr;
+		if (krefr > 0) aov_refraction += mix( kt * crefr, kt * crefr
+											* attenrefr, krefr);
+		else aov_refraction += kt * crefr;
 	}
 		
-	return C;
+	return aov_ambient + aov_diffuse + aov_specular + aov_reflection +
+			aov_refraction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2465,6 +2522,7 @@ banksaniso(
 			float Kd, Ks, roughness;
 			normal Nn;
 			vector In, adir;
+			DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -2474,7 +2532,6 @@ banksaniso(
 	float costheta = Vf.xdir;
 
 	extern point P;
-	color C = 0;
 
 	illuminance( P, Nf, PI/2 )
 	{
@@ -2492,12 +2549,14 @@ banksaniso(
 			float pd = sqrt( 1 - cospsi * cospsi );
 			float ps = sqrt( 1 - costheta * costheta );
 
-			C += Cl * (1-nonspec) * Ln.Nf * ( (Kd * cdiff * pd) +
-					(Ks * cspec * pow( pd*ps - cospsi*costheta,
-											   1/roughness)) );
+			float ldotn = Ln.Nf;
+			
+			aov_diffuse += Cl * ldotn * Kd * cdiff * pd;
+			aov_specular += (1-nonspec) * Cl * ldotn * Ks * cspec *
+							pow( pd*ps - cospsi*costheta, 1/roughness);
 		}
 	}
-	return C;
+	return aov_diffuse + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2532,12 +2591,13 @@ float straussgeoatten( float x; )
 }
 
 color strauss(
-				color Cdiff;
+				color Csurface;
 				/* smoothness [0,1] = perfect diffuse/specular
 				 * metalness  [0,1] = perfect nonmetal/metal */
 				float smoothness, metalness;
 				float transparency;
 				normal Nn; vector In; /* normalized normal/viewer */
+				DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -2558,7 +2618,7 @@ color strauss(
 	float h = 3 / (1-smoothness);
 
 	extern point P;
-	color C = 0;
+	color Cdiff = color(0), Cspec = color(0);
 
 	illuminance( P, Nf, PI/2 )
 	{
@@ -2575,7 +2635,7 @@ color strauss(
 
 		/* diffuse contribution */
 		if (nondiff < 1) {
-			C += Cl * (1-nondiff) * Cdiff * rd * d * cosalpha;
+			Cdiff += Cl * (1-nondiff) * rd * d * cosalpha;
 		}
 		
 		/* specular contribution */
@@ -2598,12 +2658,17 @@ color strauss(
 			float rs = pow( max( 0, Nf.Hn), h) * rj;
 
 			/* specular color, approaching white at grazing angles */
-			color Csw = CWHITE + metalness * (1-F) * (Cdiff - CWHITE);
+			color Csw = CWHITE + metalness * (1-F) * (Csurface - CWHITE);
 
-			C += Cl * (1-nonspec) * rs * Csw * cosalpha;
+			Cspec += Cl * (1-nonspec) * rs * Csw * cosalpha;
 		}
 	}
-	return C;
+
+	aov_surfacecolor += Csurface;
+	aov_diffuse += Cdiff;
+	aov_specular += Cspec;
+	
+	return aov_surfacecolor * aov_diffuse + aov_specular;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -2662,14 +2727,14 @@ SIG2k_srf_fur(
 				uniform float hair_col_var, hair_length, hair_id;
 				uniform normal surface_normal;
 				varying vector clump_vect;
+				DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
 	extern vector dPdv, I; /* we're in a function */
 	
 	vector T = normalize(dPdv); /* tangent along length of hair */
 	vector V = -normalize(I); /* view vector */
-	color Cspec = color(0), Cdiff = color(0); /* specular & diffuse storage */
-	float Kspec = Ks;
+	float Kspec = Ks; /* Specular coefficient copy */
 	
 	vector nL;
 	varying normal nSN = normalize( surface_normal );
@@ -2682,7 +2747,6 @@ SIG2k_srf_fur(
 	float T_Dot_nL = 0;
 	float T_Dot_e = 0;
 	float Alpha = 0, Beta = 0, Kajiya = 0, darkening = 1.0;
-	varying color final_c;
 
 	/* values from light */
 	uniform float nonspecular = 0;
@@ -2736,21 +2800,28 @@ SIG2k_srf_fur(
 		if ( lightsource("__SpecularColor", SpecularColor) == 0)
 			SpecularColor = color(1);
 
-		Cspec += (1 - nonspecular) * SpecularColor * clump_darkening *
-			( (spec1 * Cl * pow( Kajiya, 1/roughness1)) +
-			  (spec2 * Cl * pow( Kajiya, 1/roughness2)));
+		aov_diffuse += clump_darkening * fnc_diffuselgt( Cl, L, norm_hair);
 
-		Cdiff += clump_darkening * fnc_diffuselgt( Cl, L, norm_hair );
+		aov_specular += Cl * (1-nonspecular) * clump_darkening *
+						( (spec1 * pow( Kajiya, 1/roughness1)) +
+						  (spec2 * pow( Kajiya, 1/roughness2)) )
+						* SpecularColor;
 	}
+
+	aov_ambient = Ka * ambient() + static_ambient;
+	aov_specularcolor = specularcolor;
+	aov_diffuse = Kd * aov_diffuse;
+	aov_specular = Kspec * v * aov_specular;
+	
 
 	darkening = clamp( hair_col_var, 0, 1);
 	darkening = (1 - ( smoothstep( var_fade_end, var_fade_start,
-					abs( luminance( Kd * Cdiff ))) * darkening ));
+					abs( luminance( aov_diffuse ))) * darkening ));
 
-	final_c = mix( rootcolor, tipcolor, v ) * darkening;
+	aov_surfacecolor = mix( rootcolor, tipcolor, v) * darkening;
 
-	C = ( (Ka * ambient() + Kd * Cdiff + static_ambient) * final_c +
-			( (v) * Kspec * Cspec * specularcolor ));
+	C = (aov_surfacecolor * (aov_ambient + aov_diffuse)) +
+		(aov_specularcolor * aov_specular);
 	
 	return clamp( C, color(0), color(1) );
 }

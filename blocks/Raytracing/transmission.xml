@@ -2,7 +2,7 @@
     <input name="pointfrom" description="From point" type="point" default="point &quot;shader&quot; (0,0,0)"/>
 	<input name="pointto" description="To point" type="point" default="Ps"/>
 	<input name="samples" description="Samples" type="float" default="1"/>
-	<input name="minsamples" description="Minimum samples" storage="varying" type="float" default="1"/>
+	<input name="minsamples" description="Minimum samples"  type="float" default="1"/>
 	<input name="samplecone" description="Sample cone" type="float" default="0"/>
 	<input name="samplebase" description="Sample base" type="float" default="1"/>
     <input name="bias" description="Ray bias" storage="uniform" type="float" default="-1"/>

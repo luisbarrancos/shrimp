@@ -1,13 +1,16 @@
 <shrimp name="AshikminDiff" type="function" description="Ashikmin-Shirley diffuse term" author="rconstruct">
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.3"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
 	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-        $(Ci) = anisophongdiff( $(N), $(I), $(Ks), $(Kd) );
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += anisophongdiff( $(N), $(I), $(Ks), $(Kd) );
+        $(Ci) = aov_surfacecolor * aov_diffuse;
 	</code>
-	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley model, diffuse term only.</usage>
+	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley model, diffuse term only. The diffuse color value is passed to aov_surfacecolor, and the diffuse value, to the aov_diffuse AOV presets.</usage>
 </shrimp>

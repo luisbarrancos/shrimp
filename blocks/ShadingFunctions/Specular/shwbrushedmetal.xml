@@ -1,14 +1,17 @@
 <shrimp name="SHW_brushedmtal" type="function" description="Stephen H.Westin anisotropic shader" author="rconstruct">
+	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
     <input name="roughness" description="The apparent roughness of the surface." type="float" default="0.1"/>
     <input name="tangent" description="Anisotropy direction" type="vector" default="normalize(dPdu)"/>
-    <input name="Cspec" description="Specular color" type="color" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-        $(Ci) = $(Ks) * $(Cspec) * shw_brushed_metal( $(roughness), $(N), $(I), $(tangent) );
+		aov_specularcolor += $(Cspec);
+		aov_specular += $(Ks) * shw_brushed_metal( $(roughness), $(N),
+						$(I), $(tangent) );
+        $(Ci) = aov_specularcolor * aov_specular;
 	</code>
-    <usage>Stephen Westin's anisotropic specular term, using Kajiya's Phong-like highlight from a cylinder (Siggraph 89) coupled with an arbitrary shadowing/masking function. Roughness controls the apparent surface roughness, tangent is the anisotropy direction, defaulting to dPdu.</usage>
+    <usage>Stephen Westin's anisotropic specular term, using Kajiya's Phong-like highlight from a cylinder (Siggraph 89) coupled with an arbitrary shadowing/masking function. Roughness controls the apparent surface roughness, tangent is the anisotropy direction, defaulting to dPdu. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

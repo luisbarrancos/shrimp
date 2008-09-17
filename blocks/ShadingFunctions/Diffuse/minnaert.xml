@@ -1,4 +1,5 @@
 <shrimp name="Minnaert" type="function" description="Minnaert limb darkening diffuse term" author="rconstruct">
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
 	<input name="k" description="Limb darkening coefficient" type="float" default="2.0"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
@@ -6,7 +7,9 @@
 	<output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
 	<code>
-        $(Ci) = $(Kd) * Minnaert( $(k), $(N), $(I) );
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * Minnaert( $(k), $(N), $(I) );
+        $(Ci) = aov_surfacecolor * aov_diffuse;
 	</code>
-	<usage>Minnaert limb darkening term. Note that darkening range values should be in the 1.0-2.0 range.</usage>
+	<usage>Minnaert limb darkening term. Note that darkening range values should be in the 1.0-2.0 range. The diffuse color value is passed to aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

@@ -1,19 +1,20 @@
 <shrimp name="CookTorrance" type="function" description="Cook-Torrance shading model." author="rconstruct">
+	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
-    <input name="roughness" description="The apparent surface roughness." type="float" default="0.2"/>
-	<input name="distro" description="Microfacet distributions, see help." type="float" default="0"/>
-	<input name="geo" description="Geometric attenuation, see help." type="float" default="0"/>
+    <input name="roughness" description="The apparent surface roughness."  type="float" default="0.2"/>
+	<input name="distro" description="Microfacet distributions, see help." type="float" storage="uniform" default="0"/>
+	<input name="geo" description="Geometric attenuation, see help." type="float" storage="uniform" default="0"/>
     <input name="ior" description="Index of refraction" type="float" default="2"/>
-    <input name="Cspec" description="Specular color" type="color" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="I"/>
 	<input name="Dir" description="Anisotropy direction" type="vector" default="dPdv"/>
-	<output name="Ci" description="Shaded color" type="color"/>
+	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<code>
-
-        $(Ci) = $(Ks) * $(Cspec) * cooktorrance( $(N), $(I), $(Dir), $(ior),
-			$(roughness), $(distro), $(geo) );
+		aov_specularcolor += $(Cspec);
+		aov_specular += $(Ks) * cooktorrance( $(N), $(I), $(Dir),
+						$(ior), $(roughness), $(distro), $(geo) );
+		$(Ci) = aov_specularcolor * aov_specular;
 	</code>
-    <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf().</usage>
+    <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>
