@@ -2300,6 +2300,13 @@ rtglass(
 	   )
 
 {
+	
+#if RENDERER == pixie
+	/* Pixie's shader compiler protests about the binary conditionals, so
+	 * do nothing - there's a custom version of the glass shader for Pixie
+	 * further below (which will use later its dispersion effect).
+	 * (this solution just feels somewhat evil though). */
+#else
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
@@ -2383,7 +2390,7 @@ rtglass(
 						* attenrefr, krefr);
 		else aov_refraction += kt * crefr;
 	}
-#else	
+#else
 	
 	/* set illumination terms, if active */
 	aov_ambient += (ka == 0) ? color(0) : ka * ambient();
@@ -2400,14 +2407,15 @@ rtglass(
 							* attenrefr, krefr ) );
 	
 #endif
+
+#endif
 	
 	return aov_ambient + aov_diffuse + aov_specular + aov_reflection
 						+ aov_refraction;
 }
 
 /* Pixie doesn't likes binary conditionals, we might as well make a custom
- * version (note: check pixie's glass dispersion effect) */
-/* glass body */
+ * version (and using Pixie's dispersion effect, todo later). */
 
 color
 rtglasspixie(
