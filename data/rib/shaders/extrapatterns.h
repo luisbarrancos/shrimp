@@ -614,7 +614,7 @@ voronoi_km_f1f2_2d(
 		 * (r,s) = polar coordinate of p (np)
 		 * (ri,si) = polar coordinate of p(i) (npos) 
 		 * q = min( r, ri)
-		 * e(s, si) = min( |s-si|, 6.28-|s-si|)
+		 * e(s, si) = min( |s-si|, 2PI-|s-si|)
 		 * if s >= 0 && s <= 2
 		 * distance(p, p(i)) = q * e(s, s(i)) + |r-r(i)| )
 		 * else
@@ -622,8 +622,8 @@ voronoi_km_f1f2_2d(
 		 * */
 
 		float nspos = 0, nss = 0, ntpos = 0, ntt = 0;
-		topolar2d( ss, tt, nss, ntt );
-		topolar2d( spos, tpos, nspos, ntpos );
+		cartesian2polar2d( ss, tt, nss, ntt );
+		cartesian2polar2d( spos, tpos, nspos, ntpos );
 
 		float qx = min( nss, nspos );
 		float qy = min( abs(ntt - ntpos), 6.28 - abs(ntt - ntpos) );

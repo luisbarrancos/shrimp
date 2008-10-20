@@ -1,63 +1,59 @@
 <shrimp name="new_scene">
 	<about/>
 	<network>
-		<block id="Add" position_x="5.06153846153844" position_y="1.12307692307692" author="rconstruct">
-			<input name="A" type="color" value="1" description="1st input">
-				<connection parent="Multiply_2" output="val"/>
+		<block id="Add" position_x="4.55025822985248" position_y="1.39352429369114" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="OrenNayar" output="Ci"/>
 			</input>
-			<input name="B" type="color" multi="+" value="1" description="2nd or subsequent inputs">
+			<input name="B" type="color" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
 				<connection parent="CookTorrance" output="Ci"/>
 			</input>
-			<input name="B_2" type="color" multi_parent="B" description="">
-				<connection parent="Multiply" output="val"/>
+			<input name="B_2" type="color" storage="varying" multi_parent="B" description="">
+				<connection parent="Multiply_2" output="val"/>
 			</input>
-			<output name="val" type="color" description="val = A + B"/>
+			<output name="val" type="color" storage="varying" description="val = A + B"/>
 			<code>
 	$(val) = $(A) + $(B);
-										</code>
+				</code>
 			<include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
-		<block id="Constant" position_x="-0.107692307692314" position_y="0.846153846153844" author="rconstruct">
-			<input name="in" type="color" value="color( .73, .31, .25 )" description="Input"/>
-			<output name="out" type="color" description="Output = Input"/>
+		<block id="CookTorrance" position_x="-0.581526918909908" position_y="0.35229252437703" author="rconstruct">
+			<input name="Cspec" type="color" storage="varying" value="0.909804 0.690196 0.431373" description="Specular color"/>
+			<input name="Ks" type="float" storage="varying" value="1" description="Specular light coefficient"/>
+			<input name="roughness" type="float" storage="varying" value="0.3" description="The apparent surface roughness."/>
+			<input name="distro" type="float" storage="uniform" value="0" description="Microfacet distributions, see help."/>
+			<input name="geo" type="float" storage="uniform" value="2" description="Geometric attenuation, see help."/>
+			<input name="ior" type="float" storage="varying" value="2" description="Index of refraction"/>
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Surface normal"/>
+			<input name="I" type="vector" storage="varying" value="I" description="Direction of viewer"/>
+			<input name="Dir" type="vector" storage="varying" value="dPdv" description="Anisotropy direction"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
 			<code>
-	$(out) = $(in);
-										</code>
-			<include/>
-			<usage>Useful for supplying multiple inputs with the same value.									</usage>
-		</block>
-		<block id="CookTorrance" position_x="-1.38461538461539" position_y="-0.230769230769233" author="rconstruct">
-			<input name="Ks" type="float" value="1.0" description="Specular light coefficient"/>
-			<input name="roughness" type="float" value="0.2" description="The apparent surface roughness."/>
-			<input name="ior" type="float" value="4" description="Index of refraction"/>
-			<input name="Cspec" type="color" value="1" description="Specular color"/>
-			<input name="N" type="vector" value="normalize(N)" description="Surface normal"/>
-			<input name="I" type="vector" value="normalize(I)" description="Direction of viewer"/>
-			<output name="Ci" type="color" description="Shaded color"/>
-			<code>
-
-        $(Ci) = $(Ks) * $(Cspec) * cooktorrance( $(N), $(I), $(ior), $(roughness));
-										</code>
-			<include>shadingmodels.h									</include>
-			<usage>Cook-Torrance shading model. Specular term only, this should be composited in a network with an ambient and a diffuse term. Cs not considered, since this is will be part of the ambient/diffuse terms. Opacity needs to be part of the network as well.									</usage>
+		aov_specularcolor += $(Cspec);
+		aov_specular += $(Ks) * cooktorrance( $(N), $(I), $(Dir),
+						$(ior), $(roughness), $(distro), $(geo) );
+		$(Ci) = aov_specularcolor * aov_specular;
+				</code>
+			<include>shadingmodels.h			</include>
+			<usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.			</usage>
 		</block>
 		<block id="Environment" position_x="3.09230769230769" position_y="-0.246153846153846" author="rconstruct">
-			<input name="texname" type="string" value="&quot;raytrace&quot;" description="Texture map name"/>
-			<input name="dir" type="normal" value="0" description="Direction vector">
-				<connection parent="Transform" output="pp"/>
+			<input name="texname" type="string" storage="varying" value="&quot;raytrace&quot;" description="Texture map name"/>
+			<input name="dir" type="vector" storage="varying" value="0" description="Direction vector">
+				<connection parent="Reflect" output="R"/>
 			</input>
-			<input name="blur" type="float" value="0" description="Texture blur"/>
-			<input name="sblur" type="float" value="0" description="Blur along S"/>
-			<input name="tblur" type="float" value="0" description="Blur along T"/>
-			<input name="width" type="float" value="0" description="Blur filter width"/>
-			<input name="swidth" type="float" value="0" description="Blur filter width along S"/>
-			<input name="twidth" type="float" value="0" description="Blur filter width along T"/>
-			<input name="samples" type="float" value="4" description="SSampling rate"/>
-			<input name="fill" type="float" value="0" description="Fill value on empty channel"/>
-			<input name="filter" type="string" value="&quot;gaussian&quot;" description="Filter type"/>
-			<input name="channel" type="float" value="0" description="Channel, in color textures"/>
-			<output name="val" type="color" description="Output color"/>
+			<input name="blur" type="float" storage="varying" value=".05" description="Texture blur"/>
+			<input name="sblur" type="float" storage="varying" value="0" description="Blur along S"/>
+			<input name="tblur" type="float" storage="varying" value="0" description="Blur along T"/>
+			<input name="width" type="float" storage="varying" value="0" description="Blur filter width"/>
+			<input name="swidth" type="float" storage="varying" value="0" description="Blur filter width along S"/>
+			<input name="twidth" type="float" storage="varying" value="0" description="Blur filter width along T"/>
+			<input name="samples" type="float" storage="varying" value="16" description="SSampling rate"/>
+			<input name="fill" type="float" storage="varying" value="0" description="Fill value on empty channel"/>
+			<input name="filter" type="string" storage="varying" value="&quot;gaussian&quot;" description="Filter type"/>
+			<input name="channel" type="float" storage="varying" value="0" description="Channel, in color textures"/>
+			<output name="val" type="color" storage="varying" description="Output color"/>
 			<code>
 	#define $(val)_color
     #ifdef $(val)_float
@@ -83,175 +79,156 @@
                                 &quot;filter&quot;, $(filter),
 								&quot;fill&quot;, $(fill) ) ;
     #endif
-										</code>
+													</code>
 			<include/>
 			<usage/>
 		</block>
-		<block id="I" position_x="-3.41538461538461" position_y="-3.04615384615385" author="rconstruct">
-			<output name="I" type="vector" description="Incident ray direction"/>
+		<block id="FaceForward" position_x="-0.492278481540127" position_y="-4.00600616718059" author="rconstruct">
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Vector or Normal to flip" type_parent="NN">
+				<connection parent="Normalise" output="val"/>
+			</input>
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Vector to face away from">
+				<connection parent="I" output="I"/>
+			</input>
+			<input name="Nref" type="vector" storage="varying" value="Ng" description="Optional reference vector" type_parent="NN"/>
+			<output name="NN" type="vector" storage="varying" description="A vector pointing in the direction oposite to I"/>
+			<code>
+	$(NN) = faceforward( $(N), $(I), $(Nref) );
+				</code>
+			<include/>
+			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
+				</usage>
+		</block>
+		<block id="I" position_x="-3.43025935494624" position_y="-5.05424368697392" author="rconstruct">
+			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
 			<code>
 	$(I) = I;
-										</code>
+													</code>
 			<include/>
 			<usage/>
 		</block>
 		<block id="Multiply" position_x="4.58461538461538" position_y="-0.938461538461538" author="rconstruct">
-			<input name="A" type="color" value="1" description="1st input">
+			<input name="A" type="color" storage="varying" value="1" description="1st input">
 				<connection parent="Environment" output="val"/>
 			</input>
-			<input name="B" type="float" multi="*" value="1" description="2nd or subsequent inputs">
+			<input name="B" type="float" storage="varying" multi="*" value="1" description="2nd or subsequent inputs">
 				<connection parent="Schlick_Fresnel" output="Kr"/>
 			</input>
-			<output name="val" type="color" description="val = A * B"/>
+			<output name="val" type="color" storage="varying" description="val = A * B"/>
 			<code>
 	$(val) = $(A) * $(B);
-										</code>
+													</code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-										</usage>
+													</usage>
 		</block>
-		<block id="Multiply_2" position_x="1.49230769230769" position_y="1.41538461538461" author="rconstruct">
-			<input name="A" type="color" value="1" description="1st input">
-				<connection parent="OrenNayar" output="Ci"/>
+		<block id="Multiply_2" position_x="4.53538349029085" position_y="0.158920910075839" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply" output="val"/>
 			</input>
-			<input name="B" type="color" multi="*" value="1" description="2nd or subsequent inputs">
-				<connection parent="Constant" output="out"/>
-			</input>
-			<output name="val" type="color" description="val = A * B"/>
+			<input name="B" type="color" storage="varying" multi="*" value="0.890196 0.631373 0.333333" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="color" storage="varying" description="val = A * B"/>
 			<code>
 	$(val) = $(A) * $(B);
-										</code>
+				</code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-										</usage>
+				</usage>
 		</block>
-		<block id="N" position_x="-3.44615384615384" position_y="-3.81538461538461" author="rconstruct">
-			<output name="N" type="normal" description="Surface shading normal"/>
+		<block id="N" position_x="-3.46102858571547" position_y="-4.03850570880906" author="rconstruct">
+			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
 			<code>
     $(N) = N;
-    									</code>
+    												</code>
 			<include/>
 			<usage/>
 		</block>
 		<block id="Normalise" position_x="-1.92307692307692" position_y="-3.84615384615384" author="rconstruct">
-			<input name="A" type="normal" value="1" description="Input">
+			<input name="A" type="normal" storage="varying" value="1" description="Input">
 				<connection parent="N" output="N"/>
 			</input>
-			<output name="val" type="normal" description="val is a vector of unit length"/>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
 			<code>
 	$(val) = normalize( $(A) );
-										</code>
+													</code>
 			<include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).												</usage>
 		</block>
-		<block id="Normalise_2" position_x="-1.90769230769231" position_y="-3.12307692307692" author="rconstruct">
-			<input name="A" type="vector" value="1" description="Input">
+		<block id="Normalise_2" position_x="-1.86306808900742" position_y="-3.0635779648304" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input">
 				<connection parent="I" output="I"/>
 			</input>
-			<output name="val" type="vector" description="val is a vector of unit length"/>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
 			<code>
 	$(val) = normalize( $(A) );
-										</code>
+													</code>
 			<include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).												</usage>
 		</block>
-		<block id="OrenNayar" position_x="-1.53846153846154" position_y="1.53846153846154" author="rconstruct">
-			<input name="Kd" type="float" value="0.8" description="Diffuse light coefficient"/>
-			<input name="roughness" type="float" value="0.01" description="roughness"/>
-			<input name="N" type="vector" value="normalize(N)" description="Surface normal"/>
-			<input name="V" type="vector" value="normalize(I)" description="Direction of viewer"/>
-			<output name="Ci" type="color" description="Shaded color"/>
-			<code>	
-        $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
-										</code>
-			<include>shadingmodels.h									</include>
-			<usage>Oren-Nayar diffuse term. Kd controls overall intensity. Note that this is meant to be used in a network with an ambient term, and/or a specular term, if desired. A good starting point might be an Blinn specular term. Note that Cs and Os aren&apos;t taken into consideration, and must be added in your network, where proper/desired.									</usage>
+		<block id="OrenNayar" position_x="1.23319130760897" position_y="2.15213601133427" author="rconstruct">
+			<input name="Cdiff" type="color" storage="varying" value="0.615686 0.360784 0.0666667" description="Diffuse color"/>
+			<input name="Kd" type="float" storage="varying" value="0.8" description="Diffuse light coefficient"/>
+			<input name="roughness" type="float" storage="varying" value="0.2" description="roughness"/>
+			<input name="N" type="vector" storage="varying" value="normalize(N)" description="Surface normal"/>
+			<input name="V" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
+			<code>
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
+        $(Ci) = aov_surfacecolor * aov_diffuse;
+				</code>
+			<include>shadingmodels.h			</include>
+			<usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz&apos;s implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.			</usage>
 		</block>
-		<block id="Reflect" position_x="0.169230769230769" position_y="-3.2" author="rconstruct">
-			<input name="I" type="vector" value="normalize(I)" description="Incident vector">
+		<block id="Reflect" position_x="0.972466705558795" position_y="-3.11075156263022" author="rconstruct">
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Incident vector">
 				<connection parent="Normalise_2" output="val"/>
 			</input>
-			<input name="N" type="normal" value="normalize(N)" description="Surface normal">
-				<connection parent="Normalise" output="val"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="FaceForward" output="NN"/>
 			</input>
-			<output name="R" type="vector" description="The reflected vector"/>
+			<output name="R" type="vector" storage="varying" description="The reflected vector"/>
 			<code>
 	$(R) = reflect( $(I), $(N) );
-										</code>
+													</code>
 			<include/>
-			<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).									</usage>
+			<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).												</usage>
 		</block>
 		<block id="Root block" position_x="6.99499999999999" position_y="0.401538461538462" author="" root="RIB" AOV_preview="1">
 			<rib_statements>Attribute &quot;visibility&quot; &quot;integer trace&quot; 1
 			</rib_statements>
 			<imager_statement/>
-			<input name="Ci" type="color" shader_parameter="1" value="0" description="Incident ray colour">
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
 				<connection parent="Add" output="val"/>
 			</input>
-			<input name="Oi" type="color" shader_parameter="1" value="1" description="Incident ray opacity"/>
-			<input name="P" type="point" shader_parameter="1" value="P" description="Displaced surface position"/>
-			<input name="N" type="normal" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
-			<input name="Cl" type="color" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
-			<input name="Ol" type="color" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
-			<input name="Cv" type="color" shader_parameter="1" value="0" description="Attenuated ray colour"/>
-			<input name="Ov" type="color" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
-			<input name="Cm" type="color" shader_parameter="1" value="0" description="Output pixel colour"/>
-			<input name="Om" type="color" shader_parameter="1" value="1" description="Output pixel opacity"/>
-			<input name="AOV" type="color" shader_parameter="1" value="1" description="AOV preview output"/>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<code/>
 			<include/>
 			<usage/>
 		</block>
-		<block id="Schlick_Fresnel" position_x="3.06153846153846" position_y="-4.86153846153846" author="rconstruct">
-			<input name="ior" type="float" value="3" description="Index of refraction"/>
-			<input name="N" type="normal" value="normalize(N)" description="Surface normal">
-				<connection parent="Normalise" output="val"/>
+		<block id="Schlick_Fresnel" position_x="3.28590536711393" position_y="-4.95798949912492" author="rconstruct">
+			<input name="ior" type="float" storage="varying" value="5" description="Index of refraction"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="FaceForward" output="NN"/>
 			</input>
-			<input name="V" type="vector" value="normalize(I)" description="Direction of viewer">
-				<connection parent="Normalise_2" output="val"/>
-			</input>
-			<output name="Kr" type="float" description="Output value"/>
+			<input name="V" type="vector" storage="varying" value="-normalize(I)" description="Direction of viewer"/>
+			<output name="Kr" type="float" storage="varying" description="Output value"/>
 			<code>
 
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
 
-										</code>
-			<include>shadingmodels.h									</include>
-			<usage>Christophe Schlick&apos;s fast fresnel approximation.									</usage>
-		</block>
-		<block id="Transform" position_x="1.6" position_y="-2.93846153846154" author="rconstruct">
-			<input name="p" type="vector" value="P" description="Point, vector or normal to transform">
-				<connection parent="Reflect" output="R"/>
-			</input>
-			<input name="from_space" type="string" value="&quot;object&quot;" description="The coordinate system to transform from"/>
-			<input name="to_space" type="string" value="&quot;world&quot;" description="The coordinate system to transform into"/>
-			<input name="mmat" type="matrix" value="none" description="Use this matrix instead of a predefined coordinate system"/>
-			<output name="pp" type="normal" description="The transformed point, vector or normal"/>
-			<code>
-	#define $(p)_$(var_type)
-	#define mmat_$(mmat)
-	#ifdef $(p)_point
-	#ifdef mmat_none
-		$(pp) = transform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = transform( $(from_space), $(mmat), $(p) );
-	#endif
-	#elif $(p)_vector
-	#ifdef mmat_none
-		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
-	#endif
-	#else
-	#ifdef mmat_none
-		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
-	#endif
-	#endif
-										</code>
-			<include/>
-			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
+				</code>
+			<include>shadingmodels.h			</include>
+			<usage>Christophe Schlick&apos;s fast fresnel approximation.			</usage>
 		</block>
 	</network>
 </shrimp>

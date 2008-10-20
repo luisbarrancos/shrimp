@@ -3,7 +3,9 @@
 #include "shrimp_helpers.h"
 #include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
 							   Cook-Torrance model */
-#include "shrimp_aov.h"		/* for the AOVs macros */
+#include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
+							   all the AOVs to zero in the first statement
+							   of the preview shader with INIT_AOV_PARAMETERS*/
 
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )

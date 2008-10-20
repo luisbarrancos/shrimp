@@ -25,20 +25,6 @@ rotate2d( float x, y, theta, ox, oy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/*
-    Converts cartesian to polar coordinates (2D)
-*/
-////////////////////////////////////////////////////////////////////////////////
-
-void
-topolar2d( float x, y;
-           output float r, theta; )
-{
-    r = sqrt( x*x + y*y );
-    theta = atan( y, x );
-}
-
-////////////////////////////////////////////////////////////////////////////////
 /* 
     boolean ops (from Perlin85)
 */
@@ -399,14 +385,16 @@ color varyEach (color Cin; float index, varyhue, varysat, varylum;)
 {
     /* Convert to "hsl" space, it's more convenient */
     color Chsl = ctransform ("hsl", Cin);
-    float hue = comp(Chsl,0), sat = comp(Chsl,1), lum = comp(Chsl,2);
+    float hue = comp( Chsl, 0), sat = comp( Chsl, 1), lum = comp( Chsl, 2);
+	
     /* Modify Chsl by adding Cvary scaled by our separate h,s,l controls */
-    hue += varyhue * (cellnoise(index+3)-0.5);
-    sat *= 1 - varysat * (cellnoise(index-14)-0.5);
-    lum *= 1 - varylum * (cellnoise(index+37)-0.5);
-    Chsl = color (mod(hue,1), clamp(sat,0,1), clamp(lum,0,1));
+    hue += varyhue * ( cellnoise( index+3 ) - 0.5 );
+    sat *= 1 - varysat * ( cellnoise( index-14 ) - 0.5 );
+    lum *= 1 - varylum * ( cellnoise( index+37 ) - 0.5 );
+    Chsl = color ( mod ( hue, 1 ), clamp( sat, 0, 1 ), clamp( lum, 0, 1 ) );
+	
     /* Clamp hsl and transform back to rgb space */
-    return ctransform ("hsl", "rgb", clamp(Chsl,color 0, color 1));
+    return ctransform ("hsl", "rgb", clamp( Chsl, color (0), color (1) ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
