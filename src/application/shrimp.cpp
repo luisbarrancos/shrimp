@@ -18,6 +18,7 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+#include <memory>
 
 #include "ui_splash.h"
 #include "ui_application_window.h"
