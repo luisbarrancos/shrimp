@@ -1,5 +1,5 @@
-#ifndef FRACTAL_H
-#define FRACTAL_H
+#ifndef SHRIMP_FRACTAL_H
+#define SHRIMP_FRACTAL_H
 
 /* 
 	Some noise and Fractal functions.
@@ -24,13 +24,9 @@
  */
 
 #define snoise(p) (2 * (float noise(p)) - 1)
-
 #define snoisexy(x,y) (2 * (float noise(x,y)) - 1)
-
 #define vsnoise(p) (2 * (vector noise(p)) - 1)
-
 #define vsnoisexy(x,y) (2 * (vector noise(x,y)) - 1)
-
 #endif
 
 /* Filtered noise */

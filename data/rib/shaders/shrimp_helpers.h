@@ -1,8 +1,8 @@
-#ifndef SHRIMPUTIL_H
-#define SHRIMPUTIL_H 1
+#ifndef SHRIMP_HELPERS_H
+#	define SHRIMP_HELPERS_H
 
 #ifndef SQR
-#define SQR(X)	( (X) * (X) )
+#	define SQR(X)	( (X) * (X) )
 #endif
 
 #define ENUMBER 2.718281828459045
@@ -34,7 +34,8 @@ rotate2d( float x, y, theta, ox, oy;
 #define union( a, b )        ( (a) + (b) - (a)*(b) )
 #define difference( a, b )   ( (a) - (a)*(b) )
 #define complement( a )      ( 1 - (a) )
-#define exclusiveor( a, b )  ( difference( union( (a),(b) ), intersection( (a),(b) ) ) ) 
+#define exclusiveor( a, b )  ( difference( union( (a),(b) ), \
+			intersection( (a),(b) ) ) ) 
 
 ///////////////////////////////////////////////////////////////////////////
 // From shrimp_util.h , but let's try to keep it clean ////////////////////
@@ -82,7 +83,8 @@ rotate2d( float x, y, theta, ox, oy;
 
 #define pulse( a, b, x ) ( step( a, x ) - step( b, x ) );
 
-#define filteredpulse( a, b, x, dx ) ( max( 0, ( min( (x-dx/2)+dx, b) - max( x-dx/2, a)) / dx ) )
+#define filteredpulse( a, b, x, dx ) ( max( 0, ( min( (x-dx/2)+dx, b) - \
+				max( x-dx/2, a)) / dx ) )
 
 #define boxstep( a, b, x )	clamp( ( (x)-(a) ) / ( (b)-(a) ), 0, 1 )
 
@@ -92,24 +94,24 @@ rotate2d( float x, y, theta, ox, oy;
 #define udn(x,lo,hi) (smoothstep(.25, .75, noise(x)) * ((hi) - (lo)) + (lo))
 #define udn2(x,y,lo,hi) (smoothstep(.25, .75, noise(x,y)) * ((hi)-(lo))+(lo))
 
-
-#endif
-
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef MINFILTWIDTH
-#  define MINFILTWIDTH 1.0e-6
+#	define MINFILTWIDTH 1.0e-6
 #endif
 
 #ifndef filterwidth
-#  define filterwidth(x)  ( max( abs( Du(x)*du ) + abs( Dv(x)*dv ), MINFILTWIDTH ) )
+#	define filterwidth(x)  ( max( abs( Du(x)*du ) + abs( Dv(x)*dv ), \
+			MINFILTWIDTH ) )
 #endif
+
 #ifndef filterwidthp
-#  define filterwidthp(p) ( max( sqrt( area(p) ), MINFILTWIDTH ) )
+#	define filterwidthp(p) ( max( sqrt( area(p) ), MINFILTWIDTH ) )
 #endif
 
 #ifndef fadeout
-#  define fadeout(g,g_avg,featuresize,fwidth)	( mix( g, g_avg, smoothstep( .2, .6, fwidth/featuresize)))
+#	define fadeout(g,g_avg,featuresize,fwidth) \
+	( mix( g, g_avg, smoothstep( .2, .6, fwidth/featuresize)))
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -559,3 +561,4 @@ float mm_erfc( float x; ) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+#endif
