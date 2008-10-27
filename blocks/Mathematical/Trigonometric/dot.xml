@@ -2,7 +2,7 @@
 	<input name = "A" description="1st Input" type="vector point normal" default="1"/>
 	<input name = "B" description="2nd Input" type="vector point normal" default="1"/>
 	<output name="val" description="val = A . B" type="float"/>
-	<code>
+	<rsl_code>
 	$(val) = $(A).$(B);
-	</code>
+	</rsl_code>
 </shrimp>

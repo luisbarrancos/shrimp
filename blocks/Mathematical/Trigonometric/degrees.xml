@@ -1,7 +1,7 @@
 <shrimp type="function" name="Degrees" description="Convert radians to degrees" author="rconstruct">
 	<input name="rad" description="Input angle in radians" type="float" default="1"/>
 	<output name="deg" description="Angle converted to degrees" type="float"/>
-	<code>
+	<rsl_code>
 	$(deg) = degrees( $(rad) );
-	</code>
+	</rsl_code>
 </shrimp>

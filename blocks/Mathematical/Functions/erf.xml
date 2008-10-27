@@ -2,8 +2,8 @@
 	<input name="x" description="Input" type="float" default="0"/>
 	<output name="out" description="Output" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	$(out) = mm_erf( $(x) );
-	</code>
+	</rsl_code>
 <usage>Mario Marengo's fast lookup table implementation of the error function (also known as integrated Gauss function or integrated distribution).</usage>
 </shrimp>

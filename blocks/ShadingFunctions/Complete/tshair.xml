@@ -16,11 +16,11 @@
     <input name="Cspec2" description="Secondary specular color" type="color" default="color( .96, .56, .26)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
         $(Ci) = tshair( $(Ka), $(Kd), $(Ks), $(shift), $(shift2),
                     $(exponent), $(exponent2), $(specmask), $(Cdiff),
                     $(Cbase), $(Ctip), $(Cspec), $(Cspec2), $(NN), $(IN),
 					DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Hair shader, based on Thorsten Scheuermann work for the 3d application research group of Ati Inc. The technique described in the paper was meant to be used for polygonal hair models, instead of multiple line/tube approach, being a mix of Kajiya-Kay hair shading model, and Marschner model, presented at Siggraph2003. Ka, Kd, Ks have the usual meanings. Shift and shift2 are the primary and secondary specular highlight shifts, to give some strand specular variation. The primary specular highlight is usually white, the secondary, having some hair color, being these Cspec and Cspec2. Exponent and Exponent2 are the primary and secondary specular exponents, and specmask is the specular mask used to give some variation. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

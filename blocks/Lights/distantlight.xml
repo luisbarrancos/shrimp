@@ -11,10 +11,10 @@
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<include>lights.h</include>
-	<code>
+	<rsl_code>
 		$(Cl) = $(inten) * $(lcolor) * sdistantlight( $(from), $(to),
 				$(shadowname), $(filter), $(samples), $(width), $(blur),
 				$(bias), $(inten), $(lcolor) );
-	</code>
+	</rsl_code>
 <usage>Distant light shader. Filter type defaults to gaussian, with box and triangle as optional. Bias defaults to global default, -1.</usage>
 </shrimp>

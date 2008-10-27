@@ -4,7 +4,7 @@
 	<input name="to_space" description="The coordinate system to transform into" storage="uniform" type="string" default="&quot;object&quot;"/>
 	<input name="mmat" description="Use this matrix instead of a predefined coordinate system" type="matrix" default="none"/>
 	<output name="pp" description="The transformed point, vector or normal" type="point vector normal"/>
-	<code>
+	<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	
@@ -31,6 +31,6 @@
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-	</code>
+	</rsl_code>
 <usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn't passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.</usage>
 </shrimp>

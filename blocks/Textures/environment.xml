@@ -13,7 +13,7 @@
     <input name="filter" description="Filter type" type="string" storage="uniform" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="color float"/>
-	<code>
+	<rsl_code>
     #if RENDERER==pixie
         aov_reflection += $(Kr) *  $(val:type) environment(
 							$(texname)[$(channel)], $(dir),
@@ -39,6 +39,6 @@
 								"fill", $(fill) ) ;
 		$(val) = aov_reflection;
     #endif
-	</code>
+	</rsl_code>
 <usage>This block value is passed to the aov_reflection AOV preset.</usage>
 </shrimp>

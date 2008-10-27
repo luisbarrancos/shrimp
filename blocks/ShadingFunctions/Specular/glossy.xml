@@ -7,11 +7,11 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
     <include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * LocIllumGlossy( $(N), $(I), $(roughness),
 						$(size) );
         $(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Larry Gritz's glossy specular(). Possible replacement for specular(), with a more uniformly bright core and sharper falloff. Good specular function for something made of glass or liquid, in which roughness = related to the size of the specular highlight, larger is bigger, and sharpness = 1 is infinitely sharp, 0 is very dull. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

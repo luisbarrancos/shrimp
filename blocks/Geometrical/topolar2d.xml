@@ -4,8 +4,8 @@
 	<output name="rout" description="The converted coordinates" type="float"/>
 	<output name="thetaout" description="The converted coordinates" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	topolar2d( $(x), $(y), $(rout), $(thetaout) );
-	</code>
+	</rsl_code>
 	<usage>Converts cartesian to polar coordinates.	</usage>
 </shrimp>

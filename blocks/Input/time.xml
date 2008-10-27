@@ -1,7 +1,7 @@
 <shrimp type="function" name="Time" description="Current shutter time" author="rconstruct">
 	<output name="time" description="Current shutter time" type="float"/>
-	<code>
+	<rsl_code>
 	$(time) = time;
-	</code>
+	</rsl_code>
 </shrimp>
 

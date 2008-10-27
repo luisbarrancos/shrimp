@@ -10,7 +10,7 @@
 	<input name="datachannel" description="Data channel to query" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="value" description="Value associated with data channel" type="float point vector normal color matrix"/>
 	<output name="status" description="Status" type="float"/>
-	<code>
+	<rsl_code>
 	#if RENDERER==pixie
 		$(status) = texture3d( $(bakefile), $(PP), $(NN),
 							"coordsystem", $(coordsys),
@@ -46,6 +46,6 @@
 		$(status) = 0;
 	#endif
 			
-	</code>
+	</rsl_code>
 <usage>Performs a lookup of the supplied data pair, on files created by bake3d(). Returns 1 if sucessfull, 0 if failed.</usage>
 </shrimp>

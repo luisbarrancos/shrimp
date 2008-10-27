@@ -3,9 +3,9 @@
 	<input name = "B" description="2nd value" type="float" default="1"/>
 	<output name="out" description="The union of A and B" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	$(out) = union( $(A), $(B) );
-	</code>
+	</rsl_code>
 	<usage>This block computes the logical OR of the two inputs. The inputs should be in the range 0-1.
 	</usage>
 </shrimp>

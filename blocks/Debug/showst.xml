@@ -1,6 +1,6 @@
 <shrimp type="function" name="ShowST" description="Show ST coordinates" author="rconstruct">
 	<output name="Ci" description="Output value" type="color"/>
-	<code>
+	<rsl_code>
         $(Ci) = color( s, t, .1 );
-	</code>
+	</rsl_code>
 </shrimp>

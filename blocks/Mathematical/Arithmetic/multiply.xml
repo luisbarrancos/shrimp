@@ -2,9 +2,9 @@
 	<input name="A" description="1st input" type="color point vector normal float" type_parent="val" default="1"/>
 	<input name="B" description="2nd or subsequent inputs" type="color point vector normal float" multi="*" type_parent="val" default="1"/>
 	<output name="val" description="val = A * B" type="color point vector normal float"/>
-	<code>
+	<rsl_code>
 	$(val) = $(A) * $(B);
-	</code>
+	</rsl_code>
 	<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 	</usage>
 </shrimp>

@@ -6,10 +6,10 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * Wardisotropy( $(N), $(I), $(roughness) );
         $(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Simplified isotropic version of Greg Ward's anisotropic specular term. Note that you can get equivalent results with the anisotropic shader, by passing identical values to the surface roughness along the anisotropy direction, and anisotropy perpendicular direction. Roughness controls the apparent surface roughness. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

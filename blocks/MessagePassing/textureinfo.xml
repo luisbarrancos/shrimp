@@ -3,8 +3,8 @@
     <input name="sparam" description="Texture data to query, see help." type="string" default="&quot;&quot;"/>
 <output name="result" description="Query value" type="float string matrix"/>
 	<output name="status" description="Exit status" type="float"/>
-	<code>
+	<rsl_code>
 		$(status) = textureinfo( $(tex), $(sparam), $(result) );
-	</code>
+	</rsl_code>
     <usage>Returns information about the supplied texture, if the data type being queried exists and is of the correct type, in which case, status returns 1, otherwise status returns 0. The data fields are "resolution", of type uniform float [2], which returns the texture resolution; "type", of type uniform string, which returns the type of the texture supplied (texture, shadow, environmnet); "channels", of type uniform float, which returns the number of channels in the supplied texture; "viewingmatrix", of type uniform matrix, returns a matrix, with the current to camera space transform used in the texture creation; "projectionmatrix", of type uniform matrix, with returns a matrix with the current space, to a 2d coordinate system in the [-1,1] range.</usage>
 </shrimp>

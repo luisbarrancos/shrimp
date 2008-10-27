@@ -12,7 +12,7 @@
     <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="float color"/>
-	<code>
+	<rsl_code>
     #if RENDERER==pixie
         $(val) = $(val:type) texture( $(texname), $(xcoord), $(ycoord),
 								"blur", $(blur),
@@ -33,5 +33,5 @@
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
     #endif
-	</code>
+	</rsl_code>
 </shrimp>

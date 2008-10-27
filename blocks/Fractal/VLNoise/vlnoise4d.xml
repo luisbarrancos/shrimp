@@ -5,7 +5,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at p" type="float color vector point"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * VLNoisexy( $(p), $(t), $(scale) );
@@ -14,7 +14,7 @@
 					snoise( $(p) ) * $(scale) + $(p),
 					snoise( $(t) ) * $(scale) + $(t) );
 	#endif
-	</code>
+	</rsl_code>
 	<usage>4D Ken Musgrave VLNoise.
 	</usage> 
 </shrimp>

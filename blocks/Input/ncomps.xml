@@ -1,7 +1,7 @@
 <shrimp type="function" name="Ncomps" description="Number of color components" author="rconstruct">
 	<output name="ncomps" description="Number of color components" type="float"/>
-	<code>
+	<rsl_code>
 	$(ncomps) = ncomps;
-	</code>
+	</rsl_code>
 </shrimp>
 

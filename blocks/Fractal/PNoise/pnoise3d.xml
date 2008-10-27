@@ -3,8 +3,8 @@
 	<input name="pperiod" description="Point period" type="point" default="5"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
-	<code>
+	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(pperiod) );
-	</code>
+	</rsl_code>
 <usage>Periodic noise, maximum period = 256.</usage>
 </shrimp>

@@ -19,7 +19,7 @@
     <input name="spacename" description="Reference named space" type="string" default="&quot;world&quot;"/>
     <output name="mout" description="Matrix" type="matrix"/>
 	<output name="mstr" description="Optional space name string" type="string"/>
-    <code>
+    <rsl_code>
     #define usespace_$(usespace)
     
     #ifdef usespace_0
@@ -29,6 +29,6 @@
     #endif
 	$(mstr) = $(spacename);
         
-	</code>
+	</rsl_code>
 <usage>Assigns components to a matrix. Defaults to a 0 matrix. A matrix can be constructed in reference to a named space, either existing spaces, or any name, that can later be referenced for transformations.</usage>
 </shrimp>

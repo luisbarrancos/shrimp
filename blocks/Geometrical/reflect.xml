@@ -2,8 +2,8 @@
 	<input name="I" description="Incident vector" type="vector" default="normalize(I)"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<output name="R" description="The reflected vector" type="vector"/>
-	<code>
+	<rsl_code>
 	$(R) = reflect( $(I), $(N) );
-	</code>
+	</rsl_code>
 <usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).</usage>
 </shrimp>

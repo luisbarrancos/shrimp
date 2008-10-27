@@ -2,7 +2,7 @@
 	<input name="nput" description="Input to be adjusted" type="float color" type_parent="val" default="1"/>
 	<input name="gammaval" description="Range lower point" type="float" default="1"/>
 	<output name="val" description="Remapped value." type="float color"/>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = pow( $(nput), 1 / max(0.001, $(gammaval)));
@@ -14,5 +14,5 @@
 								pow( ytmp, 1/ max(0.001, $(gammaval))),
 								pow( ztmp, 1/ max(0.001, $(gammaval))) );
 	#endif
-	</code>
+	</rsl_code>
 </shrimp>

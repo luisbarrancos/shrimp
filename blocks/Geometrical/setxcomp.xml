@@ -2,9 +2,9 @@
 	<input name="x" description="x component" type="float" default="0"/>
 	<input name="p" description="point, vector, or normal" type="point vector normal" default="0"/>
 	<output name="out" description="point, vector or normal with the specified components" type="point vector normal"/>
-	<code>
+	<rsl_code>
 	setxcomp( $(p:type) $(p), $(x) );
 	$(out) = $(p);
-	</code>
+	</rsl_code>
 <usage>Sets the X component, of a point, vector, or normal.</usage>
 </shrimp>

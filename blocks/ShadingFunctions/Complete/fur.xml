@@ -24,7 +24,7 @@
 	<input name="hairid" description="RIB hair id" type="float" storage="uniform" default="0"/>
     <output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		$(Ci) = SIG2k_srf_fur( $(Ka), $(Kd), $(Ks), $(rough1),
 				$(rough2), $(spec1), $(spec2), $(startspec), $(endspec),
 				$(specsizefade), $(ilumwidth), $(varfadestart),
@@ -32,6 +32,6 @@
 				$(speccolor), $(staticamb), $(haircolvar), $(hairlength),
 				$(hairid), $(surfnorm), $(vclump),
 				DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Clint Hanson and Armin Bruderlin fur shader, presented at Siggraph2000, taken from The RenderMan Repository - http://www.renderman.org . Note that specular color should be (1+tipcolor)/2. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
 </shrimp>

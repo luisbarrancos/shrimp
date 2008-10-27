@@ -5,7 +5,7 @@
     <input name="width" description="filtering width" type="float" default="0.1"/>
     <input name="filter" description="filter type" storage="uniform" type="string" default="&quot;catmull-rom&quot;"/>
 	<output name="val" description="value of step function at x" type="float"/>
-	<code>
+	<rsl_code>
 		#define s2_$(max)
 		#ifdef s2_0
 			$(val) = filterstep( $(x), $(min), "width", $(width),
@@ -14,6 +14,6 @@
 			$(val) = filterstep( $(x), $(min), $(max), "width", $(width),
 												"filter", $(filter) );
 		#endif
-	</code>
+	</rsl_code>
 	<usage>An antialiased step function. It's similar to step, but the result is filtered. If the optional max value is given, filters in range between min and max. The filter types are box, triangle, catmull-rom, and gaussian.</usage>
 </shrimp>

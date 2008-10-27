@@ -3,9 +3,9 @@
 	<output name="x" description="x component" type="float"/>
 	<output name="y" description="y component" type="float"/>
 	<output name="z" description="z component" type="float"/>
-	<code>
+	<rsl_code>
 	$(x) = xcomp( $(in:type) $(in) );
 	$(y) = ycomp( $(in:type) $(in) );
 	$(z) = zcomp( $(in:type) $(in) );
-	</code>
+	</rsl_code>
 </shrimp>

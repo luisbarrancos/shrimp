@@ -4,12 +4,12 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * $(val:type) filterednoise( $(p), $(width) );
 	#else
 		$(val) = $(amplitude) * $(val:type) filteredvnoise( $(p), $(width) );
 	#endif
-	</code>
+	</rsl_code>
 </shrimp>

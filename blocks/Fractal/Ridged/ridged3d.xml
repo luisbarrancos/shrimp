@@ -8,7 +8,7 @@
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="val" description="fractal value at p" type="float color vector point"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * Ridged( $(p), $(fwidth), $(octaves),
@@ -17,7 +17,7 @@
 		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(p), $(fwidth),
 					$(octaves), $(lacunarity), $(offset), $(gain) ) );
 	#endif
-	</code>
+	</rsl_code>
 	<usage>This is Ken Musgrave's Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
 	</usage> 
 </shrimp>

@@ -3,8 +3,8 @@
     <input name="row" description="Input row" type="float" default="1"/>
     <input name="column" description="Input column" type="float" default="1"/>
     <output name="mcomponent" description="Matrix component" type="float"/>
-	<code>
+	<rsl_code>
     $(mcomponent) = comp( $(minput), $(row), $(column) );
-	</code>
+	</rsl_code>
 <usage>Gets the row/column component of matrix m.</usage>
 </shrimp>

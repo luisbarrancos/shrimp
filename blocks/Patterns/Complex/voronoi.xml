@@ -21,7 +21,7 @@
     <output name="pp" description="temp pp" type="point" />
     <output name="sfactor" description="scale factor" type="float" />
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
         $(po) = transform( $(cspace), $(p) );
 
         $(pp) = $(po) / $(scale) + $(squiggle) * vfBm( $(po) / $(scale) *
@@ -37,6 +37,6 @@
         $(cc) *= step( $(lthick) * $(sfactor), $(f2) - $(f1) );
 
         $(val) = $(cc);
-	</code>
+	</rsl_code>
 	<usage>Voronoi example shader. Can be constructed with the cell noise and voronoi blocks, as can be seen in an example scene, but we'll provide it in a block form for convenience as well. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski's P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P, as P increases, towards Tchebychev results.</usage> 
 </shrimp>

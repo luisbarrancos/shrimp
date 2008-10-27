@@ -14,11 +14,11 @@
 	<input name="shadowbias" description="Shadow map bias" type="float" default="-1"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<include>lights.h</include>
-	<code>
+	<rsl_code>
 		$(Cl) = $(inten) * $(lcolor) * slideprojector( radians( $(fov)),
 							$(from), $(to), $(up), $(slidename),
 							$(shadowname), $(shadowfilter), $(shadowblur),
 							$(shadowsamples), $(shadowwidth), $(shadowbias) );
-	</code>
+	</rsl_code>
 <usage>Slide projector light shader, from The RenderMan Repository, www.renderman.org . Requires a texture map (slide map) to work. Shadow bias defaults to global default, -1, while shadow filter type defaults to gaussian, with triangle and box as optional.</usage>
 </shrimp>

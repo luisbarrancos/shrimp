@@ -5,10 +5,10 @@
     <output name="f1" description="feature 1" type="float"/>
 	<output name="pos1" description="position 1" type="point"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(pos1) = 0;
     voronoi_f1_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1));
-	</code>
+	</rsl_code>
 	<usage>3D Voronoi cell noise, 1 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski's P parameter, with P = 1, as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.</usage> 
 </shrimp>

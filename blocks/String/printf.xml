@@ -3,7 +3,7 @@
 	<input name="var" description="Variable input" type="float color normal vector point matrix string" default="0"/>
 	<output name="val" description="Variable output" type="float color normal vector point matrix string"/>
 	<output name="status" description="Status" type="float" />
-	<code>
+	<rsl_code>
 	#define var_$(var:type)
 	#ifdef var_float
 		printf( concat( $(str), " %f\n"), $(var) );
@@ -22,6 +22,6 @@
 	
 		$(val) = $(var);
 		$(status) = 1;
-	</code>
+	</rsl_code>
 	<usage>Similar to the C printf, prints the contents of the specified variables into stdout. The formatting for the string uses %f, %c, %p, %m and %s, for variables of type float, color, normal/vector/point, matrix, and string.</usage>
 </shrimp>

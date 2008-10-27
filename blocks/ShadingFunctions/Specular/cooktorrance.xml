@@ -10,11 +10,11 @@
 	<input name="Dir" description="Anisotropy direction" type="vector" default="dPdv"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * cooktorrance( $(N), $(I), $(Dir),
 						$(ior), $(roughness), $(distro), $(geo) );
 		$(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

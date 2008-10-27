@@ -9,9 +9,9 @@
 				<connection parent="Voronoi3D2F_2" output="f1"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -23,9 +23,9 @@
 				<connection parent="Voronoi3D2F_2" output="f2"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -37,9 +37,9 @@
 				<connection parent="Voronoi3D2F_2" output="pos1"/>
 			</input>
 			<output name="val" type="point" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -51,9 +51,9 @@
 				<connection parent="Voronoi3D2F_2" output="pos2"/>
 			</input>
 			<output name="val" type="point" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -63,9 +63,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="+" value=".8" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -77,9 +77,9 @@
 				<connection parent="Blinn" output="Ci"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -91,9 +91,9 @@
 				<connection parent="Multiply_6" output="val"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -110,11 +110,11 @@
 			</input>
 			<input name="I" type="vector" storage="varying" value="-normalize(I)" description="Direction of viewer"/>
 			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
-			<code>
+			<rsl_code>
 
         $(Ci) = $(Ks) * $(Cspec) * blinn( $(N), $(I), $(size) );
 
-										</code>
+										</rsl_code>
 			<include>shadingmodels.h									</include>
 			<usage>Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term.									</usage>
 		</block>
@@ -125,9 +125,9 @@
 				<connection parent="Multiply" output="val"/>
 			</input>
 			<output name="NN" type="vector" storage="varying" description="The new surface normal"/>
-			<code>
+			<rsl_code>
 	$(NN) = normalize( calculatenormal( $(P) + $(Dir)*$(Scale) ) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>This is exactly like the displace function except that the new surface position is not computed.
 										</usage>
@@ -148,48 +148,48 @@
 			<input name="lthick" type="float" storage="varying" value="5" description="Contour line thickness"/>
 			<input name="P" type="point" storage="varying" value="P" description="Surface point"/>
 			<output name="val" type="float" storage="varying" description="Output value"/>
-			<code>
+			<rsl_code>
 		$(val) = step( $(lthick) * (
 					distance( $(p1), $(p2) ) / (
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
-										</code>
+										</rsl_code>
 			<include>shrimp_helpers.h									</include>
 			<usage/>
 		</block>
 		<block id="Constant" position_x="-3" position_y="-0" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .73, .42, .27 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
-			<code>
+			<rsl_code>
 	$(out) = $(in);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Useful for supplying multiple inputs with the same value.									</usage>
 		</block>
 		<block id="Constant_2" position_x="-3" position_y="-1" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .73, .51, .34 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
-			<code>
+			<rsl_code>
 	$(out) = $(in);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Useful for supplying multiple inputs with the same value.									</usage>
 		</block>
 		<block id="Constant_3" position_x="-3" position_y="-2" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .73, .50, .39 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
-			<code>
+			<rsl_code>
 	$(out) = $(in);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Useful for supplying multiple inputs with the same value.									</usage>
 		</block>
 		<block id="Constant_4" position_x="-3" position_y="1" author="rconstruct">
 			<input name="in" type="color" storage="uniform" value="color( .7, .33, .23 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
-			<code>
+			<rsl_code>
 	$(out) = $(in);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Useful for supplying multiple inputs with the same value.									</usage>
 		</block>
@@ -199,9 +199,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" value="2" description="2nd input" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) / $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -211,9 +211,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" value="2" description="2nd input" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) / $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -225,9 +225,9 @@
 				<connection parent="Subtract_2" output="val"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) / $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -247,7 +247,7 @@
 			<input name="filter" type="string" storage="uniform" value="&quot;gaussian&quot;" description="Filter type"/>
 			<input name="channel" type="float" storage="varying" value="0" description="Channel, in color textures"/>
 			<output name="val" type="color" storage="varying" description="Output color"/>
-			<code>
+			<rsl_code>
     #if RENDERER==pixie
         $(val) = $(val:type) environment( $(texname)[$(channel)], $(dir),
 								&quot;blur&quot;, $(blur),
@@ -269,7 +269,7 @@
                                 &quot;filter&quot;, $(filter),
 								&quot;fill&quot;, $(fill) ) ;
     #endif
-										</code>
+										</rsl_code>
 			<include/>
 			<usage/>
 		</block>
@@ -285,9 +285,9 @@
 			<output name="T" type="vector" storage="varying" description="The refracted vector"/>
 			<output name="Kr" type="float" storage="varying" description="The reflected coefficient"/>
 			<output name="Kt" type="float" storage="varying" description="The refracted coefficient"/>
-			<code>
+			<rsl_code>
         fresnel( $(I), $(N), $(eta), $(Kr), $(Kt), $(R), $(T) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient Kt, given an incident direction I, the surface normal N, and the relative index of refraction eta. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the fresnel formula. Optionally, this procedure also returns the reflected (R) and transmitted (T) vectors. The transmitted vector is computed using Snell&apos;s law.									</usage>
 		</block>
@@ -298,19 +298,19 @@
 			<output name="r" type="float" storage="varying" description="red component"/>
 			<output name="g" type="float" storage="varying" description="green component"/>
 			<output name="b" type="float" storage="varying" description="blue component"/>
-			<code>
+			<rsl_code>
 	$(r) = comp( $(col), 0 );
 	$(g) = comp( $(col), 1 );
 	$(b) = comp( $(col), 2 );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage/>
 		</block>
 		<block id="I" position_x="5" position_y="-6" author="rconstruct">
 			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
-			<code>
+			<rsl_code>
 	$(I) = I;
-										</code>
+										</rsl_code>
 			<include/>
 			<usage/>
 		</block>
@@ -325,9 +325,9 @@
 				<connection parent="Constant" output="out"/>
 			</input>
 			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
-			<code>
+			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
 		</block>
@@ -342,9 +342,9 @@
 				<connection parent="Constant_3" output="out"/>
 			</input>
 			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
-			<code>
+			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
 		</block>
@@ -359,9 +359,9 @@
 				<connection parent="Constant_2" output="out"/>
 			</input>
 			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
-			<code>
+			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
 		</block>
@@ -376,9 +376,9 @@
 				<connection parent="Constant_2" output="out"/>
 			</input>
 			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
-			<code>
+			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
 		</block>
@@ -393,9 +393,9 @@
 				<connection parent="Mix_3" output="out"/>
 			</input>
 			<output name="out" type="color" storage="varying" description="The resulting mix between A and B"/>
-			<code>
+			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).									</usage>
 		</block>
@@ -405,9 +405,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="*" value=".002" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -420,9 +420,9 @@
 				<connection parent="Mix_5" output="out"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -433,9 +433,9 @@
 			</input>
 			<input name="B" type="point" storage="varying" multi="*" value=".5" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -446,9 +446,9 @@
 			</input>
 			<input name="B" type="point" storage="varying" multi="*" value="2" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -461,9 +461,9 @@
 				<connection parent="Fresnel" output="Kr"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -474,9 +474,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="*" value="25" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
@@ -489,18 +489,18 @@
 				<connection parent="Subtract_4" output="val"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
 		</block>
 		<block id="N" position_x="5" position_y="-9" author="rconstruct">
 			<output name="N" type="vector" storage="varying" description="Surface shading normal"/>
-			<code>
+			<rsl_code>
     $(N) = N;
-    									</code>
+    									</rsl_code>
 			<include/>
 			<usage/>
 		</block>
@@ -509,9 +509,9 @@
 				<connection parent="I" output="I"/>
 			</input>
 			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
-			<code>
+			<rsl_code>
 	$(val) = normalize( $(A) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
 		</block>
@@ -520,9 +520,9 @@
 				<connection parent="N" output="N"/>
 			</input>
 			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
-			<code>
+			<rsl_code>
 	$(val) = normalize( $(A) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
 		</block>
@@ -531,9 +531,9 @@
 				<connection parent="Bump" output="NN"/>
 			</input>
 			<output name="val" type="normal" storage="varying" description="val is a vector of unit length"/>
-			<code>
+			<rsl_code>
 	$(val) = normalize( $(A) );
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).									</usage>
 		</block>
@@ -547,9 +547,9 @@
 			</input>
 			<input name="V" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer"/>
 			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
-			<code>	
+			<rsl_code>	
         $(Ci) = $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
-										</code>
+										</rsl_code>
 			<include>shadingmodels.h									</include>
 			<usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz&apos;s implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection.									</usage>
 		</block>
@@ -564,7 +564,7 @@
 			<input name="offset" type="float" storage="varying" value="2" description="Controls the multifractality"/>
 			<input name="amplitude" type="float" storage="varying" value=".2" description="Amplitude of fractal"/>
 			<output name="val" type="float" storage="varying" description="fractal value at p"/>
-			<code>
+			<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * Ridged( $(p), $(fwidth), $(octaves),
@@ -573,7 +573,7 @@
 		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(p), $(fwidth),
 					$(octaves), $(lacunarity), $(offset), $(gain) ) );
 	#endif
-										</code>
+										</rsl_code>
 			<include>fractal.h									</include>
 			<usage>This is Ken Musgrave&apos;s Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
 										</usage>
@@ -594,7 +594,7 @@
 			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
-			<code/>
+			<rsl_code/>
 			<include/>
 			<usage/>
 		</block>
@@ -604,9 +604,9 @@
 				<connection parent="Divide_3" output="val"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) - $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -616,9 +616,9 @@
 				<connection parent="GetCol" output="g"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) - $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -628,9 +628,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" value=".42" description="2nd input" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) - $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -640,9 +640,9 @@
 				<connection parent="CellContour" output="val"/>
 			</input>
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) - $(B);
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
@@ -654,7 +654,7 @@
 			<input name="to_space" type="string" storage="uniform" value="&quot;shader&quot;" description="The coordinate system to transform into"/>
 			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
 			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
-			<code>
+			<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	#ifdef $(p)_point
@@ -676,7 +676,7 @@
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
 		</block>
@@ -688,7 +688,7 @@
 			<input name="to_space" type="string" storage="uniform" value="&quot;world&quot;" description="The coordinate system to transform into"/>
 			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
 			<output name="pp" type="vector" storage="varying" description="The transformed point, vector or normal"/>
-			<code>
+			<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	#ifdef $(p)_point
@@ -710,7 +710,7 @@
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-										</code>
+										</rsl_code>
 			<include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.									</usage>
 		</block>
@@ -726,12 +726,12 @@
 			<output name="f2" type="float" storage="varying" description="f2"/>
 			<output name="pos1" type="point" storage="varying" description="pos1"/>
 			<output name="pos2" type="point" storage="varying" description="pos2"/>
-			<code>
+			<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
-										</code>
+										</rsl_code>
 			<include>fractal.h									</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.									</usage>
 		</block>
@@ -747,20 +747,20 @@
 			<output name="f2" type="float" storage="varying" description="f2"/>
 			<output name="pos1" type="point" storage="varying" description="pos1"/>
 			<output name="pos2" type="point" storage="varying" description="pos2"/>
-			<code>
+			<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
-										</code>
+										</rsl_code>
 			<include>fractal.h									</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.									</usage>
 		</block>
 		<block id="p" position_x="-9" position_y="-1" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
-			<code>
+			<rsl_code>
     $(P) = P;
-    									</code>
+    									</rsl_code>
 			<include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.									</usage>
 		</block>

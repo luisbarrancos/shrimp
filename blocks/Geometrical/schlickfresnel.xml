@@ -4,10 +4,10 @@
 	<input name="V" description="Direction of viewer" type="vector" default="-normalize(I)"/>
 	<output name="Kr" description="Output value" type="float"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
 
-	</code>
+	</rsl_code>
 <usage>Christophe Schlick's fast fresnel approximation.</usage>
 </shrimp>

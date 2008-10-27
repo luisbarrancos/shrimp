@@ -3,7 +3,7 @@
 	<input name="min" description="minimum value" type_parent="out" type="point vector normal color float" default="0.0"/>
 	<input name="max" description="maximum value" type_parent="out" type="point vector normal color float" default="1.0"/>
 	<output name="out" description="Clamp a between min and max" type="point vector normal color float"/>
-	<code>
+	<rsl_code>
 		$(out) = clamp( $(a), $(min), $(max) );
-	</code>
+	</rsl_code>
 </shrimp>

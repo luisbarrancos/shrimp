@@ -7,8 +7,8 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="val" description="Curvature output" type="color"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
         $(val) = scurvature( $(ctype), $(cmin), $(cmax), $(greys), $(Nn), $(I));
-	</code>
+	</rsl_code>
     <usage>Surface curvature block, based on Mario Marengo's VEX work. Curvature types are gauss, mean, amean, min, max. If greyscale = 1.0, then it returns the curvature intensity in greyscale, else, it returns it in color.</usage>
 </shrimp>

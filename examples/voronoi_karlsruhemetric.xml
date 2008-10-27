@@ -7,9 +7,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="+" value=".8" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) + $(B);
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
@@ -29,12 +29,12 @@
 			<input name="lthick" type="float" storage="varying" value="3" description="Contour line thickness"/>
 			<input name="P" type="point" storage="varying" value="P" description="Surface point"/>
 			<output name="val" type="float" storage="varying" description="Output value"/>
-			<code>
+			<rsl_code>
 		$(val) = step( $(lthick) * (
 					distance( $(p1), $(p2) ) / (
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
-				</code>
+				</rsl_code>
 			<include>shrimp_helpers.h			</include>
 			<usage/>
 		</block>
@@ -44,9 +44,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="*" shader_parameter="1" value="5" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
@@ -57,9 +57,9 @@
 			</input>
 			<input name="B" type="float" storage="varying" multi="*" shader_parameter="1" value="5" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
@@ -70,9 +70,9 @@
 			</input>
 			<input name="B" type="point" storage="varying" multi="*" value="5" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
@@ -93,7 +93,7 @@
 			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
-			<code/>
+			<rsl_code/>
 			<include/>
 			<usage/>
 		</block>
@@ -106,9 +106,9 @@
 			</input>
 			<input name="z" type="float" storage="varying" value="0" description="z component"/>
 			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
-			<code>
+			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Sets xyz components of a point, vector, or normal.			</usage>
 		</block>
@@ -121,9 +121,9 @@
 			</input>
 			<input name="z" type="float" storage="varying" value="0" description="z component"/>
 			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
-			<code>
+			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Sets xyz components of a point, vector, or normal.			</usage>
 		</block>
@@ -135,7 +135,7 @@
 			<input name="to_space" type="string" storage="uniform" value="&quot;object&quot;" description="The coordinate system to transform into"/>
 			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
 			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
-			<code>
+			<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	#ifdef $(p)_point
@@ -157,7 +157,7 @@
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
@@ -172,7 +172,7 @@
 			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the VLfBm"/>
 			<input name="amplitude" type="float" storage="varying" value=".2" description="Amplitude of VLfBm"/>
 			<output name="val" type="float" storage="varying" description="VLfBm value at p"/>
-			<code>
+			<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
@@ -180,7 +180,7 @@
 		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );
 	#endif
-				</code>
+				</rsl_code>
 			<include>fractal.h			</include>
 			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
 				</usage>
@@ -201,31 +201,31 @@
 			<output name="f2" type="float" storage="varying" description="feature 2"/>
 			<output name="spos2" type="float" storage="varying" description="s position 2"/>
 			<output name="tpos2" type="float" storage="varying" description="t position 2"/>
-			<code>
+			<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;
 	$(f2) = 0; $(spos2) = 0; $(tpos2) = 0;
     voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
-				</code>
+				</rsl_code>
 			<include>extrapatterns.h			</include>
 			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.			</usage>
 		</block>
 		<block id="p" position_x="-4.41538461538461" position_y="-0.676923076923079" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
-			<code>
+			<rsl_code>
     $(P) = P;
-    			</code>
+    			</rsl_code>
 			<include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
 		</block>
 		<block id="st" position_x="-4.95384615384615" position_y="0.738461538461535" author="rconstruct">
 			<output name="s" type="float" storage="varying" description="S texture coordinate"/>
 			<output name="t" type="float" storage="varying" description="T texture coordinate"/>
-			<code>
+			<rsl_code>
     $(s) = s;
     $(t) = t;
-    			</code>
+    			</rsl_code>
 			<include/>
 			<usage/>
 		</block>

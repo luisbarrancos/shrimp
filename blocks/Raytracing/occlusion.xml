@@ -29,7 +29,7 @@
 	<output name="Envcolor" description="Environment color lookup result"  type="color" storage="varying" />
 	<output name="Envdir" description="Average unoccluded direction"  type="vector" storage="varying" />
 	<output name="Irrad" description="Irradiance"  type="color" storage="varying" />
-	<code>
+	<rsl_code>
 	
 	/* initialize */
 	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Irrad) = color(0);
@@ -93,6 +93,6 @@
 				
 	#endif
 	
-	</code>
+	</rsl_code>
     <usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you'll have ambient occlusion, or reflection occlusion. You can also use point-based occlusion, or Aqsis's implementation which uses multiple shadow maps. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer's documentation for details. The occlusion value is passed to aov_occlusion AOV preset, as occlusion, not 1 - occlusion.</usage>
 </shrimp>

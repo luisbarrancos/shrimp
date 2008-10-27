@@ -3,8 +3,8 @@
 	<input name="A" description="1st Input" type="color point vector normal color" type_parent="out" default="0"/>
 	<input name="B" description="2nd Input" type="color point vector normal color" type_parent="out" default="1"/>
 	<output name="out" description="The resulting mix between A and B" type="float point vector color"/>
-	<code>
+	<rsl_code>
 		$(out) = ( $(A) * (1 - $(alpha)) + $(B) * $(alpha) );
-	</code>
+	</rsl_code>
 <usage>Blend is similar to mix, but it allows you to use non scalar mix factors.</usage>
 </shrimp>

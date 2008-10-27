@@ -2,7 +2,7 @@
 	<input name = "x" description="Value to sample the wave at" type="float" default="s"/>
 	<input name = "amp" description="Amplitude of the wave" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
-	<code>
+	<rsl_code>
 	$(val) = $(amp) * 2*abs( 0.5 - mod( $(x), 1 ) );
-	</code>
+	</rsl_code>
 </shrimp>

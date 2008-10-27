@@ -9,9 +9,9 @@
 	<output name="mortar" description="Output mortar" type="float"/>
 	<output name="tindex" description="Tile index" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 		hextile( $(tradius), $(mwidth), $(tvary), $(x), $(y),$(NN), $(V),
 					$(mortar), $(tindex) );
-	</code>
+	</rsl_code>
 <usage>Hexagonal tiling block, based on LGHexTile.sl by Larry Gritz.</usage>
 </shrimp>

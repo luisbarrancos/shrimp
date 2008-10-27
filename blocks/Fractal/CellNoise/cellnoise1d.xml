@@ -2,9 +2,9 @@
 	<input name="x" description="value to sample noise at" type="float" default="s"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Cell noise value at x, in range 0 - 1" type="float color point vector"/>
-	<code>
+	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) cellnoise( $(x) );
-	</code>
+	</rsl_code>
 	<usage>Cellnoise returns a random value between 0 and 1 for each integer 'cell'. It is much cheaper than calling noise.
 	</usage> 
 </shrimp>

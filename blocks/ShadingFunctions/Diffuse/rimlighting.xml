@@ -7,10 +7,10 @@
 	<input name="dx" description="Filter width" type="float" default="0.0"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_rimlighting += $(Crim) * $(Krim) * rimlighting( $(rwidth), $(dx),
 					$(N), $(V) );
 		$(Ci) = aov_rimlighting;
-	</code>
+	</rsl_code>
 <usage>Rim lighting shader, based on the cosine of the angle between the surface normal and the viewer vector, altough you can supply an custom vector instead of viewer vector, to get a directional rim lighting effect. The parameter rwidth controls the rim width effect, while the parameter rint, controls the rim intensity. You can specify an filter width, via the parameter dx, in which case the function uses filteredsmoothstep instead of smoothstep. This value is passed to the aov_rimlighting AOV preset.</usage>
 </shrimp>

@@ -27,7 +27,7 @@
     <output name="Ci" description="Shaded color" type="color"/>
 	<output name="Oi" description="Shaded opacity" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		$(Oi) = Os;
 #if RENDERER == pixie
         $(Ci) = rtglasspixie( $(Ka), $(Kd), $(Ks), $(Kr), $(Kt), $(ior),
@@ -46,6 +46,6 @@
 					$(envmap),
 					DECLARE_AOV_PARAMETERS );
 #endif
-	</code>
+	</rsl_code>
     <usage>Raytraced glass shader, based on Larry Gritz's glass shader, and in Mario Marengo's VEX work and discussion at odforce.net. Uses attenuation, and blending between pure non-attenuated glass and attenuated (with attenuation color) glass. Defaults to primary reflections, and primary specular highlights only, controlled by rbounces and sbounces respectively. Refraction and reflection blur default to 0, ray samples default to 1, so you increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by aexp and aamp variables, the attenuation exponent and scale respectively, while the blend between pure non attenuated glass and attenuated (attencolor colored) glass, is controlled by krefl and krefr, which control the blend of reflections and refractions respectively. Basecolor is the medium color used for the ambient and diffuse contribution, when they're set, while attencolor is the attenuation color. Spectype defaults to "glossy" (Larry Gritz's glossy specular model), any other value will get you specular highlights using the standard specular() call. Maximum ray distance defaults to 1e38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink. Note that you need to set your RIB raytracing options and attributes, and that the surface must be dual sided to have internal reflections. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets.</usage>
 </shrimp>

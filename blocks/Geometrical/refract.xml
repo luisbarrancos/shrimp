@@ -3,8 +3,8 @@
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="eta" description="The relative index of refraction" type="float" default="0.75"/>
 	<output name="T" description="The transmitted vector" type="vector"/>
-	<code>
+	<rsl_code>
 	$(T) = refract( $(I), $(N), $(eta) );
-	</code>
+	</rsl_code>
 <usage>Return the transmitted vector given an incident direction I, the normal vector N, and the relative index of refraction eta. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. This vector is computed using Snell's law. If the returned vector has zero length, then there is no transmitted light because of total internal reflrection.</usage>
 </shrimp>

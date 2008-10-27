@@ -11,10 +11,10 @@
     <input name="Cspec" description="Specular color" type="color" default="color(1, 1, .8)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
         $(Ci) = kajiyakay( $(Ka), $(Kd), $(Ks), $(rough), $(Cdiff),
 				$(Cbase), $(Ctip), $(Cspec), $(NN), $(IN),
 				DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Hair shader, based on Mario Marengo VEX work for an implementation of Kajiya-Kay hair illumination model. Ka, Kd, Ks have the usual meaning, rough is the specular roughness. Cs and Os the usual meaning, surface color and opacity.  This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

@@ -2,7 +2,7 @@
 	<input name="a" description="1st input" type_parent="out" type="float point vector normal color" default="0"/>
 	<input name="b" description="2nd or subsequent inputs" type_parent="out" type="float point vector normal color" multi="," default="0"/>
 	<output name="out" description="out = the smallest input" type="float point vector normal color"/>
-	<code>
+	<rsl_code>
 		$(out) = min( $(a), $(b) );
-	</code>
+	</rsl_code>
 </shrimp>

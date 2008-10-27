@@ -8,7 +8,7 @@
 	<input name="amplitude" description="Amplitude of turbulence" type="float" default="1"/>
 	<output name="val" description="turbulence value at (x,y)" type="float color vector point"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * turbulence( $(x), $(y), $(fwidth), $(octaves),
@@ -18,7 +18,7 @@
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 
-	</code>
+	</rsl_code>
 	<usage>This is the Perlin turbulence function.
 	</usage> 
 </shrimp>

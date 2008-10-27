@@ -1,9 +1,9 @@
 <shrimp type="function" name="CalcNormal" description="Calculate the normal at p" author="rconstruct">
 	<input name = "p" description="Point to calculate normal at" type="point" default="P"/>
 	<output name="NN" description="NN is normal at p" type="normal"/>
-	<code>
+	<rsl_code>
 	$(NN) = calculatenormal( $(p) );
-	</code>
+	</rsl_code>
 	<usage>The output of this function is the surface normal at p.
 	</usage>
 <usage>Returns the surface normal of the given point on the surface (Du(P)^Dv(P)). You should always recalculate the normals after a displacement.</usage>

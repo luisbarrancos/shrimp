@@ -15,7 +15,7 @@
 	<input name="xdir" description="Direction vector" type="vector" default="normalize(dPdu)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
         #define ver_$(rsamples)
 		
 		aov_surfacecolor += $(Cdiff);
@@ -34,6 +34,6 @@
 								$(rsamples), $(envmap) );
 			$(Ci) += aov_reflection;
 		#endif
-	</code>
+	</rsl_code>
 	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley shading model. If environment samples >0 , then samples environment reflections, if = 0, bypasses this. Notice that the more samples you use, the longer it takes to render. Have in mind that if no environment map is given, then raytracing is used. The parameters Nu and Nv control the specularity along the anisotropy direction, and anisotropy perpendicular direction, being the parameter xdir, the anisotropy direction, which defaults to dPdu. This block passes the resulting values to the aov_surfacecolor, aov_diffuse, aov_specularcolor, aov_specular, and aov_reflection AOV presets.</usage>
 </shrimp>

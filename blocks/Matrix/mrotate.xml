@@ -3,8 +3,8 @@
 	<input name="vaxis" description="Vector axis" type="vector" default="1"/>
 	<input name="angle" description="Angle" type="float" default="1"/>
     <output name="mout" description="Rotated matrix" type="matrix"/>
-	<code>
+	<rsl_code>
 	$(mout) = rotate( $(minput), $(angle), $(vaxis) );
-	</code>
+	</rsl_code>
 <usage>Rotates matrix m, on axis v, for x angle. These functions are similar to the Ri functions RiTranslate, RiRotate and RiScale, except that the rotation angle in rotate() is in radians, not in degrees, as with RiRotate.</usage>
 </shrimp>

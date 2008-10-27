@@ -6,8 +6,8 @@
 	<input name="cfat" description="Fat color" type="color" default="color( 0.92, 0.33, 0.61 )"/>
 	<output name="val" description="Output color" type="color"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 		$(val) = painted_tiling( $(sx), $(sy), $(tsize), $(cskinny), $(cfat) );
-	</code>
+	</rsl_code>
 	<usage>Painted Penrose rhomb tiles, by Derek Ledbetter.</usage>
 </shrimp>

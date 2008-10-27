@@ -19,7 +19,7 @@
 	<include>shadingmodels.h</include>
 	<include>shrimp_helpers.h</include>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 
         normal Nf = faceforward( $(N) , $(I) );
         vector Vf = -$(I);
@@ -45,6 +45,6 @@
 								lambda, $(Cdiff), $(Kd), $(Ks),
 								DECLARE_AOV_PARAMETERS );
 
-	</code>
+	</rsl_code>
     <usage>Peter Stuart's implementation of the Granier-Heidrich thin-film interference BRDF, as described in "A Simple Layered RGB BRDF Model", by Granier and Heidrich. The parameter drange controls the minimum and maximum substrate thickness, with ior, the RGB index of refraction of the substrate. The parameter spec, controls the minimum and maximum specular exponent of the rays reflected on the substrate, with freq as the minimum and maximum frequency of the perlin noise, and dev, the deviation of the normals in the range [0,1]. This block passes the resulting values to the aov_surfacecolor, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

@@ -403,7 +403,7 @@ xml::element scene::xml_network() {
 		}
 
 		// code
-		xml::element code ("code");
+		xml::element code ("rsl_code");
 		code.set_text (block->m_code);
 
 		xml_block.push_child (code);

@@ -13,12 +13,12 @@
     <input name="PP" description="Surface point to be evaluated" type="point" default="P"/>
 	<output name="val" description="Output color" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
         $(val) = oaktexture( $(PP), $(ringfreq), $(ringunevenness),
 								$(grainfreq), $(ringnoise),
 								$(ringnoisefreq), $(trunkwobble),
 								$(trunkwobblefreq), $(angularwobble),
 								$(angularwobblefreq), $(ringy), $(grainy) );
-	</code>
+	</rsl_code>
 	<usage>Oak pattern, by Larry Gritz. Ringfreq controls the frequency of ring spacing. Ringunevenness controls the rings distribution, 0 being equally spaced rings, and higher values unequally spaced rings. Grainfreq, controls the frequency of the wood fine grain. Ringnoise and ringnoisefreq, control the warping of the domain. Trunkwobble and trunkwobblefreq, controls the noise that wobbles the axis of the trunk, so that it isnot perfectly aligned on the z axis. Angular wobble and angularwobblefreq, control the warping indexed by angle about the z axis. Ringy and grainy, control the overall scale to which rings and grain are weighted, 0 being a null effect, and 1 being a full effect. This block returns 0 when in the background light wood, and 1 when in the darkest part of a ring or grain.</usage>
 </shrimp>

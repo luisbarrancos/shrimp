@@ -10,7 +10,7 @@
     <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_specularcolor += $(Cspec);
 		aov_ambient += aov_surfacecolor * $(Ka) * ambient();
@@ -19,6 +19,6 @@
 				$(Cdiff), $(Cspec), $(Kd), $(Ks), $(roughness), $(NN),
 				$(IN), $(adir), DECLARE_AOV_PARAMETERS ) ;
 
-	</code>
+	</rsl_code>
     <usage>Implementation of the Banks fast anisotropic model, based on the paper "Illumination in Diverse Codimensions", by David C. Banks. The anisotropy direction is specified via the adir parameter, defaulting to dPdu, while the parameter roughness controls the apparent surface roughness.  This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
 </shrimp>

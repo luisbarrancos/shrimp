@@ -7,10 +7,10 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * blinn( $(N), $(I), $(size) );
         $(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

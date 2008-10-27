@@ -2,7 +2,7 @@
 	<input name="min" description="minimum value" type="float" default="0.0"/>
 	<input name="max" description="maximum value" type="float" default="1.0"/>
 	<output name="val" description="A random value between min and max" type="float color point"/>
-	<code>
+	<rsl_code>
 	$(val) = ($(max)-$(min))*( $(val:type) random() ) + $(min);
-	</code>
+	</rsl_code>
 </shrimp>

@@ -3,9 +3,9 @@
 	<output name="r" description="red component" type="float"/>
 	<output name="g" description="green component" type="float"/>
 	<output name="b" description="blue component" type="float"/>
-	<code>
+	<rsl_code>
 	$(r) = comp( $(col), 0 );
 	$(g) = comp( $(col), 1 );
 	$(b) = comp( $(col), 2 );
-	</code>
+	</rsl_code>
 </shrimp>

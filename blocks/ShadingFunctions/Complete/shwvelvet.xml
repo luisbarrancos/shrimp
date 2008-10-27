@@ -9,10 +9,10 @@
     <output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
         $(Ci) = velvet( $(Ks), $(backscatter), $(edginess), $(roughness),
 						$(sheen), $(N), $(I),
 						DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Based on Stephen H. Westin's velvet shader. This is meant to be used in a network with an ambient and diffuse terms. Note that Cs and Os aren't included, make proper arrangements in your shading network to consider them where desired. Ks controls overall intensity of effect. This block passes the resulting values to the aov_rimlighting and aov_scattering AOV presets.</usage>
 </shrimp>

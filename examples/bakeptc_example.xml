@@ -15,7 +15,7 @@
 			</input>
 			<output name="status" type="float" storage="varying" description="Status"/>
 			<output name="bdataval" type="float" storage="varying" description="Baked data value"/>
-			<code>
+			<rsl_code>
 	#if RENDERER==pixie
 		$(status) = bake3d( $(bakefile), $(channel), $(PP), $(NN),
 							&quot;coordsystem&quot;, $(coordsys),
@@ -56,7 +56,7 @@
 		$(status) = 0;
 	#endif
 			
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Bakes the supplied data channel into a bakefile. Note that this varies considerably with each renderer&apos;s implementation, please check your renderer&apos;s documentation for details. Returns 1 if sucessfull, 0 if failed.			</usage>
 		</block>
@@ -69,26 +69,26 @@
 			</input>
 			<input name="Nref" type="normal" storage="varying" value="Ng" description="Optional reference vector" type_parent="NN"/>
 			<output name="NN" type="normal" storage="varying" description="A vector pointing in the direction oposite to I"/>
-			<code>
+			<rsl_code>
 	$(NN) = faceforward( $(N), $(I), $(Nref) );
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
 				</usage>
 		</block>
 		<block id="I" position_x="-4" position_y="0" author="rconstruct">
 			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
-			<code>
+			<rsl_code>
 	$(I) = I;
-				</code>
+				</rsl_code>
 			<include/>
 			<usage/>
 		</block>
 		<block id="N" position_x="-4" position_y="2" author="rconstruct">
 			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
-			<code>
+			<rsl_code>
     $(N) = N;
-    			</code>
+    			</rsl_code>
 			<include/>
 			<usage/>
 		</block>
@@ -97,9 +97,9 @@
 				<connection parent="N" output="N"/>
 			</input>
 			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
-			<code>
+			<rsl_code>
 	$(val) = normalize( $(A) );
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
@@ -108,9 +108,9 @@
 				<connection parent="I" output="I"/>
 			</input>
 			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
-			<code>
+			<rsl_code>
 	$(val) = normalize( $(A) );
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
@@ -149,7 +149,7 @@
 			<output name="Envcolor" type="color" storage="varying" description="Environment color lookup result"/>
 			<output name="Envdir" type="vector" storage="varying" description="Average unoccluded direction"/>
 			<output name="Irrad" type="color" storage="varying" description="Irradiance"/>
-			<code>
+			<rsl_code>
 	
 	/* initialize */
 	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Irrad) = color(0);
@@ -208,7 +208,7 @@
 				
 	#endif
 	
-				</code>
+				</rsl_code>
 			<include/>
 			<usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don&apos;t hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you&apos;ll have ambient occlusion, or reflection occlusion. You can also use point-based occlusion, or Aqsis&apos;s implementation which uses multiple shadow maps. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details.			</usage>
 		</block>
@@ -232,15 +232,15 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0			</rib_statements>
 			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
-			<code/>
+			<rsl_code/>
 			<include/>
 			<usage/>
 		</block>
 		<block id="p" position_x="-2" position_y="3" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
-			<code>
+			<rsl_code>
     $(P) = P;
-    			</code>
+    			</rsl_code>
 			<include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
 		</block>

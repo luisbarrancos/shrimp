@@ -6,11 +6,11 @@
 	<input name="V" description="The viewer vector" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="The amount of diffuse light" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_diffuse += $(Kd) * wrappeddiffuse( $(wangle), $(N), $(V) );
 		$(Ci) = aov_surfacecolor * aov_diffuse;
-	</code>
+	</rsl_code>
 <usage>Wrapped diffuse illumination model, allows light to reach beyong 90 degrees on the surface, overcoming one limitation of classical Lambertian diffuse, the steep falloff to shadow areas. The diffuse color value is passed to aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 
 </shrimp>

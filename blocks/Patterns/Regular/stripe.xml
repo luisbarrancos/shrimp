@@ -6,9 +6,9 @@
 	<output name="out" description="1 if x is in the stripe, 0 if inbetween stripes" type="float"/>
 	<include>shrimp_helpers.h</include>
 	<include>shapes.h</include>
-	<code>
+	<rsl_code>
 	$(out) = shStripe( $(width), $(freq), $(x), $(blur) );
-	</code>
+	</rsl_code>
 	<usage>Blur can be used to control antialiasing of stripe edges.
 	</usage>
 </shrimp>

@@ -2,8 +2,8 @@
 	<input name="stra" description="First string" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="strb" description="Second and subsequent strings" storage="uniform" type="string" default="&quot;&quot;" multi=","/>
 	<output name="val" description="Concatenated string" storage="uniform" type="string"/>
-	<code>
+	<rsl_code>
 		$(val) = concat( $(stra), $(strb) );
-	</code>
+	</rsl_code>
 	<usage>Concatenates two or more strings into a single string.</usage>
 </shrimp>

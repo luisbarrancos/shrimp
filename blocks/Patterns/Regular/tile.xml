@@ -9,7 +9,7 @@
 	<output name="row" description="The row number of the current tile" type="float"/>
 	<include>shrimp_helpers.h</include>
 	<include>shapes.h</include>
-	<code>
+	<rsl_code>
 		shTile( $(x),$(y),$(xfreq),$(yfreq),$(xt),$(yt),$(column),$(row) );
-	</code>
+	</rsl_code>
 </shrimp>

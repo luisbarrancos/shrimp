@@ -7,9 +7,9 @@
 	<output name="rx" description="X coordinate of rotated point" type="float"/>
 	<output name="ry" description="Y coordinate of rotated point" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	rotate2d( $(x), $(y), $(angle), $(ox), $(oy), $(rx), $(ry) );
-	</code>
+	</rsl_code>
 	<usage>Rotates the point (x,y) angle radians about the point (ox,oy)
 	</usage>
 </shrimp>

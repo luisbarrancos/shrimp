@@ -7,9 +7,9 @@
 	<input name="dtype" description="Voronoi distance metric" type="float" default="2"/>
 	<output name="val" description="Output value" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 		$(val) = blotches( $(radius), $(freq), $(offset), $(jitter),
 							$(dtype), $(PP) );
-	</code>
+	</rsl_code>
 	<usage>Blotches block. Generates random blotches, based on single feature voronoi cell noise. Jitter controls the voronoi cell noise jittering, generating a less or more evenly distribution of blotches. Offset controls the center offset, a value of 0 generating a hollow blotch, and 1.0 an solid blotch. Radius controls the radius, frequency, the frequency of the blotches. Dtype controls the distance metric used for the Voronoi noise, when not 0, the Minkowski metric, with dtype as Minkowski's P parameter, being P = 1, the Manhattan metric, P = 2 the Euclidian metric, and allowing higher orders of P tending towards Tchebychev results.</usage>
 </shrimp>

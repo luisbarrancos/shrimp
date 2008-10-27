@@ -2,7 +2,7 @@
 	<input name="p" description="point to sample noise at" type="point" default="P"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
-	<code>
+	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) noise( $(p) );
-	</code>
+	</rsl_code>
 </shrimp>

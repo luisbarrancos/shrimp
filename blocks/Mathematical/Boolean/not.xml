@@ -2,9 +2,9 @@
 	<input name = "A" description="Input value" type="float" default="1"/>
 	<output name="out" description="The logical inversion of A" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	$(out) = complement( $(A) );
-	</code>
+	</rsl_code>
 	<usage>This block computes the logical inversion of the input. The input should be in the range 0-1.
 	</usage>
 </shrimp>

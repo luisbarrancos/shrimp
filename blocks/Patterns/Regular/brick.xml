@@ -12,9 +12,9 @@
     <output name="xtile" description="X position with this tile" type="float"/>
     <output name="ytile" description="Y position with this tile" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 		basicbrick( $(x), $(y), $(twidth), $(theight), $(rstagger), $(rsvary), $(jfreq), $(jamp), $(column), $(row), $(xtile), $(ytile) );
-	</code>
+	</rsl_code>
 	<usage>Basic brick tiling pattern, by Larry Gritz. X, Y, the x and y coordinates of the surface, twidth and theight are the dimensions of each tile. Rstagger defines how much each row stagger relative to the previous row, and rsvary defines how much rstagger should randomly vary. Jfreq and jamp define the frequency and amplitude of the noise added to the edge between tiles. This block outputs the row and column indexes of which tile the sample is in, and the position x and y coords within this tile, in 0-1 range.
 	</usage>
 </shrimp>

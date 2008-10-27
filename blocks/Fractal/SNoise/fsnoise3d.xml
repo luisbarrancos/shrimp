@@ -4,14 +4,14 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at p, in range -1 - 1" type="float color point vector"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * filteredsnoise( $(p), $(width) );
 	#else
 		$(val) = $(amplitude) * $(val:type) filteredvsnoise( $(p), $(width));
 	#endif
-	</code>
+	</rsl_code>
 	<usage>Filtered version of 3d signed noise. SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
 	</usage> 
 </shrimp>

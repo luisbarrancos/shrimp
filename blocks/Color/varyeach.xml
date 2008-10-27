@@ -6,8 +6,8 @@
     <input name="varylum" description="Luminance variation" type="float" default="1"/>
 	<output name="out" description="The resulting color" type="color"/>
     <include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 		$(out) = varyEach( $(cin), $(index), $(varyhue), $(varysat), $(varylum) );
-	</code>
+	</rsl_code>
 <usage>VaryEach by Larry Gritz, takes a computed color, then tweaks each indexed item separately to add some variation. Hue, saturation and lightness are all independently controlled. Hue adds, but saturation and lightness multiply.</usage>
 </shrimp>

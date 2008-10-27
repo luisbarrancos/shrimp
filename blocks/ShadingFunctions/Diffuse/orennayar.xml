@@ -6,10 +6,10 @@
 	<input name="V" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
-	</code>
+	</rsl_code>
     <usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz's implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

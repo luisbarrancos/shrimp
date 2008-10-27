@@ -3,8 +3,8 @@
 	<input name="dvscale" description="Dv scale factor" type="float" default="5"/>
 	<output name="Ci" description="Output value" type="color"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
         $(Ci) = color(	filterwidth(u) * $(duscale),
 						filterwidth(v) * $(dvscale), .1 );
-	</code>
+	</rsl_code>
 </shrimp>

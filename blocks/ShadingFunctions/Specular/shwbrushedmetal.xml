@@ -7,11 +7,11 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * shw_brushed_metal( $(roughness), $(N),
 						$(I), $(tangent) );
         $(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Stephen Westin's anisotropic specular term, using Kajiya's Phong-like highlight from a cylinder (Siggraph 89) coupled with an arbitrary shadowing/masking function. Roughness controls the apparent surface roughness, tangent is the anisotropy direction, defaulting to dPdu. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

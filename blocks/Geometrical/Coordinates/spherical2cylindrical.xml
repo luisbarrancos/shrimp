@@ -2,8 +2,8 @@
 	<input name="in" description="Input normal, vector or point" type="normal vector point" type_parent="out" default="point(0)"/>
 	<output name="out" description="Converted normal, vector or point" type="normal vector point"/>
 	<include>conversion.h</include>
-	<code>
+	<rsl_code>
 		$(out) = spherical2cylindrical( $(in) );
-	</code>
+	</rsl_code>
 	<usage>Converts spherical coordinates to cylindrical coordinates.</usage>
 </shrimp>

@@ -3,9 +3,9 @@
 	<input name = "B" description="2nd value" type="float" default="1"/>
 	<output name="out" description="Performs the logical operation A-B" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	$(out) = difference( $(A), $(B) );
-	</code>
+	</rsl_code>
 	<usage>This block computes the logical operation A-B. The inputs should be in the range 0-1.
 	</usage>
 </shrimp>

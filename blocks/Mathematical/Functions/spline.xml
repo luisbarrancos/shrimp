@@ -6,8 +6,8 @@
 	<input name="cp3" description="The 3rd Control Point" type_parent="val" type="point vector color float" default="0.8"/>
 	<input name="cp4" description="The 4th or subsequent Control Points" type_parent="val" type="point vector color float" multi="," default="1"/>
 	<output name="val" description="The value of the spline at x" type="point vector color float"/>
-	<code>
+	<rsl_code>
 		$(val) = spline( $(basis), $(x), $(cp1), $(cp2), $(cp3), $(cp4) );
-	</code>
+	</rsl_code>
 <usage>Fits a spline into the control points passed, using the specified spline basis function. These can be of type "catmull-rom", "bezier", "bspline", "hermite", or "linear". Defaults to catmull-rom. In 3delight, any spline type may be prefixed by "solve", such as "solvecatmull-rom", in which case this shadeop becomes a root solver and may be used as an invert function.</usage>
 </shrimp>

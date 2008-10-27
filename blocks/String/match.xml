@@ -2,8 +2,8 @@
 	<input name="stra" description="Pattern string" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="strb" description="String to search" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="status" description="Return status" storage="uniform" type="float"/>
-	<code>
+	<rsl_code>
 		$(status) = match( $(stra), $(strb) );
-	</code>
+	</rsl_code>
 	<usage>Searches subject string, for pattern string, and returns 1.0 if the pattern exists in the subject, if not, it returns 0.0. The pattern can be any regex expression (man regex for more information).</usage>
 </shrimp>

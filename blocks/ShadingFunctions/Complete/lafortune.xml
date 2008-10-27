@@ -10,7 +10,7 @@
     <input name="Cs" description="Surface color" type="color" default="Cs"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 
 	/* Following lobe data taken from Ryan Heniser's implementation of the
 		the Lafortune model (via C shadeop, that is available at 
@@ -120,6 +120,6 @@
 								$(N), $(I), $(dir),
 								DECLARE_AOV_PARAMETERS );
 
-	</code>
+	</rsl_code>
     <usage>Based on Stephen H. Westin's implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. BRDFs 1-7, color matrix 1-2 for metal or skin.  This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

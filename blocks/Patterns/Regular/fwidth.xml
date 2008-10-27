@@ -2,14 +2,14 @@
 	<input name="p" description="point under consideration" type="float point" default="P"/>
 	<output name="fwidth" description="An estimate of the sample width at p" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	#define val_$(p:type)
 	#ifdef val_float
 		$(fwidth) = filterwidth( $(p) );
 	#else
 		$(fwidth) = filterwidthp( $(p) );
 	#endif
-	</code>
+	</rsl_code>
 	<usage>This should be used to calulate the fwidth or blur inputs to other blocks that do their own antialising.
 	</usage> 
 </shrimp>

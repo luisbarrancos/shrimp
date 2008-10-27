@@ -16,7 +16,7 @@
 	<output name="val" description="Trace value" type="float color"/>
 	<output name="dist" description="Optional ray distance" type="float"/>
 	<output name="alpha" description="Unoccluded fraction of trace" type="float"/>
-	<code>
+	<rsl_code>
 	#ifdef RAYOPTIONS
 	#undef RAYOTIONS
 	#endif
@@ -51,6 +51,6 @@
 	$(val) = $(val:type) trace( $(inpoint), $(indir), RAYOPTIONS );
 	#endif
 
-	</code>
+	</rsl_code>
     <usage>Returns the incident light reaching a point P from a given direction R. If raytracing isn't supported, trace will return 0. Bias specifies the bias for the ray starting point, and defaults to -1. Maxdist specifies are distance after which no intersections are checked. If the float version is used, then the distance to the nearest ray intersection is returned instead. Note also that the parameters passed are dependent on the trace() implementation, so check your renderer's documentation regarding the specifics of the trace() shadeop, which may vary considerably from renderer to renderer.</usage>
 </shrimp>

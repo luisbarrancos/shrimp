@@ -5,7 +5,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at (x,y)" type="float color vector point"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * filteredVLNoise( $(x), $(width), $(scale) );
@@ -13,7 +13,7 @@
 		$(val) = $(amplitude) * $(val:type) filteredvsnoise(
 				filteredvsnoise( $(x), $(width) ) * $(scale) + $(x), $(width));
 	#endif
-	</code>
+	</rsl_code>
 	<usage>Filtered 1 dimensional Ken Musgrave VLNoise.
 	</usage> 
 </shrimp>

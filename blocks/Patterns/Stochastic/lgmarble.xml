@@ -9,10 +9,10 @@
 	<input name="pp" description="Surface point" type="point" default="P"/>
 	<output name="val" description="Output color" type="color"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 		$(val) = veinedmarble(	$(veinfreq), $(veinlevels), $(warpfreq),
 								$(warping), $(sharpness), $(basecolor),
 								$(veincolor), $(pp) );
-	</code>
+	</rsl_code>
 	<usage>Larry Gritz's LGMarble veining pattern, mixing basecolor to veincolor.</usage> 
 </shrimp>

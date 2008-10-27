@@ -13,11 +13,11 @@
     <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
         $(Ci) = MKgooch(	$(NN), $(IN), $(Ka), $(Kd), $(Ks), $(calpha),
 							$(cbeta), $(roughness), $(B), $(Y),
 							$(cdiff), $(cspec),
 							DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Gooch non photorealistic shading model, by Mike King, as described in an "A Non-Photorealistic Lighting Model for Automatic Technical Illustration", in the Siggraph 1998 proceedings. Ka, Kd, Ks, ambient, diffuse, and specular coefficients respectively, calpha and cbeta, the Gooch cool and warm color factors. B and Y used to contruct the cool and warm color, roughness and specular color, to control specular roughness and color respectively. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
 </shrimp>

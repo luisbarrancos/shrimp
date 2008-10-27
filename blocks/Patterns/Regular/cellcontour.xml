@@ -7,10 +7,10 @@
 	<input name="P" description="Surface point" type="point" default="P"/>
 	<output name="val" description="Output value" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 		$(val) = step( $(lthick) * (
 					distance( $(p1), $(p2) ) / (
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
-	</code>
+	</rsl_code>
 </shrimp>

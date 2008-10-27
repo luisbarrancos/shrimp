@@ -4,8 +4,8 @@
 	<input name="period" description="Period" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 		$(val) = pulsetrain( $(edge), $(period), $(x) );
-	</code>
+	</rsl_code>
 	<usage>Pulsetrain by Larry Gritz. Returns a signal that repeats with a given period.</usage>
 </shrimp>

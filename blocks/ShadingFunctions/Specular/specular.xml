@@ -5,10 +5,10 @@
 	<input name="viewer" description="The viewer vector" type="normal vector" default="-normalize(I)"/>
 	<input name="roughness" description="The specular roughness" type="float" default="0.3"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * specular( $(norm), $(viewer), $(roughness) );
 		$(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
 <usage>Specular term, using specular() call. Note that what is a standard specular() might vary with the renderer you're using. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

@@ -7,10 +7,10 @@
     <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		$(Ci) = strauss(	$(cdiff), $(smooth), $(metal), $(trans),
 							$(NN), $(IN),
 							DECLARE_AOV_PARAMETERS );
-	</code>
+	</rsl_code>
     <usage>Implementation of the Strauss empirical BRDF, from the paper: A Realistic Lighting Model for Computer Animators, by Paul S.Strauss. All parameters are in the range [0,1]. The smoothness parameter controls the surface smoothness, being 0 a rough, and perfectly diffuse surface, and 1 a smooth and perfectly specular mirroring surface - it affects both the diffuse to specular reflection ratio, and also the size and brightness of the specular highlights. The metalness parameter controls the off-specular peaks of the surface, being 0 the appearance of a non-metal surface, and 1 the appearance of a metal surface - this affects the specular color, as well as the amount of diffuse contribution. The transparency parameter indicates that the surface is not totally opaque. This block passes the resulting values to the aov_surfacecolor, aov_diffuse and aov_specular AOV presets.</usage>
 </shrimp>

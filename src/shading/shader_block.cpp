@@ -1192,7 +1192,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 				set_includes (c->FirstChild()->ToText()->Value());
 			}
 		}
-		else if (element == "code") {
+		else if (element == "rsl_code") {
 
 			if (c->FirstChild()) {
 				set_code (c->FirstChild()->ToText()->Value());

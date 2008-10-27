@@ -2,9 +2,9 @@
 	<input name="z" description="z component" type="float" default="0"/>
 	<input name="p" description="point, vector, or normal" type="point vector normal" default="0"/>
 	<output name="out" description="point, vector or normal with the specified components" type="point vector normal"/>
-	<code>
+	<rsl_code>
 	setzcomp( $(p:type) $(p), $(z) );
 	$(out) = $(p);
-	</code>
+	</rsl_code>
 <usage>Sets the Z component, of a point, vector, or normal.</usage>
 </shrimp>

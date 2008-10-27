@@ -2,8 +2,8 @@
     <input name="field" description="Ray info fields, see help." storage="uniform" type="string" default="&quot;depth&quot;"/>
 	<output name="status" description="Exit status" type="float"/>
 	<output name="result" description="Query value" type="float string"/>
-	<code>
+	<rsl_code>
 		$(status) = rayinfo( $(field), $(result) );
-	</code>
+	</rsl_code>
 <usage>Returns the data associated with the current ray, as long as the data is known to the renderer and of correct type, in which case result will contain the associated data content, and rayinfo() will exit with 1.0, otherwise rayinfo() will exit with 0. The data accessible by the rayinfo() varies with each renderer's implementation, please check your renderer's documentation for details. The most common data to query follows: speculardepth, diffusedepth, shadowdepth, depth, type, and label.</usage>
 </shrimp>

@@ -5,8 +5,8 @@
 	<input name="pp" description="Surface point" type="point" default="P"/>
 	<output name="val" description="Output color" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
         $(val) = wood2( $(ringscale), $(txtscale), $(grainy), $(pp) );
-	</code>
+	</rsl_code>
 	<usage>Wood pattern block, based on wood2.sl shader by Larry Gritz.</usage>
 </shrimp>

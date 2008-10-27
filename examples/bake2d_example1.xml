@@ -14,7 +14,7 @@
 			</input>
 			<input name="ascii" type="float" storage="varying" value="1" description="ASCII/binary file toggle"/>
 			<output name="bdataout" type="color" storage="varying" description="Baked data"/>
-			<code>
+			<rsl_code>
 	#if RENDERER==aqsis
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
 		$(bdataout) = $(bdata);
@@ -36,16 +36,16 @@
 		$(bdataout) = $(bdata);
 	#endif
 			
-							</code>
+							</rsl_code>
 			<include/>
 			<usage>Bakes the supplied data channel into a bakefile. Note that this shadeop is only supported in Aqsis and 3Delight; you can use bake3d in other implementations. In 3Delight&apos;s case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default.						</usage>
 		</block>
 		<block id="Diffuse" position_x="-1" position_y="1.63076923076923" author="rconstruct">
 			<input name="norm" type="normal" storage="varying" value="normalize(N)" description="The surface normal"/>
 			<output name="col" type="color" storage="varying" description="The amount of diffuse light"/>
-			<code>
+			<rsl_code>
 	$(col) = diffuse( $(norm) );
-							</code>
+							</rsl_code>
 			<include/>
 			<usage>Lambertian Diffuse term. This is meant to be combined in your network, with an diffuse, and/or specular term, as needed. Cs isn&apos;t taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).						</usage>
 		</block>
@@ -55,9 +55,9 @@
 			</input>
 			<input name="B" type="point" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-							</code>
+							</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
@@ -70,9 +70,9 @@
 				<connection parent="Turbulence3D" output="val"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A * B"/>
-			<code>
+			<rsl_code>
 	$(val) = $(A) * $(B);
-							</code>
+							</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
@@ -96,7 +96,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
-			<code/>
+			<rsl_code/>
 			<include/>
 			<usage/>
 		</block>
@@ -108,7 +108,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 			<input name="to_space" type="string" storage="uniform" value="&quot;object&quot;" description="The coordinate system to transform into"/>
 			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
 			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
-			<code>
+			<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
 	#ifdef $(p)_point
@@ -130,7 +130,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
 	#endif
 	#endif
-							</code>
+							</rsl_code>
 			<include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.						</usage>
 		</block>
@@ -144,7 +144,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the turbulence"/>
 			<input name="amplitude" type="float" storage="varying" value="1" description="Amplitude of turbulence"/>
 			<output name="val" type="color" storage="varying" description="turbulence value at p"/>
-			<code>
+			<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * turbulence( $(p), $(fwidth), $(octaves),
@@ -153,26 +153,26 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 		$(val) = $(amplitude) * $(val:type) ( vector vturbulence( $(p),
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
-							</code>
+							</rsl_code>
 			<include>fractal.h						</include>
 			<usage>This is the Perlin turbulence function.
 							</usage>
 		</block>
 		<block id="p" position_x="-4" position_y="2" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
-			<code>
+			<rsl_code>
     $(P) = P;
-    						</code>
+    						</rsl_code>
 			<include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.						</usage>
 		</block>
 		<block id="st" position_x="2" position_y="-2" author="rconstruct">
 			<output name="s" type="float" storage="varying" description="S texture coordinate"/>
 			<output name="t" type="float" storage="varying" description="T texture coordinate"/>
-			<code>
+			<rsl_code>
     $(s) = s;
     $(t) = t;
-    						</code>
+    						</rsl_code>
 			<include/>
 			<usage/>
 		</block>

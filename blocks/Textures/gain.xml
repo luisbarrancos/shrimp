@@ -3,7 +3,7 @@
 	<input name="gain" description="Gain value" type="float" default="0.5"/>
 	<output name="val" description="Adjusted value." type="float color"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = gain($(nput), $(gain));
@@ -13,6 +13,6 @@
 		float ztmp = comp( $(val:type) $(nput), 2);
 		$(val) = $(val:type) (gain(xtmp, $(gain)), gain(ytmp, $(gain)), gain(ztmp, $(gain)));
 	#endif
-	</code>
+	</rsl_code>
 	<usage>Similar to a contrast adjustment</usage>
 </shrimp>

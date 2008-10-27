@@ -3,8 +3,8 @@
 	<input name="y" description="y component" type="float" default="0"/>
 	<input name="z" description="z component" type="float" default="0"/>
 	<output name="out" description="point, vector, or normal with the specified components" type="point vector normal"/>
-	<code>
+	<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
-	</code>
+	</rsl_code>
 <usage>Sets xyz components of a point, vector, or normal.</usage>
 </shrimp>

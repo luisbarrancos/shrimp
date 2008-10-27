@@ -8,12 +8,12 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * anisophongspec( $(N), $(I), $(nu), $(nv),
 						$(ior) );
         $(Ci) = aov_specularcolor * aov_specular;
 
-	</code>
+	</rsl_code>
 	<usage>Based on Peter Stuart's implementation of the Ashikmin-Shirley anisotropic BRDF, here, the isolated specular term only. Nu and Nv control the specularity in the anisotropy, and anisotropy perpendicular directions, while ior contains the index of refraction for the fresnel. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

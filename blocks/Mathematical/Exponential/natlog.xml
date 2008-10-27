@@ -1,8 +1,8 @@
 <shrimp type="function" name="NatLog" description="Natural Logarithm" author="rconstruct">
 	<input name="a" description="Input value" type="float" default="1"/>
 	<output name="val" description="natural logarithm of x" type="float"/>
-	<code>
+	<rsl_code>
 	$(val) = log( $(a) );
-	</code>
+	</rsl_code>
 <usage>Log with 1 argument, returns natural logarithm of x (x = log(exp(x))).</usage>
 </shrimp>

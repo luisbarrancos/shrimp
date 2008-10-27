@@ -5,8 +5,8 @@
 	<output name="ty" description="out tile Y" type="float"/>
 	<output name="ttype" description="Tile type" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 		find_penrose_rhomb( $(tx), $(ty), $(ttype), $(sx), $(sy) );
-	</code>
+	</rsl_code>
 	<usage>Penrose rhomb tile, by Derek Ledbetter, returns Penrose rhomb tile values, and tile types, being 0 = skinny, and 1 = fat.</usage> 
 </shrimp>

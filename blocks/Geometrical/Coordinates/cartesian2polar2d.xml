@@ -4,8 +4,8 @@
 	<output name="rho" description="The converted X coordinate" type="float"/>
 	<output name="theta" description="The converted Y coordinate" type="float"/>
 	<include>conversion.h</include>
-	<code>
+	<rsl_code>
 		cartesian2polar2d(	$(x), $(y), $(rho), $(theta) );
-	</code>
+	</rsl_code>
 	<usage>Converts 2D Cartesian coordinates, to polar coordinates.</usage>
 </shrimp>

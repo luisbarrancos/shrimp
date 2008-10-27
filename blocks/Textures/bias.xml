@@ -3,7 +3,7 @@
 	<input name="bias" description="Bias value" type="float" default="0.5"/>
 	<output name="val" description="Adjusted value." type="float color"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = ($(bias) > 0) ? pow($(nput), log($(bias)) / log(0.5)) : 0;
@@ -13,6 +13,6 @@
 		float ztmp = comp( $(val:type) $(nput), 1);
 		$(val) = $(val:type) (bias(xtmp, $(bias)), bias(ytmp, $(bias)), bias(ztmp, $(bias)));
 	#endif
-	</code>
+	</rsl_code>
 	<usage>Similar to a brighness adjustement</usage>
 </shrimp>

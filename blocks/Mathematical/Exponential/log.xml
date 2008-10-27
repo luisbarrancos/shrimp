@@ -2,8 +2,8 @@
 	<input name="a" description="Input value" type="float" default="1"/>
 	<input name="base" description="Base of log" type="float" default="1"/>
 	<output name="val" description="val = log(a) with base base" type="float"/>
-	<code>
+	<rsl_code>
 	$(val) = log( $(a), $(base) );
-	</code>
+	</rsl_code>
 <usage>Log with 2 arguments, returns the logarithm of value in the specified base (x=log(pow(base,x), base)).</usage>
 </shrimp>

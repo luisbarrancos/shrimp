@@ -8,10 +8,10 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_diffuse += $(Kd) * Hapke( $(sden), $(fscat), $(refl), $(N), $(I) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
-	</code>
+	</rsl_code>
     <usage>Based on Szymon Rusinkiewicz's implementation of the Hapke-Lommel-Seeliger lunar surface BRDF, with Schonberg backstattering and Hapke retrodirective function. The sden parameter controls the density of the surface. The fscat parameter, controls the forward scattering of the surface, and the refl parameter, the surface reflectivity. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

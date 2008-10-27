@@ -5,7 +5,7 @@
 	<input name="bdata" description="Data to bake" type="point color float" type_parent="bdataout" default="0"/>
 	<input name="ascii" description="ASCII/binary file toggle" type="float" default="1"/>
 	<output name="bdataout" description="Baked data" type="point color float" />
-	<code>
+	<rsl_code>
 	#if RENDERER==aqsis
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
 		$(bdataout) = $(bdata);
@@ -27,6 +27,6 @@
 		$(bdataout) = $(bdata);
 	#endif
 			
-	</code>
+	</rsl_code>
 <usage>Bakes the supplied data channel into a bakefile. Note that this shadeop is only supported in Aqsis and 3Delight; you can use bake3d in other implementations. In 3Delight's case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default.</usage>
 </shrimp>

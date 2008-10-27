@@ -1,7 +1,7 @@
 <shrimp type="function" name="Vector2Normal" description="Vector to normal conversion" author="rconstruct">
     <input name="in" description="Input value" type="vector" default="0"/>
     <output name="out" description="Output value" type="normal"/>
-	<code>
+	<rsl_code>
 	    $(out) = normal( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
-	</code>
+	</rsl_code>
 </shrimp>

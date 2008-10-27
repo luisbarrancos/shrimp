@@ -2,8 +2,8 @@
 	<input name = "P1" description="1st point" type="point" default="P"/>
 	<input name = "P2" description="2nd point" type="point" default="1"/>
 	<output name="out" description="The distance between P1 and P2" type="float"/>
-	<code>
+	<rsl_code>
 	$(out) = distance( $(P1), $(P2) );
-	</code>
+	</rsl_code>
 <usage>Returns the distance between two points (length(P1-P2)).</usage>
 </shrimp>

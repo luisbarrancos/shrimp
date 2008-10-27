@@ -8,13 +8,13 @@
 	<input name="Cs" description="Surface color" type="color" default="color( .8, .5, .5 )"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cs);
 		aov_ambient += $(Ka) * ambient();
 		aov_scattering += subsurfaceSkin( $(I), $(N), $(Cs), $(sheencolor),
 								1/$(ior), $(thickness) );
         $(Ci) = aov_surfacecolor * aov_ambient + aov_scattering;
         
-	</code>
+	</rsl_code>
 	<usage>Based on Matt Pharr's skin shader, a surface shader that implements a shading model that should have a visual appearance generally similar to that of skin. Based on phenomenological information about skin reflectance from Hanrahan and Krueger "Reflection from layered surfaces due to subsurface scattering", proceedings of SIGGRAPH 1993. The parameters are the skin base color, the oily surface sheen color, the ratio of the indices of refraction of incoming ray to transmitted ray, and the skin layer thickness. This block passes the resulting values to the aov_surfacecolor, aov_ambient and aov_scattering AOV presets.</usage>
 </shrimp>

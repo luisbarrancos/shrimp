@@ -2,8 +2,8 @@
     <input name="sparam" description="Renderer option state to query, see help." storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="result" description="Query value" type="float color normal vector point string"/>
 	<output name="status" description="Exit status" type="float"/>
-	<code>
+	<rsl_code>
 		$(status) = atmosphere( $(sparam), $(result) );
-	</code>
+	</rsl_code>
     <usage>Returns the data associated with the renderer's global option state, as long as the data is known to the renderer and of correct type, in which case result will contain the associated data content, and option() will exit with 1.0, otherwise option() will exit with 0. The data accessible by the option() call is listed next, as well as its type: "Format", uniform float[3]; "FrameAspectRation", uniform float; "CropWindow", uniform float[4]; "DepthOfField", uniform float[3]; "Shutter", uniform float[2]; "Clipping", uniform float[2]; "Hider", uniform string; "DeviceResolution", uniform float[3]; "trace:maxdepth", uniform float; "trace:speculartreshold", uniform float; "user:useroption", user set type, for user set options. Notice that different renderer implementations of option() might be able to access different data fields.</usage>
 </shrimp>

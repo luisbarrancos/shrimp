@@ -8,11 +8,11 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * LocIllumWardAnisotropic( $(N), $(I),
 						$(dir), $(uroughness), $(vroughness) );
         $(Ci) = aov_specularcolor * aov_specular;
-	</code>
+	</rsl_code>
     <usage>Gregory J. Ward's anisotropic specular term. Uroughness and Vroughness control the apparent surface roughness in the anisotropy direction, and anisotropy perpendicular direction dir, which defaults to dPdv. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

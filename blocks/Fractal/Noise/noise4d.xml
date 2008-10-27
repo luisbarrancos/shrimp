@@ -3,8 +3,8 @@
 	<input name="t" description="4th dimension value" type="float" default="time"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
-	<code>
+	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) noise( $(p), $(t) );
-	</code>
+	</rsl_code>
 <usage>4 dimensional perlin noise function.</usage>
 </shrimp>

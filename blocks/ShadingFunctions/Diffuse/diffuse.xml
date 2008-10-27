@@ -3,10 +3,10 @@
 	<input name="Kd" description="The diffuse coefficient" type="float" default="1"/>
 	<input name="norm" description="The surface normal" type="normal" default="normalize(N)"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
-	<code>
+	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_diffuse += $(Kd) * diffuse( $(norm) );
 		$(Ci) = aov_surfacecolor * aov_diffuse;
-	</code>
+	</rsl_code>
 <usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

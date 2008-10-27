@@ -2,8 +2,8 @@
     <input name="sparam" description="Renderer data to query, see help." storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="result" description="Query value" type="float color normal vector point string"/>
 	<output name="status" description="Exit status" type="float"/>
-	<code>
+	<rsl_code>
 		$(status) = rendererinfo( $(sparam), $(result) );
-	</code>
+	</rsl_code>
     <usage>Returns information about the renderer, as long as the data queried is known to the renderer and of correct type, in which case result will contain the associated data content, and rendererinfo() will exit with 1.0, otherwise rendererinfo() will exit with 0. The data accessible by the rendererinfo() call is listed next, as well as its type: "renderer", uniform string; "version", uniform float[4]; "versionstring", uniform string. Notice that different renderer implementations of rendererinfo() might be able to access different data fields.</usage>
 </shrimp>

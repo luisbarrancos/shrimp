@@ -9,9 +9,9 @@
 	<output name="out" description="returns 1 if x,y lies within the rectangle" type="float"/>
 	<include>shrimp_helpers.h</include>
 	<include>shapes.h</include>
-	<code>
+	<rsl_code>
 	$(out) = shRect( $(x0),$(y0),$(x),$(y),$(width),$(height),$(blur) );
-	</code>
+	</rsl_code>
 	<usage>Tests whether a 2d point lies inside a 2d Rectangle.
 Blur can be used to control the antialiasing. The output varies smoothly between 0 and 1 in the blurred region.
 	</usage>

@@ -9,12 +9,12 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
-	<code>
+	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * aschlick( $(roughness), $(isotropy),
 						$(ior), $(N), $(I), $(dir) );
         $(Ci) = aov_specularcolor * aov_specular;
 
-	</code>
+	</rsl_code>
     <usage>Christope Schlick's anisotropic specular term. Isotropy controls surface isotropy, 0 being anisotropic, 1 being isotropic. Roughness controls apparent surface roughness, 0 being smooth, 1 being rough. Index of refraction controls the reflection coefficient contribution from the fresnel term. Dir is the anisotropy direction, defaults to dPdu. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

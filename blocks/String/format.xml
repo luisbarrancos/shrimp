@@ -2,8 +2,8 @@
 	<input name="stra" description="String pattern" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="strb" description="String to search" storage="uniform" type="string" default="&quot;&quot;" multi=","/>
 	<output name="val" description="Formatted string" storage="uniform" type="string"/>
-	<code>
+	<rsl_code>
 		$(val) = format( $(stra), $(strb) );
-	</code>
+	</rsl_code>
 	<usage>Similar to sprintf in C, formats a string according to string pattern. The formatting for the string uses %f, %c, %p, %m and %s, for variables of type float, color, normal/vector/point, matrix, and string respectively.</usage>
 </shrimp>

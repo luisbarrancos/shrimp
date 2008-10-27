@@ -1,8 +1,8 @@
 <shrimp type="function" name="Determinant" description="Get the determinant of matrix m." author="rconstruct">
     <input name="minput" description="Matrix input" type="matrix" default="0"/>
     <output name="mdeter" description="Matrix determinant" type="float"/>
-	<code>
+	<rsl_code>
     $(mdeter) = determinant( $(minput) );
-	</code>
+	</rsl_code>
 <usage>Gets the determinant of matrix m.</usage>
 </shrimp>

@@ -8,7 +8,7 @@
 	<input name="amplitude" description="Amplitude of VLfBm" type="float" default="1"/>
 	<output name="val" description="VLfBm value at p" type="float color point vector normal"/>
 	<include>fractal.h</include>
-	<code>
+	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float
 		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
@@ -16,7 +16,7 @@
 		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );
 	#endif
-	</code>
+	</rsl_code>
 	<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
 	</usage> 
 </shrimp>

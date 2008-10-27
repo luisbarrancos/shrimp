@@ -15,11 +15,11 @@
 	<input name="atten" description="Attenuation" type="float" default="1e6"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<include>lights.h</include>
-	<code>
+	<rsl_code>
 		$(Cl) = sig2kshadowspot( $(inten), $(lcolor), $(lpos), $(ltar),
 					radians( $(coneangle) ), radians( $(conedelta) ),
 					$(bdist), $(shadowname), $(filtername),
 					$(samples), $(blur), $(bias), $(atten), $(width) );
-	</code>
+	</rsl_code>
 <usage>Modified shadow spotlight shader, by Tal Lancaster, from The RenderMan repository ( www.renderman.org ). Modified to better handle atenuation. Bias overrides the global shadow bias value, with -1 being the global default, and blur, the amount to soften the shadow edges. Shadow map filter type defaults to gaussian, with triangle and box as optional.</usage>
 </shrimp>

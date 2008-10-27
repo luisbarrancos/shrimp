@@ -2,8 +2,8 @@
     <input name="minput" description="Matrix input" type="matrix" default="1"/>
 	<input name="inpoint" description="Point input" type="point" default="P"/>
     <output name="mout" description="Translated matrix" type="matrix"/>
-	<code>
+	<rsl_code>
 	$(mout) = scale( $(minput), $(inpoint) );
-	</code>
+	</rsl_code>
 <usage>Scales the matrix m. These functions are similar to the RI functions RiTranslate, RiRotate, and RiScale, except that the rotation angle in rotate() is in radians, not in degrees as with RiRotate.</usage>
 </shrimp>

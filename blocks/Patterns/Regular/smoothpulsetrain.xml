@@ -7,8 +7,8 @@
 	<input name="period" description="Period" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<code>
+	<rsl_code>
 		$(val) = smoothpulsetrain( $(min1), $(max1), $(min2), $(max2), $(period), $(x) );
-	</code>
+	</rsl_code>
 	<usage>SmoothPulsetrain by Larry Gritz. Returns a signal that repeats with a given period.</usage>
 </shrimp>

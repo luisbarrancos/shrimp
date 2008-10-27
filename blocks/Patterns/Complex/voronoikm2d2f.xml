@@ -9,12 +9,12 @@
     <output name="spos2" description="s position 2" type="float"/>
     <output name="tpos2" description="t position 2" type="float"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;
 	$(f2) = 0; $(spos2) = 0; $(tpos2) = 0;
     voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
-	</code>
+	</rsl_code>
 	<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.</usage> 
 </shrimp>

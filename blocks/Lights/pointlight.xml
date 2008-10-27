@@ -11,9 +11,9 @@
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<include>lights.h</include>
-	<code>
+	<rsl_code>
 		$(Cl) = spointlight( $(lpos), $(inten), $(decay), $(blur), $(width),
 					$(samples), $(bias), $(shadowmap), $(filter), $(lcolor) );
-	</code>
+	</rsl_code>
 <usage>Point light shader. Decay can be 1 = linear, 2 = squared.</usage>
 </shrimp>

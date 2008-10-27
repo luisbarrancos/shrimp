@@ -3,8 +3,8 @@
 	<input name="useuv" description="Use UV instead of ST" type="float" default="0"/>
 	<output name="val" description="Output color" type="color"/>
 	<include>extrapatterns.h</include>
-	<code>
+	<rsl_code>
         $(val) = mrrand( $(maxiter), $(useuv) );
-	</code>
+	</rsl_code>
 	<usage>Michael Rivero's Mandelbrot fractal shader. Maxiter defines the maximum number of iterations, and usev = 1/0 toggles between using UV surface parameters and ST surface texture parameters.</usage>
 </shrimp>
