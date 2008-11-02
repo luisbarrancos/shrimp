@@ -17,9 +17,9 @@
 	<output name="dist" description="Optional ray distance" type="float"/>
 	<output name="alpha" description="Unoccluded fraction of trace" type="float"/>
 	<rsl_code>
-	#ifdef RAYOPTIONS
-	#undef RAYOTIONS
-	#endif
+
+	#ifndef RAYOPTIONS
+	#define RAYOPTIONS
 
 	/* default output */
 	$(dist) = 0; $(alpha) = 0;
@@ -42,6 +42,8 @@
 						"alpha", $(alpha)
 	#else
 	#define RAYOPTIONS	"bias", $(bias)
+	#endif
+
 	#endif
 	
 	#define $(val)_$(val:type)

@@ -1,0 +1,15 @@
+<shrimp type="function" name="CxSet" description="Create Complex number block" author="rconstruct">
+	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
+	<input name="B" description="2nd input" type="float" default="0"/>
+	<output name="val" description="Complex result" type="vector"/>
+	<include>odwikicomplex.h</include>
+	<rsl_code>
+		#define A$(A)_$(A:type)
+		#ifdef A$(A)_vector
+		$(val) = vector( xcomp( $(A) ), ycomp( $(A) ), 0 );
+		#else
+		$(val) = vector( $(A), $(B), 0);
+		#endif
+	</rsl_code>
+	<usage>Create a complex number. Based on Odforce's odwiki complex.h.</usage>
+</shrimp>

@@ -5,7 +5,21 @@
 #	define SQR(X)	( (X) * (X) )
 #endif
 
-#define ENUMBER 2.718281828459045
+#define SHRIMP_E 2.718281828459045
+
+////////////////////////////////////////////////////////////////////////////////
+/* Hyperbolic cosine */
+float cosh( float theta; ) {
+	return ( exp(theta) + exp(-theta) ) / 2;
+}
+/* Hyperbolic sine */
+float sinh( float theta; ) {
+	return ( exp(theta) - exp(-theta) ) / 2;
+}
+/* Hyperbolic tangent */
+float tanh( float theta; ) {
+	return (exp(theta) - exp(-theta)) / (exp(theta) + exp(-theta));
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 /* 
