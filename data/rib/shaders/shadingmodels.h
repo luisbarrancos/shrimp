@@ -6,6 +6,8 @@
 #include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
 							   all the AOVs to zero in the first statement
 							   of the preview shader with INIT_AOV_PARAMETERS*/
+#include "odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
+							   including full formula for complex Fresnel. */
 
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )
@@ -653,7 +655,7 @@ color
 cooktorrance(
 				normal Nn;
 				vector In, anisodir;
-				float ior, roughness;
+				float ior, k, roughness;
 				uniform float distromodel, geomodel;
 		)
 {
@@ -725,24 +727,16 @@ cooktorrance(
 #endif
 			}
 
-			/* We could use the Schlick fresnel approximation, but the
-			 * problem is that it behaves realistically up to a point.
-			 * "Gnuplotting" shown that at high iors, it starts to
-			 * deviate a lot from the classical fresnel. As for metals,
-			 * the ideal would be to use a complex ior fresnel call (and
-			 * perhaps have a table of 6 iors/k values, for spectral
-			 * shading (from Mario Marengo's work. Atm we'll just use
-			 * the classical fresnel. */
-			float Krf = 0, Ktf = 0;
-			fresnel( Ln, Hn, 1/ior, Krf, Ktf );
+			/* Using the full formula fresnel for unpolarized light, from 
+			 * the Odforce.net's Odwiki, by Mario Marengo and the Odforce
+			 * community. */
+			F = fresnel_kr( Ln.Hn, cx_set( ior, k ) );
 
 			/* Aqsis produced some strange artifacs when getting the amount
 			 * of reflected light from the microfacets. Apparent solution
 			 * seems to clamp the value. */
 #if RENDERER == aqsis
-			F = clamp( Krf, 0, 1 );
-#else
-			F = Krf;
+			F = clamp( F, 0, 1 );
 #endif
 
 			/* If the microfacets distribution is anisotropic, then it
@@ -760,6 +754,7 @@ cooktorrance(
 #endif
 		}
 	}
+	/* at high grazing angles, the values seem to go up a lot(?) */
 	return clamp(Ccook, color(0), color(1));
 }
 
