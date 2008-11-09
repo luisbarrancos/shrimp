@@ -25,7 +25,6 @@
 
 #include "../shading/rib_root_block.h"
 
-#include <FL/Fl_Menu_Item.H>
 
 #include <fltk/events.h>
 #include <fltk/Item.h>

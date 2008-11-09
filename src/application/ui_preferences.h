@@ -71,7 +71,7 @@ class dialog :
 private:
 	fltk::Window* w;
 
-	typedef struct scene_t {
+	struct scene_t {
 
 		std::string name;
 		std::string file;

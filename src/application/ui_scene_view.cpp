@@ -34,7 +34,6 @@
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
 
-#include <FL/Fl_Menu_Item.H>
 
 #include <fltk/ask.h>
 #include <fltk/events.h>

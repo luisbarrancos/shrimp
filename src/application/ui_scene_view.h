@@ -28,7 +28,6 @@
 
 #include <fltk/GlWindow.h>
 #include <fltk/gl.h>
-#include <FL/Fl_Menu_Item.H>
 #include <fltk/PopupMenu.h>
 
 #include <stdlib.h>

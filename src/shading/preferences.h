@@ -49,7 +49,7 @@ class general_options
 public:
 	// renderer list
 	typedef std::vector<std::string> displays_t;
-	typedef struct renderer_t {
+	struct renderer_t {
 
 		std::string name;
 		std::string shader_compiler;

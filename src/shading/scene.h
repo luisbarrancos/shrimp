@@ -56,7 +56,7 @@ public:
 	//////////// Menu helpers
 	// sort the blocks using the directory names they're stored in
 
-	typedef struct default_block_t {
+	struct default_block_t {
 
 		std::string name;
 		std::string path;
