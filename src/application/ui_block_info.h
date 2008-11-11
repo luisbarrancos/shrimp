@@ -40,6 +40,7 @@ namespace block_info
 static fltk::Output* s_name;
 static fltk::TextDisplay* s_description;
 static fltk::TextDisplay* s_usage;
+static fltk::Output* s_author;
 
 class dialog {
 
@@ -62,11 +63,15 @@ public:
 			s_description->wrap_mode (true);
 			s_description->tooltip ("Block description");
 
-			s_usage = new fltk::TextDisplay (90,90, 290,130, "Usage");
+			s_usage = new fltk::TextDisplay (90,90, 290,133, "Usage");
 			w->add (s_usage);
 			s_usage->tooltip ("Block usage");
 			s_usage->wrap_mode (true);
 			w->resizable (s_usage);
+
+			s_author = new fltk::Output (90,230, 290, 23, "Author");
+			w->add (s_author);
+			s_author->tooltip ("Block author");
 
 
 			fltk::ReturnButton* rb = new fltk::ReturnButton(300,260, 70,25, "OK");
@@ -87,6 +92,7 @@ public:
 		s_name->text (Block->name().c_str());
 		s_description->text (Block->m_description.c_str());
 		s_usage->text (Block->m_usage.c_str());
+		s_author->text (Block->m_author.c_str());
 
 		// show...
 		w->exec();
