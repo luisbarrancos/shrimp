@@ -79,7 +79,7 @@ public:
 	std::string scene_rendering_command (const std::string& RIBFile, const std::string& ShaderPath);
 
 	// show a preview of current scene
-	void show_preview (const std::string& TempDir);
+	void show_preview (const std::string& Directory);
 
 	// export scene (RIB file and shaders)
 	void export_scene (const std::string& Directory);
@@ -97,8 +97,15 @@ public:
 	bool get_AOV();
 
 private:
-	// parse shaders in the RIB scene and build them
-	void parse_and_build_shader_type (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType);
+	// parses a shader in the RIB scene and returns the shader compilation command
+	std::string parse_scene_shader (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType);
+
+	// outputs scene and shader files, returns rendering command list
+	typedef std::vector <std::string> command_list_t;
+	void write_scene_and_shaders (const std::string& SceneDirectory, command_list_t& CommandList);
+
+	// outputs rendering command list
+	void write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName);
 };
 
 

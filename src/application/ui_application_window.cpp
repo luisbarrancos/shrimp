@@ -673,7 +673,7 @@ void application_window::save_scene_as() {
 	fltk::filename_absolute (result, 2048, ".");
 
 	// choose shader file
-	const char* file = fltk::file_chooser ("Save Shader As", "*.xml", result);
+	const char* file = fltk::file_chooser ("Save Shader As", "Shrimp file (*.xml)", result);
 	if (!file)
 		return;
 

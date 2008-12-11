@@ -197,6 +197,8 @@ public:
 
 	std::string get_shader_code();
 	void show_preview (const std::string& TempDir);
+
+	// save current scene's RIB and shader files to a directory
 	void export_scene (const std::string& Directory);
 
 	//////////// Misc

@@ -251,7 +251,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	shader_code += "\n\n";
 
 	/* all blocks should be aware of the AOV macros, so instead of including
-	 * shrimp_aov.h in all blocks, we might as well make it a part of the 
+	 * shrimp_aov.h in all blocks, we might as well make it a part of the
 	 * standard shader body. */
 	shader_code += "#include <shrimp_aov.h>\n";
 
@@ -764,7 +764,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	file << "Display \"outputimage\" \"" << display << "\" \"rgb\"\n";
 	if (AOV) {
 		// standard/predefined AOVs ( from shrimp_aov.h )
-		// the user can create AOV blocks later, but that means updating the 
+		// the user can create AOV blocks later, but that means updating the
 		// RIB file, displays type, etc.., so we'll provide for a start, a good
 		// set of presets, such as diffuse, specular, reflection, etc...
 		// note that the string should be
@@ -786,7 +786,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 			+ "\"quantize\" [0 255 0 255]\n";
 		file << "Display \"+" + TempDir + "/" + "aov_specularcolor" + ".tif"
 			+ "\" \"file\" \"varying color aov_specularcolor\" "
-			+ "\"quantize\" [0 255 0 255]\n";	
+			+ "\"quantize\" [0 255 0 255]\n";
 		file << "Display \"+" + TempDir + "/" + "aov_reflection"
 			+ ".tif" + "\" \"file\" \"varying color aov_reflection\" "
 			+ "\"quantize\" [0 255 0 255]\n";
@@ -831,7 +831,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 }
 
 
-void rib_root_block::show_preview (const std::string& TempDir) {
+void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList) {
 
 	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
 
@@ -839,16 +839,15 @@ void rib_root_block::show_preview (const std::string& TempDir) {
 	general_options prefs;
 	prefs.load();
 	std::string scene_template (prefs.get_RIB_scene());
-	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Surface");
-	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Displacement");
-	parse_and_build_shader_type (scene_template, shader_path, TempDir, "LightSource");
-	parse_and_build_shader_type (scene_template, shader_path, TempDir, "Atmosphere");
+
+	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
+	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
+	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "LightSource") );
+	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
 
 	// build the default shaders
-	std::string light1_compilation = shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", TempDir, shader_path);
-	system_functions::execute_command(light1_compilation);
-	std::string light2_compilation = shader_compilation_command("distantlight.sl", shader_path, "distantlight", TempDir, shader_path);
-	system_functions::execute_command(light2_compilation);
+	CommandList.push_back( shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path) );
+	CommandList.push_back( shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path) );
 
 	// build Shrimp generated shaders
 	std::string surface_shader ("");
@@ -859,47 +858,58 @@ void rib_root_block::show_preview (const std::string& TempDir) {
 	if (has_surface_network()) {
 
 		surface_shader = "preview_surface";
-		export_shader (SURFACE, surface_shader, TempDir + '/' + surface_shader + ".sl");
+		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
 
-		std::string shader_compilation = shader_compilation_command (surface_shader + ".sl", TempDir, surface_shader, TempDir, shader_path);
-		system_functions::execute_command (shader_compilation);
+		CommandList.push_back( shader_compilation_command (surface_shader + ".sl", Directory, surface_shader, Directory, shader_path) );
 	}
 
 	if (has_displacement_network()) {
 
 		displacement_shader = "preview_displacement";
-		export_shader (DISPLACEMENT, displacement_shader, TempDir + '/' + displacement_shader + ".sl");
+		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
 
-		std::string shader_compilation = shader_compilation_command (displacement_shader + ".sl", TempDir, displacement_shader, TempDir, shader_path);
-		system_functions::execute_command (shader_compilation);
+		CommandList.push_back( shader_compilation_command (displacement_shader + ".sl", Directory, displacement_shader, Directory, shader_path) );
 	}
 
 	if (has_light_network()) {
 
 		light_shader = "preview_light";
-		export_shader (LIGHT, light_shader, TempDir + '/' + light_shader + ".sl");
+		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
 
-		std::string shader_compilation = shader_compilation_command (light_shader + ".sl", TempDir, light_shader, TempDir, shader_path);
-		system_functions::execute_command (shader_compilation);
+		CommandList.push_back( shader_compilation_command (light_shader + ".sl", Directory, light_shader, Directory, shader_path) );
 	}
 
 	if (has_atmosphere_network()) {
 
 		atmosphere_shader = "preview_atmosphere";
-		export_shader (VOLUME, atmosphere_shader, TempDir + '/' + atmosphere_shader + ".sl");
+		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
 
-		std::string shader_compilation = shader_compilation_command (atmosphere_shader + ".sl", TempDir, atmosphere_shader, TempDir, shader_path);
-		system_functions::execute_command (shader_compilation);
+		CommandList.push_back( shader_compilation_command (atmosphere_shader + ".sl", Directory, atmosphere_shader, Directory, shader_path) );
 	}
 
 	// output scene
-	std::string rib_preview = TempDir + '/' + "preview.rib";
+	std::string rib_preview = Directory + '/' + "preview.rib";
 
-	write_RIB (rib_preview, TempDir, surface_shader, displacement_shader, light_shader, atmosphere_shader);
+	write_RIB (rib_preview, Directory, surface_shader, displacement_shader, light_shader, atmosphere_shader);
 
-	std::string render_command = scene_rendering_command (rib_preview, TempDir);
-	system_functions::execute_command (render_command.c_str());
+	CommandList.push_back( scene_rendering_command (rib_preview, Directory) );
+}
 
+
+void rib_root_block::show_preview (const std::string& SceneDirectory) {
+
+	command_list_t commands;
+	write_scene_and_shaders (SceneDirectory, commands);
+
+	// output commands in a file for debugging purposes
+	const std::string command_file (SceneDirectory + '/' + "command_debug.txt");
+	write_command_list (commands, command_file);
+
+	// execute commands
+	for (command_list_t::const_iterator c = commands.begin(); c != commands.end(); ++c) {
+
+		system_functions::execute_command (*c);
+	}
 
 /*
 	int pid = fork();
@@ -932,47 +942,15 @@ void rib_root_block::show_preview (const std::string& TempDir) {
 }
 
 
-void rib_root_block::export_scene (const std::string& Directory) {
+void rib_root_block::export_scene (const std::string& SceneDirectory) {
 
-	// copy default light shaders
-	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
-	//std::string light1_compilation = shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path);
-	//std::string light2_compilation = shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path);
+	// output scene, get commmand list
+	command_list_t commands;
+	write_scene_and_shaders (SceneDirectory, commands);
 
-	// build RenderMan shaders
-	std::string surface_shader ("");
-	std::string displacement_shader ("");
-	std::string light_shader ("");
-	std::string atmosphere_shader ("");
-
-	if (has_surface_network()) {
-
-		surface_shader = "preview_surface";
-		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
-	}
-
-	if (has_displacement_network()) {
-
-		displacement_shader = "preview_displacement";
-		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
-	}
-
-	if (has_light_network()) {
-
-		light_shader = "preview_light";
-		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
-	}
-
-	if (has_atmosphere_network()) {
-
-		atmosphere_shader = "preview_atmosphere";
-		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
-	}
-
-	// output scene
-	std::string rib_preview = Directory + '/' + "preview.rib";
-
-	write_RIB (rib_preview, Directory, surface_shader, displacement_shader, light_shader, atmosphere_shader);
+	// write command file
+	const std::string command_file (SceneDirectory + '/' + "command_list.txt");
+	write_command_list (commands, command_file);
 }
 
 
@@ -1011,7 +989,9 @@ bool rib_root_block::get_AOV() {
 	return m_AOV;
 }
 
-void rib_root_block::parse_and_build_shader_type (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType) {
+std::string rib_root_block::parse_scene_shader (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType) {
+
+	std::string commands = "";
 
 	// find shaders
 	size_t pos = 0;
@@ -1031,13 +1011,32 @@ void rib_root_block::parse_and_build_shader_type (const std::string& RIBscene, c
 			if (name_start < name_end && name_end < RIBscene.size()) {
 
 				const std::string shader_name = RIBscene.substr (name_start + 1, name_end - name_start - 1);
-				std::string shader_compilation = shader_compilation_command(shader_name + ".sl", ShaderPath, shader_name, TempDir, ShaderPath);
-				system_functions::execute_command(shader_compilation);
+				std::string shader_compilation = shader_compilation_command (shader_name + ".sl", ShaderPath, shader_name, TempDir, ShaderPath);
+
+				if (!commands.empty())
+					commands += "; ";
+
+				commands += shader_compilation;
 			}
 
 		}
 	}
 	while (pos != RIBscene.npos);
+
+	return commands;
+}
+
+
+void rib_root_block::write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName) {
+
+	std::ofstream file (AbsoluteFileName.c_str());
+
+	for (command_list_t::const_iterator c = CommandList.begin(); c != CommandList.end(); ++c) {
+
+		file << *c << std::endl;
+	}
+
+	file.close();
 }
 
 
