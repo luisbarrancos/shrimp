@@ -316,15 +316,18 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		break;
 
 		case DISPLACEMENT:
-			shader_code += "displacement " + ShaderName + " (\n";
+			shader_code += "displacement " + ShaderName
+			       	+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case LIGHT:
-			shader_code += "light " + ShaderName + " (\n";
+			shader_code += "light " + ShaderName
+			       	+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case VOLUME:
-			shader_code += "volume " + ShaderName + " (\n";
+			shader_code += "volume " + ShaderName
+				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		default:
