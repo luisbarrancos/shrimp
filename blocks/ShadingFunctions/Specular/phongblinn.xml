@@ -1,4 +1,4 @@
-<shrimp name="Blinn" type="function" description="Blinn specular term." author="rconstruct">
+<shrimp name="Phong-Blinn" type="function" description="Phong-Blinn specular term." author="rconstruct">
 	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
     <input name="size" description="Specular size." type="float" default="15"/>
@@ -9,8 +9,8 @@
 	<include>shadingmodels.h</include>
 	<rsl_code>
 		aov_specularcolor += $(Cspec);
-		aov_specular += $(Ks) * blinn( $(N), $(I), $(size) );
+		aov_specular += $(Ks) * phong_blinn( $(N), $(I), $(size) );
         $(Ci) = aov_specularcolor * aov_specular;
 	</rsl_code>
-    <usage>Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
+    <usage>Phong-Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
 </shrimp>

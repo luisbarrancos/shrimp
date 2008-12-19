@@ -1,13 +1,15 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "shrimp_helpers.h"
-#include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
-							   Cook-Torrance model */
+#include "distributions2.h"	/* for PDFs and Geometric attenuation, for the
+				   Cook-Torrance model */
 #include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
-							   all the AOVs to zero in the first statement
-							   of the preview shader with INIT_AOV_PARAMETERS*/
+				   all the AOVs to zero in the first statement
+				   of the preview shader with
+				   INIT_AOV_PARAMETERS*/
 #include "odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
-							   including full formula for complex Fresnel. */
+				   including full formula for complex Fresnel.
+				 */
 
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )
@@ -318,12 +320,12 @@ anisophongdiff(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// James F. Blinn specular term ////////////////////////////////////////////////
+// James F. Blinn specular term (Phong-Blinn) //////////////////////////////////
 // from "Models of Light Reflection for Computer Synthesized Pictures", ////////
 // Computer Graphics, Vol.11, No.2, July 1977, page 192-198 (?) ////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-color blinn(
+color phong_blinn(
 				normal Nn;
 				vector In;
 				float size;
