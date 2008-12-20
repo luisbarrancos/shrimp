@@ -1,3 +1,4 @@
+#include <conversion.h>
 #include <fractal.h>
 #include <shrimp_helpers.h>
 
