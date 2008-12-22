@@ -50,7 +50,7 @@
 
 #include <iostream>
 #include <cmath>
-//#include <math.h>
+#include <limits>
 
 
 scene_view::scene_view (int x, int y, int w, int h, const char* l) :
@@ -775,7 +775,7 @@ void scene_view::draw_block (const shader_block* Block, const double X, const do
 void scene_view::draw_block_body (const shader_block* Block, const double X, const double Y) {
 
 	const double width = Block->m_width;
-	const unsigned long max_properties = std::max (Block->input_count(), Block->m_outputs.size());
+	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
 	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.0) * static_cast<double> (max_properties));
