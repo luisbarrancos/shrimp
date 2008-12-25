@@ -11,5 +11,5 @@
 		aov_diffuse += $(Kd) * Minnaert( $(k), $(N), $(I) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
 	</rsl_code>
-	<usage>Minnaert limb darkening term. Note that darkening range values should be in the 1.0-2.0 range. The diffuse color value is passed to aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
+	<usage>Minnaert limb darkening term, with the limb darkening parameter k, controlling the reflectance deviation from Lambertian (k=1). The diffuse color value is passed to aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
 </shrimp>

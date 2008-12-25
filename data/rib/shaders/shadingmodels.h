@@ -1,15 +1,13 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "shrimp_helpers.h"
-#include "distributions2.h"	/* for PDFs and Geometric attenuation, for the
-				   Cook-Torrance model */
+#include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
+							   Cook-Torrance model */
 #include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
-				   all the AOVs to zero in the first statement
-				   of the preview shader with
-				   INIT_AOV_PARAMETERS*/
+							   all the AOVs to zero in the first statement
+							   of the preview shader with INIT_AOV_PARAMETERS*/
 #include "odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
-				   including full formula for complex Fresnel.
-				 */
+							   including full formula for complex Fresnel. */
 
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )
@@ -186,6 +184,79 @@ color Hapke(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Lawrence B. Wolff diffuse model, based in "Improved Diffuse Reflection //////
+// Models for Computer Vision", by Lawrence B. Wolff, Shree K. Nayar, and //////
+// Michael Oren. ///////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+#ifndef AIR
+#define AIR 1.000293 /* ior for air */
+#endif
+
+/* formula for the Fresnel reflection factor for unpolarized  light */
+float nfresnel( float cos_theta, eta; )
+{
+	float g2 = sqrt( eta * eta - 1 + (cos_theta * cos_theta) );
+	float A = g2 - cos_theta;
+	float B = g2 +cos_theta;
+	float tmp = .5 * ( (A*A) / (B*B) );
+	float AA = B * cos_theta -1;
+	float BB = A * cos_theta + 1;
+	float tmp2 = 1 + ( (AA*AA) / (BB*BB) );
+	return tmp * tmp2;
+}
+
+/* "The diffuse reflection model proposed by Wolff, models reflection from
+ * smooth dielectric materials as a combination of subsurface light scattering
+ * distribution produced from internal inhomogeneities coupled with the 
+ * refraction of externally incidend and internally scattered light at the 
+ * air/surface dielectric boundary.", from "Improved Diffuse Reflection Models
+ * for Computer Vision", by Lawrence B. Wolff, Shree K. Nayar, and
+ * Michael Oren. */
+
+color Wolff(
+				normal Nn;
+				vector In;
+				float ior;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+
+	float cos_theta_r = Vf.Nf;
+	color C = color(0);
+	extern point P;
+
+	illuminance( P, Nf, PI/2 )
+	{
+		uniform float nondiff = 0;
+		lightsource("__nondiffuse", nondiff);
+		
+		if (nondiff < 1) {
+			
+			extern vector L;
+			extern color Cl;
+			
+			vector Ln = normalize(L);
+			float cos_theta_i = Ln.Nf;
+			/* first Fresnel term accounting for refraction of externally
+			 * incident light. */
+			float F = 1 - nfresnel( cos_theta_i, ior );
+			C += (1-nondiff) * Cl * F * cos_theta_i;
+		}
+	}
+	/* getting cosine of transmitted angle, for the second Fresnel term,
+	 * accounting for the refraction of internally scattered light. */
+	float eta = AIR/ior;
+	float cos_theta_t = sqrt( max( 0, 1 - (eta*eta * (1 - (cos_theta_r *
+							cos_theta_r)) )));
+	/* 2nd Fresnel term */
+	float F2 = 1 - nfresnel( cos_theta_t, eta );
+
+	return C * F2;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Oren-Nayar generalization of Lambert's reflection model /////////////////////
 // implementation by Szymon Rusinkiewicz  //////////////////////////////////////
 // from http://unix.math2.us.edu.pl/~perry/mp/wyklBRDF.pdf /////////////////////
@@ -326,10 +397,10 @@ anisophongdiff(
 ////////////////////////////////////////////////////////////////////////////////
 
 color phong_blinn(
-				normal Nn;
-				vector In;
-				float size;
-				)
+					normal Nn;
+					vector In;
+					float size;
+					)
 {
 	normal Nf = faceforward(Nn, In);
 	vector Vf = -In;
