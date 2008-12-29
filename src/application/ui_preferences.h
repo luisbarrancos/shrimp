@@ -292,12 +292,12 @@ public:
 		m_output_height = from_string (render_height, 256);
 
 		std::string shading_rate = trim (s_shading_rate->value());
-		m_shading_rate = from_string (shading_rate, 1);
+		m_shading_rate = from_string (shading_rate, 1.0); // keep 1.0 (not 1) to convert to double
 
 		std::string samples_x = trim (s_pixelsamples_x->value());
 		std::string samples_y = trim (s_pixelsamples_y->value());
-		m_samples_x = from_string (samples_x, 1);
-		m_samples_y = from_string (samples_y, 1);
+		m_samples_x = from_string (samples_x, 1.0); // keep 1.0 (not 1) to convert to double
+		m_samples_y = from_string (samples_y, 1.0); // keep 1.0 (not 1) to convert to double
 
 		// get scene name
 		const unsigned int scene_number = s_scene->value();

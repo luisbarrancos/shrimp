@@ -150,15 +150,15 @@ public:
 
 						} else if (name == "shading_rate") {
 
-							m_shading_rate = from_string (trim (a->Value()), 256);
+							m_shading_rate = from_string (trim (a->Value()), 256.0); // keep 256.0 (not 256) to convert to double
 
 						} else if (name == "samples_x") {
 
-							m_samples_x = from_string (trim (a->Value()), 1);
+							m_samples_x = from_string (trim (a->Value()), 1.0); // keep 1.0 (not 1) to convert to double
 
 						} else if (name == "samples_y") {
 
-							m_samples_y = from_string (trim (a->Value()), 1);
+							m_samples_y = from_string (trim (a->Value()), 1.0); // keep 1.0 (not 1) to convert to double
 						} else if (name == "scene") {
 
 							m_scene = trim (a->Value());
