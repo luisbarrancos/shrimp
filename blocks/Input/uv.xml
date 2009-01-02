@@ -1,6 +1,6 @@
-<shrimp type="function" name="uv" description="Surface texture coordinates" author="rconstruct">
-    <output name="u" description="U texture coordinate" type="float"/>
-    <output name="v" description="V texture coordinate" type="float"/>
+<shrimp type="function" name="uv" description="Parametric surface coordinates" author="rconstruct">
+    <output name="u" description="U surface coordinate" type="float"/>
+    <output name="v" description="V surface coordinate" type="float"/>
     <rsl_code>
     $(u) = u;
     $(v) = v;
