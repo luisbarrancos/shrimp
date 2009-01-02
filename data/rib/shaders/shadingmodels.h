@@ -223,6 +223,7 @@ color Wolff(
 	normal Nf = faceforward( Nn, In );
 	vector Vf = -In;
 
+	/* store preset quantities whenever possible */
 	float cos_theta_r = Vf.Nf;
 	color C = color(0);
 	extern point P;
@@ -233,10 +234,8 @@ color Wolff(
 		lightsource("__nondiffuse", nondiff);
 		
 		if (nondiff < 1) {
-			
 			extern vector L;
 			extern color Cl;
-			
 			vector Ln = normalize(L);
 			float cos_theta_i = Ln.Nf;
 			/* first Fresnel term accounting for refraction of externally
@@ -268,9 +267,10 @@ color Wolff(
  * Oren and Nayar's generalization of Lambert's reflection
  * model. The roughness parameter gives the standard deviation
  * of angle orientatations of the presumed surface grooves.
- * When roughness = 0, the model is identical to Lambertian
- * reflection.
-*/
+ * When roughness = 0, the model is Lambertian.
+ * */
+
+/* NOTE: this is the "qualitative" model, without inter-reflections */
 
 color
 OrenNayar(
@@ -313,6 +313,112 @@ OrenNayar(
 			
 			C += Cl * (1-nondiff) * cos_theta_i * (A + B * max( 0,
 						cos_phi_diff ) * sin( alpha ) * tan( beta ) );
+		}
+	}
+	return C;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Oren-Nayar diffuse model, implementation by Larry Gritz, from ///////////////
+// The RenderMan Repository - http://www.renderman.org /////////////////////////
+// This implementation is the 3 coefficients implementation with ///////////////
+// inter-reflections ///////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* renamed LG_orennayar.sl -- tal AT renderman DOT org */
+/*
+ * orennayar.sl - rough diffuse surface
+ *
+ * 
+ * DESCRIPTION:
+ *   Makes a rough surface using a BRDF which is more accurate than
+ *   Lambert.  Based on Oren & Nayar's model (see Proc. SIGGRAPH 94).
+ *
+ *   Lambertian (isotropic) BRDF is a simple approximation, but not
+ *   an especially accurate one for rough surfaces.  Truly rough surfacs
+ *   tend to act more like retroreflectors than like isotropic scatterers.
+ * 
+ * PARAMETERS:
+ *   Ka, Kd - just like matte.sl
+ *   sigma - roughness (0 is lambertian, larger values are rougher)
+ *
+ * AUTHOR:  Larry Gritz
+ *
+ * REFERENCES:
+ *   Oren, Michael and Shree K. Nayar.  "Generalization of Lambert's
+ *         Reflectance Model," Computer Graphics Annual Conference
+ *         Series 1994 (Proceedings of SIGGRAPH '94), pp. 239-246.
+ *
+ * NOTES:
+ *   1. Note that this is really just an illuminance loop that gathers
+ *      light from the sources and applies Oren & Nayar's local reflectance
+ *      model to the result.  It could easily be packaged up as a macro
+ *      or a function and used in any other shader, in place of diffuse().
+ *   2. Examination of why rough surfaces are not Lambertian will lead
+ *      you to the solution to the famous "flat full moon" problem.
+ *
+ * HISTORY:
+ *   14 June 1994 -- written by Larry Gritz
+ *
+ */
+
+/* tweaked a bit to fit Shrimp's structure.
+ * TODO: try and optimize this a bit. */
+
+color
+LG_OrenNayar(
+				color Cdiff;
+				float sigma;
+				normal Nn;
+				vector In;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+	/* store preset quantites whenever possible */
+	float cos_theta_r = Vf.Nf;
+	float theta_r = acos( cos_theta_r );
+	float sigma2 = sigma * sigma;
+	float C1 = 1 - .5 * sigma2 / (sigma2 + .33);
+
+	color C = color(0), L1 = color(0), L2 = color(0);
+	extern point P;
+
+	illuminance( P, Nf, PI/2 ) {
+
+		uniform float nondiff = 0;
+		lightsource("__nondiffuse", nondiff);
+
+		if (nondiff < 1) {
+			extern vector L;
+			extern color Cl;
+			vector Ln = normalize(L);
+			float cos_theta_i = Ln.Nf;
+			float cos_phi_diff = normalize(Vf - Nf * cos_theta_r) .
+								 normalize(Ln - Nf * cos_theta_i);
+			float theta_i = acos( cos_theta_i );
+			float alpha = max( theta_i, theta_r );
+			float beta = min( theta_i, theta_r );
+			
+			float C2 = .45 * sigma2 / (sigma2 + .09);
+			
+			if (cos_phi_diff >= 0) {
+				C2 *= sin(alpha);
+			} else {
+				C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
+			}
+			/* C3 coefficient isn't used in the Qualitative model */
+			float C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha
+						* beta) / (PI * PI), 2);
+			
+			L1 = Cdiff * (cos_theta_i * (C1 + cos_phi_diff * C2 * tan(beta)
+						+ (1 - abs( cos_phi_diff)) * C3 * tan( (alpha
+								+ beta) / 2 )));
+			L2 = (Cdiff * Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2
+						+ .13) * (1 - cos_phi_diff * (4 * beta * beta) /
+							(PI * PI)));
+			
+			C += (1-nondiff) * Cl * (L1 + L2);
 		}
 	}
 	return C;

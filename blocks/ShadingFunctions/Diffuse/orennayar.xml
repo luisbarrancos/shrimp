@@ -2,14 +2,23 @@
 	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
 	<input name="roughness" description="roughness" type="float" default="0.05"/>
+	<input name="qualitative" description="Toggle qualitative or full model" type="float" storage="uniform" default="1"/>
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="V" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
 	<include>shadingmodels.h</include>
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
+		
+	#define use_qualitative_$(qualitative)
+	#ifdef use_qualitative_1
 		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
+	#else
+		aov_diffuse += $(Kd) * LG_OrenNayar( $(Cdiff), $(roughness), $(N),
+												$(V) );
+		$(Ci) = aov_diffuse;
+	#endif
 	</rsl_code>
-    <usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz's implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
+    <usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz's implementation, and the full model with inter-reflections, based on Larry Gritz's implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).</usage>
 </shrimp>
