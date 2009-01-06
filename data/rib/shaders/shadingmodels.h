@@ -425,6 +425,91 @@ LG_OrenNayar(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Oren-Nayar-Wolff diffuse model, based on the paper "Improved Diffuse ////////
+// Reflection Models for Computer Vision", by Lawrence B. Wolff, Shree K. //////
+// Nayar, Michael Oren, and on Larry Gritz's implementation of the full ////////
+// Oren-Nayar model, with inter-reflections, from The RenderMan Repository /////
+// http://www.renderman.org ////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* "The diffuse reflection model proposed by Wolff, models reflection from
+ * smooth dielectric materials as a combination of a subsurface light 
+ * scattering distribution produced from internal inhomogeneities coupled
+ * with the refraction of externally incident, and internally scattered
+ * light at the air-surface dielectric boundary." */
+/* The Oren-Nayar-Wolff implementation is based on the full model considering
+ * inter-reflections. */
+
+color
+OrenNayarWolff(
+				float sigma, ior;
+				color Cdiff;
+				normal Nn;
+				vector In;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In;
+
+	/* store preset quantities whenever possible */
+	float cos_theta_r = Vf.Nf;
+	float theta_r = acos( cos_theta_r );
+	float sigma2 = sigma * sigma;
+
+	color C = color(0), L1 = color(0), L2 = color(0);
+	float eta = AIR/ior;
+	extern point P;
+	
+	illuminance( P, Nf, PI/2 ) {
+
+		uniform float nondiff = 0;
+		lightsource("__nondiffuse", nondiff);
+
+		extern vector L;
+		extern color Cl;
+
+		vector Ln = normalize(L);
+		float cos_theta_i = Ln.Nf;
+		float cos_phi_diff = normalize(Vf-Nf * cos_theta_r) .
+								normalize(Ln - Nf * cos_theta_i );
+		float theta_i = acos( cos_theta_i );
+		float alpha = max( theta_i, theta_r );
+		float beta = min( theta_i, theta_r );
+
+		/* transmitted angle */
+		float cos_theta_tl = sqrt( max( 0, 1 - (eta*eta * (1 - 
+							(cos_theta_i * cos_theta_i) )) ));
+
+		/* 1st Oren-Nayar coefficient */
+		float C1 = (1 - .5 * sigma2 / (sigma2 + .33)) * (1 - nfresnel(
+					cos_theta_i, ior )) * (1 - nfresnel( cos_theta_tl, eta ));
+		/* 2nd coefficient */
+		float C2 = .45 * sigma2 / (sigma2 + .09);
+		if (cos_phi_diff >= 0) {
+			C2 *= sin(alpha);
+		} else {
+			C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
+		}
+		/* 3rd coefficient (Qualitative model only uses C1+C2) */
+		float C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha *
+					beta) / (PI * PI), 2);
+
+		/* Final L1 term */
+		L1 = Cdiff * (cos_theta_i * (C1 + cos_phi_diff * C2 * tan(beta)
+					+ (1 - abs( cos_phi_diff )) * C3 * tan( (alpha
+							+ beta) / 2 )));
+
+		/* Final L2 term */
+		L2 = (Cdiff * Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2
+					+ .13) * (1 - cos_phi_diff * (4 * beta * beta) /
+						(PI * PI)));
+
+		C += (1 - nondiff) * Cl * (L1 + L2);
+	}
+	return C;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 // Note: below follows the Ashikhmin-Shirley diffuse term, based on the ////////
 // implementation by Peter Stuart, as well as further below, the specular //////
 // term, for those wanting to experiment with things. The complete model is ////
