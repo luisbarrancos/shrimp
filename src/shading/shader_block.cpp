@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -390,7 +390,8 @@ shader_block::shader_block (const std::string& Name, const std::string& Descript
 	m_position_x (0),
 	m_position_y (0),
 	m_width (1),
-	m_height (1) {
+	m_height (1),
+	m_rolled (false) {
 
 }
 
@@ -995,6 +996,18 @@ void shader_block::set_position (const double X, const double Y) {
 }
 
 
+void shader_block::roll (const bool Roll) {
+
+	m_rolled = Roll;
+}
+
+
+bool shader_block::is_rolled() const {
+
+	return m_rolled;
+}
+
+
 void shader_block::get_includes (std::set<std::string>& includes) {
 
 	if (m_includes.size()) {
@@ -1073,6 +1086,13 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 
 			m_author = a->Value();
 		}
+		else if (name == "rolled") {
+
+			const std::string rolled_value = a->Value();
+			if (rolled_value == "1") {
+				m_rolled = true;
+			}
+		}
 		else if (name == "id" || name == "position_x" || name == "position_y"
 			|| name == "root" || name == "rolled") {
 
@@ -1138,9 +1158,6 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 				else if (name == "type_parent") {
 					input_type_parent = a->Value();
 				}
-				else if (name == "separator")
-					// DEPRECATED : put the operator in the "multi" attribute
-					input_multi_operator = a->Value();
 				else
 					log() << error << "unhandled input attribute : '" << name << "'" << std::endl;
 			}

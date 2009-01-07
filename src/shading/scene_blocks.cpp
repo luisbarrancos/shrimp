@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -165,7 +165,6 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 
 	// update selection and groups
 	m_selection.erase (old_name);
-	m_rolled_blocks.erase (old_name);
 	m_groups.erase (old_name);
 
 	// we can now safely rename the block
@@ -310,27 +309,32 @@ void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
 }
 
 
-bool scene::is_rolled (const shader_block* Block) {
+bool scene::is_rolled (const shader_block* Block) const {
 
-	std::string name = Block->name();
-	rolled_blocks_t::const_iterator i = m_rolled_blocks.find (name);
-	if (i == m_rolled_blocks.end()) {
-		return false;
-	}
-
-	return true;
+	return Block->is_rolled();
 }
 
 
 int scene::rolled_block_count() {
 
-	return m_rolled_blocks.size();
+	int rolled_block_count = 0;
+
+	for (shader_blocks_t::iterator block = m_blocks.begin(); block != m_blocks.end(); ++block) {
+
+		if (block->second->is_rolled())
+			++rolled_block_count;
+	}
+
+	return rolled_block_count;
 }
 
 
 void scene::unroll_all_blocks() {
 
-	m_rolled_blocks.clear();
+	for (shader_blocks_t::iterator block = m_blocks.begin(); block != m_blocks.end(); ++block) {
+
+		block->second->roll (false);
+	}
 }
 
 
@@ -341,12 +345,7 @@ void scene::set_block_rolled_state (shader_block* Block, const bool Rolled) {
 		return;
 	}
 
-	const std::string block_name = Block->name();
-	if (Rolled) {
-		m_rolled_blocks.insert (block_name);
-	} else {
-		m_rolled_blocks.erase (block_name);
-	}
+	Block->roll (Rolled);
 }
 
 

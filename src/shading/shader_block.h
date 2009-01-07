@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -192,13 +192,16 @@ public:
 
 	unsigned long input_count() const;
 
-	// block position and size in scene
+	// block position, size and rolled state in scene
 	double m_position_x;
 	double m_position_y;
 	double m_width;
 	double m_height;
+	double m_rolled;
 
 	void set_position (const double X, const double Y);
+	void roll (const bool Roll);
+	bool is_rolled() const;
 
 	// shader code
 	std::string m_includes;

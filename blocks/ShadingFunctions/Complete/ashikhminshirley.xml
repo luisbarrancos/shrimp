@@ -1,4 +1,4 @@
-<shrimp name="AshikhminShirley" type="function" description="Ashikhmin-Shirley shading model." author="rconstruct">
+<shrimp name="AshikhminShirley" type="function" description="Ashikhmin-Shirley shading model." author="rconstruct" rolled="1">
 	<input name="Cdiff" description="Diffuse color" type="color" default="color(.3)"/>
 	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
 	<input name="Crefl" description="Reflection color" type="color" default="color(1)"/>

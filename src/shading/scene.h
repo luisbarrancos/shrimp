@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -72,9 +72,6 @@ public:
 
 	typedef std::set<std::string> selection_t;
 	selection_t m_selection;
-
-	typedef std::set<std::string> rolled_blocks_t;
-	rolled_blocks_t m_rolled_blocks;
 
 	typedef std::map<std::string, int> groups_t;;
 	groups_t m_groups;
@@ -161,7 +158,7 @@ public:
 	//////////// Rolled blocks
 
 	// returns whether a block is rolled
-	bool is_rolled (const shader_block* Block);
+	bool is_rolled (const shader_block* Block) const;
 
 	// returns the number of rolled blocks
 	int rolled_block_count();
