@@ -1,4 +1,4 @@
-<shrimp name="Occlusion" type="function" description="Ambient occlusion function" author="rconstruct">
+<shrimp name="Occlusion" type="function" description="Ambient occlusion function" author="rconstruct" rolled="1">
     <input name="inpoint" description="Surface point" type="point" default="P"/>
 	<input name="indir" description="Direction" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
 	<input name="adapt" description="Turns adaptive sampling on/off" type="float" storage="uniform" default="1"/>
