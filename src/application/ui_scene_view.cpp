@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -766,7 +766,7 @@ void scene_view::draw_block (const shader_block* Block, const double X, const do
 		draw_block_name (Block, X, Y);
 		draw_block_properties (Block, X, Y, PropertyPositions);
 	} else {
-		draw_block_body (Block, X, Y);
+		draw_rolled_block_body (Block, X, Y);
 		draw_block_name (Block, X, Y);
 	}
 }
@@ -814,6 +814,55 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		glVertex3d (X, Y - height, 0);
 		glVertex3d (X, Y - height, 0);
 		glVertex3d (X, Y, 0);
+	glEnd();
+}
+
+
+void scene_view::draw_rolled_block_body (const shader_block* Block, const double X, const double Y) {
+
+	const double width = Block->m_width;
+	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
+
+	// set minimal block height
+	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.0) * static_cast<double> (max_properties));
+	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
+
+	const double alpha = 0.5;
+
+	// check whether the block's selected
+	scene* s = get_scene();
+	const bool is_selected = s->is_selected (Block);
+	// block color
+	if (is_selected)
+		// selected blocks are yellow
+		glColor4f (1.0, 1.0, 0.0, alpha);
+	else if (!Block->m_inputs.size())
+		// inputs are green
+		glColor4f (0.0, 1.0, 0.0, alpha);
+	else
+		// other ones are blue
+		glColor4f (0.0, 0.0, 1.0, alpha);
+
+	glBegin (GL_QUADS);
+		glVertex3d ((2*X + width) / 2.0, Y, 0);
+		glVertex3d (X + width, (2*Y - height) / 2.0, 0);
+		glVertex3d ((2*X + width) / 2.0, Y - height, 0);
+		glVertex3d (X, (2*Y - height) / 2.0, 0);
+	glEnd();
+
+	glColor3f (1.0, 1.0, 1.0);
+	glBegin (GL_LINES);
+		glVertex3d ((2*X + width) / 2.0, Y, 0);
+		glVertex3d (X + width, (2*Y - height) / 2.0, 0);
+		glVertex3d (X + width, (2*Y - height) / 2.0, 0);
+		glVertex3d ((2*X + width) / 2.0, Y - height, 0);
+		glVertex3d ((2*X + width) / 2.0, Y - height, 0);
+		glVertex3d (X, (2*Y - height) / 2.0, 0);
+		glVertex3d (X, (2*Y - height) / 2.0, 0);
+		glVertex3d ((2*X + width) / 2.0, Y, 0);
+
+		glVertex3d (X, (2*Y - height) / 2.0, 0);
+		glVertex3d (X + width, (2*Y - height) / 2.0, 0);
 	glEnd();
 }
 

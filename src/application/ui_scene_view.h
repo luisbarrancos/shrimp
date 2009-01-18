@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -131,6 +131,7 @@ private:
 
 	void draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions);
 	void draw_block_body (const shader_block* Block, const double X, const double Y);
+	void draw_rolled_block_body (const shader_block* Block, const double X, const double Y);
 	void draw_block_name (const shader_block* Block, const double X, const double Y);
 	void draw_block_properties (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions, const bool Selection = false);
 	// draws a block property
