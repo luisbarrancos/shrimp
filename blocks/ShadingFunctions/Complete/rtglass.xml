@@ -1,4 +1,4 @@
-<shrimp name="RTGlass" type="function" description="Raytraced glass, with attenuation, based on Larry Gritz&apos;s glass shader" author="rconstruct">
+<shrimp name="RTGlass" type="function" description="Raytraced glass, with attenuation, based on Larry Gritz&apos;s glass shader" author="rconstruct" rolled="1">
 	<input name="Ka" description="Ambient light coefficient" type="float" default="0.01"/>
 	<input name="Kd" description="Diffuse light coefficient" type="float" default="0.05"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.95"/>
