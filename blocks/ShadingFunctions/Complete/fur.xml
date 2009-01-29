@@ -1,4 +1,4 @@
-<shrimp name="Fur" type="function" description="Clint Hanson and Armin Bruderlin&apos;s SIG2k Fur shader" author="rconstruct">
+<shrimp name="Fur" type="function" description="Clint Hanson and Armin Bruderlin&apos;s SIG2k Fur shader" author="rconstruct" rolled="1">
     <input name="Ka" description="Ambient light coefficient" type="float" default="0.0287"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.77"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
