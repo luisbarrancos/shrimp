@@ -1,4 +1,4 @@
-<shrimp name="Phong-Blinn" type="function" description="Phong-Blinn specular term." author="rconstruct">
+<shrimp name="PhongBlinn" type="function" description="Phong-Blinn specular term." author="rconstruct">
 	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.8"/>
     <input name="size" description="Specular size." type="float" default="15"/>
