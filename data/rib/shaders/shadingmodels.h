@@ -1789,84 +1789,89 @@ color KMOverGlossy(	normal Nn;
  * Ks: specular coefficient
 */
 
-/* this kills pixie r1162, and 2.2.4 - but arrays as function arguments
- * work in the Lafortune model, so this can't be the cause. */
 color
 LocIllumGranier(
 					normal Nn, N1; vector Vf;
 					float e0, e1, d;
 					float ior[3]; float lambda[3];
-					color Cdiff;
+					color SurfaceColor;
 					float Kd, Ks;
 					DECLARE_AOV_OUTPUT_PARAMETERS
 					)
 {
-	float Kr, Kt, Kro, Kto;
-	float specf, difff, td;
-	vector ti, ri, rti, to, ro;
- 
-	color C = color(0), diff = color(0), spec = color(0);
+
+	/* initialize everything */
+	float Kr = 0, Kt = 0, Kro = 0, Kto = 0;
+	float specf = 0, difff = 0, td = 0;
+	vector ti = vector(0), ri = vector(0);
+	vector rti = vector(0), to = vector(0), ro = vector(0);
+	color Cdiff = color(0), Cspec = color(0);
+	color diff = color(0), spec = color(0);
 
 	/****** perform diffuse first *********/
-	uniform float nondiff = 0;
-	lightsource("__diffuse", nondiff);
-	
-	if (nondiff < 1) {
-		uniform float i;
-		for (i=0; i<3; i+=1) {
-			td = (80 / 21) * (ior[i] / SQR(ior[i]+1));
-			difff = 1 + 2*cos(4*PI*ior[i]*d / lambda[i]) * sqrt(td*(1-td));
-			setcomp(diff, i, difff/2);
-		}
+	uniform float i;
+	for ( i = 0; i < 3; i += 1) {
+		td = (80 / 21) * ( ior[i] / SQR( ior[i] + 1) );
+		difff = 1 + 2 * cos( 4 * PI * ior[i] * d / lambda[i] )
+				* sqrt( td * (1 - td) );
+		setcomp( diff, i, difff/2 );
 	}
 	
 	/****** specular *********/
-	
 	extern point P;
 
 	illuminance(P, Nn, PI/2 )
 	{
 		extern vector L;
 		extern color Cl;
-		
-		uniform float nonspec = 0;
+
+		/* store preset quantities whenever possible */
+		vector Ln = normalize(L);
+		float maxndotl = max( 0, Nn.Ln );
+
+		uniform float nondiff = 0, nonspec = 0;
+		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 		
-		if (nonspec < 1) {
-			vector Ln = normalize(L);
+		if (nonspec < 1)
+		{
 			uniform float i;
 			
-			for (i=0; i<3; i+=1) {
-				
+			for ( i = 0; i < 3; i += 1) 
+			{	
 			/* construct reflected & refracted rays from L, V and substrate */
-				fresnel(-Ln, Nn, 1/ior[i], Kr, Kt, ri, ti);
-				fresnel(-Vf, Nn, 1/ior[i], Kro, Kto, ro, to);
+				fresnel( -Ln, Nn, 1/ior[i], Kr, Kt, ri, ti);
+				fresnel( -Vf, Nn, 1/ior[i], Kro, Kto, ro, to);
 				
 				ri = normalize(ri);
 				ti = normalize(ti);
 				to = normalize(to);
 				
 				/* construct reflected ray from L refracted in substrate */
-				rti = normalize(reflect(ti, N1));
+				rti = normalize( reflect( ti, N1 ) );
 				
 				/* total internal reflection */
-				if ((ti . N1) >= 0 || (to . N1) >= 0 || (rti . to) >= 0)
+				if ( (ti . N1) >= 0 || (to . N1) >= 0 || (rti . to) >= 0) {
 					Kt = 0;
+				}
 				
-				specf = Kr*pow(ri . Vf, e0) + Kt*Kto*pow(rti . -to, e1);
-      
+				specf = Kr * pow( ri.Vf, e0) + Kt * Kto * pow( rti.-to, e1 );
 				setcomp(spec, i, specf);
 			}
+			/* specular */
+			Cspec += (1-nonspec) * Cl * spec * maxndotl;
+		}
 
-			float maxndotl = max( 0, Nn.Ln);
-			
-			aov_diffuse += (1-nondiff) * Kd * Cl * diff * maxndotl;
-			aov_specular += (1-nonspec) * Ks * Cl *spec * maxndotl;
-			
+		/* diffuse term */
+		if (nondiff < 1) {
+			Cdiff += (1-nondiff) * Cl * diff * maxndotl;
 		}
 	}
 
-	aov_surfacecolor += Cdiff;
+	/* build AOVs */
+	aov_surfacecolor += SurfaceColor;
+	aov_diffuse += Kd * Cdiff;
+	aov_specular += Ks * Cspec;
 	
 	return aov_surfacecolor * aov_diffuse + aov_specular;
 }
