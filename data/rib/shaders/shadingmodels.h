@@ -985,7 +985,8 @@ cooktorrance(
 			} else {
 				/* for some reason, Pixie seems to hate big spline() calls
 				 * so we have a problem here with the lookup error function
-				 * version. spline
+				 * version.
+				 * (409) ("Unknown function") (v2.2.4) - spline
 				 * "f=Sffffffffffffffffffffffffffffffffffffffffff") ret
 				 * "linear" temporary_23 .... disable this for the time being
 				 * just make it use the Smith attenuation. */
@@ -1788,9 +1789,8 @@ color KMOverGlossy(	normal Nn;
  * Ks: specular coefficient
 */
 
-/* this kills pixie r1162, and 2.2.4 - the common thing with the other
- * problematic model, Lafortune, is that both models pass arrays as
- * function arguments - need to check this */
+/* this kills pixie r1162, and 2.2.4 - but arrays as function arguments
+ * work in the Lafortune model, so this can't be the cause. */
 color
 LocIllumGranier(
 					normal Nn, N1; vector Vf;
@@ -1878,9 +1878,6 @@ LocIllumGranier(
 ////////////////////////////////////////////////////////////////////////////////
 // Slightly tweaked for Shrimp's structure /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-/* this kills pixie r1162, see above, Granier-Heidrich model, same issue, 
- * the culprit might be arrays as function arguments? */
 
 /*
  * lafortune.sl -- Implement the BRDF representation of Lafortune et al.
