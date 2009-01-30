@@ -1835,8 +1835,6 @@ LocIllumGranier(
 		
 		if (nonspec < 1)
 		{
-			uniform float i;
-			
 			for ( i = 0; i < 3; i += 1) 
 			{	
 			/* construct reflected & refracted rays from L, V and substrate */
