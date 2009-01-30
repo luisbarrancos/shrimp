@@ -9,6 +9,9 @@
 #include "odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
 							   including full formula for complex Fresnel. */
 
+#ifndef SHRIMP_SHADING_MODELS
+#define SHRIMP_SHADING_MODELS
+
 #ifndef SQR
 #define SQR(X) ( (X) * (X) )
 #endif
@@ -27,7 +30,7 @@ wrappeddiffuse(
 	normal Nf = faceforward( Nn, In );
 	
 	extern point P;
-	color C = 0;
+	color C = color(0);
 
 	illuminance( P, Nf, PI)
 	{
@@ -70,7 +73,9 @@ rimlighting(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Minnaert limb darkening term (Note: Nvidia uses a different approach) ///////
+// Minnaert limb darkening term (Note: Nvidia uses a different approach - //////
+// in which the limb coefficient is i nthe 0,1 range, this one is in the 1,2 ///
+// range. //////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 color
@@ -87,7 +92,7 @@ Minnaert(
 	float thetak = pow( ndotv, k-1);
 	
     extern point P;
-	color Cminnaert = 0;
+	color Cminnaert = color(0);
 	
     illuminance( P, Nf, PI/2 )
     {
@@ -164,7 +169,7 @@ color Hapke(
     float cos_theta_r = clamp(Nf.Vf, EPS, 1);
 
     extern point P;
-	color Ct = 0;
+	color Ct = color(0);
 	
     illuminance( P, Nf, PI/2 )
 	{
@@ -293,7 +298,7 @@ OrenNayar(
 	vector V_perp_N = normalize(Vf-Nf * (ndotv) ); /* part of V perpend to N */
 
 	extern point P;
-	color C = 0;
+	color C = color(0);
 	
 	illuminance (P, Nf, PI/2 )
 	{
@@ -363,7 +368,7 @@ OrenNayar(
  */
 
 /* tweaked a bit to fit Shrimp's structure.
- * TODO: try and optimize this a bit. */
+ * TODO: try and optimize this a bit, if possible */
 
 color
 LG_OrenNayar(
@@ -513,10 +518,10 @@ OrenNayarWolff(
 // Note: below follows the Ashikhmin-Shirley diffuse term, based on the ////////
 // implementation by Peter Stuart, as well as further below, the specular //////
 // term, for those wanting to experiment with things. The complete model is ////
-// further below. Also note that things were tweaked a bit, in order to fit ////
-// shrimp's structure and way of working, but since i'm no renderman expert ////
-// don't blame me if this sets your house on fire, kills a kitten or ///////////
-// generally precipitates the heat death of the universe. //////////////////////
+// further below. Also note that the diffuse term and specular terms are ///////
+// inter-dependent, but for the sake of giving the user the possibility to /////
+// experiment a bit, i thought we could include the separate terms as well. ////
+// So things were tweaked a bit, in order to fit shrimp's structure. ///////////
 ////////////////////////////////////////////////////////////////////////////////
 // based on "An anisotropic Phong BRDF Model", by Michael Ashikhmin and ////////
 // Peter Shirley ///////////////////////////////////////////////////////////////
@@ -554,7 +559,7 @@ anisophongdiff(
 	vector Vf = -In;
 	
     extern point P;
-    color C = 0;
+    color C = color(0);
 
     illuminance( P, Nf, PI/2 )
     {
@@ -597,7 +602,7 @@ color phong_blinn(
 	vector Vf = -In;
 	
     extern point P;
-	color C = 0;
+	color C = color(0);
 	
     illuminance( P, Nf, PI/2 )
     {
@@ -644,7 +649,7 @@ LocIllumGlossy(
 	float w = .18 * (1-sharpness);
 	
 	extern point P;
-    color C = 0;
+    color C = color(0);
 	
 	illuminance (P, Nf, PI/2 )
 	{
@@ -683,7 +688,7 @@ Wardisotropy(
     vector Vf = -In;
 
 	extern point P;
-	color C = 0;
+	color C = color(0);
 	
 	illuminance (P, Nf, PI/2 )
 	{
@@ -754,7 +759,7 @@ LocIllumWardAnisotropic(
 	vector Y = (Nf ^ xdir) / yroughness;
 
 	extern point P;
-	color C = 0;
+	color C = color(0);
 	
 	illuminance( P, Nf, PI/2 )
 	{
@@ -797,7 +802,7 @@ color schlickspec(
 	vector Vf = -In;
 	
     extern point P;
-	color C = 0;
+	color C = color(0);
     
     illuminance( P, Nf, PI/2 )
     {
@@ -858,7 +863,7 @@ float zenithdependence(
 	return roughness / (zz * zz);
 }
 
-/* */
+/* TODO: re-read all this (Schlick's papers) */
 color aschlick(
 				float roughness, isotropy, ior;
 				normal Nn;
@@ -872,7 +877,7 @@ color aschlick(
 	float costheta = Vf.Nf;
 
 	extern point P;
-	color C = 0;
+	color C = color(0);
 
 	illuminance( P, Nf, PI/2 )
 	{
@@ -930,7 +935,7 @@ cooktorrance(
 	float costheta = Nf.Vf;
 	
 	float D = 0, G = 0, F = 0;
-	color Ccook = 0;
+	color Ccook = color(0);
 
 	extern point P;
 	illuminance( P, Nf, PI/2 )
@@ -1003,9 +1008,10 @@ cooktorrance(
 			F = clamp( F, 0, 1 );
 #endif
 
-			/* If the microfacets distribution is anisotropic, then it
-			 * needs to be coupled with an isotropic specular term. We
-			 * could leave it to the user discretion though. */
+			/* TODO: Re-read Heidrich & Seidel's paper, iirc, the anisotropic
+			 * specular term was meant to be coupled with an isotropic
+			 * specular term - confirm this - for the time being the
+			 * isotropic specular will be added via specularbrdf() shadeop */
 
 			/* no specularbrdf() in Aqsis? */
 #if RENDERER == aqsis
@@ -1018,14 +1024,15 @@ cooktorrance(
 #endif
 		}
 	}
-	/* at high grazing angles, the values seem to go up a lot(?) */
+	/* at high grazing angles, the values seem to go up a lot(?)
+	 * (it is mentioned in the literature though... ) */
 	return clamp(Ccook, color(0), color(1));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // Ashikhmin-Shirley specular term /////////////////////////////////////////////
 // based on Peter Stuart's implementation, original implementation further  ////
-// below. //////////////////////////////////////////////////////////////////////
+// below. Read notes about this model's diffuse term earlier in this header ////
 ////////////////////////////////////////////////////////////////////////////////
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1069,7 +1076,7 @@ anisophongspec(
 
     extern vector dPdu, dPdv;
 	extern point P;
-	color C = 0;
+	color C = color(0);
 
     illuminance( P, Nf, PI/2 )
     {
@@ -1163,7 +1170,7 @@ shw_brushed_metal(
     sin_eye = sqrt( 1.0 - cos_eye * cos_eye);
     
     extern point P;
-	color C = 0;
+	color C = color(0);
     
     illuminance ( P, Nf, PI/2 )
     {
@@ -1340,6 +1347,10 @@ float calcPhi(float nu, nv; float e1)
 }
 
 ///////////////////////////////////////////////////////////////////////////////
+/* Someone mentioned PRMan allowed a custom distribution of rays in gather()
+ * but there's nothing about this on the public specs, nor in 3delight's docs.
+ * In any case, this deserves some more reading on the topic to try and 
+ * speed up things. */
 
 color EnvIllumAshShir(
                         normal Nf;
@@ -1349,7 +1360,7 @@ color EnvIllumAshShir(
 		                uniform string envmap;)
 {
     uniform float i;
-    color C = 0;
+    color C = color(0);
 
     for (i=0; i<samples; i+=1) {
         float e1=random(), e2=random();
@@ -1393,12 +1404,13 @@ color EnvIllumAshShir(
       
             C += rd * SampleEnvironment(P, Hn, envmap);
 
-      /* FIXME - instead of sampling over the hemisphere, get the cos-weighted
-	 average value, which can be done with a cos-weighted filtered call to
-	 environment. The problem is that such a filter doesn't seem to
-	 exist :( */
-/*     C += rd * color environment(envmap, xdir, ydir, -xdir, -ydir, */
-/* 				"filter", "gaussian"); */
+			/* FIXME - instead of sampling over the hemisphere, get the
+			 * cos-weighted average value, which can be done with a
+			 * cos-weighted filtered call to environment. The problem is
+			 * that such a filter doesn't seem to exist :( */
+
+			/* C += rd * color environment( envmap, xdir, ydir, -xdir, -ydir,
+			 * "filter", "gaussian" ); */
         }
     }
     if (samples > 0) C /= samples;
@@ -1622,6 +1634,9 @@ color subsurfaceSkin(
 
 /* Note: this seems to kill both aqsis (1.4phase2) and pixie (r1162), but
  * this behaviour exists for quite some time */
+/* FIXME: read more on this model, particularly Neumann's Constructions on
+ * BRDFs, the chapter on "sandwiched/layered models". I'm not using this
+ * right. */
 
 /* Hyperbolic sine function */
 void sinhcosh( float t; output float sinh, cosh; )
@@ -1642,13 +1657,16 @@ void sinhcosh( float t; output float sinh, cosh; )
  * */
 void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
 {
-    if (Rinf == color 0.) {
-        sigma_a = color 1.;
-        sigma_s = color 0.;
+    if (Rinf == color(0) ) {
+        sigma_a = color(1) ;
+        sigma_s = color(0) ;
     }
     else {
-        color a_over_s = (1. - Rinf) * (1. - Rinf) / (2. * Rinf);
-        sigma_a = color 1.;
+		/* someone mentioned lots of float/color type errors in prman 13,
+		 * - any reports on this would be apretiated - */
+        color a_over_s = (color(1) - Rinf) * (color(1) - Rinf)
+			/ (color(2) * Rinf);
+        sigma_a = color(1);
         sigma_s = sigma_a / a_over_s;
     }
 }
@@ -1659,8 +1677,9 @@ void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
  * Lambertian diffuse, or Oren-Nayer diffuse. For a thin translucent object
  * we might use both of them together and gather incident light from both sides
  * of the object. */
-void KM( color sigma_a, sigma_s; float thickness;
-        output color R, T; )
+void KM(	color sigma_a, sigma_s;
+			float thickness;
+			output varying color R, T; )
 {
     float i;
 	extern uniform float ncomps;
@@ -1685,7 +1704,7 @@ color KMInfinite( color sigma_a, sigma_s; )
 	float i;
 	extern uniform float ncomps;
 	
-    color R = 0;
+    color R = color(0);
     for (i = 0; i < ncomps; i += 1) {
         float a = comp(sigma_a, i) / comp(sigma_s, i);
         float r = 1. + a - sqrt(a*a + 2.*a);
@@ -1698,12 +1717,12 @@ color KMInfinite( color sigma_a, sigma_s; )
  * aggregate reflectance and transmittance of them together. */
 color KMComposeR( color R1, T1, R2, T2; )
 {
-    return R1 + T1*R2*T1 / (color 1. - R1*R2);
+    return R1 + T1*R2*T1 / (color(1) - R1*R2);
 }
 
 color KMComposeT( color R1, T1, R2, T2; )
 {
-    return T1*T2 / (color 1. - R1*R2);
+    return T1*T2 / (color(1) - R1*R2);
 }
 
 /* Function that computes shading for a composite surface where a diffuse layer
@@ -1719,7 +1738,8 @@ color KMOverGlossy(	normal Nn;
                    	float thickness, roughness;
 					DECLARE_AOV_OUTPUT_PARAMETERS )
 {
-    color R1 = 0, T1 = 0, sigma_a = 0, sigma_s = 0;
+	color R1 = color(0), T1 = color(0);
+	color sigma_a = color(0), sigma_s = color(0);
 
     normal Nf = faceforward( Nn, V, Nn);
 
@@ -1768,7 +1788,9 @@ color KMOverGlossy(	normal Nn;
  * Ks: specular coefficient
 */
 
-/* this kills pixie r1162 */
+/* this kills pixie r1162, and 2.2.4 - the common thing with the other
+ * problematic model, Lafortune, is that both models pass arrays as
+ * function arguments - need to check this */
 color
 LocIllumGranier(
 					normal Nn, N1; vector Vf;
@@ -1783,7 +1805,7 @@ LocIllumGranier(
 	float specf, difff, td;
 	vector ti, ri, rti, to, ro;
  
-	color C = 0, diff = 0, spec = 0;
+	color C = color(0), diff = color(0), spec = color(0);
 
 	/****** perform diffuse first *********/
 	uniform float nondiff = 0;
@@ -1857,7 +1879,8 @@ LocIllumGranier(
 // Slightly tweaked for Shrimp's structure /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-/* this kills pixie r1162 */
+/* this kills pixie r1162, see above, Granier-Heidrich model, same issue, 
+ * the culprit might be arrays as function arguments? */
 
 /*
  * lafortune.sl -- Implement the BRDF representation of Lafortune et al.
@@ -1954,13 +1977,7 @@ lafortunersl (
 	/* The first term is the diffuse component. This should be the
 	 * diffuse component in the Lafortune model multiplied by pi. */
 	
-	color cdiff = 0, cspec = 0;
-	uniform float nondiff = 0;
-	
-	lightsource("__nondiffuse", nondiff);
-	if (nondiff < 1) {
-		cdiff = Kd * (1-nondiff) * diffuse(local_z);
-	}
+	color cdiff = color(0), cspec = color(0);
 		
 	extern point P;
 	
@@ -1968,12 +1985,18 @@ lafortunersl (
 	{
 		extern vector L;
 		extern color Cl;
+
+		Ln = normalize(L);
 		
-		uniform float nonspec = 0;
+		uniform float nondiff = 0, nonspec = 0;
+		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
+
+		if (nondiff < 1) {
+			cdiff += (1-nondiff) * Ln.local_z;
+		}
 		
 		if (nonspec < 1) {
-			Ln = normalize ( L );
     
 			/* Compute the terms
 			 * x = x_in * x_view  +  y_in * y_view
@@ -1991,7 +2014,7 @@ lafortunersl (
 			 * * and n is the exponent for the cosine
 			 * */
 			
-			for ( basepointer=0; basepointer<COEFFLEN;
+			for ( basepointer=0; basepointer < COEFFLEN ;
 					basepointer += LOBESIZE * N_WAVES )
 			{
 				uniform float rexponent = coeff[basepointer+2],
@@ -2020,7 +2043,7 @@ lafortunersl (
 				}
 			}
 
-			cspec += Cl * (1-nonspec) * Ks * color "rgb" (fr,fg,fb)
+			cspec += Cl * (1-nonspec) * color "rgb" (fr,fg,fb)
 						* (local_z.Ln);
 		}
 	}
@@ -2039,8 +2062,8 @@ lafortunersl (
 
 	aov_surfacecolor += surfacecolor;
 	aov_ambient += Ka * ambient();
-	aov_diffuse += cdiff;
-	aov_specular += cspec;
+	aov_diffuse += Kd * cdiff;
+	aov_specular += Ks * cspec;
 	
 	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
@@ -2111,8 +2134,8 @@ color tshair(
 	
 	float dottin = T.Vf;
 
-	color Cdd = 0;
-	color Css = 0;
+	color Cdd = color(0);
+	color Css = color(0);
 	
 	illuminance( P, Nf, PI/2 )
 	{
@@ -2120,17 +2143,15 @@ color tshair(
 		extern color Cl;
 		vector Ln = normalize(L);
 		
-		uniform float nondiff = 0;
+		uniform float nondiff = 0, nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
+		lightsource("__nonspecular", nonspec);
 		
 		if (nondiff < 1) {
 			/* Scaled diffuse term. Note that in the paper they use
 			 * ambient occlusion to fake the hair shadowing. */
 			Cdd = clamp( mix( .25, 1.0, Nf.Ln), 0, 1);
 		}
-
-		uniform float nonspec = 0;
-		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
 			/* Primary specular */
@@ -2180,8 +2201,8 @@ color kajiyakay(
 	
 	float dottin = T.Vf;
 
-	color Cdiff = 0;
-	color Cspec = 0;
+	color Cdiff = color(0);
+	color Cspec = color(0);
 	float dottl, sdottl;
 	
 	illuminance( P, Nf, PI/2 )
@@ -2190,10 +2211,11 @@ color kajiyakay(
 		extern color Cl;
 		vector Ln = normalize(L);
 		
-		/* Diffuse term */
-		uniform float nondiff = 0;
+		uniform float nondiff = 0, nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
+		lightsource("__nonspecular", nonspec);
 		
+		/* Diffuse term */
 		if (nondiff < 1) {
 			dottl = T.Ln;
 			sdottl = max( 0.0, sqrt( 1.0 - dottl * dottl ));
@@ -2201,9 +2223,6 @@ color kajiyakay(
 		}
 		
 		/* Specular term */
-		uniform float nonspec = 0;
-		lightsource("__nonspecular", nonspec);
-		
 		if (nonspec < 1) {
 			dottl = T.Ln;
 			sdottl = max( 0.0, sqrt(1.0 - dottl * dottl));
@@ -2268,7 +2287,7 @@ color MKgooch(
     
     color blue = color(0, 0, b);
     color yellow = color(y, y, 0);
-    color cgooch = 0;
+    color cgooch = color(0);
     
     float ldotn, blendval;
     color kcool, kwarm;
@@ -2405,7 +2424,7 @@ woodreflectance(
     color highlight;
     vector axis;
     float tx_beta;
-    vector Rdir = 0; /* Dummy */
+    vector Rdir = vector(0); /* Dummy */
 
     vector ssInDir, ssOutDir; /* Light and eye vector, possibly refracted */
     float thInPrime, thOutPrime;
@@ -2419,8 +2438,10 @@ woodreflectance(
     /* Get local coordinate system in terms of native parameters (u, v).
      * We should really use (s, t). */
     local_z = Nf;
+	
     /* Get unit vector in "u" parameter direction */
     local_x = normalize( dPdu );
+	
     /* Get final local basis vector y perpendicular to x and z. */
     local_y = local_z ^ local_x;
 
@@ -2439,23 +2460,21 @@ woodreflectance(
     normalize(ssOutDir);
 
     color axisTemp;
-
     highlight = fiberColor;
     axis = comp( fiberAxis, 0 ) * local_x + comp( fiberAxis, 1 ) * local_y +
             comp( fiberAxis, 2 ) * local_z;
-    normalize(axis);
-    
+    normalize(axis);    
     tx_beta = beta;
-
     thOutPrime = asin( ssOutDir.axis);
 
-    /* Calculate anisotropic highlight for each light */
-	
+    /* Calculate anisotropic highlight for each light */	
     illuminance( P, Nf, PI/2 /* Hemisphere */ ) {
-        float dummy, ssAttenOut;
+		
         extern vector L;
         extern color Cl;
+		
         vector Ln = normalize(L);
+		float dummy, ssAttenOut;
 
         /* Refract at smooth surface */
         if ( eta != 1.0 ) {
@@ -2472,6 +2491,7 @@ woodreflectance(
         thInPrime = asin( -ssInDir.axis);
         halfAngle = thOutPrime + thInPrime;
         diffAngle = thOutPrime - thInPrime;
+		
         /* Compute value of Gaussian at this angle */
         fiberFactor = tx_beta * exp( -pow( halfAngle / tx_beta, 2)/2 )
                                 / sqrt2pi;
@@ -2526,7 +2546,7 @@ locillumglassy(
 	float w = .18 * (1 - sharpness);
 	
 	extern point P;
-	color C = 0;
+	color C = color(0);
 	
 	illuminance( P, Nf, PI/2)
 	{
@@ -2565,8 +2585,8 @@ rtglass(
 #if RENDERER == pixie
 	/* Pixie's shader compiler protests about the binary conditionals, so
 	 * do nothing - there's a custom version of the glass shader for Pixie
-	 * further below (which will use later its dispersion effect).
-	 * (this solution just feels somewhat evil though). */
+	 * further below.
+	 * (read: lame excuse to use Pixie's built-in dispersion later :)) */
 #else
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
@@ -2597,7 +2617,7 @@ rtglass(
 	/* we don't need ambient nor diffuse at higher ray levels (if at all?).
 	 * As for speculars, restricted to number of specular bounces, if faces
 	 * are facing outwards only. Note: scale specular by fresnel term?
-	 * What about diffuse? (as in the Ashikhmin-Shirley model) ? */
+	 * What about diffuse? Wolff's smooth dielectric surfaces model ? */
 	float ka = (raydepth > 0) ? 0 : Ka;
 	float kd = (raydepth > 0) ? 0 : Kd;
 	float ks = (raydepth > sbounces || entering == 1) ? 0 : Ks;
@@ -2631,7 +2651,8 @@ rtglass(
 	}
 	
 	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
-	 * just leave everything in place (there's always frankenrender) */
+	 * just leave everything in place (there's always frankenrender,
+	 * but i haven't tested it this way (w/BMRT's rayserver)) */
 #if RENDERER == aqsis
 	if (Ka > 0) aov_ambient +=  Ka * ambient();
 	if (Kd > 0) aov_diffuse += Kd * diffuse(Nf);
@@ -2676,7 +2697,7 @@ rtglass(
 }
 
 /* Pixie doesn't likes binary conditionals, we might as well make a custom
- * version (and using Pixie's dispersion effect, todo later). */
+ * version (and using Pixie's dispersion effect, TODO later). */
 
 color
 rtglasspixie(
@@ -2724,7 +2745,7 @@ rtglasspixie(
 	/* we don't need ambient nor diffuse at higher ray levels (if at all?).
 	 * As for speculars, restricted to number of specular bounces, if faces
 	 * are facing outwards only. Note: scale specular by fresnel term?
-	 * What about diffuse? (as in the Ashikhmin-Shirley model) ? */
+	 * What about diffuse? Wolff's smooth dielectric surfaces model ? */
 	float ka = Ka, kd = Kd, ks = Ks;
 	if (raydepth > 0) {
 		kd = 0; kd = 0;
@@ -3019,7 +3040,7 @@ SIG2k_srf_fur(
 
 	/* values from light */
 	uniform float nonspecular = 0;
-	uniform color SpecularColor = 1;
+	uniform color SpecularColor = color(1);
 
 	/* When the hair is exactly perpendicular to the surface, use the surface
 	 * normal, when the hair is exactly tangent to the surface, use the hair
@@ -3039,7 +3060,7 @@ SIG2k_srf_fur(
 	 * Graphics 23, 3, 271-280. */
 
 	extern point P;
-	color C = 0;
+	color C = color(0);
 	
 	illuminance( P, norm_hair, radians( illum_width ) )
 	{
@@ -3097,4 +3118,4 @@ SIG2k_srf_fur(
 
 ////////////////////////////////////////////////////////////////////////////////
 
-
+#endif
