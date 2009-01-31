@@ -9,9 +9,9 @@
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
 			<rsl_code>
 	$(val) = $(A) + $(B);
-				</rsl_code>
+							</rsl_code>
 			<include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.						</usage>
 		</block>
 		<block id="CellContour" position_x="3.72980769230769" position_y="1.11153846153846" author="rconstruct">
 			<input name="p1" type="point" storage="varying" value="0" description="First point position">
@@ -28,14 +28,14 @@
 			</input>
 			<input name="lthick" type="float" storage="varying" value="3" description="Contour line thickness"/>
 			<input name="P" type="point" storage="varying" value="P" description="Surface point"/>
-			<output name="val" type="float" storage="varying" description="Output value"/>
+			<output name="val" type="color" storage="varying" description="Output value"/>
 			<rsl_code>
 		$(val) = step( $(lthick) * (
 					distance( $(p1), $(p2) ) / (
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
-				</rsl_code>
-			<include>shrimp_helpers.h			</include>
+							</rsl_code>
+			<include>shrimp_helpers.h						</include>
 			<usage/>
 		</block>
 		<block id="Multiply" position_x="-2.83076923076922" position_y="1.1076923076923" author="rconstruct">
@@ -46,10 +46,10 @@
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
 			<rsl_code>
 	$(val) = $(A) * $(B);
-				</rsl_code>
+							</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-				</usage>
+							</usage>
 		</block>
 		<block id="Multiply_2" position_x="-2.87692307692307" position_y="0.0307692307692282" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -59,25 +59,25 @@
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
 			<rsl_code>
 	$(val) = $(A) * $(B);
-				</rsl_code>
+							</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-				</usage>
+							</usage>
 		</block>
 		<block id="Multiply_3" position_x="-4.35384615384614" position_y="-3.26153846153846" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
-				<connection parent="Transform" output="pp"/>
+				<connection parent="Transform_2" output="pp"/>
 			</input>
 			<input name="B" type="point" storage="varying" multi="*" value="5" description="2nd or subsequent inputs" type_parent="val"/>
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
 			<rsl_code>
 	$(val) = $(A) * $(B);
-				</rsl_code>
+							</rsl_code>
 			<include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
-				</usage>
+							</usage>
 		</block>
-		<block id="Root block" position_x="5.62167832167831" position_y="1.13339160839161" author="" root="RIB" AOV_preview="1">
+		<block id="Root block" position_x="5.62167832167831" position_y="1.13339160839161" author="" root="RIB">
 			<rib_statements/>
 			<imager_statement/>
 			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
@@ -108,9 +108,9 @@
 			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
 			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
-				</rsl_code>
+							</rsl_code>
 			<include/>
-			<usage>Sets xyz components of a point, vector, or normal.			</usage>
+			<usage>Sets xyz components of a point, vector, or normal.						</usage>
 		</block>
 		<block id="SetComp_2" position_x="1.71826923076923" position_y="-0.562500000000001" author="rconstruct">
 			<input name="x" type="float" storage="varying" value="0" description="x component">
@@ -123,11 +123,11 @@
 			<output name="out" type="point" storage="varying" description="point, vector, or normal with the specified components"/>
 			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
-				</rsl_code>
+							</rsl_code>
 			<include/>
-			<usage>Sets xyz components of a point, vector, or normal.			</usage>
+			<usage>Sets xyz components of a point, vector, or normal.						</usage>
 		</block>
-		<block id="Transform" position_x="-4.36923076923076" position_y="-1.6" author="rconstruct">
+		<block id="Transform_2" position_x="-4.40497949013815" position_y="-1.55174761774944" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
 				<connection parent="p" output="P"/>
 			</input>
@@ -138,19 +138,24 @@
 			<rsl_code>
 	#define $(p)_$(p:type)
 	#define mmat_$(mmat)
+	
 	#ifdef $(p)_point
 	#ifdef mmat_none
 		$(pp) = transform( $(from_space), $(to_space), $(p) );
 	#else
 		$(pp) = transform( $(from_space), $(mmat), $(p) );
 	#endif
-	#elif $(p)_vector
+	#endif
+	
+	#ifdef $(p)_vector
 	#ifdef mmat_none
 		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
 	#else
 		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
 	#endif
-	#else
+	#endif
+	
+	#ifdef $(p)_normal
 	#ifdef mmat_none
 		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
 	#else
@@ -180,10 +185,10 @@
 		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );
 	#endif
-				</rsl_code>
-			<include>fractal.h			</include>
+							</rsl_code>
+			<include>fractal.h						</include>
 			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
-				</usage>
+							</usage>
 		</block>
 		<block id="VoronoiKM2D2F" position_x="-0.529697276407804" position_y="0.923813029076187" author="rconstruct">
 			<input name="ss" type="float" storage="varying" value="s" description="s coordinate">
@@ -207,17 +212,17 @@
 	$(f2) = 0; $(spos2) = 0; $(tpos2) = 0;
     voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
-				</rsl_code>
-			<include>extrapatterns.h			</include>
-			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.			</usage>
+							</rsl_code>
+			<include>extrapatterns.h						</include>
+			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.						</usage>
 		</block>
 		<block id="p" position_x="-4.41538461538461" position_y="-0.676923076923079" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
 			<rsl_code>
     $(P) = P;
-    			</rsl_code>
+    						</rsl_code>
 			<include/>
-			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
+			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.						</usage>
 		</block>
 		<block id="st" position_x="-4.95384615384615" position_y="0.738461538461535" author="rconstruct">
 			<output name="s" type="float" storage="varying" description="S texture coordinate"/>
@@ -225,7 +230,7 @@
 			<rsl_code>
     $(s) = s;
     $(t) = t;
-    			</rsl_code>
+    						</rsl_code>
 			<include/>
 			<usage/>
 		</block>
