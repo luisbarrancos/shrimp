@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -312,17 +312,16 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			// Preset AOVs, shader arguments, so we initialize them
 			shader_code += "surface " + ShaderName
 				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
-//			shader_code += "surface " + ShaderName + " (\n";
 		break;
 
 		case DISPLACEMENT:
 			shader_code += "displacement " + ShaderName
-			       	+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case LIGHT:
 			shader_code += "light " + ShaderName
-			       	+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case VOLUME:
@@ -619,6 +618,196 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 }
 
 
+std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName) {
+
+	// get the list of blocks composing the shader
+	scene::shader_blocks_t shader_blocks;
+	switch (ShaderType) {
+
+		case SURFACE:
+		{
+			// get surface parents (Ci and Oi)
+			std::string Ci_output_name;
+			shader_block* Ci_parent = m_scene->get_parent (name(), "Ci", Ci_output_name);
+			std::string Oi_output_name;
+			shader_block* Oi_parent = m_scene->get_parent (name(), "Oi", Oi_output_name);
+
+			// make sure there's something to build
+			if (!Ci_parent && !Oi_parent) {
+
+				log() << info << "there's no surface block connected to the root block." << std::endl;
+				return "";
+			}
+
+			// make the list of connected blocks
+			m_scene->upward_blocks (Ci_parent, shader_blocks);
+			m_scene->upward_blocks (Oi_parent, shader_blocks);
+		}
+		break;
+
+		case DISPLACEMENT:
+		{
+			// get displacement parents (N and P)
+			std::string N_output_name;
+			shader_block* N_parent = m_scene->get_parent (name(), "N", N_output_name);
+			std::string P_output_name;
+			shader_block* P_parent = m_scene->get_parent (name(), "P", P_output_name);
+
+			// make sure there's something to build
+			if (!N_parent && !P_parent) {
+
+				log() << info << "there's no displacement block connected to the root block." << std::endl;
+				return "";
+			}
+
+			// make the list of connected blocks
+			m_scene->upward_blocks (N_parent, shader_blocks);
+			m_scene->upward_blocks (P_parent, shader_blocks);
+		}
+		break;
+
+		case LIGHT:
+		{
+			// get light parents (Cl and Ol)
+			std::string Cl_output_name;
+			shader_block* Cl_parent = m_scene->get_parent (name(), "Cl", Cl_output_name);
+			std::string Ol_output_name;
+			shader_block* Ol_parent = m_scene->get_parent (name(), "Ol", Ol_output_name);
+
+			// make sure there's something to build
+			if (!Cl_parent && !Ol_parent) {
+
+				log() << info << "there's no light block connected to the root block." << std::endl;
+				return "";
+			}
+
+			// make the list of connected blocks
+			m_scene->upward_blocks (Cl_parent, shader_blocks);
+			m_scene->upward_blocks (Ol_parent, shader_blocks);
+		}
+		break;
+
+		case VOLUME:
+		{
+			// get atmosphere parents (Cv and Ov)
+			std::string Cv_output_name;
+			shader_block* Cv_parent = m_scene->get_parent (name(), "Cv", Cv_output_name);
+			std::string Ov_output_name;
+			shader_block* Ov_parent = m_scene->get_parent (name(), "Ov", Ov_output_name);
+
+			// make sure there's something to build
+			if (!Cv_parent && !Ov_parent) {
+
+				log() << info << "there's no atmosphere block connected to the root block." << std::endl;
+				return "";
+			}
+
+			// make the list of connected blocks
+			m_scene->upward_blocks (Cv_parent, shader_blocks);
+			m_scene->upward_blocks (Ov_parent, shader_blocks);
+		}
+		break;
+
+		default:
+			log() << error << "unhandled shader type.";
+			return "";
+	}
+
+	// start code
+	std::string meta_file ("");
+	meta_file += "<k3dml>\n";
+
+	// get parameters and outputs
+	std::string parameters;
+	std::string shader_outputs;
+	for (scene::shader_blocks_t::const_iterator block = shader_blocks.begin(); block != shader_blocks.end(); ++block) {
+
+		shader_block* sb = block->second;
+
+		sb->reset_code_written();
+
+		// get parameter values (inputs that are not connected)
+		for (shader_block::properties_t::const_iterator input = sb->m_inputs.begin(); input != sb->m_inputs.end(); ++input) {
+
+			if (m_scene->is_connected (scene::io_t (sb->name(), input->m_name))) {
+				continue;
+			}
+
+			if (input->m_shader_parameter) {
+				parameters += "\t\t\t<argument name=\"" + sb->sl_name() + "_" + input->m_name + "\""
+						+ " storage_class=\"" + input->get_storage() + "\""
+						+ " type=\"" + sb->input_type (input->m_name) + "\""
+						+ " extended_type=\"" + sb->input_type (input->m_name) + "\"" // TODO
+						+ " array_count=\"" + "1" + "\"" // TODO
+						+ " space=\"" + "\"" // TODO
+						+ " output=\"false\""
+						+ " default_value=\"" + input->value_as_sl_string()
+						+ "\"/>\n";
+			}
+		}
+
+		// get output values
+		//TODO test that each name is unique
+		for (shader_block::properties_t::const_iterator output = sb->m_outputs.begin(); output != sb->m_outputs.end(); ++output) {
+
+			if (!output->m_shader_output) {
+				continue;
+			} else {
+				shader_outputs += "\t\t\t<argument name=\"" + sb->sl_name() + "_" + output->m_name + "\""
+						+ " storage_class=\"" + sb->output_storage (output->m_name) + "\""
+						+ " type=\"" + sb->output_type (output->m_name) + "\""
+						+ " extended_type=\"" + sb->output_type (output->m_name) + "\"" // TODO
+						+ " array_count=\"" + "1" + "\"" // TODO
+						+ " space=\"" + "\"" // TODO
+						+ " output=\"true\""
+						+ "\"/>\n";
+			}
+		}
+	}
+
+	meta_file += "\t<shaders>\n";
+
+	// shader type
+	meta_file += "\t\t<shader type=\"";
+	switch (ShaderType) {
+
+		case SURFACE:
+			// Preset AOVs, shader arguments, so we initialize them
+			meta_file += "surface\" name=\"" + ShaderName + "\">\n";
+		break;
+
+		case DISPLACEMENT:
+			meta_file += "displacement\" name=\"" + ShaderName + "\">\n";
+		break;
+
+		case LIGHT:
+			meta_file += "light\" name=\"" + ShaderName + "\">\n";
+		break;
+
+		case VOLUME:
+			meta_file += "volume\" name=\"" + ShaderName + "\">\n";
+		break;
+
+		default:
+			log() << error << "unhandled shader type.";
+	}
+
+	// description and authors
+	meta_file += "\t\t\t<description></description>\n";
+	meta_file += "\t\t\t<authors></authors>\n";
+
+	// add function's parameters
+	meta_file += parameters;
+	meta_file += shader_outputs;
+
+	meta_file += "\t\t</shader>\n";
+	meta_file += "\t</shaders>\n";
+	meta_file += "</k3dml>\n";
+
+	return meta_file;
+}
+
+
 std::string rib_root_block::show_code() {
 
 	std::string shader_list ("");
@@ -639,6 +828,20 @@ bool rib_root_block::export_shader (const shader_t ShaderType, const std::string
 	const std::string surface = build_shader_file (ShaderType, ShaderName);
 
 	std::ofstream file (ShaderFile.c_str());
+
+	file << surface;
+
+	file.close();
+
+	return true;
+}
+
+
+bool rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile) {
+
+	const std::string surface = build_k3d_meta_file (ShaderType, ShaderName);
+
+	std::ofstream file ((ShaderFile + "meta").c_str());
 
 	file << surface;
 
@@ -860,34 +1063,45 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 
 	if (has_surface_network()) {
 
+		// RenderMan surface shader
 		surface_shader = "preview_surface";
 		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
-
 		CommandList.push_back( shader_compilation_command (surface_shader + ".sl", Directory, surface_shader, Directory, shader_path) );
+
+		// K-3D meta file
+		export_k3d_slmeta (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
 	}
 
 	if (has_displacement_network()) {
 
+		// RenderMan displacement shader
 		displacement_shader = "preview_displacement";
 		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
-
 		CommandList.push_back( shader_compilation_command (displacement_shader + ".sl", Directory, displacement_shader, Directory, shader_path) );
+
+		// K-3D meta file
+		export_k3d_slmeta (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
 	}
 
 	if (has_light_network()) {
 
+		// RenderMan light shader
 		light_shader = "preview_light";
 		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
-
 		CommandList.push_back( shader_compilation_command (light_shader + ".sl", Directory, light_shader, Directory, shader_path) );
+
+		// K-3D meta file
+		export_k3d_slmeta (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
 	}
 
 	if (has_atmosphere_network()) {
 
+		// RenderMan atmosphere shader
 		atmosphere_shader = "preview_atmosphere";
 		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
-
 		CommandList.push_back( shader_compilation_command (atmosphere_shader + ".sl", Directory, atmosphere_shader, Directory, shader_path) );
+
+		export_k3d_slmeta (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
 	}
 
 	// output scene

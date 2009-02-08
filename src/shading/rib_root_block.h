@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -68,9 +68,13 @@ public:
 	std::string build_shader_file (const shader_t ShaderType, const std::string& ShaderName);
 	// recursively build the shader code ending at given block
 	void build_shader_code (shader_block* Block, std::string& ShaderCode);
+	// build the K-3D slmeta file for a shader
+	std::string build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName);
 
 	// export a shader to a RSL file
 	bool export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile);
+	// export a K-3D slmeta file
+	bool export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile);
 
 	// write a RIB file for preview and image output
 	void write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName = "", const std::string& DisplacementName = "", const std::string& LightName = "", const std::string& AtmosphereName = "", const std::string& ImagerName = "");
