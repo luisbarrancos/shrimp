@@ -26,7 +26,7 @@
     <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<output name="Oi" description="Shaded opacity" type="color"/>
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 		$(Oi) = Os;
 #if RENDERER == pixie

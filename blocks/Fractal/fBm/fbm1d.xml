@@ -6,7 +6,7 @@
 	<input name="gain" description="Controls the contrast of the fBm" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of fBm" type="float" default="1"/>
 	<output name="val" description="fBm value at x" type="float color point vector normal"/>
-	<include>fractal.h</include>
+	<include>shrimp_fractal.h</include>
 	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float

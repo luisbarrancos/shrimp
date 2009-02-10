@@ -10,7 +10,7 @@
 	<input name="I" description="Direction of viewer" type="vector" default="I"/>
 	<input name="Dir" description="Anisotropy direction" type="vector" default="dPdv"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * cooktorrance( $(N), $(I), $(Dir),

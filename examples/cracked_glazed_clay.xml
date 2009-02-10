@@ -528,7 +528,7 @@
 		$(Ci) = aov_diffuse;
 	#endif
 				</rsl_code>
-			<include>shadingmodels.h			</include>
+			<include>shrimp_shadingmodels.h			</include>
 			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).			</usage>
 		</block>
 		<block id="PhongBlinn" position_x="11.5303333503542" position_y="1.62056104885735" author="rconstruct">
@@ -549,7 +549,7 @@
 		aov_specular += $(Ks) * phong_blinn( $(N), $(I), $(size) );
         $(Ci) = aov_specularcolor * aov_specular;
 				</rsl_code>
-			<include>shadingmodels.h			</include>
+			<include>shrimp_shadingmodels.h			</include>
 			<usage>Phong-Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.			</usage>
 		</block>
 		<block id="Ridged3D" position_x="-9" position_y="-4" author="rconstruct">
@@ -573,7 +573,7 @@
 					$(octaves), $(lacunarity), $(offset), $(gain) ) );
 	#endif
 													</rsl_code>
-			<include>fractal.h												</include>
+			<include>shrimp_fractal.h												</include>
 			<usage>This is Ken Musgrave&apos;s Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
 													</usage>
 		</block>
@@ -741,7 +741,7 @@
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 													</rsl_code>
-			<include>fractal.h												</include>
+			<include>shrimp_fractal.h												</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.												</usage>
 		</block>
 		<block id="Voronoi3D2F_2" position_x="-5" position_y="-6" author="rconstruct">
@@ -762,7 +762,7 @@
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 													</rsl_code>
-			<include>fractal.h												</include>
+			<include>shrimp_fractal.h												</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.												</usage>
 		</block>
 		<block id="p" position_x="-9" position_y="-1" author="rconstruct">

@@ -6,7 +6,7 @@
 	<input name="V" description="Viewer or user supplied vector" type="vector" default="normalize(I)"/>
 	<input name="dx" description="Filter width" type="float" default="0.0"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 	#if RENDERER == pixie
 		aov_rimlighting += $(Crim) * $(Krim) * float rimlighting(

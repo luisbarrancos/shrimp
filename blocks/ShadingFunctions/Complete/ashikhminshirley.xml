@@ -14,7 +14,7 @@
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<input name="xdir" description="Direction vector" type="vector" default="normalize(dPdu)"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
         #define ver_$(rsamples)
 		

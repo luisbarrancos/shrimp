@@ -10,7 +10,7 @@
 	<input name="bias" description="Shadow map bias" type="float" default="-1"/>
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
-	<include>lights.h</include>
+	<include>shrimp_lights.h</include>
 	<rsl_code>
 		$(Cl) = $(inten) * $(lcolor) * sdistantlight( $(from), $(to),
 				$(shadowname), $(filter), $(samples), $(width), $(blur),

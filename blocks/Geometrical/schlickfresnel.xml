@@ -3,7 +3,7 @@
 	<input name="N" description="Surface normal" type="normal" default="normalize(N)"/>
 	<input name="V" description="Direction of viewer" type="vector" default="-normalize(I)"/>
 	<output name="Kr" description="Output value" type="float"/>
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );

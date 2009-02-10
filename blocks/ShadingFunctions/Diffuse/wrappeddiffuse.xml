@@ -5,7 +5,7 @@
 	<input name="N" description="The surface normal" type="normal" default="normalize(N)"/>
 	<input name="V" description="The viewer vector" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="The amount of diffuse light" type="color"/>
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_diffuse += $(Kd) * wrappeddiffuse( $(wangle), $(N), $(V) );

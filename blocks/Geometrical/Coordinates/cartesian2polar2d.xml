@@ -3,7 +3,7 @@
 	<input name="y" description="Y coordinate of point to convert" type="float" default="t"/>
 	<output name="rho" description="The converted X coordinate" type="float"/>
 	<output name="theta" description="The converted Y coordinate" type="float"/>
-	<include>conversion.h</include>
+	<include>shrimp_conversion.h</include>
 	<rsl_code>
 		cartesian2polar2d(	$(x), $(y), $(rho), $(theta) );
 	</rsl_code>

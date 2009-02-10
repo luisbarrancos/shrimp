@@ -20,7 +20,7 @@
     <output name="po" description="temp po" type="point" />
     <output name="pp" description="temp pp" type="point" />
     <output name="sfactor" description="scale factor" type="float" />
-	<include>fractal.h</include>
+	<include>shrimp_fractal.h</include>
 	<rsl_code>
         $(po) = transform( $(cspace), $(p) );
 

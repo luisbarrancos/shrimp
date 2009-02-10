@@ -7,7 +7,7 @@
     <input name="N" description="Normal vector" type="normal vector" default="normalize(N)"/>
     <input name="I" description="Eye vector" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<include>shrimp_helpers.h</include>
 	<rsl_code>
         $(Ci) = velvet( $(Ks), $(backscatter), $(edginess), $(roughness),

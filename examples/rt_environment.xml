@@ -36,7 +36,7 @@
 						$(ior), $(k), $(roughness), $(distro), $(geo) );
 		$(Ci) = aov_specularcolor * aov_specular;
 							</rsl_code>
-			<include>shadingmodels.h						</include>
+			<include>shrimp_shadingmodels.h						</include>
 			<usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets. The Fresnel term used is the complex Fresnel function, from the Odforce.net Odwiki, courtesy of Mario Marengo and the Odforce community. Takes the absolute IOR and extinction coefficient k.						</usage>
 		</block>
 		<block id="Environment_2" position_x="4" position_y="-1" author="rconstruct">
@@ -176,7 +176,7 @@
 		$(Ci) = aov_diffuse;
 	#endif
 							</rsl_code>
-			<include>shadingmodels.h						</include>
+			<include>shrimp_shadingmodels.h						</include>
 			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).						</usage>
 		</block>
 		<block id="Reflect" position_x="2" position_y="-2" author="rconstruct">
@@ -232,7 +232,7 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
 
 										</rsl_code>
-			<include>shadingmodels.h									</include>
+			<include>shrimp_shadingmodels.h									</include>
 			<usage>Christophe Schlick&apos;s fast fresnel approximation.									</usage>
 		</block>
 	</network>

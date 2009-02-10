@@ -7,7 +7,7 @@
 	<input name="blur" description="The amount the edge is to be blurred" type="float" default="0.001"/>
 	<output name="out" description="returns 1 if x,y lies within the disc" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<include>shapes.h</include>
+	<include>shrimp_shapes.h</include>
 	<rsl_code>
 		$(out) = shDisc( $(ox),$(oy),$(x),$(y),$(radius),$(blur) );
 	</rsl_code>

@@ -137,7 +137,7 @@
 																$(width) );
 	#endif
 																</rsl_code>
-			<include>fractal.h															</include>
+			<include>shrimp_fractal.h															</include>
 			<usage/>
 		</block>
 		<block id="FaceForward" position_x="-0.8" position_y="1.825" author="rconstruct">
@@ -282,7 +282,7 @@
 		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
 																</rsl_code>
-			<include>shadingmodels.h															</include>
+			<include>shrimp_shadingmodels.h															</include>
 			<usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz&apos;s implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.															</usage>
 		</block>
 		<block id="Root block" position_x="10.1471153846154" position_y="1.62596153846154" author="" root="RIB">
@@ -336,7 +336,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 					$(bdist), $(shadowname), $(filtername),
 					$(samples), $(blur), $(bias), $(atten), $(width) );
 							</rsl_code>
-			<include>lights.h						</include>
+			<include>shrimp_lights.h						</include>
 			<usage>Modified shadow spotlight shader, by Tal Lancaster, from The RenderMan repository ( www.renderman.org ). Modified to better handle atenuation. Bias overrides the global shadow bias value, with -1 being the global default, and blur, the amount to soften the shadow edges. Shadow map filter type defaults to gaussian, with triangle and box as optional.						</usage>
 		</block>
 		<block id="Specular" position_x="4.90769230769229" position_y="-3.63076923076924" author="rconstruct">

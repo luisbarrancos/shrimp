@@ -5,7 +5,7 @@
 	<input name="width" description="Filter width" type="float" default="0"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at (x,y)" type="float color vector point"/>
-	<include>fractal.h</include>
+	<include>shrimp_fractal.h</include>
 	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float

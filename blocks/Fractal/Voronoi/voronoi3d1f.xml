@@ -4,7 +4,7 @@
 	<input name="dtype" description="Distance metric, see help" type="float" default="2"/>
     <output name="f1" description="feature 1" type="float"/>
 	<output name="pos1" description="position 1" type="point"/>
-	<include>fractal.h</include>
+	<include>shrimp_fractal.h</include>
 	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(pos1) = 0;

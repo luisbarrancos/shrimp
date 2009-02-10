@@ -6,7 +6,7 @@
     <output name="f1" description="feature 1" type="float"/>
     <output name="spos1" description="s position 1" type="float"/>
     <output name="tpos1" description="t position 1" type="float"/>
-	<include>fractal.h</include>
+	<include>shrimp_fractal.h</include>
 	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;

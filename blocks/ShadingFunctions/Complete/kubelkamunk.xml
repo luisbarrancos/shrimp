@@ -7,7 +7,7 @@
 	<input name="N" description="Surface normal" type="normal" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color"/>
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
         $(Ci) = KMOverGlossy(	$(N), $(I), $(Kd), $(Ks), $(thicklayer), 
 								$(thickness), $(roughness),

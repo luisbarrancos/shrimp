@@ -23,7 +23,7 @@
 	<input name="vclump" description="RIB clump vector" type="vector" default="vector(0)"/>
 	<input name="hairid" description="RIB hair id" type="float" storage="uniform" default="0"/>
     <output name="Ci" description="Shaded color" type="color" />
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 		$(Ci) = SIG2k_srf_fur( $(Ka), $(Kd), $(Ks), $(rough1),
 				$(rough2), $(spec1), $(spec2), $(startspec), $(endspec),

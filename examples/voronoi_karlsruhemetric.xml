@@ -186,7 +186,7 @@
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );
 	#endif
 							</rsl_code>
-			<include>fractal.h						</include>
+			<include>shrimp_fractal.h						</include>
 			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
 							</usage>
 		</block>
@@ -213,7 +213,7 @@
     voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
 							</rsl_code>
-			<include>extrapatterns.h						</include>
+			<include>shrimp_extrapatterns.h						</include>
 			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.						</usage>
 		</block>
 		<block id="p" position_x="-4.41538461538461" position_y="-0.676923076923079" author="rconstruct">

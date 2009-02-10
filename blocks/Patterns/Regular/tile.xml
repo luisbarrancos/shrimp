@@ -8,7 +8,7 @@
 	<output name="column" description="The column number of the current tile" type="float"/>
 	<output name="row" description="The row number of the current tile" type="float"/>
 	<include>shrimp_helpers.h</include>
-	<include>shapes.h</include>
+	<include>shrimp_shapes.h</include>
 	<rsl_code>
 		shTile( $(x),$(y),$(xfreq),$(yfreq),$(xt),$(yt),$(column),$(row) );
 	</rsl_code>

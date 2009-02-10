@@ -8,7 +8,7 @@
 	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<include>shadingmodels.h</include>
+	<include>shrimp_shadingmodels.h</include>
 	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * aschlick( $(roughness), $(isotropy),

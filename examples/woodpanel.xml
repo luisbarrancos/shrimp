@@ -307,7 +307,7 @@
 		$(Ci) = aov_diffuse;
 	#endif
 				</rsl_code>
-			<include>shadingmodels.h			</include>
+			<include>shrimp_shadingmodels.h			</include>
 			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).			</usage>
 		</block>
 		<block id="Root block" position_x="13" position_y="-2" author="" root="RIB">
@@ -346,7 +346,7 @@
         $(Ci) = $(Ks) * $(Cspec) * schlickspec( $(N), $(I), $(roughness) );
 
 																			</rsl_code>
-			<include>shadingmodels.h																		</include>
+			<include>shrimp_shadingmodels.h																		</include>
 			<usage>Christope Schlick&apos;s isotropic specular term. Roughness controls the apparent surface roughness.																		</usage>
 		</block>
 		<block id="SetCol" position_x="0" position_y="-2" author="rconstruct">
@@ -543,7 +543,7 @@
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 																			</rsl_code>
-			<include>fractal.h																		</include>
+			<include>shrimp_fractal.h																		</include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.																		</usage>
 		</block>
 		<block id="Wood" position_x="2" position_y="5" author="rconstruct">
@@ -557,7 +557,7 @@
 			<rsl_code>
         $(val) = wood2( $(ringscale), $(txtscale), $(grainy), $(pp) );
 																			</rsl_code>
-			<include>extrapatterns.h																		</include>
+			<include>shrimp_extrapatterns.h																		</include>
 			<usage>Wood pattern block, based on wood2.sl shader by Larry Gritz.																		</usage>
 		</block>
 		<block id="fBm3D" position_x="-6" position_y="3" author="rconstruct">
@@ -578,7 +578,7 @@
 					$(octaves),	$(lacunarity), $(gain) ) );		
 	#endif
 																			</rsl_code>
-			<include>fractal.h																		</include>
+			<include>shrimp_fractal.h																		</include>
 			<usage>fBm is a sumation of noises at different frequencies. Note that the output is not clamped and may exceed +1 or -1.
 																			</usage>
 		</block>

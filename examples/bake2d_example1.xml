@@ -154,7 +154,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 							</rsl_code>
-			<include>fractal.h						</include>
+			<include>shrimp_fractal.h						</include>
 			<usage>This is the Perlin turbulence function.
 							</usage>
 		</block>
