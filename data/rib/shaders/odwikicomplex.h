@@ -62,9 +62,15 @@ float cx_im( complex z; ) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Create a complex number
+#if RENDERER == aqsis
+vector cx_set( float re; float im; ) {
+	return vector( re, im, 0 );
+}
+#else
 complex cx_set( float re, im; )  {
 	return vector( re, im, 0 );
 }
+#endif
 
 complex cx_setR( float re; ) {
 	return vector( re, 0, 0 );

@@ -1,7 +1,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "shrimp_helpers.h"
-#include "distributions2.h" /* for PDFs and Geometric attenuation, for the 
+#include "shrimp_extras.h" /* for PDFs and Geometric attenuation, for the 
 							   Cook-Torrance model */
 #include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
 							   all the AOVs to zero in the first statement
@@ -983,7 +983,18 @@ cooktorrance(
 			} else if (geomodel == 1) {
 				G = smith( cospsi, costheta, roughness );
 			} else {
+				/* for some reason, Pixie seems to hate big spline() calls
+				 * so we have a problem here with the lookup error function
+				 * version.
+				 * (409) ("Unknown function") (v2.2.4) - spline
+				 * "f=Sffffffffffffffffffffffffffffffffffffffffff") ret
+				 * "linear" temporary_23 .... disable this for the time being
+				 * just make it use the Smith attenuation. */
+#if RENDERER == pixie
+				G = smith( cospsi, costheta, roughness );
+#else
 				G = he_torrance( costheta, cospsi, roughness );
+#endif
 			}
 
 			/* Using the full formula fresnel for unpolarized light, from 

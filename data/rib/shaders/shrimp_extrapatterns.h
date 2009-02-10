@@ -1,6 +1,6 @@
-#include <conversion.h>
-#include <fractal.h>
-#include <shrimp_helpers.h>
+#include "shrimp_conversion.h"
+#include "shrimp_fractal.h"
+#include "shrimp_helpers.h"
 
 #ifndef SQR
 #define SQR(X)  ( (X) * (X) )
