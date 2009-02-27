@@ -2,7 +2,7 @@
  * on Reflectance Functions, by Mario Marengo:
  * http://odforce.net/wiki/index.php/ReflectanceFunctions
  * Many Thanks to Jason, Marc, Mario and everyone at Odforce:
- * http://www.odforce.net
+ * http://www.odforce.ne
  * */
 
 /****************************************************************************
@@ -62,15 +62,9 @@ float cx_im( complex z; ) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Create a complex number
-#if RENDERER == aqsis
-vector cx_set( float re; float im; ) {
-	return vector( re, im, 0 );
-}
-#else
 complex cx_set( float re, im; )  {
 	return vector( re, im, 0 );
 }
-#endif
 
 complex cx_setR( float re; ) {
 	return vector( re, 0, 0 );
@@ -185,10 +179,6 @@ complex cx_neg( float x; ) {
 
 ////////////////////////////////////////////////////////////////////////////////
 // Addition (a+b)
-complex cx_add( complex a, b; ) {
-	return cx_set( xcomp(a) + xcomp(b), ycomp(a) + ycomp(b) );
-}
-
 complex cx_add( complex a; float b; ) {
 	return cx_set( xcomp(a) + b, ycomp(a) );
 }
@@ -197,12 +187,12 @@ complex cx_add( float a; complex b; ) {
 	return cx_set( a + xcomp(b), ycomp(b) );
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Subtraction (a-b)
-complex cx_sub( complex a, b; ) {
-	return cx_set( xcomp(a) - xcomp(b), ycomp(a) - ycomp(b) );
+complex cx_add( complex a, b; ) {
+	return cx_set( xcomp(a) + xcomp(b), ycomp(a) + ycomp(b) );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Subtraction (a-b)
 complex cx_sub( complex a; float b; ) {
 	return cx_set( xcomp(a) - b, ycomp(a) );
 }
@@ -211,13 +201,12 @@ complex cx_sub( float a; complex b; ) {
 	return cx_set( a - xcomp(b), -ycomp(b) );
 }
 
-////////////////////////////////////////////////////////////////////////////////
-// Multiplication (a*b)
-complex cx_mul( complex a, b; ) {
-	return cx_set( xcomp(a) * xcomp(b) - ycomp(a) * ycomp(b),
-			xcomp(a) * ycomp(b) + ycomp(a) * xcomp(b) );
+complex cx_sub( complex a, b; ) {
+	return cx_set( xcomp(a) - xcomp(b), ycomp(a) - ycomp(b) );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Multiplication (a*b)
 complex cx_mul( complex a; float b; ) {
 	return cx_set( xcomp(a) * b, ycomp(a) * b);
 }
@@ -226,10 +215,29 @@ complex cx_mul( float a; complex b; ) {
 	return cx_set( a * xcomp(b), a * ycomp(b) );
 }
 
+complex cx_mul( complex a, b; ) {
+	return cx_set( xcomp(a) * xcomp(b) - ycomp(a) * ycomp(b),
+			xcomp(a) * ycomp(b) + ycomp(a) * xcomp(b) );
+}
+
 ////////////////////////////////////////////////////////////////////////////////
 // Division (a/b)
 // Adapted from Numerical Recipes
 // This does not check for division by zero!
+complex cx_div( complex a; float b; ) {
+	float l2 = b * b;
+	complex result = (0, 0, 0);
+#if RENDERER == aqsis || RENDERER == pixie
+	if (l2 != 0) {
+		result = cx_set( ( xcomp(a) * b) / l2, ( ycomp(a) * b) / l2 );
+	}
+	return result;
+#else
+	return l2 == 0.0 ? 0.0 : cx_set( ( xcomp(a) * b) / l2,
+			( ycomp(a) * b) / l2 );
+#endif
+}
+
 complex cx_div( complex a, b; ) {
 	float re, im, ss;
 	float ax = xcomp(a), ay = ycomp(a),
@@ -249,21 +257,8 @@ complex cx_div( complex a, b; ) {
 	return cx_set( re, im );
 }
 
-complex cx_div( complex a; float b; ) {
-	float l2 = b * b;
-#if RENDERER == aqsis || RENDERER == pixie
-	if (l2 != 0) {
-		l2 = cx_set( ( xcomp(a) * b) / l2, ( ycomp(a) * b) / l2 );
-	}
-	return l2;
-#else
-	return l2 == 0.0 ? 0.0 : cx_set( ( xcomp(a) * b) / l2,
-			( ycomp(a) * b) / l2 );
-#endif
-}
-
-complex cx_div( float a; complex b; ) {
-	return cx_div( cx_setR(a), b );
+complex cx_div( float c; complex d; ) {
+	return cx_div( cx_setR(c), d );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
