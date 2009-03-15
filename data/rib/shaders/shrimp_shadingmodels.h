@@ -2819,23 +2819,28 @@ banksaniso(
 
 		vector Ln = normalize(L);
 		float cospsi = Ln.xdir;
+		float pd = 1;
 
-		uniform float nonspec = 0;
+		uniform float nondiff = 0, nonspec = 0;
+		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
+
+		if (nondiff < 1) {
+			
+			pd = sqrt( 1 - cospsi * cospsi);
+			float ldotn = Ln.Nf;
+			aov_diffuse += (1-nondiff) * Cl * ldotn * Kd * pd;
+		}
 
 		if (nonspec < 1) {
 
-			float pd = sqrt( 1 - cospsi * cospsi );
 			float ps = sqrt( 1 - costheta * costheta );
-
 			float ldotn = Ln.Nf;
-			
-			aov_diffuse += Cl * ldotn * Kd * cdiff * pd;
-			aov_specular += (1-nonspec) * Cl * ldotn * Ks * cspec *
+			aov_specular += (1-nonspec) * Cl * ldotn * Ks *
 							pow( pd*ps - cospsi*costheta, 1/roughness);
 		}
 	}
-	return aov_diffuse + aov_specular;
+	return (cdiff * aov_diffuse) + (cspec * aov_specular);
 }
 
 ////////////////////////////////////////////////////////////////////////////////

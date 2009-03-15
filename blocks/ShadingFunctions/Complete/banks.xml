@@ -13,7 +13,7 @@
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_specularcolor += $(Cspec);
-		aov_ambient += aov_surfacecolor * $(Ka) * ambient();
+		aov_ambient += $(Ka) * ambient();
 
 		$(Ci) = aov_surfacecolor * aov_ambient + banksaniso(
 				$(Cdiff), $(Cspec), $(Kd), $(Ks), $(roughness), $(NN),
