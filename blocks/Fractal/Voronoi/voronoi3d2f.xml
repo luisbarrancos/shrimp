@@ -6,7 +6,7 @@
 	<output name="f2" description="f2" type="float"/>
 	<output name="pos1" description="pos1" type="point"/>
 	<output name="pos2" description="pos2" type="point"/>
-	<include>shrimp_fractal.h</include>
+	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;

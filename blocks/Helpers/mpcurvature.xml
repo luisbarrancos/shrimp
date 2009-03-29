@@ -5,7 +5,7 @@
 	<output name="val" description="Curvature at P" type="color"/>
 	<output name="kmin" description="Min curvature" type="float"/>
 	<output name="kmax" description="Max curvature" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		mpcurvature( $(PP), $(kmax), $(kmin) );
 		$(val) = color "hsv" ( $(kmax)+$(kmin) * $(gain)+$(offset), .8, .8 );

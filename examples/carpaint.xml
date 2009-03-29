@@ -9,7 +9,7 @@
 			<rsl_code>
 	$(val) = abs( $(A) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Add" position_x="7.64615384615382" position_y="1.59999999999999" author="rconstruct">
@@ -26,7 +26,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.															</usage>
 		</block>
 		<block id="Area" position_x="0.123076923076915" position_y="-4.32307692307693" author="rconstruct">
@@ -37,7 +37,7 @@
 			<rsl_code>
 	$(val) = area( $(p) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns the differential surface area (length( Du(P)*du^Dv(P)*dv)).															</usage>
 		</block>
 		<block id="Divide" position_x="2.15384615384614" position_y="-4.6923076923077" author="rconstruct">
@@ -49,7 +49,7 @@
 			<rsl_code>
 	$(val) = $(A) / $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.															</usage>
 		</block>
 		<block id="Dot" position_x="0.699999999999999" position_y="-0.1125" author="rconstruct">
@@ -63,7 +63,7 @@
 			<rsl_code>
 	$(val) = $(A).$(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Environment" position_x="4.85" position_y="3.46634615384615" author="rconstruct">
@@ -112,7 +112,7 @@
 		$(val) = aov_reflection;
     #endif
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This block value is passed to the aov_reflection AOV preset.															</usage>
 		</block>
 		<block id="FNoise2D" position_x="2.10769230769229" position_y="-3.01538461538462" author="rconstruct">
@@ -137,7 +137,7 @@
 																$(width) );
 	#endif
 																</rsl_code>
-			<include>shrimp_fractal.h															</include>
+			<rsl_include>shrimp_fractal.h															</rsl_include>
 			<usage/>
 		</block>
 		<block id="FaceForward" position_x="-0.8" position_y="1.825" author="rconstruct">
@@ -152,7 +152,7 @@
 			<rsl_code>
 	$(NN) = faceforward( $(N), $(I), $(Nref) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
 																</usage>
 		</block>
@@ -171,7 +171,7 @@
 			<rsl_code>
         fresnel( $(I), $(N), $(eta), $(Kr), $(Kt), $(R), $(T) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient Kt, given an incident direction I, the surface normal N, and the relative index of refraction eta. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the fresnel formula. Optionally, this procedure also returns the reflected (R) and transmitted (T) vectors. The transmitted vector is computed using Snell&apos;s law.															</usage>
 		</block>
 		<block id="I" position_x="-4.0375" position_y="2.775" author="rconstruct">
@@ -179,7 +179,7 @@
 			<rsl_code>
 	$(I) = I;
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Multiply" position_x="-0.825000000000002" position_y="0.324999999999999" author="rconstruct">
@@ -191,7 +191,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 																</usage>
 		</block>
@@ -206,7 +206,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 																</usage>
 		</block>
@@ -219,7 +219,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 																</usage>
 		</block>
@@ -232,7 +232,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 																</usage>
 		</block>
@@ -241,7 +241,7 @@
 			<rsl_code>
     $(N) = N;
     															</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Normalize" position_x="-2.3875" position_y="2.1125" author="rconstruct">
@@ -252,7 +252,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).															</usage>
 		</block>
 		<block id="Normalize_2" position_x="-2.4125" position_y="1.2625" author="rconstruct">
@@ -263,7 +263,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).															</usage>
 		</block>
 		<block id="OrenNayar" position_x="4.90769230769229" position_y="-1.4923076923077" author="rconstruct">
@@ -282,7 +282,7 @@
 		aov_diffuse += $(Kd) * OrenNayar( $(roughness), $(N), $(V) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
 																</rsl_code>
-			<include>shrimp_shadingmodels.h															</include>
+			<rsl_include>shrimp_shadingmodels.h															</rsl_include>
 			<usage>Oren-Nayar diffuse term, based on Szymon Rusinkiewicz&apos;s implementation. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the model is a Lambertian reflection. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.															</usage>
 		</block>
 		<block id="Root block" position_x="10.1471153846154" position_y="1.62596153846154" author="" root="RIB">
@@ -311,7 +311,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="ShadowSpotLight" position_x="7.8995386838595" position_y="-0.210304024010674" author="rconstruct">
@@ -336,7 +336,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 					$(bdist), $(shadowname), $(filtername),
 					$(samples), $(blur), $(bias), $(atten), $(width) );
 							</rsl_code>
-			<include>shrimp_lights.h						</include>
+			<rsl_include>shrimp_lights.h						</rsl_include>
 			<usage>Modified shadow spotlight shader, by Tal Lancaster, from The RenderMan repository ( www.renderman.org ). Modified to better handle atenuation. Bias overrides the global shadow bias value, with -1 being the global default, and blur, the amount to soften the shadow edges. Shadow map filter type defaults to gaussian, with triangle and box as optional.						</usage>
 		</block>
 		<block id="Specular" position_x="4.90769230769229" position_y="-3.63076923076924" author="rconstruct">
@@ -355,7 +355,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 		aov_specular += $(Ks) * specular( $(norm), $(viewer), $(roughness) );
 		$(Ci) = aov_specularcolor * aov_specular;
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Specular term, using specular() call. Note that what is a standard specular() might vary with the renderer you&apos;re using. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.															</usage>
 		</block>
 		<block id="Spline" position_x="2.27403846153846" position_y="-0.265384615384617" author="rconstruct">
@@ -371,7 +371,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 			<rsl_code>
 		$(val) = spline( $(basis), $(x), $(cp1), $(cp2), $(cp3), $(cp4) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Fits a spline into the control points passed, using the specified spline basis function. These can be of type &quot;catmull-rom&quot;, &quot;bezier&quot;, &quot;bspline&quot;, &quot;hermite&quot;, or &quot;linear&quot;. Defaults to catmull-rom. In 3delight, any spline type may be prefixed by &quot;solve&quot;, such as &quot;solvecatmull-rom&quot;, in which case this shadeop becomes a root solver and may be used as an invert function.															</usage>
 		</block>
 		<block id="Sqrt" position_x="0.0769230769230655" position_y="-5.04615384615385" author="rconstruct">
@@ -382,7 +382,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 			<rsl_code>
 	$(val) = sqrt( $(A) );
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Transform_2" position_x="-1.6923076923077" position_y="-4.66153846153846" author="rconstruct">
@@ -421,7 +421,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 	#endif
 	#endif
 																</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.															</usage>
 		</block>
 		<block id="p" position_x="-1.78461538461539" position_y="-3.70769230769231" author="rconstruct">
@@ -429,7 +429,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
 			<rsl_code>
     $(P) = P;
     															</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.															</usage>
 		</block>
 		<block id="st" position_x="-1.76923076923078" position_y="-2.73846153846154" author="rconstruct">
@@ -439,7 +439,7 @@ Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
     $(s) = s;
     $(t) = t;
     															</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 	</network>

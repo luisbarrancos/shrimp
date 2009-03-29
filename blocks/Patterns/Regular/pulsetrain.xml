@@ -3,7 +3,7 @@
 	<input name="edge" description="Edge" type="float" default="0.2"/>
 	<input name="period" description="Period" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		$(val) = pulsetrain( $(edge), $(period), $(x) );
 	</rsl_code>

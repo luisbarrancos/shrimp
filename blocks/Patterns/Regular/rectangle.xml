@@ -7,8 +7,8 @@
 	<input name="height" description="The height of the rectangle" type="float" default="0.3"/>
 	<input name="blur" description="The amount the edge is to be blurred" type="float" default="0.001"/>
 	<output name="out" description="returns 1 if x,y lies within the rectangle" type="float"/>
-	<include>shrimp_helpers.h</include>
-	<include>shrimp_shapes.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>shrimp_shapes.h</rsl_include>
 	<rsl_code>
 	$(out) = shRect( $(x0),$(y0),$(x),$(y),$(width),$(height),$(blur) );
 	</rsl_code>

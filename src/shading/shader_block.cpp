@@ -1094,7 +1094,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 			}
 		}
 		else if (name == "id" || name == "position_x" || name == "position_y"
-			|| name == "root" || name == "rolled") {
+			|| name == "root") {
 
 			// ignore them
 		}
@@ -1203,7 +1203,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 
 			add_output (output_name, output_type, output_storage, output_description, shader_output);
 		}
-		else if (element == "include") {
+		else if (element == "rsl_include") {
 
 			if (c->FirstChild()) {
 				set_includes (c->FirstChild()->ToText()->Value());

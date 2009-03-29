@@ -1,7 +1,7 @@
 <shrimp type="function" name="CxInv" description="Complex Inverse block" author="rconstruct">
 	<input name="A" description="1st input" type="vector" default="vector(1,1,1)"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<include>odwikicomplex.h</include>
+	<rsl_include>odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_inv( $(A) );
 	</rsl_code>

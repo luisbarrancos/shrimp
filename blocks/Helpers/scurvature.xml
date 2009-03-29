@@ -6,7 +6,7 @@
 	<input name="Nn" description="Surface normal" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
 	<output name="val" description="Curvature output" type="color"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
         $(val) = scurvature( $(ctype), $(cmin), $(cmax), $(greys), $(Nn), $(I));
 	</rsl_code>

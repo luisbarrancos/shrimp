@@ -6,7 +6,7 @@
 	<input name="gain" description="Controls the contrast of the turbulence" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of turbulence" type="float" default="1"/>
 	<output name="val" description="turbulence value at p" type="float color vector point"/>
-	<include>shrimp_fractal.h</include>
+	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float

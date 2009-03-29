@@ -1,7 +1,7 @@
 <shrimp type="function" name="CxCosh" description="Complex Hyperbolic Cosine block" author="rconstruct">
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<include>odwikicomplex.h</include>
+	<rsl_include>odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_cosh( $(A) );
 	</rsl_code>

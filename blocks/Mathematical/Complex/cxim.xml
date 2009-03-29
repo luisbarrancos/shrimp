@@ -1,7 +1,7 @@
 <shrimp type="function" name="CxIm" description="Get Imarinary Part block" author="rconstruct">
 	<input name="A" description="1st input" type="vector" default="vector(1,1,1)"/>
 	<output name="val" description="Imaginary component" type="float"/>
-	<include>odwikicomplex.h</include>
+	<rsl_include>odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_im( $(A) );
 	</rsl_code>

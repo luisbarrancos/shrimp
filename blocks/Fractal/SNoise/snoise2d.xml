@@ -3,7 +3,7 @@
 	<input name="y" description="noise y coordinate" type="float" default="t"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at (x,y), in range -1 - 1" type="float color point vector"/>
-	<include>shrimp_fractal.h</include>
+	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float

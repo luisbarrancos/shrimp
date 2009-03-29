@@ -2,7 +2,7 @@
 	<input name="maxiter" description="Maximum number of iterations" type="float" default="500"/>
 	<input name="useuv" description="Use UV instead of ST" type="float" default="0"/>
 	<output name="val" description="Output color" type="color"/>
-	<include>shrimp_extrapatterns.h</include>
+	<rsl_include>shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
         $(val) = mrrand( $(maxiter), $(useuv) );
 	</rsl_code>

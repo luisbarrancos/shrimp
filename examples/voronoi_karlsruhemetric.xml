@@ -10,7 +10,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.						</usage>
 		</block>
 		<block id="CellContour" position_x="3.72980769230769" position_y="1.11153846153846" author="rconstruct">
@@ -35,7 +35,7 @@
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
 							</rsl_code>
-			<include>shrimp_helpers.h						</include>
+			<rsl_include>shrimp_helpers.h						</rsl_include>
 			<usage/>
 		</block>
 		<block id="Multiply" position_x="-2.83076923076922" position_y="1.1076923076923" author="rconstruct">
@@ -47,7 +47,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
 		</block>
@@ -60,7 +60,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
 		</block>
@@ -73,7 +73,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
 		</block>
@@ -94,7 +94,7 @@
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="SetComp" position_x="1.59038461538462" position_y="2.13461538461538" author="rconstruct">
@@ -109,7 +109,7 @@
 			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Sets xyz components of a point, vector, or normal.						</usage>
 		</block>
 		<block id="SetComp_2" position_x="1.71826923076923" position_y="-0.562500000000001" author="rconstruct">
@@ -124,7 +124,7 @@
 			<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Sets xyz components of a point, vector, or normal.						</usage>
 		</block>
 		<block id="Transform_2" position_x="-4.40497949013815" position_y="-1.55174761774944" author="rconstruct">
@@ -163,7 +163,7 @@
 	#endif
 	#endif
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
 		<block id="VLfBm3D" position_x="-2.1076923076923" position_y="-2.50769230769231" author="rconstruct">
@@ -186,7 +186,7 @@
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );
 	#endif
 							</rsl_code>
-			<include>shrimp_fractal.h						</include>
+			<rsl_include>shrimp_fractal.h						</rsl_include>
 			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
 							</usage>
 		</block>
@@ -213,7 +213,7 @@
     voronoi_km_f1f2_2d( $(ss), $(tt), $(jitter), $(f1), $(spos1),
 								 $(tpos1), $(f2), $(spos2), $(tpos2));
 							</rsl_code>
-			<include>shrimp_extrapatterns.h						</include>
+			<rsl_include>shrimp_extrapatterns.h						</rsl_include>
 			<usage>2D Voronoi cell noise, 2 feature version, using Karlsruhe (Moscow) distance metric.						</usage>
 		</block>
 		<block id="p" position_x="-4.41538461538461" position_y="-0.676923076923079" author="rconstruct">
@@ -221,7 +221,7 @@
 			<rsl_code>
     $(P) = P;
     						</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.						</usage>
 		</block>
 		<block id="st" position_x="-4.95384615384615" position_y="0.738461538461535" author="rconstruct">
@@ -231,7 +231,7 @@
     $(s) = s;
     $(t) = t;
     						</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 	</network>

@@ -12,7 +12,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_2" position_x="-1" position_y="-6" author="rconstruct">
@@ -26,7 +26,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_3" position_x="-1" position_y="-5" author="rconstruct">
@@ -40,7 +40,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_4" position_x="-1" position_y="-7" author="rconstruct">
@@ -54,7 +54,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_5" position_x="-7" position_y="-4" author="rconstruct">
@@ -66,7 +66,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_6" position_x="12" position_y="3" author="rconstruct">
@@ -80,7 +80,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Add_7" position_x="15" position_y="0" author="rconstruct">
@@ -94,7 +94,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Bump" position_x="10" position_y="-2" author="rconstruct">
@@ -107,7 +107,7 @@
 			<rsl_code>
 	$(NN) = normalize( calculatenormal( $(P) + $(Dir)*$(Scale) ) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This is exactly like the displace function except that the new surface position is not computed.
 													</usage>
 		</block>
@@ -133,7 +133,7 @@
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
 													</rsl_code>
-			<include>shrimp_helpers.h												</include>
+			<rsl_include>shrimp_helpers.h												</rsl_include>
 			<usage/>
 		</block>
 		<block id="Constant" position_x="-3" position_y="-0" author="rconstruct">
@@ -142,7 +142,7 @@
 			<rsl_code>
 	$(out) = $(in);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Useful for supplying multiple inputs with the same value.												</usage>
 		</block>
 		<block id="Constant_2" position_x="-3" position_y="-1" author="rconstruct">
@@ -151,7 +151,7 @@
 			<rsl_code>
 	$(out) = $(in);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Useful for supplying multiple inputs with the same value.												</usage>
 		</block>
 		<block id="Constant_3" position_x="-3" position_y="-2" author="rconstruct">
@@ -160,7 +160,7 @@
 			<rsl_code>
 	$(out) = $(in);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Useful for supplying multiple inputs with the same value.												</usage>
 		</block>
 		<block id="Constant_4" position_x="-3" position_y="1" author="rconstruct">
@@ -169,7 +169,7 @@
 			<rsl_code>
 	$(out) = $(in);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Useful for supplying multiple inputs with the same value.												</usage>
 		</block>
 		<block id="Divide" position_x="-0" position_y="-3" author="rconstruct">
@@ -181,7 +181,7 @@
 			<rsl_code>
 	$(val) = $(A) / $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Divide_2" position_x="1" position_y="-7" author="rconstruct">
@@ -193,7 +193,7 @@
 			<rsl_code>
 	$(val) = $(A) / $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Divide_3" position_x="6" position_y="3" author="rconstruct">
@@ -207,7 +207,7 @@
 			<rsl_code>
 	$(val) = $(A) / $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Environment" position_x="11" position_y="-5" author="rconstruct">
@@ -249,7 +249,7 @@
 								&quot;fill&quot;, $(fill) ) ;
     #endif
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Fresnel" position_x="7" position_y="-7" author="rconstruct">
@@ -267,7 +267,7 @@
 			<rsl_code>
         fresnel( $(I), $(N), $(eta), $(Kr), $(Kt), $(R), $(T) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient Kt, given an incident direction I, the surface normal N, and the relative index of refraction eta. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the fresnel formula. Optionally, this procedure also returns the reflected (R) and transmitted (T) vectors. The transmitted vector is computed using Snell&apos;s law.												</usage>
 		</block>
 		<block id="GetCol" position_x="4" position_y="1" author="rconstruct">
@@ -282,7 +282,7 @@
 	$(g) = comp( $(col), 1 );
 	$(b) = comp( $(col), 2 );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="I" position_x="5" position_y="-6" author="rconstruct">
@@ -290,7 +290,7 @@
 			<rsl_code>
 	$(I) = I;
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Mix" position_x="-0" position_y="1" author="rconstruct">
@@ -307,7 +307,7 @@
 			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).												</usage>
 		</block>
 		<block id="Mix_2" position_x="-0" position_y="-1" author="rconstruct">
@@ -324,7 +324,7 @@
 			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).												</usage>
 		</block>
 		<block id="Mix_3" position_x="2" position_y="0" author="rconstruct">
@@ -341,7 +341,7 @@
 			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).												</usage>
 		</block>
 		<block id="Mix_4" position_x="2" position_y="-2" author="rconstruct">
@@ -358,7 +358,7 @@
 			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).												</usage>
 		</block>
 		<block id="Mix_5" position_x="4" position_y="-1" author="rconstruct">
@@ -375,7 +375,7 @@
 			<rsl_code>
 	$(out) = mix( $(A), $(B), $(alpha) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).												</usage>
 		</block>
 		<block id="Multiply" position_x="8" position_y="-3" author="rconstruct">
@@ -387,7 +387,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -400,7 +400,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -413,7 +413,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -428,7 +428,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -441,7 +441,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -456,7 +456,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 													</usage>
 		</block>
@@ -465,7 +465,7 @@
 			<rsl_code>
     $(N) = N;
     												</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Normalize" position_x="5" position_y="-7" author="rconstruct">
@@ -476,7 +476,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).												</usage>
 		</block>
 		<block id="Normalize_2" position_x="5" position_y="-8" author="rconstruct">
@@ -487,7 +487,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).												</usage>
 		</block>
 		<block id="Normalize_3" position_x="12" position_y="-2" author="rconstruct">
@@ -498,7 +498,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).												</usage>
 		</block>
 		<block id="OrenNayar_2" position_x="9.25119383405264" position_y="4.08005191726357" author="rconstruct">
@@ -528,7 +528,7 @@
 		$(Ci) = aov_diffuse;
 	#endif
 				</rsl_code>
-			<include>shrimp_shadingmodels.h			</include>
+			<rsl_include>shrimp_shadingmodels.h			</rsl_include>
 			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).			</usage>
 		</block>
 		<block id="PhongBlinn" position_x="11.5303333503542" position_y="1.62056104885735" author="rconstruct">
@@ -549,7 +549,7 @@
 		aov_specular += $(Ks) * phong_blinn( $(N), $(I), $(size) );
         $(Ci) = aov_specularcolor * aov_specular;
 				</rsl_code>
-			<include>shrimp_shadingmodels.h			</include>
+			<rsl_include>shrimp_shadingmodels.h			</rsl_include>
 			<usage>Phong-Blinn specular term. This is meant to be used in a network with an ambient and a diffuse term. Add Cs/Os as needed. A good starting point for experimentation might be to use the Oren-Nayar diffuse term. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.			</usage>
 		</block>
 		<block id="Ridged3D" position_x="-9" position_y="-4" author="rconstruct">
@@ -573,7 +573,7 @@
 					$(octaves), $(lacunarity), $(offset), $(gain) ) );
 	#endif
 													</rsl_code>
-			<include>shrimp_fractal.h												</include>
+			<rsl_include>shrimp_fractal.h												</rsl_include>
 			<usage>This is Ken Musgrave&apos;s Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
 													</usage>
 		</block>
@@ -594,7 +594,7 @@
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Subtract" position_x="6" position_y="2" author="rconstruct">
@@ -606,7 +606,7 @@
 			<rsl_code>
 	$(val) = $(A) - $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Subtract_2" position_x="4" position_y="2" author="rconstruct">
@@ -618,7 +618,7 @@
 			<rsl_code>
 	$(val) = $(A) - $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Subtract_3" position_x="4" position_y="3" author="rconstruct">
@@ -630,7 +630,7 @@
 			<rsl_code>
 	$(val) = $(A) - $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Subtract_4" position_x="6" position_y="-5" author="rconstruct">
@@ -642,7 +642,7 @@
 			<rsl_code>
 	$(val) = $(A) - $(B);
 													</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.												</usage>
 		</block>
 		<block id="Transform_2" position_x="-9.01976025417381" position_y="-1.97459046457614" author="rconstruct">
@@ -681,7 +681,7 @@
 	#endif
 	#endif
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
 		<block id="Transform_3" position_x="8.99631196503112" position_y="-7.02146948900571" author="rconstruct">
@@ -720,7 +720,7 @@
 	#endif
 	#endif
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
 		<block id="Voronoi3D2F" position_x="-5" position_y="-4" author="rconstruct">
@@ -741,7 +741,7 @@
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 													</rsl_code>
-			<include>shrimp_fractal.h												</include>
+			<rsl_include>shrimp_fractal.h												</rsl_include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.												</usage>
 		</block>
 		<block id="Voronoi3D2F_2" position_x="-5" position_y="-6" author="rconstruct">
@@ -762,7 +762,7 @@
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1), $(f2),
 							$(pos2) );
 													</rsl_code>
-			<include>shrimp_fractal.h												</include>
+			<rsl_include>shrimp_fractal.h												</rsl_include>
 			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.												</usage>
 		</block>
 		<block id="p" position_x="-9" position_y="-1" author="rconstruct">
@@ -770,7 +770,7 @@
 			<rsl_code>
     $(P) = P;
     												</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.												</usage>
 		</block>
 	</network>

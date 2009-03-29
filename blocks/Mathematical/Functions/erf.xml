@@ -1,7 +1,7 @@
 <shrimp type="function" name="Erf" description="Error function" author="rconstruct">
 	<input name="x" description="Input" type="float" default="0"/>
 	<output name="out" description="Output" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 	$(out) = mm_erf( $(x) );
 	</rsl_code>

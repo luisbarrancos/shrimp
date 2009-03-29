@@ -57,7 +57,7 @@
 	#endif
 			
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Bakes the supplied data channel into a bakefile. Note that this varies considerably with each renderer&apos;s implementation, please check your renderer&apos;s documentation for details. Returns 1 if sucessfull, 0 if failed.			</usage>
 		</block>
 		<block id="FaceForward" position_x="-2" position_y="1" author="rconstruct">
@@ -72,7 +72,7 @@
 			<rsl_code>
 	$(NN) = faceforward( $(N), $(I), $(Nref) );
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
 				</usage>
 		</block>
@@ -81,7 +81,7 @@
 			<rsl_code>
 	$(I) = I;
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="N" position_x="-4" position_y="2" author="rconstruct">
@@ -89,7 +89,7 @@
 			<rsl_code>
     $(N) = N;
     			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Normalize" position_x="-4" position_y="1" author="rconstruct">
@@ -100,7 +100,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
 		<block id="Normalize_2" position_x="-4" position_y="-1" author="rconstruct">
@@ -111,7 +111,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
 		<block id="Occlusion" position_x="-0" position_y="2" author="rconstruct">
@@ -209,7 +209,7 @@
 	#endif
 	
 				</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don&apos;t hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you&apos;ll have ambient occlusion, or reflection occlusion. You can also use point-based occlusion, or Aqsis&apos;s implementation which uses multiple shadow maps. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details.			</usage>
 		</block>
 		<block id="Root block" position_x="6" position_y="1" author="" root="RIB">
@@ -233,7 +233,7 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0			</rib_statements>
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="p" position_x="-2" position_y="3" author="rconstruct">
@@ -241,7 +241,7 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0			</rib_statements>
 			<rsl_code>
     $(P) = P;
     			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
 		</block>
 	</network>

@@ -37,7 +37,7 @@
 	#endif
 			
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Bakes the supplied data channel into a bakefile. Note that this shadeop is only supported in Aqsis and 3Delight; you can use bake3d in other implementations. In 3Delight&apos;s case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default.						</usage>
 		</block>
 		<block id="Diffuse" position_x="-1" position_y="1.63076923076923" author="rconstruct">
@@ -46,7 +46,7 @@
 			<rsl_code>
 	$(col) = diffuse( $(norm) );
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Lambertian Diffuse term. This is meant to be combined in your network, with an diffuse, and/or specular term, as needed. Cs isn&apos;t taken into consideration here, nor is Os, you must include this in your network (multiply ambient and diffuse by your Cs, as for Os, use the output node opacity entry).						</usage>
 		</block>
 		<block id="Multiply" position_x="-4" position_y="-1" author="rconstruct">
@@ -58,7 +58,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
 		</block>
@@ -73,7 +73,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 							</usage>
 		</block>
@@ -97,7 +97,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Transform" position_x="-4" position_y="1" author="rconstruct">
@@ -131,7 +131,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 	#endif
 	#endif
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.						</usage>
 		</block>
 		<block id="Turbulence3D" position_x="-2" position_y="0" author="rconstruct">
@@ -154,7 +154,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 							</rsl_code>
-			<include>shrimp_fractal.h						</include>
+			<rsl_include>shrimp_fractal.h						</rsl_include>
 			<usage>This is the Perlin turbulence function.
 							</usage>
 		</block>
@@ -163,7 +163,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
 			<rsl_code>
     $(P) = P;
     						</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.						</usage>
 		</block>
 		<block id="st" position_x="2" position_y="-2" author="rconstruct">
@@ -173,7 +173,7 @@ Attribute &quot;sides&quot; &quot;integer doubleshaded&quot; 0
     $(s) = s;
     $(t) = t;
     						</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 	</network>

@@ -8,7 +8,7 @@
     <output name="f2" description="feature 2" type="float"/>
     <output name="spos2" description="s position 2" type="float"/>
     <output name="tpos2" description="t position 2" type="float"/>
-	<include>shrimp_extrapatterns.h</include>
+	<rsl_include>shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 	/* initialize */
 	$(f1) = 0; $(spos1) = 0; $(tpos1) = 0;

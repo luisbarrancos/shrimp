@@ -1,7 +1,7 @@
 <shrimp type="function" name="Cartesian2Cylindrical" description="Converts Cartesian coordinates to cylindrical coordinates" author="rconstruct">
 	<input name="in" description="Input normal, vector or point" type="normal vector point" type_parent="out" default="point(0)"/>
 	<output name="out" description="Converted normal, vector or point" type="normal vector point"/>
-	<include>shrimp_conversion.h</include>
+	<rsl_include>shrimp_conversion.h</rsl_include>
 	<rsl_code>
 		$(out) = cartesian2cylindrical( $(in) );
 	</rsl_code>

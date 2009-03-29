@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -409,7 +409,7 @@ xml::element scene::xml_network() {
 		xml_block.push_child (code);
 
 		// includes
-		xml::element includes ("include");
+		xml::element includes ("rsl_include");
 		includes.set_text (block->m_includes);
 
 		xml_block.push_child (includes);

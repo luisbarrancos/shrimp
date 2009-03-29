@@ -2,7 +2,7 @@
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<input name="B" description="2nd input" type="float vector" default="vector(0,0,0)"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<include>odwikicomplex.h</include>
+	<rsl_include>odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_div( $(A), $(B) );
 	</rsl_code>

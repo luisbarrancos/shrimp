@@ -14,7 +14,7 @@
 	<input name="bias" description="Shadow map bias" type="float" default="-1"/>
 	<input name="atten" description="Attenuation" type="float" default="1e6"/>
 	<output name="Cl" description="Light ray color" type="color"/>
-	<include>shrimp_lights.h</include>
+	<rsl_include>shrimp_lights.h</rsl_include>
 	<rsl_code>
 		$(Cl) = sig2kshadowspot( $(inten), $(lcolor), $(lpos), $(ltar),
 					radians( $(coneangle) ), radians( $(conedelta) ),

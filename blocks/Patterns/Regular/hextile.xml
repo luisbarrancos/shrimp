@@ -8,7 +8,7 @@
 	<input name="V" description="Viewer vector" type="vector" default="normalize(I)"/>
 	<output name="mortar" description="Output mortar" type="float"/>
 	<output name="tindex" description="Tile index" type="float"/>
-	<include>shrimp_extrapatterns.h</include>
+	<rsl_include>shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 		hextile( $(tradius), $(mwidth), $(tvary), $(x), $(y),$(NN), $(V),
 					$(mortar), $(tindex) );

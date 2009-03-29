@@ -7,7 +7,7 @@
 	<input name="offset" description="Controls the multifractality" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="val" description="fractal value at p" type="float color vector point"/>
-	<include>shrimp_fractal.h</include>
+	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
 	#ifdef $(val)_float

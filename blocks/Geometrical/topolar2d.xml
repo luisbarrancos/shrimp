@@ -3,7 +3,7 @@
 	<input name="y" description="Y coordinate of point to convert" type="float" default="t"/>
 	<output name="rout" description="The converted coordinates" type="float"/>
 	<output name="thetaout" description="The converted coordinates" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 	topolar2d( $(x), $(y), $(rout), $(thetaout) );
 	</rsl_code>

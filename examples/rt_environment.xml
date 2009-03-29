@@ -15,7 +15,7 @@
 			<rsl_code>
 	$(val) = $(A) + $(B);
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.						</usage>
 		</block>
 		<block id="CookTorrance_2" position_x="0" position_y="2" author="rconstruct">
@@ -36,7 +36,7 @@
 						$(ior), $(k), $(roughness), $(distro), $(geo) );
 		$(Ci) = aov_specularcolor * aov_specular;
 							</rsl_code>
-			<include>shrimp_shadingmodels.h						</include>
+			<rsl_include>shrimp_shadingmodels.h						</rsl_include>
 			<usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets. The Fresnel term used is the complex Fresnel function, from the Odforce.net Odwiki, courtesy of Mario Marengo and the Odforce community. Takes the absolute IOR and extinction coefficient k.						</usage>
 		</block>
 		<block id="Environment_2" position_x="4" position_y="-1" author="rconstruct">
@@ -85,7 +85,7 @@
 		$(val) = aov_reflection;
     #endif
 							</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This block value is passed to the aov_reflection AOV preset.						</usage>
 		</block>
 		<block id="FaceForward" position_x="0" position_y="-3" author="rconstruct">
@@ -100,7 +100,7 @@
 			<rsl_code>
 	$(NN) = faceforward( $(N), $(I), $(Nref) );
 										</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
 										</usage>
 		</block>
@@ -109,7 +109,7 @@
 			<rsl_code>
 	$(I) = I;
 																			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Multiply_2" position_x="6" position_y="-1" author="rconstruct">
@@ -121,7 +121,7 @@
 			<rsl_code>
 	$(val) = $(A) * $(B);
 										</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 										</usage>
 		</block>
@@ -130,7 +130,7 @@
 			<rsl_code>
     $(N) = N;
     																		</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Normalise" position_x="-2" position_y="-3" author="rconstruct">
@@ -141,7 +141,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 																			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																		</usage>
 		</block>
 		<block id="Normalise_2" position_x="-2" position_y="-2" author="rconstruct">
@@ -152,7 +152,7 @@
 			<rsl_code>
 	$(val) = normalize( $(A) );
 																			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																		</usage>
 		</block>
 		<block id="OrenNayar_2" position_x="2" position_y="4" author="rconstruct">
@@ -176,7 +176,7 @@
 		$(Ci) = aov_diffuse;
 	#endif
 							</rsl_code>
-			<include>shrimp_shadingmodels.h						</include>
+			<rsl_include>shrimp_shadingmodels.h						</rsl_include>
 			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables).						</usage>
 		</block>
 		<block id="Reflect" position_x="2" position_y="-2" author="rconstruct">
@@ -190,7 +190,7 @@
 			<rsl_code>
 	$(R) = reflect( $(I), $(N) );
 																			</rsl_code>
-			<include/>
+			<rsl_include/>
 			<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).																		</usage>
 		</block>
 		<block id="Root block" position_x="8" position_y="0" author="" root="RIB">
@@ -217,7 +217,7 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
 			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
 			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
 			<rsl_code/>
-			<include/>
+			<rsl_include/>
 			<usage/>
 		</block>
 		<block id="Schlick_Fresnel" position_x="2" position_y="-3" author="rconstruct">
@@ -232,7 +232,7 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
 		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
 
 										</rsl_code>
-			<include>shrimp_shadingmodels.h									</include>
+			<rsl_include>shrimp_shadingmodels.h									</rsl_include>
 			<usage>Christophe Schlick&apos;s fast fresnel approximation.									</usage>
 		</block>
 	</network>

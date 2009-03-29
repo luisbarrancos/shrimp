@@ -5,7 +5,7 @@
 	<input name="e2" description="E2" type="float" default="0.7"/>
 	<input name="e3" description="E3" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		$(val) = smoothpulse( $(e0), $(e1), $(e2), $(e3), $(x) );
 	</rsl_code>

@@ -2,7 +2,7 @@
 	<input name = "A" description="1st value" type="float" default="1"/>
 	<input name = "B" description="2nd value" type="float" default="1"/>
 	<output name="out" description="Performs the logical operation A XOR B" type="float"/>
-	<include>shrimp_helpers.h</include>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 	$(out) = exclusiveor( $(A), $(B) );
 	</rsl_code>

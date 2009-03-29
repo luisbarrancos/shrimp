@@ -5,7 +5,7 @@
 	<input name="k" description="Extinction coefficient" type="float" default="0.5"/>
 	<output name="Kr" description="The reflected coefficient" type="float"/>
 	<output name="Kt" description="The refracted coefficient" type="float"/>
-	<include>odwikicomplex.h</include>
+	<rsl_include>odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(Kr) = fresnel_kr( -$(V).$(N), cx_set( $(n), $(k) ) );
 		$(Kt) = max( 0.0, 1.0 - $(Kr) );
