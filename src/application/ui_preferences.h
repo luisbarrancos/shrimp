@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -71,14 +71,6 @@ class dialog :
 private:
 	fltk::Window* w;
 
-	struct scene_t {
-
-		std::string name;
-		std::string file;
-	};
-	typedef std::vector<scene_t> scenes_t;
-	scenes_t m_scenes;
-
 	std::string m_hidden_renderer_code;
 
 public:
@@ -87,47 +79,13 @@ public:
 		// load preferences
 		load();
 
-		// load shape list, and save preferences' shape number
+		// find shape number
+		int shape_number = 0;
 		int current_shape = 0;
-
-		dirent** scene_files = 0;
-		const int scene_count = fltk::filename_list (rib_scene_dir().c_str(), &scene_files);
-
-		if (scene_count > 0) {
-
-			typedef std::vector<std::string> names_t;
-			names_t scene_paths;
-			for (int f = 0; f < scene_count; ++f) {
-
-				const std::string file = std::string (scene_files[f]->d_name);
-				const std::string file_path = rib_scene_dir() + "/" + file;
-				if (!fltk::filename_isdir (file_path.c_str())) {
-
-					const char* extension = fltk::filename_ext (file.c_str());
-					if (std::string(extension) == ".rib") {
-
-						// save XML file
-						const std::string name (file.begin(), file.end() - 4);
-
-						// add scene to the list
-						scene_t new_scene;
-
-						new_scene.name = name;
-						new_scene.file = file_path;
-
-						m_scenes.push_back (new_scene);
-
-						// save shape number
-						if (m_scene == name)
-							current_shape = m_scenes.size() - 1;
-					}
-				}
-
-				free (scene_files[f]);
+		for (scenes_t::iterator s_i = m_scenes.begin(); s_i != m_scenes.end(); ++s_i, ++current_shape) {
+			if (s_i->name == m_scene) {
+				shape_number = current_shape;
 			}
-
-			free (scene_files);
-
 		}
 
 		// warn the user if no scene file is found
@@ -202,7 +160,7 @@ public:
 			s_scene->end();
 			w->add (s_scene);
 			s_scene->tooltip ("object(s) rendered in the output scene");
-			s_scene->value (current_shape);
+			s_scene->value (shape_number);
 
 			s_render_width = new fltk::Input (110,start + 230, 50,23,"render width");
 			w->add (s_render_width);
@@ -394,6 +352,7 @@ public:
 
 		return "";
 	}
+
 };
 
 }

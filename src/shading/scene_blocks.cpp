@@ -36,6 +36,12 @@ void scene::add_block (const std::string& BlockId, const std::string& BlockFile,
 
 shader_block* scene::add_predefined_block (const std::string& BlockName) {
 
+	// catch custom block
+	if (BlockName == "Custom block") {
+		return add_custom_block();
+	}
+
+	// create existing block
 	default_blocks_t::const_iterator block_i = m_default_blocks.find (BlockName);
 	if (block_i == m_default_blocks.end()) {
 

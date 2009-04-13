@@ -28,6 +28,7 @@ general_options::general_options() :
 	m_rib_scene_dir ("./data/rib/scenes")
 {
 	load_renderer_list();
+	load_scene_list();
 }
 
 
@@ -350,6 +351,55 @@ general_options::renderers_t general_options::get_renderer_list() {
 }
 
 
+void general_options::load_scene_list() {
+
+	// load scene list
+//#ifdef FLTK
+	dirent** scene_files = 0;
+	const int scene_count = fltk::filename_list (m_rib_scene_dir.c_str(), &scene_files);
+
+	if (scene_count > 0) {
+
+		typedef std::vector<std::string> names_t;
+		names_t scene_paths;
+		for (int f = 0; f < scene_count; ++f) {
+
+			const std::string file = std::string (scene_files[f]->d_name);
+			const std::string file_path = rib_scene_dir() + "/" + file;
+			if (!fltk::filename_isdir (file_path.c_str())) {
+
+				const char* extension = fltk::filename_ext (file.c_str());
+				if (std::string(extension) == ".rib") {
+
+					// save XML file
+					const std::string name (file.begin(), file.end() - 4);
+
+					// add scene to the list
+					scene_t new_scene;
+
+					new_scene.name = name;
+					new_scene.file = file_path;
+
+					m_scenes.push_back (new_scene);
+				}
+			}
+
+			free (scene_files[f]);
+		}
+
+		free (scene_files);
+
+	}
+//#endif
+}
+
+
+general_options::scenes_t general_options::get_scene_list() {
+
+	return m_scenes;
+}
+
+
 void general_options::set_renderer (const std::string& RendererCode) {
 
 	std::string shader_compiler ("");
@@ -373,6 +423,12 @@ void general_options::set_renderer (const std::string& RendererCode) {
 void general_options::set_display (const std::string& RendererDisplay) {
 
 	m_renderer_display = RendererDisplay;
+}
+
+
+void general_options::set_scene (const std::string& Scene) {
+
+	m_scene = Scene;
 }
 
 

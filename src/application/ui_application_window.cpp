@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -79,6 +79,9 @@ bool application_window::load_scene (const std::string& File) {
 
 	m_zoom_slider.value (new_size);
 
+	// Set scene name as window's title
+	label (m_scene->name().c_str());
+
 	return true;
 }
 
@@ -127,6 +130,9 @@ void application_window::on_menu_shader_properties (fltk::Widget*) {
 
 		m_scene->set_name (shader_properties::name->value());
 		m_scene->set_description (shader_properties::description->text());
+
+		// Set scene name as window's title
+		label (m_scene->name().c_str());
 	}
 }
 
@@ -152,14 +158,16 @@ void application_window::on_menu_file_options (fltk::Widget*) {
 	preferences::dialog d;
 	d.pref_dialog();
 
-	// update the renderer and display choosers according to the preferences
+	// update the renderer, display and scene choosers according to the preferences
 	general_options prefs;
 	prefs.load();
 	const std::string renderer_code = prefs.m_renderer_code;
 	const std::string display_name = prefs.m_renderer_display;
+	const std::string scene = prefs.m_scene;
 
 	set_renderer_chooser_value (renderer_code);
 	set_display_chooser_value (renderer_code, display_name);
+	set_scene_chooser_value (scene);
 }
 
 
@@ -285,11 +293,34 @@ void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data
 }
 
 
+void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
+
+	const std::string scene_name ((const char*)Data);
+
+	bool scene_found = false;
+	for (general_options::scenes_t::const_iterator s = m_scenes.begin(); s != m_scenes.end(); ++s) {
+		if (s->name == scene_name) {
+			scene_found = true;
+			break;
+		}
+	}
+	if (!scene_found) {
+		log() << error << "unknown scene: '" << scene_name << "'" << std::endl;
+		return;
+	}
+
+	// save the scene value
+	general_options prefs;
+	prefs.load();
+	prefs.set_scene (scene_name);
+	prefs.save();
+}
+
+
 application_window::application_window() :
-	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 700, 550, "Scene", true),
-	m_zoom_slider (80, 525, 400, 19, "Zoom"),
-	m_block_menu (20, 22, 80, 24,"Add block"),
-	m_custom_block (110, 22, 100, 24, "Custom block")
+	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
+	m_zoom_slider (80, 575, 400, 19, "Zoom"),
+	m_block_menu (20, 22, 90, 24, "Add block")
 {
 	log() << aspect << "Application window constructor" << std::endl;
 
@@ -306,7 +337,7 @@ application_window::application_window() :
 	begin();
 
 		// main menu bar
-		fltk::MenuBar* left_menu_bar = new fltk::MenuBar (0, 0, 700, 20, "Left menu");
+		fltk::MenuBar* left_menu_bar = new fltk::MenuBar (0, 0, 800, 20, "Left menu");
 		left_menu_bar->begin();
 
 			// file menu
@@ -382,7 +413,7 @@ application_window::application_window() :
 		left_menu_bar->end();
 
 		// help menu
-		fltk::MenuBar* right_menu_bar = new fltk::MenuBar (650, 0, 39, 20);
+		fltk::MenuBar* right_menu_bar = new fltk::MenuBar (750, 0, 39, 20);
 		right_menu_bar->begin();
 
 			fltk::ItemGroup* menu_help = new fltk::ItemGroup ("&Help");
@@ -412,87 +443,49 @@ application_window::application_window() :
 				build_menu (d->first, d->second);
 			}
 
+			// add custom block entry
+			new fltk::Item ("Custom block");
+
 		m_block_menu.end();
 
-		// custom block button
-		m_custom_block.tooltip ("Create a brand new block");
-		m_custom_block.callback ((fltk::Callback*)cb_custom_block, this);
-
-		// renderer chooser
+		// load data from preferences
 		general_options prefs;
 		prefs.load();
 		m_renderers = prefs.get_renderer_list();
-		m_renderer_chooser = new fltk::Choice (300, 22, 100, 24, "Renderer");
-		m_renderer_chooser->tooltip ("Choose an installed RenderMan engine");
+		m_scenes = prefs.get_scene_list();
 
-		unsigned long renderer_menu_number = 0;
-		unsigned long current_menu_number = 0;
-		m_renderer_chooser->begin();
-		for (general_options::renderers_t::iterator r_i = m_renderers.begin(); r_i != m_renderers.end(); ++r_i, ++current_menu_number) {
-			if (r_i->first == _3delight) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)_3delight);
-				if (prefs.m_renderer_code == _3delight)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == air) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)air);
-				if (prefs.m_renderer_code == air)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == aqsis) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)aqsis);
-				if (prefs.m_renderer_code == aqsis)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == entropy) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)entropy);
-				if (prefs.m_renderer_code == entropy)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == pixie) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
-				if (prefs.m_renderer_code == pixie)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == prman) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
-				if (prefs.m_renderer_code == prman)
-					renderer_menu_number = current_menu_number;
-			}
-			else if (r_i->first == renderdotc) {
-				new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
-				if (prefs.m_renderer_code == renderdotc)
-					renderer_menu_number = current_menu_number;
-			}
-			else
-				log() << error << "unknown renderer: " << r_i->second.name << std::endl;
-		}
-		m_renderer_chooser->end();
+		// renderer chooser
+		m_renderer_chooser = new fltk::Choice (250, 22, 100, 24, "Renderer");
+		m_renderer_chooser->tooltip ("Choose an installed RenderMan engine");
+		set_renderer_chooser_value (prefs.m_renderer_code);
 
 		// display chooser
-		m_renderer_display_chooser = new fltk::Choice (460, 22, 100, 24, "Display");
+		m_renderer_display_chooser = new fltk::Choice (410, 22, 100, 24, "Display");
 		m_renderer_display_chooser->tooltip ("Select one of the renderer's displays");
 
 		// set preferences values
-		m_renderer_chooser->value (renderer_menu_number);
 		on_renderer_choice (this, (void*)prefs.m_renderer_code.c_str());
 
+		// scene chooser
+		m_scene_chooser = new fltk::Choice (570, 22, 100, 24, "Scene");
+		m_scene_chooser->tooltip ("Choose a 3D scene for preview");
+		set_scene_chooser_value (prefs.m_scene);
 
 		// preview button
-		fltk::Button* preview_button = new fltk::Button (580, 22, 100, 24, "Preview");
+		fltk::Button* preview_button = new fltk::Button (690, 22, 100, 24, "Preview");
 		preview_button->callback ((fltk::Callback*)cb_preview, this);
 		preview_button->tooltip ("Click to preview the shader using selected renderer and display");
 
 		// OpenGL view
-		fltk::Group* main_view = new fltk::Group (2, 48, 692, 450);
+		fltk::Group* main_view = new fltk::Group (2, 48, 796, 520);
 		main_view->begin();
 
-			fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 692, 450);
+			fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 796, 520);
 			frame->box (fltk::DOWN_BOX);
 			frame->color ((fltk::Color) (56));
 			frame->selection_color ((fltk::Color) (69));
 
-			m_scene_view = new scene_view (2, 2, 692, 450);
+			m_scene_view = new scene_view (2, 2, 792, 518);
 
 		main_view->end();
 		resizable (main_view);
@@ -510,13 +503,11 @@ application_window::application_window() :
 		m_zoom_slider.tooltip ("Drag to zoom in or out");
 
 		// fit scene button
-		fltk::Button* fit_button = new fltk::Button (490, 520, 100, 24, "Fit scene");
+		fltk::Button* fit_button = new fltk::Button (490, 570, 100, 24, "Fit scene");
 		fit_button->callback ((fltk::Callback*)cb_button_fit_scene, this);
 		fit_button->tooltip ("Click to fit the block scene to the current view");
 
 	end();
-
-	// additional tooltips
 
 	// setup view
 	log() << aspect << "Setting default shader" << std::endl;
@@ -620,9 +611,10 @@ void application_window::set_renderer_chooser_value (const std::string RendererC
 	}
 	m_renderer_chooser->end();
 
-	// set preferences values
+	// set preferences value
 	m_renderer_chooser->value (renderer_menu_number);
 }
+
 
 void application_window::set_display_chooser_value (const std::string RendererName, const std::string DisplayName) {
 
@@ -648,6 +640,24 @@ void application_window::set_display_chooser_value (const std::string RendererNa
 		m_renderer_display_chooser->value (display_number);
 	}
 }
+
+
+void application_window::set_scene_chooser_value (const std::string Scene) {
+
+	unsigned long scene_menu_number = 0;
+	unsigned long current_menu_number = 0;
+	m_scene_chooser->begin();
+	for (general_options::scenes_t::iterator s_i = m_scenes.begin(); s_i != m_scenes.end(); ++s_i, ++current_menu_number) {
+		new fltk::Item (s_i->name.c_str(), 0, cb_scene, (void*)s_i->name.c_str());
+		if (Scene == s_i->name)
+			scene_menu_number = current_menu_number;
+	}
+	m_scene_chooser->end();
+
+	// set preferences value
+	m_scene_chooser->value (scene_menu_number);
+}
+
 
 int application_window::handle (int event) {
 

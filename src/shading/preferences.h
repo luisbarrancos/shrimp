@@ -60,6 +60,16 @@ public:
 	typedef std::map<std::string, renderer_t> renderers_t;
 	renderers_t m_renderers;
 
+	// scene list
+	struct scene_t {
+
+		std::string name;
+		std::string file;
+	};
+	typedef std::vector<scene_t> scenes_t;
+	scenes_t m_scenes;
+
+
 	bool m_splash_screen;
 
 	std::string m_renderer_code;
@@ -91,8 +101,12 @@ public:
 	void load_renderer_list();
 	renderers_t get_renderer_list();
 
+	void load_scene_list();
+	scenes_t get_scene_list();
+
 	void set_renderer (const std::string& RendererCode);
 	void set_display (const std::string& RendererDisplay);
+	void set_scene (const std::string& Scene);
 
 private:
 	const std::string preferences_file();

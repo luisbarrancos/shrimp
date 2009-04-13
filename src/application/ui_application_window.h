@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -46,7 +46,6 @@ class application_window : public fltk::Window {
 	// scene zoom widget
 	fltk::Slider m_zoom_slider;
 	fltk::PopupMenu m_block_menu;
-	fltk::Button m_custom_block;
 
 	// renderer list
 	general_options::renderers_t m_renderers;
@@ -54,6 +53,11 @@ class application_window : public fltk::Window {
 	fltk::Choice* m_renderer_chooser;
 	// display chooser
 	fltk::Choice* m_renderer_display_chooser;
+
+	// scene list
+	general_options::scenes_t m_scenes;
+	// scene chooser
+	fltk::Choice* m_scene_chooser;
 
 public:
 	application_window();
@@ -95,6 +99,7 @@ private:
 
 	void on_renderer_choice (fltk::Widget* W, void* Data);
 	void on_renderer_display_choice (fltk::Widget* W, void* Data);
+	void on_scene_choice (fltk::Widget* W, void* Data);
 
 	static void block_menu_callback(fltk::Widget* o, void* v) {
 		((application_window*)(o->parent()))->block_menu_action (o, v);
@@ -104,9 +109,10 @@ private:
 
 	void build_menu (const std::string& name, scene::default_block_list_t& list);
 
-	// update renderer and display choosers
+	// update renderer, display and scene choosers
 	void set_renderer_chooser_value (const std::string RendererCode);
 	void set_display_chooser_value (const std::string RendererName, const std::string DisplayName);
+	void set_scene_chooser_value (const std::string Scene);
 
 	// override the window's handle() function
 	int handle (int event);
@@ -134,6 +140,7 @@ private:
 
 	static void cb_renderer (fltk::Widget* W, void* Data) { application_pointer->on_renderer_choice (W, Data); }
 	static void cb_renderer_display (fltk::Widget* W, void* Data) { application_pointer->on_renderer_display_choice (W, Data); }
+	static void cb_scene (fltk::Widget* W, void* Data) { application_pointer->on_scene_choice (W, Data); }
 
 	static void on_menu_file_close (fltk::Widget*, void*);
 	static void on_menu_file_quit (fltk::Widget*, void*);
