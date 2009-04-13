@@ -2,13 +2,15 @@
 
 import os, platform
 
-opts = Options([os.path.abspath('options.cache'), os.path.abspath('custom.py')])
-opts.Add('fltk_include_path', 'Point to the fltk header files', '')
-opts.Add('fltk_lib_path', 'Point to the fltk library files', '')
+
+# Optional FLTK 2 paths
+vars = Variables('custom.py')
+vars.Add(PathVariable('fltk_include_path', 'Point to the fltk header files', '', PathVariable.PathAccept))
+vars.Add(PathVariable('fltk_lib_path', 'Point to the fltk library files', '', PathVariable.PathAccept))
 
 
 # OpenGL setup
-env = Environment()
+env = Environment(variables = vars)
 
 if platform.system() == 'Linux':
 	env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
@@ -38,7 +40,6 @@ env = conf.Finish()
 # Debug
 final = Environment(CCFLAGS = '-O2')
 debug = Environment(CCFLAGS = '-g -Wall')
-#debug = Environment(CCFLAGS = '-g')
 
 
 # TinyXML
@@ -73,7 +74,7 @@ shrimp_files = Split("""
 
 
 if platform.system() == 'Linux':
-	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xext', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'], CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
+	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xext', 'Xft', 'Xinerama', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'], CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
 elif platform.system() == 'Darwin':
 	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xext', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LINKFLAGS = ['-framework', 'Cocoa', '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '/opt/local/lib', '$fltk_lib_path'], CPPPATH = ['/usr/local/include/fltk/compat', '/System/Library/Frameworks/OpenGL.framework/Headers', 'src/application', 'src/miscellaneous', 'src/shading'])
 

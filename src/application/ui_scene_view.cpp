@@ -71,7 +71,9 @@ scene_view::scene_view (int x, int y, int w, int h, const char* l) :
 
 	m_grid (false),
 	m_snap_to_grid (false),
-	m_overview (false) {
+	m_overview (false),
+	m_font_size (10)
+{
 
 }
 
@@ -345,7 +347,7 @@ void scene_view::draw_shader() {
 	}
 
 	// draw connections
-	glColor3f (0.8, 0.8, 0.8);
+	glColor3f (0.8, 0.4, 0.4);
 	glBegin (GL_LINES);
 		for (scene::dag_t::const_iterator connection = m_scene->m_dag.begin(); connection != m_scene->m_dag.end(); ++connection) {
 
@@ -870,7 +872,7 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 void scene_view::draw_block_name (const shader_block* Block, const double X, const double Y) {
 
 	// show block name
-	glsetfont (fltk::HELVETICA, 12);
+	glsetfont (fltk::HELVETICA, m_font_size);
 	fltk::gldrawtext (Block->name().c_str(), (float)X, (float) (Y + .05), (float)0);
 }
 
@@ -954,7 +956,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 		glEnd();
 
 		// show property name
-		glsetfont (fltk::HELVETICA, 12);
+		glsetfont (fltk::HELVETICA, m_font_size);
 		glColor4f (1.0, 1.0, 1.0, 1.0);
 		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.2), (float) (Y - Size), (float)0);
 	}
@@ -1070,7 +1072,7 @@ void scene_view::draw_groups() {
 
 		// show group name
 		glColor3f (1, 1, 1);
-		glsetfont (fltk::HELVETICA, 12);
+		glsetfont (fltk::HELVETICA, m_font_size);
 		std::string name = m_scene->get_group_name (group);
 		fltk::gldrawtext (name.c_str(), (float) (x), (float) (y), (float)0);
 	}

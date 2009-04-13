@@ -183,6 +183,7 @@ private:
 	bool m_grid;
 	bool m_snap_to_grid;
 	bool m_overview;
+	int m_font_size;
 
 	// callbacks
 	void on_select_block (fltk::Widget* W, void* Data);
