@@ -226,14 +226,14 @@ complex cx_mul( complex a, b; ) {
 // This does not check for division by zero!
 complex cx_div( complex a; float b; ) {
 	float l2 = b * b;
-	complex result = (0, 0, 0);
+	complex result = (0);
 #if RENDERER == aqsis || RENDERER == pixie
 	if (l2 != 0) {
 		result = cx_set( ( xcomp(a) * b) / l2, ( ycomp(a) * b) / l2 );
 	}
 	return result;
 #else
-	return l2 == 0.0 ? 0.0 : cx_set( ( xcomp(a) * b) / l2,
+	return l2 == 0 ? complex(0) : cx_set( ( xcomp(a) * b) / l2,
 			( ycomp(a) * b) / l2 );
 #endif
 }
@@ -296,7 +296,7 @@ complex cx_pow( complex base; float expo; ) {
 // real raised to a complex power
 complex cx_pow( float base; complex expo; ) {
 	float expx = xcomp(expo), expy = ycomp(expo),
-		  re = log( cx_abs( base )),
+		  re = log( cx_abs( complex(base) )),
 		  im = PI * 2,
 		  re2 = (re * expx) - (im * expy),
 		  im2 = (re * expy) + (im * expx),
@@ -343,9 +343,9 @@ complex cx_sqrt( float x; ) {
 	if (x >= 0.0) {
 #if RENDERER == aqsis || RENDERER == pixie
 		if (x != 0.0) z = cx_setR( sqrt(x) );
-		else z = 0;
+		else z = complex(0);
 #else
-		z = x == 0.0 ? 0.0 : cx_setR( sqrt(x));
+		z = x == 0.0 ? complex(0) : cx_setR( sqrt(x));
 #endif
 	} else {
 		z = cx_sqrt( cx_setR(x));
