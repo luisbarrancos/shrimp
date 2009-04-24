@@ -1,0 +1,182 @@
+<shrimp name="new_scene">
+	<about/>
+	<network>
+		<block id="Add" position_x="1" position_y="1" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="B" type="point" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="VLfBm3D" output="val"/>
+			</input>
+			<output name="val" type="point" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="CalcNormal" position_x="3" position_y="-1" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point to calculate normal at">
+				<connection parent="Add" output="val"/>
+			</input>
+			<output name="NN" type="normal" storage="varying" description="NN is normal at p"/>
+			<rsl_code>
+	$(NN) = calculatenormal( $(p) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns the surface normal of the given point on the surface (Du(P)^Dv(P)). You should always recalculate the normals after a displacement.			</usage>
+		</block>
+		<block id="Diffuse" position_x="4.53846153846153" position_y="1" author="rconstruct">
+			<input name="Cdiff" type="color" storage="varying" value="1 1 1" description="Diffuse color"/>
+			<input name="Kd" type="float" storage="varying" value="1" description="The diffuse coefficient"/>
+			<input name="norm" type="normal" storage="varying" value="normalize(N)" description="The surface normal">
+				<connection parent="FaceForward" output="NN"/>
+			</input>
+			<output name="Ci" type="color" storage="varying" description="The amount of diffuse light"/>
+			<rsl_code>
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * diffuse( $(norm) );
+		$(Ci) = aov_surfacecolor * aov_diffuse;
+				</rsl_code>
+			<rsl_include/>
+			<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.			</usage>
+		</block>
+		<block id="FaceForward" position_x="3" position_y="-3.5076923076923" author="rconstruct">
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Vector or Normal to flip" type_parent="NN">
+				<connection parent="Normalize" output="val"/>
+			</input>
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Vector to face away from">
+				<connection parent="Normalize_2" output="val"/>
+			</input>
+			<input name="Nref" type="normal" storage="varying" value="Ng" description="Optional reference vector" type_parent="NN"/>
+			<output name="NN" type="normal" storage="varying" description="A vector pointing in the direction oposite to I"/>
+			<rsl_code>
+	$(NN) = faceforward( $(N), $(I), $(Nref) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
+				</usage>
+		</block>
+		<block id="I" position_x="1" position_y="-3" author="rconstruct">
+			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
+			<rsl_code>
+	$(I) = I;
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Normalize" position_x="3" position_y="-2" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="CalcNormal" output="NN"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_2" position_x="1" position_y="-4" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="I" output="I"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Root block" position_x="6" position_y="1" author="" root="RIB" AOV_preview="1">
+			<rib_statements/>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="Diffuse" output="Ci"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<rsl_code/>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Transform" position_x="-3" position_y="-0" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="from_space" type="string" storage="uniform" value="&quot;camera&quot;" description="The coordinate system to transform from"/>
+			<input name="to_space" type="string" storage="uniform" value="&quot;shader&quot;" description="The coordinate system to transform into"/>
+			<input name="mmat" type="matrix" storage="varying" value="none" description="Use this matrix instead of a predefined coordinate system"/>
+			<output name="pp" type="point" storage="varying" description="The transformed point, vector or normal"/>
+			<rsl_code>
+	#define $(p)_$(p:type)
+	#define mmat_$(mmat)
+	
+	#ifdef $(p)_point
+	#ifdef mmat_none
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = transform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+	
+	#ifdef $(p)_vector
+	#ifdef mmat_none
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+	
+	#ifdef $(p)_normal
+	#ifdef mmat_none
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
+	#endif
+	#endif
+				</rsl_code>
+			<rsl_include/>
+			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
+		</block>
+		<block id="VLfBm3D" position_x="-1" position_y="-1" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="point to sample VLfBm at">
+				<connection parent="Transform" output="pp"/>
+			</input>
+			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
+			<input name="octaves" type="float" storage="varying" value="5" description="Maximum octaves of noise"/>
+			<input name="lacunarity" type="float" storage="varying" value="2.17" description="Controls the smoothness of the VLfBm"/>
+			<input name="scale" type="float" storage="varying" value="1" description="VL scale"/>
+			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the VLfBm"/>
+			<input name="amplitude" type="float" storage="varying" value=".1" description="Amplitude of VLfBm"/>
+			<output name="val" type="point" storage="varying" description="VLfBm value at p"/>
+			<rsl_code>
+	#define $(val)_$(val:type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
+	#else
+		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
+					$(octaves), $(lacunarity),$(gain),$(scale) ) );
+	#endif
+				</rsl_code>
+			<rsl_include>shrimp_fractal.h			</rsl_include>
+			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
+				</usage>
+		</block>
+		<block id="p" position_x="-3" position_y="1" author="rconstruct">
+			<output name="P" type="point" storage="varying" description="Surface position"/>
+			<rsl_code>
+    $(P) = P;
+    			</rsl_code>
+			<rsl_include/>
+			<usage>Note that in all shaders types, P is the surface position, the only exception being volume shaders, in which P is the light ray origin. Also note that in imager shaders, P is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
+		</block>
+	</network>
+</shrimp>
