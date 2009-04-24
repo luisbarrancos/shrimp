@@ -2,7 +2,7 @@
 	<input name="ss" description="s coordinate" type="float" default="s"/>
     <input name="tt" description="t coordinate" type="float" default="t"/>
 	<input name="jitter" description="Jitter" type="float" default="1"/>
-	<input name="dtype" description="Distance metric, see help" type="float" default="2"/>
+	<input name="dtype" description="Distance metric, see help" type="float" storage="uniform" default="2"/>
     <output name="f1" description="feature 1" type="float"/>
     <output name="spos1" description="s position 1" type="float"/>
     <output name="tpos1" description="t position 1" type="float"/>
