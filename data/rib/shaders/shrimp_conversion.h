@@ -263,3 +263,29 @@ cylindrical2spherical(	point in;
 					atan( rho, phi ) );
 }
 
+////////////////////////////////////////////////////////////////////////////////
+// Read tangent space normal maps, convert them to object space, based on a ////
+// shader by Larry Gritz, from:  ///////////////////////////////////////////////
+// http://forums.nvidia.com/index.php?showtopic=23197&hl=tangent ///////////////
+////////////////////////////////////////////////////////////////////////////////
+normal
+tangent2object(
+				uniform string tangenttex;
+				float ss, tt;
+				normal Nn;
+		)
+{
+	normal Nnew = normal(0);
+
+	if (tangenttex != "") {
+		extern vector dPdu, dPdv;
+		vector lookup = vector( color texture( tangenttex, ss, tt)) * 2.0 - 1.0;
+		Nnew = normal( normalize(dPdu) * xcomp(lookup) +
+			   normalize(dPdv) * ycomp(lookup) +
+			   Nn * zcomp(lookup) );
+		normalize(Nnew);
+	}
+	return Nnew;
+}
+////////////////////////////////////////////////////////////////////////////////
+
