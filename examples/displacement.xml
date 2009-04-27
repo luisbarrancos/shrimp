@@ -1,23 +1,9 @@
 <shrimp name="new_scene">
 	<about/>
 	<network>
-		<block id="Add" position_x="1" position_y="1" author="rconstruct">
-			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
-				<connection parent="p" output="P"/>
-			</input>
-			<input name="B" type="point" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
-				<connection parent="VLfBm3D" output="val"/>
-			</input>
-			<output name="val" type="point" storage="varying" description="val = A + B"/>
-			<rsl_code>
-	$(val) = $(A) + $(B);
-				</rsl_code>
-			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
-		</block>
-		<block id="CalcNormal" position_x="3" position_y="-1" author="rconstruct">
+		<block id="CalcNormal" position_x="4" position_y="1" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point to calculate normal at">
-				<connection parent="Add" output="val"/>
+				<connection parent="Subtract" output="val"/>
 			</input>
 			<output name="NN" type="normal" storage="varying" description="NN is normal at p"/>
 			<rsl_code>
@@ -26,8 +12,8 @@
 			<rsl_include/>
 			<usage>Returns the surface normal of the given point on the surface (Du(P)^Dv(P)). You should always recalculate the normals after a displacement.			</usage>
 		</block>
-		<block id="Diffuse" position_x="3" position_y="2" author="rconstruct">
-			<input name="Cdiff" type="color" storage="varying" value="1 1 1" description="Diffuse color"/>
+		<block id="Diffuse" position_x="3" position_y="4" author="rconstruct">
+			<input name="Cdiff" type="color" storage="varying" value="color(.5)" description="Diffuse color"/>
 			<input name="Kd" type="float" storage="varying" value="1" description="The diffuse coefficient"/>
 			<input name="norm" type="normal" storage="varying" value="normalize(N)" description="The surface normal"/>
 			<output name="Ci" type="color" storage="varying" description="The amount of diffuse light"/>
@@ -39,53 +25,101 @@
 			<rsl_include/>
 			<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.			</usage>
 		</block>
-		<block id="FaceForward" position_x="3" position_y="-3.5076923076923" author="rconstruct">
-			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Vector or Normal to flip" type_parent="NN">
-				<connection parent="Normalize" output="val"/>
-			</input>
-			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Vector to face away from">
-				<connection parent="Normalize_2" output="val"/>
-			</input>
-			<input name="Nref" type="normal" storage="varying" value="Ng" description="Optional reference vector" type_parent="NN"/>
-			<output name="NN" type="normal" storage="varying" description="A vector pointing in the direction oposite to I"/>
+		<block id="Km" position_x="0" position_y="-3" author="rconstruct">
+			<input name="in" type="float" storage="uniform" shader_parameter="1" value=".1" description="Input" type_parent="out"/>
+			<output name="out" type="float" storage="varying" description="Output = Input"/>
 			<rsl_code>
-	$(NN) = faceforward( $(N), $(I), $(Nref) );
+	$(out) = $(in);
 				</rsl_code>
 			<rsl_include/>
-			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.
+			<usage>Useful for supplying multiple inputs with the same value.			</usage>
+		</block>
+		<block id="Multiply" position_x="0" position_y="-2" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Normalize" output="val"/>
+			</input>
+			<input name="B" type="normal" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Subtract_2" output="val"/>
+			</input>
+			<output name="val" type="normal" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
 				</usage>
 		</block>
-		<block id="I" position_x="1" position_y="-3" author="rconstruct">
-			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
+		<block id="Multiply_2" position_x="2" position_y="-2" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply" output="val"/>
+			</input>
+			<input name="B" type="normal" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Km" output="out"/>
+			</input>
+			<output name="val" type="normal" storage="varying" description="val = A * B"/>
 			<rsl_code>
-	$(I) = I;
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="N" position_x="-4" position_y="-1" author="rconstruct">
+			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
+			<rsl_code>
+    $(N) = N;
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Normal2Point" position_x="2" position_y="-1" author="rconstruct">
+			<input name="in" type="normal" storage="varying" value="0" description="Input value">
+				<connection parent="Multiply_2" output="val"/>
+			</input>
+			<output name="out" type="point" storage="varying" description="Output value"/>
+			<rsl_code>
+	    $(out) = point( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
 				</rsl_code>
 			<rsl_include/>
 			<usage/>
 		</block>
-		<block id="Normalize" position_x="3" position_y="-2" author="rconstruct">
-			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
-				<connection parent="CalcNormal" output="NN"/>
+		<block id="Normalize" position_x="-4" position_y="-2" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="N" output="N"/>
 			</input>
-			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<output name="val" type="normal" storage="varying" description="val is a vector of unit length"/>
 			<rsl_code>
 	$(val) = normalize( $(A) );
 				</rsl_code>
 			<rsl_include/>
 			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
 		</block>
-		<block id="Normalize_2" position_x="1" position_y="-4" author="rconstruct">
-			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
-				<connection parent="I" output="I"/>
+		<block id="Ridged3D" position_x="-2" position_y="1" author="rconstruct">
+			<input name="p" type="point" storage="varying" value="P" description="point to sample fractal at">
+				<connection parent="Transform" output="pp"/>
 			</input>
-			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
+			<input name="octaves" type="float" storage="uniform" value="5" description="Maximum octaves of noise"/>
+			<input name="lacunarity" type="float" storage="uniform" value="2.17" description="Controls the smoothness of the fractal"/>
+			<input name="gain" type="float" storage="uniform" value="0.5" description="Controls the contrast of the fractal"/>
+			<input name="offset" type="float" storage="uniform" value="0.7" description="Controls the multifractality"/>
+			<input name="amplitude" type="float" storage="varying" value="1" description="Amplitude of fractal"/>
+			<output name="val" type="float" storage="varying" description="fractal value at p"/>
 			<rsl_code>
-	$(val) = normalize( $(A) );
+	#define $(val)_$(val:type)
+	#ifdef $(val)_float
+		$(val) = $(amplitude) * Ridged( $(p), $(fwidth), $(octaves),
+						$(lacunarity), $(offset), $(gain) );
+	#else
+		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(p), $(fwidth),
+					$(octaves), $(lacunarity), $(offset), $(gain) ) );
+	#endif
 				</rsl_code>
-			<rsl_include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+			<rsl_include>shrimp_fractal.h			</rsl_include>
+			<usage>This is Ken Musgrave&apos;s Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
+				</usage>
 		</block>
-		<block id="Root block" position_x="6" position_y="1" author="" root="RIB" AOV_preview="1">
+		<block id="Root block" position_x="6" position_y="2" author="" root="RIB" AOV_preview="1">
 			<rib_statements/>
 			<imager_statement/>
 			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
@@ -93,10 +127,10 @@
 			</input>
 			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
 			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position">
-				<connection parent="Add" output="val"/>
+				<connection parent="Subtract" output="val"/>
 			</input>
 			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal">
-				<connection parent="FaceForward" output="NN"/>
+				<connection parent="CalcNormal" output="NN"/>
 			</input>
 			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
 			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
@@ -109,7 +143,33 @@
 			<rsl_include/>
 			<usage/>
 		</block>
-		<block id="Transform" position_x="-3" position_y="-0" author="rconstruct">
+		<block id="Subtract" position_x="2" position_y="2" author="rconstruct">
+			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="p" output="P"/>
+			</input>
+			<input name="B" type="point" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="Normal2Point" output="out"/>
+			</input>
+			<output name="val" type="point" storage="varying" description="val = A - B"/>
+			<rsl_code>
+	$(val) = $(A) - $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Subtract_2" position_x="0" position_y="1" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val"/>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="val">
+				<connection parent="Ridged3D" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A - B"/>
+			<rsl_code>
+	$(val) = $(A) - $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Transform" position_x="-4" position_y="1" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
 				<connection parent="p" output="P"/>
 			</input>
@@ -148,31 +208,7 @@
 			<rsl_include/>
 			<usage>The transform function transforms the point P (or vector V, or normal N, invoking vtransform and ntransform accordingly), from the coordinate system fromspace to the cordinate system tospace.. If fromspace isn&apos;t passed, then it assumes it to be the current coordinate system. Coordinate systems are, raster, screen, camera, world, and object. A shader knows also, the shader (the object coordinate system when the object was defined), current (world or camera), and custom coordinate systems. A transformation matrix might be given as a destination coordinate system.			</usage>
 		</block>
-		<block id="VLfBm3D" position_x="-1" position_y="-1" author="rconstruct">
-			<input name="p" type="point" storage="varying" value="P" description="point to sample VLfBm at">
-				<connection parent="Transform" output="pp"/>
-			</input>
-			<input name="fwidth" type="float" storage="varying" value="0" description="Filter width for antialiasing"/>
-			<input name="octaves" type="float" storage="varying" value="5" description="Maximum octaves of noise"/>
-			<input name="lacunarity" type="float" storage="varying" value="2.17" description="Controls the smoothness of the VLfBm"/>
-			<input name="scale" type="float" storage="varying" value="1" description="VL scale"/>
-			<input name="gain" type="float" storage="varying" value="0.5" description="Controls the contrast of the VLfBm"/>
-			<input name="amplitude" type="float" storage="varying" value=".1" description="Amplitude of VLfBm"/>
-			<output name="val" type="point" storage="varying" description="VLfBm value at p"/>
-			<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
-		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain),$(scale) );
-	#else
-		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
-					$(octaves), $(lacunarity),$(gain),$(scale) ) );
-	#endif
-				</rsl_code>
-			<rsl_include>shrimp_fractal.h			</rsl_include>
-			<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
-				</usage>
-		</block>
-		<block id="p" position_x="-3" position_y="1" author="rconstruct">
+		<block id="p" position_x="-4" position_y="2" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
 			<rsl_code>
     $(P) = P;
