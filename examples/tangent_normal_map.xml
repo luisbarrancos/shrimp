@@ -1,0 +1,533 @@
+<shrimp name="new_scene">
+	<about/>
+	<network>
+		<block id="Add" position_x="3" position_y="-3" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_2" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_4" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Add_2" position_x="3" position_y="-6" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_3" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_5" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Add_3" position_x="7" position_y="1" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_8" output="val"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_9" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Add_4" position_x="9" position_y="-4" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply_10" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_6" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Add_5" position_x="9" position_y="-5" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Add_4" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Multiply_7" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A + B"/>
+			<rsl_code>
+	$(val) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Color2Vector" position_x="-2" position_y="3" author="rconstruct">
+			<input name="in" type="color" storage="varying" value="0" description="Input color">
+				<connection parent="Texture" output="val"/>
+			</input>
+			<output name="out" type="vector" storage="varying" description="Output value"/>
+			<rsl_code>
+	    $(out) = vector( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Diffuse" position_x="11" position_y="-2" author="rconstruct">
+			<input name="Cdiff" type="color" storage="varying" value="color(.5)" description="Diffuse color"/>
+			<input name="Kd" type="float" storage="varying" value="1" description="The diffuse coefficient"/>
+			<input name="norm" type="normal" storage="varying" value="normalize(N)" description="The surface normal">
+				<connection parent="Normalize_4" output="val"/>
+			</input>
+			<output name="Ci" type="color" storage="varying" description="The amount of diffuse light"/>
+			<rsl_code>
+		aov_surfacecolor += $(Cdiff);
+		aov_diffuse += $(Kd) * diffuse( $(norm) );
+		$(Ci) = aov_surfacecolor * aov_diffuse;
+				</rsl_code>
+			<rsl_include/>
+			<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.			</usage>
+		</block>
+		<block id="Du" position_x="-2" position_y="-5" author="rconstruct">
+			<input name="p" type="float" storage="varying" value="P" description="Change of surface parameter" type_parent="val">
+				<connection parent="uv" output="u"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="Change of surface parameter"/>
+			<rsl_code>
+	    $(val) = Du( $(p) );
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Du_2" position_x="-2" position_y="-7" author="rconstruct">
+			<input name="p" type="float" storage="varying" value="P" description="Change of surface parameter" type_parent="val">
+				<connection parent="uv" output="v"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="Change of surface parameter"/>
+			<rsl_code>
+	    $(val) = Du( $(p) );
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Dv" position_x="-2" position_y="-6" author="rconstruct">
+			<input name="p" type="float" storage="varying" value="P" description="Change of surface parameter" type_parent="val">
+				<connection parent="uv" output="u"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="Change of surface parameter"/>
+			<rsl_code>
+	    $(val) = Dv( $(p) );
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Dv_2" position_x="-2" position_y="-8" author="rconstruct">
+			<input name="p" type="float" storage="varying" value="P" description="Change of surface parameter" type_parent="val">
+				<connection parent="uv" output="v"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="Change of surface parameter"/>
+			<rsl_code>
+	    $(val) = Dv( $(p) );
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Multiply" position_x="-0" position_y="-0" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Color2Vector" output="out"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="vector(2)" description="2nd or subsequent inputs" type_parent="val"/>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_10" position_x="9" position_y="-1" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Sqrt" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normal2Vector" output="out"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_2" position_x="1" position_y="-3" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Du" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_3" position_x="1" position_y="-6" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Du_2" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_4" position_x="1" position_y="-4" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Dv" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize_2" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_5" position_x="1" position_y="-7" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Dv_2" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize_2" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_6" position_x="6" position_y="-3" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Xcomp" output="x"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize_Tangent" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_7" position_x="6" position_y="-5" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Ycomp" output="y"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Normalize_Binormal" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_8" position_x="5" position_y="1" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Xcomp" output="x"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Xcomp" output="x"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="Multiply_9" position_x="5" position_y="-0" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Ycomp" output="y"/>
+			</input>
+			<input name="B" type="float" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="val">
+				<connection parent="Ycomp" output="y"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = A * B"/>
+			<rsl_code>
+	$(val) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.
+				</usage>
+		</block>
+		<block id="N" position_x="5" position_y="-1" author="rconstruct">
+			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
+			<rsl_code>
+    $(N) = N;
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Normal2Vector" position_x="7" position_y="-2" author="rconstruct">
+			<input name="in" type="normal" storage="varying" value="0" description="Input value">
+				<connection parent="Normalize_3" output="val"/>
+			</input>
+			<output name="out" type="vector" storage="varying" description="Output value"/>
+			<rsl_code>
+	    $(out) = vector( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Normalize" position_x="-2" position_y="-3" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="dpdu" output="dPdu"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_2" position_x="-2" position_y="-4" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="dpdv" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_3" position_x="7" position_y="-1" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="N" output="N"/>
+			</input>
+			<output name="val" type="normal" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_4" position_x="9" position_y="-7" author="rconstruct">
+			<input name="A" type="normal" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="Vector2Normal" output="out"/>
+			</input>
+			<output name="val" type="normal" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_Binormal" position_x="3" position_y="-5" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="Add_2" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Normalize_Tangent" position_x="3" position_y="-4" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="Input" type_parent="val">
+				<connection parent="Add" output="val"/>
+			</input>
+			<output name="val" type="vector" storage="varying" description="val is a vector of unit length"/>
+			<rsl_code>
+	$(val) = normalize( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+		</block>
+		<block id="Root block" position_x="13" position_y="-3" author="" root="RIB" AOV_preview="1">
+			<rib_statements/>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="Diffuse" output="Ci"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<rsl_code/>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Sqrt" position_x="7" position_y="-0" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="Input value">
+				<connection parent="Add_3" output="val"/>
+			</input>
+			<output name="val" type="float" storage="varying" description="val = sqrt( A )"/>
+			<rsl_code>
+	$(val) = sqrt( $(A) );
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Subtract" position_x="0" position_y="-1" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="val">
+				<connection parent="Multiply" output="val"/>
+			</input>
+			<input name="B" type="vector" storage="varying" value="vector(1)" description="2nd input" type_parent="val"/>
+			<output name="val" type="vector" storage="varying" description="val = A - B"/>
+			<rsl_code>
+	$(val) = $(A) - $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Texture" position_x="-2" position_y="2" author="rconstruct">
+			<input name="texname" type="string" storage="uniform" shader_parameter="1" value="&quot;$HOME/.shrimp/temp/tangenttex.tif&quot;" description="Texture map name"/>
+			<input name="xcoord" type="float" storage="varying" value="s" description="horizontal texture co-ordinate">
+				<connection parent="st" output="s"/>
+			</input>
+			<input name="ycoord" type="float" storage="varying" value="t" description="vertical texture co-ordinate">
+				<connection parent="st" output="t"/>
+			</input>
+			<input name="blur" type="float" storage="varying" value="0" description="Texture blur"/>
+			<input name="sblur" type="float" storage="varying" value="0" description="Blur along S"/>
+			<input name="tblur" type="float" storage="varying" value="0" description="Blur along T"/>
+			<input name="width" type="float" storage="varying" value="0" description="Blur filter width"/>
+			<input name="swidth" type="float" storage="varying" value="1" description="Blur filter width along S"/>
+			<input name="twidth" type="float" storage="varying" value="1" description="Blur filter width along T"/>
+			<input name="fill" type="float" storage="varying" value="0" description="Fill value on empty channel"/>
+			<input name="filter" type="string" storage="uniform" value="&quot;gaussian&quot;" description="Filter type"/>
+			<input name="channel" type="float" storage="varying" value="0" description="Channel, in color textures"/>
+			<output name="val" type="color" storage="varying" description="Output color"/>
+			<rsl_code>
+    #if RENDERER==pixie
+        $(val) = $(val:type) texture( $(texname), $(xcoord), $(ycoord),
+								&quot;blur&quot;, $(blur),
+								&quot;width&quot;, $(width),
+								&quot;swidth&quot;, $(swidth),
+								&quot;twidth&quot;, $(twidth),
+                                &quot;filter&quot;, $(filter),
+								&quot;fill&quot;, $(fill) ) ;
+    #else
+        $(val) = $(val:type) texture( $(texname)[$(channel)],
+								$(xcoord), $(ycoord),
+								&quot;blur&quot;, $(blur),
+								&quot;sblur&quot;, $(sblur),
+								&quot;tblur&quot;, $(tblur),
+								&quot;width&quot;, $(width),
+								&quot;swidth&quot;, $(swidth),
+								&quot;twidth&quot;, $(twidth),
+                                &quot;filter&quot;, $(filter),
+								&quot;fill&quot;, $(fill) ) ;
+    #endif
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Vector2Normal" position_x="9" position_y="-6" author="rconstruct">
+			<input name="in" type="vector" storage="varying" value="0" description="Input value">
+				<connection parent="Add_5" output="val"/>
+			</input>
+			<output name="out" type="normal" storage="varying" description="Output value"/>
+			<rsl_code>
+	    $(out) = normal( comp( $(in), 0), comp( $(in), 1), comp( $(in), 2) );
+				</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="Xcomp" position_x="2" position_y="0" author="rconstruct">
+			<input name="in" type="vector" storage="varying" value="1" description="point, vector or normal to retrieve component from">
+				<connection parent="Subtract" output="val"/>
+			</input>
+			<output name="x" type="float" storage="varying" description="X component"/>
+			<rsl_code>
+	$(x) = xcomp( $(in:type) $(in) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Get the X component of an point, vector, or normal.			</usage>
+		</block>
+		<block id="Ycomp" position_x="2" position_y="-1" author="rconstruct">
+			<input name="in" type="vector" storage="varying" value="1" description="point, vector or normal to retrieve component from">
+				<connection parent="Subtract" output="val"/>
+			</input>
+			<output name="y" type="float" storage="varying" description="Y component"/>
+			<rsl_code>
+	$(y) = ycomp( $(in:type) $(in) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Get the y component of an point, vector, or normal.			</usage>
+		</block>
+		<block id="dpdu" position_x="-4" position_y="-3" author="rconstruct">
+			<output name="dPdu" type="vector" storage="varying" description="Surface derivative of point P along U"/>
+			<rsl_code>
+	$(dPdu) = dPdu;
+				</rsl_code>
+			<rsl_include/>
+			<usage>Surface derivative of point P along direction U. This only accesses the global variable dPdu. If you want to calculate the surface derivative of other points, use the du block, which calls Du(input), or the Deriv block, which calculates derivative of its first argument in regard to its second argument.			</usage>
+		</block>
+		<block id="dpdv" position_x="-4" position_y="-4" author="rconstruct">
+			<output name="val" type="vector" storage="varying" description="Surface derivative of point P along V"/>
+			<rsl_code>
+	$(val) = dPdv;
+				</rsl_code>
+			<rsl_include/>
+			<usage>Surface derivative of point P along direction V. This only accesses the global variable dPdv. If you want to calculate the surface derivative of other points, use the dv block, which calls Dv(input), or the Deriv block, which calculates the derivatives of its first argument in regard to its second argument.			</usage>
+		</block>
+		<block id="st" position_x="-4" position_y="2" author="rconstruct">
+			<output name="s" type="float" storage="varying" description="S texture coordinate"/>
+			<output name="t" type="float" storage="varying" description="T texture coordinate"/>
+			<rsl_code>
+    $(s) = s;
+    $(t) = t;
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="uv" position_x="-5" position_y="-6" author="rconstruct">
+			<output name="u" type="float" storage="varying" description="U surface coordinate"/>
+			<output name="v" type="float" storage="varying" description="V surface coordinate"/>
+			<rsl_code>
+    $(u) = u;
+    $(v) = v;
+    			</rsl_code>
+			<rsl_include/>
+			<usage/>
+		</block>
+	</network>
+</shrimp>
