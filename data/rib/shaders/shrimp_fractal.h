@@ -765,8 +765,8 @@ void
 voronoi_f1_2d(  float ss, tt;
 	            float jitter;
                 uniform float dtype; /* metric type, see notes */
-	            output float f1;
-	            output float spos1, tpos1;
+	            output varying float f1;
+	            output varying float spos1, tpos1;
     )
 {
     float sthiscell = floor(ss)+0.5, tthiscell = floor(tt)+0.5;

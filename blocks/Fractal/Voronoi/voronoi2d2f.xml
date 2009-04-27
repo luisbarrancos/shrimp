@@ -2,13 +2,13 @@
 	<input name="ss" description="s coordinate" type="float" default="s"/>
     <input name="tt" description="t coordinate" type="float" default="t"/>
 	<input name="jitter" description="Jitter" type="float" default="1"/>
-	<input name="dtype" description="Distance metric, see help" type="float" storage="uniform" default="2"/>
-    <output name="f1" description="feature 1" type="float"/>
-    <output name="spos1" description="s position 1" type="float"/>
-    <output name="tpos1" description="t position 1" type="float"/>
-    <output name="f2" description="feature 2" type="float"/>
-    <output name="spos2" description="s position 2" type="float"/>
-    <output name="tpos2" description="t position 2" type="float"/>
+	<input name="dtype" description="Distance metric, see help" storage="uniform" type="float" default="2"/>
+    <output name="f1" description="feature 1" storage="varying" type="float"/>
+    <output name="spos1" description="s position 1" storage="varying" type="float"/>
+    <output name="tpos1" description="t position 1" storage="varying" type="float"/>
+    <output name="f2" description="feature 2" storage="varying" type="float"/>
+    <output name="spos2" description="s position 2" storage="varying" type="float"/>
+    <output name="tpos2" description="t position 2" storage="varying" type="float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	/* initialize */

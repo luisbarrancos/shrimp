@@ -1,10 +1,10 @@
 <shrimp type="function" name="Ridged3D" description="3 dimensional Ridged multi-fractal." author="rconstruct">
 	<input name="p" description="point to sample fractal at" type="point" default="P"/>
 	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
-	<input name="octaves" description="Maximum octaves of noise" type="float" default="5"/>
-	<input name="lacunarity" description="Controls the smoothness of the fractal" type="float" default="2.17"/>
-	<input name="gain" description="Controls the contrast of the fractal" type="float" default="0.5"/>
-	<input name="offset" description="Controls the multifractality" type="float" default="0.7"/>
+	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
+	<input name="lacunarity" description="Controls the smoothness of the fractal" storage="uniform" type="float" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the fractal" storage="uniform" type="float" default="0.5"/>
+	<input name="offset" description="Controls the multifractality" storage="uniform" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="val" description="fractal value at p" type="float color vector point"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>

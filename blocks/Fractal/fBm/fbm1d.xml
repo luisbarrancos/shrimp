@@ -1,9 +1,9 @@
 <shrimp type="function" name="fBm1D" description="1 dimensional fractional Brownian motion." author="rconstruct">
 	<input name="x" description="value to sample fBm at" type="float" default="s"/>
 	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
-	<input name="octaves" description="Maximum octaves of noise" type="float" default="5"/>
-	<input name="lacunarity" description="Controls the smoothness of the fBm" type="float" default="2.17"/>
-	<input name="gain" description="Controls the contrast of the fBm" type="float" default="0.5"/>
+	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
+	<input name="lacunarity" description="Controls the smoothness of the fBm" storage="uniform" type="float" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the fBm" storage="uniform" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of fBm" type="float" default="1"/>
 	<output name="val" description="fBm value at x" type="float color point vector normal"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>

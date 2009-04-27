@@ -459,7 +459,8 @@ float wood2(
    */
 
 float blotches(
-                float radius, frequency, offset, jitter, dtype;
+                float radius, frequency, offset, jitter;
+				uniform float dtype;
                 point pp;
         )
 {
