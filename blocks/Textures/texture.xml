@@ -2,36 +2,42 @@
 	<input name="texname" description="Texture map name" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="xcoord" description="horizontal texture co-ordinate" type="float" default="s"/>
 	<input name="ycoord" description="vertical texture co-ordinate" type="float" default="t"/>
-    <input name="blur" description="Texture blur" type="float" default="0"/>
-    <input name="sblur" description="Blur along S" type="float" default="0"/>
-    <input name="tblur" description="Blur along T" type="float" default="0"/>
-    <input name="width" description="Blur filter width" type="float" default="0"/>
-    <input name="swidth" description="Blur filter width along S" type="float" default="0"/>
-    <input name="twidth" description="Blur filter width along T" type="float" default="0"/>
-    <input name="fill" description="Fill value on empty channel" type="float" default="0"/>
+    <input name="sblur" description="Blur along S" storage="varying" type="float" default="0"/>
+    <input name="tblur" description="Blur along T" storage="varying" type="float" default="0"/>
+    <input name="swidth" description="Blur filter width along S" storage="uniform" type="float" default="0"/>
+    <input name="twidth" description="Blur filter width along T" storage="uniform" type="float" default="0"/>
+    <input name="fill" description="Fill value on empty channel" storage="uniform" type="float" default="0"/>
     <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
+	<input name="samples" description="Filter samples, see info" storage="uniform" type="float" default="4"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
 	<output name="val" description="Output color" type="float color"/>
 	<rsl_code>
     #if RENDERER==pixie
         $(val) = $(val:type) texture( $(texname), $(xcoord), $(ycoord),
-								"blur", $(blur),
-								"width", $(width),
 								"swidth", $(swidth),
 								"twidth", $(twidth),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
-    #else
-        $(val) = $(val:type) texture( $(texname)[$(channel)],
+    #elif RENDERER==_3delight
+		$(val) = $(val:type) texture( $(texname)[$(channel)],
 								$(xcoord), $(ycoord),
-								"blur", $(blur),
 								"sblur", $(sblur),
 								"tblur", $(tblur),
-								"width", $(width),
+								"swidth", $(swidth),
+								"twidth", $(twidth),
+								"filter", $(filter),
+								"fill", $(fill),
+								"samples", $(samples) );
+	#else
+        $(val) = $(val:type) texture( $(texname)[$(channel)],
+								$(xcoord), $(ycoord),
+								"sblur", $(sblur),
+								"tblur", $(tblur),
 								"swidth", $(swidth),
 								"twidth", $(twidth),
                                 "filter", $(filter),
 								"fill", $(fill) ) ;
     #endif
 	</rsl_code>
+<usage>The texture shadeop accesses at texture map at 2D coordinates, being able to return either a float or a color value. The default coordinates are S and T. Sblur and tblur specifies the blur in the S and T directions respectively, and swidth and twidth specifying the filter width in S and T respectively. Filter specifies the filter, being one of &quot;triangle&quot;, &quot;box&quot;, or &quot;gaussian&quot;. Fill controls the value being output if a certain channel isn't available in the texture, alpha for instance. Samples is used only in 3Delight, when the box filter is being used. Since a texture map can contain several channels, &quot;channel&quot; allows the user to choose the starting channel, defaults to 0.</usage>
 </shrimp>

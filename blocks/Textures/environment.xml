@@ -2,23 +2,21 @@
 	<input name="texname" description="Texture map name" type="string" storage="uniform" default="&quot;&quot;"/>
 	<input name="Kr" description="Environment intensity" type="float" default="1"/>
 	<input name="dir" description="Direction vector" type="normal vector" default="vector(0)"/>
-    <input name="blur" description="Texture blur" type="float" default="0"/>
-    <input name="sblur" description="Blur along S" type="float" default="0"/>
-    <input name="tblur" description="Blur along T" type="float" default="0"/>
-    <input name="width" description="Blur filter width" type="float" storage="uniform" default="1"/>
-    <input name="swidth" description="Blur filter width along S" type="float" storage="uniform" default="1"/>
-    <input name="twidth" description="Blur filter width along T" type="float" storage="uniform" default="1"/>
-	<input name="samples" description="Sampling rate" type="float" storage="uniform" default="4"/>
+    <input name="sblur" description="Blur along S" storage="varying" type="float" default="0"/>
+    <input name="tblur" description="Blur along T" storage="varying" type="float" default="0"/>
+    <input name="swidth" description="Blur filter width along S" storage="uniform" type="float" default="1"/>
+    <input name="twidth" description="Blur filter width along T" storage="uniform" type="float" default="1"/>
+	<input name="samples" description="Sampling rate" storage="uniform" type="float" default="4"/>
     <input name="fill" description="Fill value on empty channel" type="float" storage="uniform" default="0"/>
-    <input name="filter" description="Filter type" type="string" storage="uniform" default="&quot;gaussian&quot;"/>
+    <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
+	<input name="tint" description="Color tint for the environment" type="color" default="color(1)"/>
 	<output name="val" description="Output color" type="color float"/>
 	<rsl_code>
     #if RENDERER==pixie
-        aov_reflection += $(Kr) *  $(val:type) environment(
+        aov_reflection += $(Kr) * $(tint) * $(val:type) environment(
 							$(texname)[$(channel)], $(dir),
-								"blur", $(blur),
-								"width", $(width),
+								"blur", $(sblur),
 								"swidth", $(swidth),
 								"twidth", $(twidth),
 								"samples", $(samples),
@@ -26,12 +24,10 @@
 								"fill", $(fill) ) ;
 		$(val) = aov_reflection;
     #else
-        aov_reflection += $(Kr) * $(val:type) environment(
+        aov_reflection += $(Kr) * $(tint) * $(val:type) environment(
 							$(texname)[$(channel)], $(dir),
-								"blur", $(blur),
 								"sblur", $(sblur),
 								"tblur", $(tblur),
-								"width", $(width),
 								"swidth", $(swidth),
 								"twidth", $(twidth),
 								"samples", $(samples),
@@ -40,5 +36,5 @@
 		$(val) = aov_reflection;
     #endif
 	</rsl_code>
-<usage>This block value is passed to the aov_reflection AOV preset.</usage>
+<usage>This block returns the texture value from an environment map, for the specified direction vector. If the filename specified is &quot;raytrace&quot; then raytracing is used instead of a texture map. Type of environment maps accepted, such as cubic, envlatl, is specific to the renderer being used. Sblur and tblur specify the blur along the S and T directions respectively, while swidth and twidth specify the filter width along the S and T directions respectively. The filter type can be &quot;box&quot;, &quot;triangle&quot;, or &quot;gaussian&quot;, with samples controling the number of samples to use. The starting channel is specified with the channel parameter. The type returned can be float, or color, and it is passed to the preset aov_reflection AOV.</usage>
 </shrimp>
