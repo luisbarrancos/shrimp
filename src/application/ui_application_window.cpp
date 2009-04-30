@@ -472,7 +472,7 @@ application_window::application_window() :
 		set_scene_chooser_value (prefs.m_scene);
 
 		// preview button
-		fltk::Button* preview_button = new fltk::Button (690, 22, 100, 24, "Preview");
+		fltk::Button* preview_button = new fltk::Button (690, 22, 100, 24, "Render");
 		preview_button->callback ((fltk::Callback*)cb_preview, this);
 		preview_button->tooltip ("Click to preview the shader using selected renderer and display");
 

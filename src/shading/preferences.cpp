@@ -334,6 +334,19 @@ void general_options::load_renderer_list() {
 					new_renderer.displays.push_back (new_display);
 				}
 			} else if (element == "texture") {
+				// Get attributes
+				for (TiXmlAttribute* a = n->ToElement()->FirstAttribute(); a; a = a->Next()) {
+
+					const std::string name (a->Name());
+					if (name == "command") {
+						new_renderer.texture_command = a->Value();
+					} else if (name == "default") {
+						new_renderer.texture_default = a->Value();
+					} else if (name == "extension") {
+						new_renderer.texture_extension = a->Value();
+					}
+				}
+
 				// TODO
 			} else {
 				log() << error << "unknown renderer attribute: " << element << std::endl;

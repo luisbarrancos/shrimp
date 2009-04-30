@@ -56,6 +56,10 @@ public:
 		std::string compiled_shader_extension;
 		std::string renderer_command;
 		displays_t displays;
+
+		std::string texture_command;
+		std::string texture_default;
+		std::string texture_extension;
 	};
 	typedef std::map<std::string, renderer_t> renderers_t;
 	renderers_t m_renderers;
