@@ -268,12 +268,13 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 	// load the preferences and the display name
 	general_options prefs;
 	prefs.load();
-	const std::string display_name = prefs.m_renderer_display;
+	std::string display_name = prefs.m_renderer_display;
 
-	set_display_chooser_value (renderer_name, display_name);
+	display_name = set_display_chooser_value (renderer_name, display_name);
 
 	// save the renderer parameters
 	prefs.set_renderer (renderer_name);
+	prefs.set_display (display_name);
 	prefs.save();
 
 	// refresh
@@ -616,9 +617,11 @@ void application_window::set_renderer_chooser_value (const std::string RendererC
 }
 
 
-void application_window::set_display_chooser_value (const std::string RendererName, const std::string DisplayName) {
+std::string application_window::set_display_chooser_value (const std::string RendererName, const std::string DisplayName) {
 
 	unsigned long display_number = 0;
+	bool found = false;
+	std::string new_display = "";
 
 	general_options::renderers_t::const_iterator r = m_renderers.find (RendererName);
 
@@ -630,15 +633,22 @@ void application_window::set_display_chooser_value (const std::string RendererNa
 
 		if (*current_display == DisplayName) {
 			display_number = current_display_number;
+			found = true;
 		}
 	}
 	m_renderer_display_chooser->end();
 
 	// set value
-	if (r->second.displays.size() > 0) {
-
+	if (found) {
 		m_renderer_display_chooser->value (display_number);
+
+	} else if (r->second.displays.size() > 0) {
+		// return first display in the list, because the given one isn't supported
+		m_renderer_display_chooser->value (0);
+		new_display = *r->second.displays.begin();
 	}
+
+	return new_display;
 }
 
 

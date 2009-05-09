@@ -111,7 +111,7 @@ private:
 
 	// update renderer, display and scene choosers
 	void set_renderer_chooser_value (const std::string RendererCode);
-	void set_display_chooser_value (const std::string RendererName, const std::string DisplayName);
+	std::string set_display_chooser_value (const std::string RendererName, const std::string DisplayName);
 	void set_scene_chooser_value (const std::string Scene);
 
 	// override the window's handle() function
