@@ -9,14 +9,22 @@ vars.Add(PathVariable('fltk_include_path', 'Point to the fltk header files', '',
 vars.Add(PathVariable('fltk_lib_path', 'Point to the fltk library files', '', PathVariable.PathAccept))
 
 
-# OpenGL setup
+# Path setup
 env = Environment(variables = vars)
+
+env.ParseConfig("fltk2-config --cxxflags --ldflags")
+env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'])
 
 if platform.system() == 'Linux':
 	env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
+	env.Append(LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'])
+
 elif platform.system() == 'Darwin':
 # OS X
 	env.Append(CPPPATH = ['/System/Library/Frameworks/OpenGL.framework/Headers', '$fltk_include_path', '/usr/local/include/fltk/compat'])
+	env.Append(LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '/opt/local/lib', '$fltk_lib_path'])
+	env.Append(LINKFLAGS = ['-framework', 'Cocoa', '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon'])
+
 else:
 	print "Unknown platform: " + platform.system()
 	Exit(1)
@@ -38,8 +46,8 @@ env = conf.Finish()
 
 
 # Debug
-final = Environment(CCFLAGS = '-O2')
-debug = Environment(CCFLAGS = '-g -Wall')
+#env.Append(CXXFLAGS = '-O2')
+env.Append(CXXFLAGS = '-g -Wall')
 
 
 # TinyXML
@@ -52,6 +60,8 @@ StaticLibrary('tinyxml', Split("""
 
 
 # Shrimp
+env.Append(CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
+
 shrimp_files = Split("""
 	src/application/shrimp.cpp
 	src/application/ui_about.cpp
@@ -73,10 +83,7 @@ shrimp_files = Split("""
 """)
 
 
-if platform.system() == 'Linux':
-	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xext', 'Xft', 'Xinerama', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'], CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
-elif platform.system() == 'Darwin':
-	debug.Program(target = 'shrimp', source = shrimp_files, LIBS = ['tinyxml', 'GL', 'GLU', 'X11', 'Xi', 'Xext', 'pthread', 'm', 'supc++', 'fltk2', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'], LINKFLAGS = ['-framework', 'Cocoa', '-framework', 'AGL', '-framework', 'OpenGL', '-framework', 'Carbon'], LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '/opt/local/lib', '$fltk_lib_path'], CPPPATH = ['/usr/local/include/fltk/compat', '/System/Library/Frameworks/OpenGL.framework/Headers', 'src/application', 'src/miscellaneous', 'src/shading'])
+env.Program(target = 'shrimp', source = shrimp_files)
 
 
 # File change test
