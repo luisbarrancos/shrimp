@@ -1,11 +1,27 @@
 #ifndef SHRIMP_HELPERS_H
-#	define SHRIMP_HELPERS_H
+	#define SHRIMP_HELPERS_H
 
-#ifndef SQR
-#	define SQR(X)	( (X) * (X) )
+#ifndef EPS
+#define EPS 0.0001
 #endif
 
-#define SHRIMP_E 2.718281828459045
+#ifndef MINFILTWIDTH
+#	define MINFILTWIDTH 1.0e-6
+#endif
+
+#ifndef SQR
+#define SQR(X)	( (X) * (X) )
+#endif
+
+#ifndef luminance
+#define luminance(c)	comp(c,0)*0.299 + comp(c,1)*0.587 + comp(c,2)*.114
+#endif
+
+#define S_E		2.718281828459045
+#define S_PI	3.141592653589793
+#define S_PI_2	1.570796326794896
+#define S_2PI	6.283185307179586
+#define S_1_PI	0.318309886183790
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Hyperbolic cosine */
@@ -23,96 +39,87 @@ float tanh( float theta; ) {
 
 ////////////////////////////////////////////////////////////////////////////////
 /* 
-    Rotate the point (x,y) about the point (ox,oy) by theta radians
-    Returns the answer in (rx,ry)
-*/ 
+ * Rotate the point (x,y) about the point (ox,oy) by theta radians
+ * Returns the answer in (rx,ry)
+ * */ 
 ////////////////////////////////////////////////////////////////////////////////
 
 void 
 rotate2d( float x, y, theta, ox, oy; 
           output float rx, ry; )
 {
-    float sint = sin(theta);
-    float cost = cos(theta);
-    rx = ( x - ox )*cost - ( y - oy )*sint + ox;
-    ry = ( x - ox )*sint + ( y - oy )*cost + oy;
+	float sint = sin(theta);
+	float cost = cos(theta);
+	rx = ( x - ox )*cost - ( y - oy )*sint + ox;
+	ry = ( x - ox )*sint + ( y - oy )*cost + oy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /* 
-    boolean ops (from Perlin85)
-*/
+ * boolean ops (from Perlin85)
+ * */
 ////////////////////////////////////////////////////////////////////////////////
 
-#define intersection( a, b ) ( (a) * (b) )
-#define union( a, b )        ( (a) + (b) - (a)*(b) )
-#define difference( a, b )   ( (a) - (a)*(b) )
-#define complement( a )      ( 1 - (a) )
-#define exclusiveor( a, b )  ( difference( union( (a),(b) ), \
-			intersection( (a),(b) ) ) ) 
+#define intersection( a, b )	( (a) * (b) )
+#define union( a, b )			( (a) + (b) - (a)*(b) )
+#define difference( a, b )		( (a) - (a)*(b) )
+#define complement( a )			( 1 - (a) )
+#define exclusiveor( a, b )		( difference( union( (a),(b) ), \
+									intersection( (a),(b) ) ) ) 
 
-///////////////////////////////////////////////////////////////////////////
-// From shrimp_util.h , but let's try to keep it clean ////////////////////
-///////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// From shrimp_util.h //////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 /* 
-    shrimp_util.h
-
-    Some small, commonly needed macros and functions.
-    These are based on, and replace, the similar functions found
-    in patterns.h by Larry Gritz as distributed with BMRT.
-    Some of the macros are also based on similar ones given in
-    rmannotes.sl by Steve May, or taken from Darwyn Peachey's chapter
-    in "Texturing and Modelleling" by Ebert et al.
-*/
+ * shrimp_util.h
+ *
+ * Some small, commonly needed macros and functions.
+ * These are based on, and replace, the similar functions found
+ * in patterns.h by Larry Gritz as distributed with BMRT.
+ * Some of the macros are also based on similar ones given in
+ * rmannotes.sl by Steve May, or taken from Darwyn Peachey's chapter
+ * in "Texturing and Modelleling" by Ebert et al.
+ * */
 
 /*
-    This is the same as mix except blend allows a non-scalar 3rd arg.
-*/
+ * This is the same as mix except blend allows a non-scalar 3rd arg.
+ * */
 
 #define blend( a, b, x ) ( (a) * (1 - (x)) + (b) * (x) )
 
 /*
-    The following 2 macros are useful in generating tiling patterns.
-    repeat transforms surface coords into coords in the current tile.
-    whichtile returns the number of the current tile.
-*/
-#define repeat( x, freq )   ( mod( (x) * (freq), 1 ) )
-#define whichtile( x, freq )    ( floor( (x) * (freq) ) )
+ * The following 2 macros are useful in generating tiling patterns.
+ * repeat transforms surface coords into coords in the current tile.
+ * whichtile returns the number of the current tile.
+ * */
+#define repeat( x, freq )			( mod( (x) * (freq), 1 ) )
+#define whichtile( x, freq )		( floor( (x) * (freq) ) )
 
 /*
-    Adds offset to the point, but wraps around so 0<=x<=1
-*/
-#define shift( x, offset ) ( mod( (x) + (offset), 1 ) )
+ * Adds offset to the point, but wraps around so 0<=x<=1
+ * */
+#define shift( x, offset )			( mod( (x) + (offset), 1 ) )
 
 /* 
-    Just shorthand, but it makes things more readable
-*/
-#define odd(x)            (mod((x), 2) == 1)
-#define even(x)           (mod((x), 2) == 0) 
+ * Just shorthand, but it makes things more readable
+ * */
+#define odd(x)						(mod((x), 2) == 1)
+#define even(x)						(mod((x), 2) == 0) 
 
 /*
  * Some definitions from rmannotes
- */
+ * */
+#define pulse( a, b, x )				( step( a, x ) - step( b, x ) )
+#define filteredpulse( a, b, x, dx )	( max( 0, ( min( (x-dx/2)+dx, b) - \
+											max( x-dx/2, a)) / dx ) )
+#define boxstep( a, b, x )			clamp( ( (x)-(a) ) / ( (b)-(a) ), 0, 1 )
 
-#define pulse( a, b, x ) ( step( a, x ) - step( b, x ) );
-
-#define filteredpulse( a, b, x, dx ) ( max( 0, ( min( (x-dx/2)+dx, b) - \
-				max( x-dx/2, a)) / dx ) )
-
-#define boxstep( a, b, x )	clamp( ( (x)-(a) ) / ( (b)-(a) ), 0, 1 )
-
-/* uniformly distributed noise
- *  *
- *   */
+/* uniformly distributed noise */
 #define udn(x,lo,hi) (smoothstep(.25, .75, noise(x)) * ((hi) - (lo)) + (lo))
 #define udn2(x,y,lo,hi) (smoothstep(.25, .75, noise(x,y)) * ((hi)-(lo))+(lo))
 
 ////////////////////////////////////////////////////////////////////////////////
-
-#ifndef MINFILTWIDTH
-#	define MINFILTWIDTH 1.0e-6
-#endif
 
 #ifndef filterwidth
 #	define filterwidth(x)  ( max( abs( Du(x)*du ) + abs( Dv(x)*dv ), \
@@ -130,10 +137,9 @@ rotate2d( float x, y, theta, ox, oy;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-
-////////////////////////////////////////////////////
-// Schlick's fresnel approximation /////////////////
-////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+// Schlick's fresnel approximation /////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
 
 float schlickfresnel(
                         normal Nf;
@@ -141,9 +147,9 @@ float schlickfresnel(
                         float ior;
         )
 {
-    float kr = ( ior - 1.0 ) / ( ior + 1.0 );
-    kr *= kr;
-    return kr + ( 1.0 - kr ) * pow( 1.0 - (Nf.Vf), 5);
+	float kr = ( ior - 1.0 ) / ( ior + 1.0 );
+	kr *= kr;
+	return kr + ( 1.0 - kr ) * pow( 1.0 - (Nf.Vf), 5);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -151,9 +157,6 @@ float schlickfresnel(
 // based on Andreas Baerentzen paper ///////////////////////////////////////////
 // http://www.imm.dtu.dk/~jab/curvature.ps /////////////////////////////////////
 // Used with Mario's permission (thanks ;)) ////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////// P.S.: notice i changed some things a bit in the porting, and changed the ////
-// coloring function, to make the curvature changes more noticeable, since /////
-// with greyscale you could barely see the intermediary steps //////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 // This form of the quad eqn. was taken from
@@ -175,7 +178,7 @@ void solvequad(
     k2 = c / q;
 }
 
-/* note to self: tweak color mapping later */
+/* note: tweak color mapping later */
 color scurvature(
                     uniform string ctype;
                     float cmin, cmax;
@@ -187,34 +190,34 @@ color scurvature(
     normal Nf = faceforward( Nn, In );
 
     float result = 0;
-    color out = 0;
+    color out = color(0);
 	extern point P;
 
-    // The needed partials
+    /* The needed partials */
     vector  Xu = Du(P),
 			Xv = Dv(P),
 			Xuu = Du(Xu),
 			Xuv = Du(Xv),
 			Xvv = Dv(Xv);
 
-    // Coefficients of the first fundamental form (I)
+    /* Coefficients of the first fundamental form (I) */
     float   EE = Xu.Xu,
 			FF = Xu.Xv,
 			GG = Xv.Xv;
 
-    // Coefficients of the second fundamental form (II)
+    /* Coefficients of the second fundamental form (II) */
     float   ee = Nf.Xuu,
 			ff = Nf.Xuv,
 			gg = Nf.Xvv;
 
-    // Coefficients for the quadeq.
+    /* Coefficients for the quadeq. */
     float   dist = EE * GG - FF * FF;
     float   a = (ff * FF - ee * GG ) / dist,
 			b = (gg * FF - ff * GG ) / dist,
 			c = (ee * FF - ff * EE ) / dist,
 			d = (ff * FF - gg * EE ) / dist;
 
-    // Solve for the Principal Curvatures (Kmin and Kmax)
+    /* Solve for the Principal Curvatures (Kmin and Kmax) */
     float K1, K2;
 
     solvequad( 1, a + d, a * d - c * b, K1, K2 );
@@ -222,8 +225,9 @@ color scurvature(
     float Kmin = min( K1, K2 );
     float Kmax = max( K1, K2 );
 
-    // Mean: H = (K1+K2)/2 or H=(1/2) ((eG-sfF+gE)/(EG-F^2))
-    // Gaussian K=K1*K2 or K = eg-f^2/EG-F^2
+    /* Mean: H = (K1+K2)/2 or H=(1/2) ((eG-sfF+gE)/(EG-F^2))
+	 * Gaussian K=K1*K2 or K = eg-f^2/EG-F^2
+	 * */
 
     if ( ctype == "mean" ) {
         result = ( ee * GG - 2 * ff * FF + gg * EE ) / ( 2 * dist );
@@ -237,12 +241,12 @@ color scurvature(
         result = Kmax;
     } else { result = 0; } // no ctype
 
-	// greyscale or color
+	/* greyscale or color */
     if ( greyscale == 1.0 ) {
         float g = 1 - spline( result, cmin, cmax, 0, 1 );
 		out = color(g);
     } else {
-		// rgb
+		/* rgb */
 		color c1 = color( 1, 0, 0 ),
 			  c2 = color( 0, 1, 0 ),
 			  c3 = color( 0, 0, 1 );
@@ -277,7 +281,7 @@ color scurvature(
  * Compute the box filter of abs(t) from x-dx/2 to x+dx/2.
  * Hinges on the realization that the indefinite integral of abs(x) is 
  * sign(x) * 1/2 x*x;
- */
+ * */
 float filteredabs (float x, dx)
 {
     float integral (float t) {
@@ -297,7 +301,7 @@ float filteredabs (float x, dx)
  * and t > e1.  Region 1 has integral 0.  Region 2 is computed by
  * analytically integrating smoothstep, which is -2t^3+3t^2.  Region 3
  * is trivially 1.
- */
+ * */
 float filteredsmoothstep (float e0, e1, x, dx)
 {
     float integral (float t) {
@@ -305,8 +309,7 @@ float filteredsmoothstep (float e0, e1, x, dx)
     }
 
     /* Compute x0, x1 bounding region of integration, and normalize so that
-     * e0==0, e1==1
-     */
+     * e0==0, e1==1 */
     float edgediff = e1 - e0;
     float x0 = (x-e0)/edgediff;
     float fw = dx / edgediff;
@@ -328,7 +331,7 @@ float filteredsmoothstep (float e0, e1, x, dx)
 
 /* A pulse train: a signal that repeats with a given period, and is
  * 0 when 0 <= mod(x,period) < edge, and 1 when mod(x,period) > edge.
- */
+ * */
 float pulsetrain (float edge, period, x)
 {
     return pulse (edge, period, mod(x,period));
@@ -341,7 +344,7 @@ float pulsetrain (float edge, period, x)
  * cover multiple pulses in the train.
  * Strategy: consider the function that is the integral of the pulse
  * train from 0 to x. Just subtract!
- */
+ * */
 
 float filteredpulsetrain (float edge, period, x, dx)
 {
@@ -382,7 +385,7 @@ filteredsmoothpulse (float e0, e1, e2, e3, x, dx)
 /* A pulse train of smoothsteps: a signal that repeats with a given
  * period, and is 0 when 0 <= mod(x/period,1) < edge, and 1 when
  * mod(x/period,1) > edge.  
- */
+ * */
 
 float smoothpulsetrain (float e0, e1, e2, e3, period, x)
 {
@@ -395,7 +398,7 @@ float smoothpulsetrain (float e0, e1, e2, e3, period, x)
  * separately to add some variation.  Hue, saturation, and lightness
  * are all independently controlled.  Hue adds, but saturation and
  * lightness multiply.
- */
+ * */
 
 color varyEach (color Cin; float index, varyhue, varysat, varylum;)
 {
@@ -420,7 +423,7 @@ color varyEach (color Cin; float index, varyhue, varysat, varylum;)
  * tile spacing is 1.0), figure out which (integer indexed) tile we are
  * on and what coordinates (on [0,1]) within our individual tile we are
  * shading.
- */
+ * */
 
 float
 tilepattern(
@@ -451,7 +454,7 @@ tilepattern(
  *   outputs:
  *      row, column             index which tile the sample is in
  *      xtile, ytile            position within this tile (0-1)
- */
+ * */
 
 void basicbrick (float x, y;
 	        	uniform float tilewidth, tileheight;

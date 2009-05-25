@@ -1,6 +1,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "shrimp_helpers.h"
+#include "shrimp_helpers.h" /* useful constants & others */
 #include "shrimp_extras.h" /* for PDFs and Geometric attenuation, for the 
 							   Cook-Torrance model */
 #include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
@@ -11,10 +11,6 @@
 
 #ifndef SHRIMP_SHADING_MODELS
 #define SHRIMP_SHADING_MODELS
-
-#ifndef SQR
-#define SQR(X) ( (X) * (X) )
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wrapped diffuse illumination model, based on ZJ's wrapped diffuse model /////
@@ -28,21 +24,118 @@ wrappeddiffuse(
 		)
 {
 	normal Nf = faceforward( Nn, In );
+	vector Ln = vector(0);
 	
 	extern point P;
 	color C = color(0);
+	uniform float nondiff = 0;
 
-	illuminance( P, Nf, PI)
+	illuminance( P, Nf, PI )
 	{
 		extern vector L;
 		extern color Cl;
 		
-		uniform float nondiff = 0;
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 		
 		if (nondiff < 1) {
-			vector Ln = normalize(L);
+			Ln = normalize(L);
 			C += Cl * (1-nondiff) * 1 - min(1, acos(Ln.Nn)/radians(90+wangle));
+		}
+	}
+	return C;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lommel-Seeliger BRDF, tau = [0,1], 0 = infinite optical depth, 1 = layer ////
+// thickness - isotropical scattering (forward/backscattering) /////////////////////////////////////////////////////////////////////////////////////////////////
+
+color
+LommelSeeliger(
+				normal Nn;
+				vector In;
+				float tau; /* thickness of layer, for non spherical surface */
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In, Ln = vector(0);
+
+	float costheta = Nf.Vf, cospsi = 0;
+
+	uniform float nondiff = 0;
+	color C = color(0);
+	extern point P;
+
+	illuminance( P, Nf, S_PI_2 )
+	{
+		nondiff = 0;
+		lightsource("__nondiffuse", nondiff);
+
+		if (nondiff < 1) {
+			extern vector L;
+			extern color Cl;
+			
+			Ln = normalize(L);
+			cospsi = Ln.Nf;
+
+			C += Cl * (1-nondiff) * (1 / (cospsi + costheta)) *
+					(1 - exp( -tau * ((1/cospsi) + (1/costheta)))) * cospsi;
+		}
+	}
+	return clamp(C, color(0), color(1));
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Buratti photometric model, based on "Photometry and Surface Structure of ////
+// the Icy Galilean Satellites", by Bonnie J. Buratti, Jet Propulsion //////////
+// Laboratory, in "Journal of Geophysical Research", "special issue on the /////
+// Icy Galilean Satellites". ///////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* A combination of the "Lommel-Seelieger" (or lunar scattering law) and 
+ * Lambert's law, where the parameter k describes the fraction of light that
+ * is multiply scattered, with 1 corresponding to single scattering. */
+
+color
+Buratti(
+			normal Nn;
+			vector In;
+			float k, sden;
+	   )
+{
+	normal Nf = faceforward( Nn, In );
+	vector Vf = -In, Ln = vector(0);
+
+	float costheta = Nf.Vf, cospsi = 0;
+	float cosalpha = 0, tanalpha = 0, alpha = 0;
+	float R = 0;
+
+	uniform float nondiff = 0;
+	color C = color(0);
+	extern point P;
+
+	illuminance( P, Nf, S_PI_2 )
+	{
+		nondiff = 0;
+		lightsource("__nondiffuse", nondiff);
+
+		if (nondiff < 1) {
+			extern vector L;
+			extern color Cl;
+
+			Ln = normalize(L);
+			cospsi = Ln.Nf;
+			cosalpha = clamp( Vf.Ln, EPS, 1.0 - EPS);
+			tanalpha = sqrt( max(0, 1.0 - SQR(cosalpha))) / cosalpha;
+			alpha = acos(cosalpha);
+			
+			/* macroscopic roughness */
+			R = (alpha < PI/2.0 - EPS) ?
+				2.0 - tanalpha / 2.0 / sden * (1.0 - exp(-sden/tanalpha)) *
+				(3.0 - exp(-sden/tanalpha)) : 1;
+
+			C += Cl * (1-nondiff) * (k * (cospsi/(cospsi+costheta)) * sden
+					+ (1-k) * cospsi) * R;
 		}
 	}
 	return C;
@@ -74,7 +167,7 @@ rimlighting(
 
 ////////////////////////////////////////////////////////////////////////////////
 // Minnaert limb darkening term (Note: Nvidia uses a different approach - //////
-// in which the limb coefficient is i nthe 0,1 range, this one is in the 1,2 ///
+// in which the limb coefficient is in the 0,1 range, this one is in the 1,2 ///
 // range. //////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -86,25 +179,26 @@ Minnaert(
         )
 {
     normal Nf = faceforward(Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0);
 	
-	float ndotv = max( 0, Nf.Vf);
-	float thetak = pow( ndotv, k-1);
+	float ndotv = max( 0, Nf.Vf ), ndotl = 0;
+	float thetak = pow( ndotv, k-1 );
+	uniform float nondiff = 0;
 	
     extern point P;
 	color Cminnaert = color(0);
 	
-    illuminance( P, Nf, PI/2 )
+    illuminance( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nondiff = 0;
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 	
 		if (nondiff < 1) {
-	        vector Ln = normalize(L);
-    	    float ndotl = max( 0, Ln.Nf);
+	        Ln = normalize(L);
+    	    ndotl = max( 0, Ln.Nf);
         	Cminnaert += Cl * (1-nondiff) * pow( ndotl, k);
 		}
     }
@@ -133,11 +227,7 @@ Minnaert(
  * Hapke, Bruce. "A Theoretical Photometric Function for
  * the Lunar Surface", in
  * Journal of Geophysical Research, Vol.68, No.15, 1963
-*/
-
-#ifndef EPS
-#define EPS 0.0001
-#endif
+ * */
 
 float Eval(
             vector vin, vout;
@@ -146,14 +236,18 @@ float Eval(
         )
 {
     float cosalpha = clamp( vin.vout, EPS, 1.0-EPS);
-    float sinalpha = sqrt( 1.0 - SQR( cosalpha));
+    float sinalpha = sqrt( 1.0 - SQR( cosalpha) );
     float tanalpha = sinalpha/cosalpha;
-    float alpha = acos( cosalpha);
+    float alpha = acos( cosalpha );
 
-    float R = (alpha < PI/2.0-EPS) ?
-        2.0 - tanalpha/2.0/g*(1.0-exp(-g/tanalpha))*(3.0-exp(-g/tanalpha)) : 1;
-    float S = 2.0/3.0/PI*((sinalpha+(PI-alpha)*cosalpha)/PI
-			+ f*SQR(1.0 - cosalpha));
+	/* effects of macroscopic roughness */
+	float R = (alpha < S_PI_2 - EPS) ?
+		2.0 - tanalpha / 2.0 / g * (1.0 - exp(-g/tanalpha)) * (3.0
+				- exp(-g/tanalpha) ) : 1;
+	/* opposition effect */
+	float S = 2.0 / 3.0 / PI * ( (sinalpha + (PI - alpha) * cosalpha) / PI
+			+ f * SQR(1.0 - cosalpha));
+
 	return r*R*S/(vin.vn + vout.vn);
 }
 
@@ -164,23 +258,24 @@ color Hapke(
         )
 {
     normal Nf = faceforward( Nn, In);
-    vector Vf = -In;
+    vector Vf = -In, Ln = vector(0);
 
     float cos_theta_r = clamp(Nf.Vf, EPS, 1);
+	uniform float nondiff = 0;
 
     extern point P;
 	color Ct = color(0);
 	
-    illuminance( P, Nf, PI/2 )
+    illuminance( P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
 		
-		uniform float nondiff = 0;
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 		
 		if (nondiff < 1) {
-        	vector Ln = normalize(L);
+        	Ln = normalize(L);
         	Ct += Cl * (1-nondiff) * Eval( Ln, Vf, Nf, sden, fscat, refl) 
 					* Ln.Nf * PI;
 		}
@@ -201,14 +296,12 @@ color Hapke(
 /* formula for the Fresnel reflection factor for unpolarized  light */
 float nfresnel( float cos_theta, eta; )
 {
-	float g2 = sqrt( eta * eta - 1 + (cos_theta * cos_theta) );
+	float g2 = sqrt( SQR(eta) - 1 + SQR(cos_theta) );
 	float A = g2 - cos_theta;
-	float B = g2 +cos_theta;
-	float tmp = .5 * ( (A*A) / (B*B) );
-	float AA = B * cos_theta -1;
+	float B = g2 + cos_theta;
+	float AA = B * cos_theta - 1;
 	float BB = A * cos_theta + 1;
-	float tmp2 = 1 + ( (AA*AA) / (BB*BB) );
-	return tmp * tmp2;
+	return .5 * (SQR(A) / SQR(B)) * (1 + ( SQR(AA)/SQR(BB) ) );
 }
 
 /* "The diffuse reflection model proposed by Wolff, models reflection from
@@ -226,14 +319,15 @@ color Wolff(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0);
 
 	/* store preset quantities whenever possible */
-	float cos_theta_r = Vf.Nf;
-	color C = color(0);
-	extern point P;
+	float cos_theta_r = Vf.Nf, cos_theta_i = 0, F = 0;
 
-	illuminance( P, Nf, PI/2 )
+	extern point P;
+	color C = color(0);
+
+	illuminance( P, Nf, S_PI_2 )
 	{
 		uniform float nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
@@ -241,19 +335,18 @@ color Wolff(
 		if (nondiff < 1) {
 			extern vector L;
 			extern color Cl;
-			vector Ln = normalize(L);
-			float cos_theta_i = Ln.Nf;
+			Ln = normalize(L);
+			cos_theta_i = Ln.Nf;
 			/* first Fresnel term accounting for refraction of externally
 			 * incident light. */
-			float F = 1 - nfresnel( cos_theta_i, ior );
+			F = 1 - nfresnel( cos_theta_i, ior );
 			C += (1-nondiff) * Cl * F * cos_theta_i;
 		}
 	}
 	/* getting cosine of transmitted angle, for the second Fresnel term,
 	 * accounting for the refraction of internally scattered light. */
 	float eta = AIR/ior;
-	float cos_theta_t = sqrt( max( 0, 1 - (eta*eta * (1 - (cos_theta_r *
-							cos_theta_r)) )));
+	float cos_theta_t = sqrt( max( 0, 1-(SQR(eta) * (1-SQR(cos_theta_r)))));
 	/* 2nd Fresnel term */
 	float F2 = 1 - nfresnel( cos_theta_t, eta );
 
@@ -285,10 +378,10 @@ OrenNayar(
         )
 {
 	vector Nf = faceforward (Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0);
 	
-	/* surface roughness coeffs for oren/nayar's formula */
-	float sigma2 = roughness * roughness;
+	/* surface roughness coefficients */
+	float sigma2 = SQR(roughness);
 	float A = 1 - 0.5 * sigma2 / (sigma2 + 0.33);
 	float B = 0.45 * sigma2 / (sigma2 + 0.09);
 	float ndotv = Vf.Nf;
@@ -297,24 +390,28 @@ OrenNayar(
 	float theta_r = acos( ndotv ); /* angle between V and N */
 	vector V_perp_N = normalize(Vf-Nf * (ndotv) ); /* part of V perpend to N */
 
-	extern point P;
+	float cos_theta_i = 0, cos_phi_diff = 0;
+	float theta_i = 0, alpha = 0, beta = 0;
+	uniform float nondiff = 0;
+
 	color C = color(0);
+	extern point P;
 	
-	illuminance (P, Nf, PI/2 )
+	illuminance (P, Nf, S_PI_2 )
 	{
 		extern vector L;
         extern color Cl;
 		
-		uniform float nondiff = 0;
+		nondiff = 0;
 		lightsource ("__nondiffuse", nondiff);
         
 		if (nondiff < 1) {
-			vector Ln = normalize(L);
-			float cos_theta_i = Ln.Nf;
-			float cos_phi_diff = V_perp_N . normalize(Ln - Nf * cos_theta_i);
-			float theta_i = acos( cos_theta_i );
-			float alpha = max( theta_i, theta_r );
-			float beta = min( theta_i, theta_r );
+			Ln = normalize(L);
+			cos_theta_i = Ln.Nf;
+			cos_phi_diff = V_perp_N . normalize(Ln - Nf * cos_theta_i);
+			theta_i = acos( cos_theta_i );
+			alpha = max( theta_i, theta_r );
+			beta = min( theta_i, theta_r );
 			
 			C += Cl * (1-nondiff) * cos_theta_i * (A + B * max( 0,
 						cos_phi_diff ) * sin( alpha ) * tan( beta ) );
@@ -365,10 +462,10 @@ OrenNayar(
  * HISTORY:
  *   14 June 1994 -- written by Larry Gritz
  *
- */
+ * */
 
 /* tweaked a bit to fit Shrimp's structure.
- * TODO: try and optimize this a bit, if possible */
+ * TODO: it could use some optimization */
 
 color
 LG_OrenNayar(
@@ -379,49 +476,50 @@ LG_OrenNayar(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0);
 	/* store preset quantites whenever possible */
-	float cos_theta_r = Vf.Nf;
+	float cos_theta_r = Vf.Nf, cos_theta_i = 0, cos_phi_diff = 0;
+	float theta_i = 0, alpha = 0, beta = 0;
 	float theta_r = acos( cos_theta_r );
-	float sigma2 = sigma * sigma;
-	float C1 = 1 - .5 * sigma2 / (sigma2 + .33);
+	float sigma2 = SQR(sigma);
+	float C1 = 1 - .5 * sigma2 / (sigma2 + .33), C2 = 0, C3 = 0;
+
+	uniform float nondiff = 0;
 
 	color C = color(0), L1 = color(0), L2 = color(0);
 	extern point P;
 
-	illuminance( P, Nf, PI/2 ) {
-
-		uniform float nondiff = 0;
+	illuminance( P, Nf, S_PI_2 )
+	{
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 
 		if (nondiff < 1) {
 			extern vector L;
 			extern color Cl;
-			vector Ln = normalize(L);
-			float cos_theta_i = Ln.Nf;
-			float cos_phi_diff = normalize(Vf - Nf * cos_theta_r) .
+			Ln = normalize(L);
+			cos_theta_i = Ln.Nf;
+			cos_phi_diff = normalize(Vf - Nf * cos_theta_r) .
 								 normalize(Ln - Nf * cos_theta_i);
-			float theta_i = acos( cos_theta_i );
-			float alpha = max( theta_i, theta_r );
-			float beta = min( theta_i, theta_r );
+			theta_i = acos( cos_theta_i );
+			alpha = max( theta_i, theta_r );
+			beta = min( theta_i, theta_r );
 			
-			float C2 = .45 * sigma2 / (sigma2 + .09);
+			C2 = .45 * sigma2 / (sigma2 + .09);
 			
 			if (cos_phi_diff >= 0) {
 				C2 *= sin(alpha);
 			} else {
 				C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
 			}
-			/* C3 coefficient isn't used in the Qualitative model */
-			float C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha
-						* beta) / (PI * PI), 2);
+				C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha
+						* beta) / S_2PI, 2);
 			
 			L1 = Cdiff * (cos_theta_i * (C1 + cos_phi_diff * C2 * tan(beta)
 						+ (1 - abs( cos_phi_diff)) * C3 * tan( (alpha
 								+ beta) / 2 )));
-			L2 = (Cdiff * Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2
-						+ .13) * (1 - cos_phi_diff * (4 * beta * beta) /
-							(PI * PI)));
+			L2 = SQR(Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2 + .13)
+					* (1 - cos_phi_diff * 4 * SQR(beta) / S_2PI ));
 			
 			C += (1-nondiff) * Cl * (L1 + L2);
 		}
@@ -454,50 +552,52 @@ OrenNayarWolff(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0);
 
 	/* store preset quantities whenever possible */
-	float cos_theta_r = Vf.Nf;
-	float theta_r = acos( cos_theta_r );
-	float sigma2 = sigma * sigma;
+	float cos_theta_r = Vf.Nf, cos_theta_i = 0, cos_theta_tl = 0;
+	float theta_r = acos( cos_theta_r ), theta_i = 0, cos_phi_diff = 0;
+	float sigma2 = SQR(sigma), alpha = 0, beta = 0;
+	float C1 = 0, C2 = 0, C3 = 0;
 
-	color C = color(0), L1 = color(0), L2 = color(0);
 	float eta = AIR/ior;
+	uniform float nondiff = 0;
+	color C = color(0), L1 = color(0), L2 = color(0);
 	extern point P;
 	
-	illuminance( P, Nf, PI/2 ) {
-
-		uniform float nondiff = 0;
+	illuminance( P, Nf, S_PI_2 )
+	{
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 
 		extern vector L;
 		extern color Cl;
-
-		vector Ln = normalize(L);
-		float cos_theta_i = Ln.Nf;
-		float cos_phi_diff = normalize(Vf-Nf * cos_theta_r) .
-								normalize(Ln - Nf * cos_theta_i );
-		float theta_i = acos( cos_theta_i );
-		float alpha = max( theta_i, theta_r );
-		float beta = min( theta_i, theta_r );
+		
+		Ln = normalize(L);
+		cos_theta_i = Ln.Nf;
+		cos_phi_diff = normalize(Vf-Nf * cos_theta_r) .
+							normalize(Ln - Nf * cos_theta_i );
+		theta_i = acos( cos_theta_i );
+		alpha = max( theta_i, theta_r );
+		beta = min( theta_i, theta_r );
 
 		/* transmitted angle */
-		float cos_theta_tl = sqrt( max( 0, 1 - (eta*eta * (1 - 
-							(cos_theta_i * cos_theta_i) )) ));
+		cos_theta_tl = sqrt( max( 0, 1-(SQR(eta) * (1-SQR(cos_theta_i)))));
 
 		/* 1st Oren-Nayar coefficient */
-		float C1 = (1 - .5 * sigma2 / (sigma2 + .33)) * (1 - nfresnel(
+		C1 = (1 - .5 * sigma2 / (sigma2 + .33)) * (1 - nfresnel(
 					cos_theta_i, ior )) * (1 - nfresnel( cos_theta_tl, eta ));
 		/* 2nd coefficient */
-		float C2 = .45 * sigma2 / (sigma2 + .09);
+		C2 = .45 * sigma2 / (sigma2 + .09);
+
 		if (cos_phi_diff >= 0) {
 			C2 *= sin(alpha);
 		} else {
 			C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
 		}
 		/* 3rd coefficient (Qualitative model only uses C1+C2) */
-		float C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha *
-					beta) / (PI * PI), 2);
+		C3 = .125 * sigma2 / (sigma2 + .09) * pow(( 4 * alpha *
+					beta) / S_2PI, 2);
 
 		/* Final L1 term */
 		L1 = Cdiff * (cos_theta_i * (C1 + cos_phi_diff * C2 * tan(beta)
@@ -506,8 +606,7 @@ OrenNayarWolff(
 
 		/* Final L2 term */
 		L2 = (Cdiff * Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2
-					+ .13) * (1 - cos_phi_diff * (4 * beta * beta) /
-						(PI * PI)));
+					+ .13) * (1 - cos_phi_diff * 4 * SQR(beta) / S_2PI ));
 
 		C += (1 - nondiff) * Cl * (L1 + L2);
 	}
@@ -546,7 +645,7 @@ OrenNayarWolff(
  * envname: name of environment map to use. If this is "" the shader will
  *   try to raytrace the environment if there are samples (envsamp > 0)
  * envsamp: number of samples to use when sampling the environment
-*/
+ * */
 
 color
 anisophongdiff(
@@ -556,31 +655,30 @@ anisophongdiff(
 				)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
-	
-    extern point P;
-    color C = color(0);
+	vector Vf = -In, Ln = vector(0);
 
-    illuminance( P, Nf, PI/2 )
+	float ndotv = Nf.Vf, ndotl = 0;
+	
+    uniform float nondiff = 0;
+    color C = color(0);
+	extern point P;
+
+    illuminance( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nondiff = 0;
+		nondiff = 0;
 		lightsource("__nondiffuse", nondiff);
 		
 		if (nondiff < 1) {
-	        vector Ln = normalize(L);
+	        Ln = normalize(L);
 
-    	    float secta, sectb, sectc;
-       		float ndotl = Nf.Ln;
-        	float ndotv = Nf.Vf;
+       		ndotl = Nf.Ln;
 
-        	secta = (28*Kd) / (23*PI);
-        	sectb = 1-pow( (1-( ndotl/2)), 5);
-        	sectc = 1-pow( (1-( ndotv/2)), 5);
-
-        	C += Cl * (1-nondiff) * ndotl * secta * (1-Ks) * sectb * sectc;
+			C += Cl * (1-nondiff) * ((28*Kd)/(23*PI)) * (1-Ks) *
+						(1-pow( (1-(ndotl/2)), 5)) * 
+						(1-pow( (1-(ndotv/2)), 5)) * ndotl;
 		}
     }
     return C;
@@ -599,24 +697,26 @@ color phong_blinn(
 					)
 {
 	normal Nf = faceforward(Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hn = vector(0);
 	
-    extern point P;
+    uniform float nonspec = 0;
+	float ndoth = 0;
 	color C = color(0);
+	extern point P;
 	
-    illuminance( P, Nf, PI/2 )
+    illuminance( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-	        vector Ln = normalize(L);
-    	    vector Hn = normalize(Ln + Vf);
+	        Ln = normalize(L);
+    	    Hn = normalize(Ln + Vf);
 			
-        	float ndoth = Nf.Hn;
+        	ndoth = Nf.Hn;
         	C += Cl * (1-nonspec) * pow( max( 0.0, ndoth), size) * (Nf.Ln);
 		}
     }
@@ -634,7 +734,7 @@ color phong_blinn(
  * something made of glass or liquid, in which roughness = related to the
  * size of the highlight, larger is bigger, and sharpness = 1 is infinitely
  * sharp, 0 is very dull
- */
+ * */
 
 color
 LocIllumGlossy(
@@ -644,24 +744,25 @@ LocIllumGlossy(
 				)
 {
 	normal Nf = faceforward( Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hn = vector(0);
     
 	float w = .18 * (1-sharpness);
 	
-	extern point P;
+	uniform float nonspec = 0;
     color C = color(0);
+	extern point P;
 	
-	illuminance (P, Nf, PI/2 )
+	illuminance (P, Nf, S_PI_2 )
 	{
 		extern vector L;
         extern color Cl;
         
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource ("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-			vector Ln = normalize(L);
-			vector Hn = normalize(Vf+Ln);
+			Ln = normalize(L);
+			Hn = normalize(Vf+Ln);
 
 			C += Cl * (1-nonspec) * smoothstep( .72-w, .72+w,
 					pow( max( 0.0, Nf.Hn), 1/roughness ) );
@@ -685,32 +786,32 @@ Wardisotropy(
 		)
 {
     normal Nf = faceforward( Nn, In);
-    vector Vf = -In;
+    vector Vf = -In, Ln = vector(0), Hn = vector(0);
+    float ndotv = Nf.Vf, ndotl = 0, ndoth = 0, tandelta2 = 0;
+	float m2 = roughness * roughness;
 
-	extern point P;
+	uniform float nonspec = 0;
 	color C = color(0);
+	extern point P;
 	
-	illuminance (P, Nf, PI/2 )
+	illuminance (P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-	        vector Ln = normalize(L);
-    	    float ndotl = Nf.Ln;
+	        Ln = normalize(L);
+    	    ndotl = Nf.Ln;
 
-			vector Hn = normalize(Ln + Vf);
-			float ndoth = Nf.Hn;
-			float ndotv = Nf.Vf;
+			Hn = normalize(Ln + Vf);
+			ndoth = Nf.Hn;
 
-			float tandelta = max( 0.0, sqrt( 1.0 - (ndoth*ndoth)) / ndoth);
-			float tandelta2 = tandelta * tandelta;
-			float m2 = roughness * roughness;
+			tandelta2 = SQR( max( 0.0, sqrt( 1.0 - (SQR(ndoth))) / ndoth));
 
-			C += Cl * (1-nonspec) * ndotl * ( exp( -(tandelta/m2)) /
+			C += Cl * (1-nonspec) * ndotl * ( exp(-(tandelta2/m2)) /
 							(4 * m2 * sqrt( ndotl * ndotv )) );
 		}
 	}
@@ -742,7 +843,7 @@ Wardisotropy(
  *  roughness - the apparent roughness of the surface in xdir.
  *  yroughness - the roughness for the direction of the surface
  *  tangent which is perpendicular to xdir.
- */
+ *  */
 
 color
 LocIllumWardAnisotropic(
@@ -752,31 +853,32 @@ LocIllumWardAnisotropic(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hn = vector(0);
 
-	float cos_theta_r = clamp( Nf.Vf, 0.0001, 1);
+	float cos_theta_r = clamp( Nf.Vf, EPS, 1), cos_theta_i = 0, rho = 0;
+	uniform float nonspec = 0;
 	vector X = xdir / xroughness;
 	vector Y = (Nf ^ xdir) / yroughness;
 
 	extern point P;
 	color C = color(0);
 	
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-			vector Ln = normalize(L);
-			float cos_theta_i = Ln.Nf;
+			Ln = normalize(L);
+			cos_theta_i = Ln.Nf;
 			
 			if (cos_theta_i > 0.0) {
-				vector Hn = normalize(Vf + Ln);
+				Hn = normalize(Vf + Ln);
 				
-				float rho = exp( -2 * ( SQR( X.Hn ) + SQR( Y.Hn )) /
+				rho = exp( -2 * ( SQR( X.Hn ) + SQR( Y.Hn )) /
 						(1+ Hn.Nf)) / sqrt( cos_theta_i * cos_theta_r );
 				
 				C += Cl * (1-nonspec) * cos_theta_i * rho;
@@ -799,27 +901,27 @@ color schlickspec(
         )
 {
 	normal Nf = faceforward( Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Rn = vector(0);
+	float Nr = 1 / (roughness * roughness);
+	float rdotv = 0, coeff = 0;
+	uniform float nonspec = 0;
 	
     extern point P;
 	color C = color(0);
     
-    illuminance( P, Nf, PI/2 )
+    illuminance( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-			vector Ln = normalize(L);
-			
-			vector Rn = normalize( reflect( -Ln, Nf));
-        	float Nr = 1 / (roughness * roughness);
-			
-        	float rdotv = max( 0, Rn.Vf);
-        	float coeff = rdotv / (Nr - Nr * rdotv + rdotv);
+			Ln = normalize(L);
+			Rn = normalize( reflect( -Ln, Nf));			
+        	rdotv = max( 0, Rn.Vf);
+        	coeff = rdotv / (Nr - Nr * rdotv + rdotv);
 			
         	C += Cl * (1-nonspec) * coeff * (Nf.Ln);
 		}
@@ -839,7 +941,7 @@ float sgeoattenuation(
 						float costheta, roughness;
 		)
 {
-	float g1 = roughness - roughness * costheta + costheta;
+	float g1 = roughness - roughness * costheta + costheta; /* FIXME? */
 	return costheta / g1;
 }
 
@@ -848,8 +950,8 @@ float angledependence(
 						float cosbeta, isotropy;
 		)
 {
-	float i2 = isotropy * isotropy;
-	float cosbeta2 = cosbeta * cosbeta;
+	float i2 = SQR(isotropy);
+	float cosbeta2 = SQR(cosbeta);
 	return sqrt( isotropy / (i2 - i2 * cosbeta2 + cosbeta2));
 }
 
@@ -858,12 +960,12 @@ float zenithdependence(
 						float cosbeta, roughness;
 		)
 {
-	float cosbeta2 = cosbeta * cosbeta;
+	float cosbeta2 = SQR(cosbeta);
 	float zz = 1 - (1 - roughness) * cosbeta2;
-	return roughness / (zz * zz);
+	return roughness / SQR(zz) ;
 }
 
-/* TODO: re-read all this (Schlick's papers) */
+/* note: better check & plot it */ /* FIXME */
 color aschlick(
 				float roughness, isotropy, ior;
 				normal Nn;
@@ -871,17 +973,19 @@ color aschlick(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hn = vector(0);
 	vector xdir = normalize(Nf ^ dir);
 
-	float costheta = Vf.Nf;
+	float costheta = Vf.Nf, cospsi = 0, cosbeta = 0;
+	float G = 0, A = 0, Z = 0, D = 0;
+	uniform float nonspec = 0;
 
-	extern point P;
 	color C = color(0);
+	extern point P;
 
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 
 		if (nonspec < 1) {
@@ -889,20 +993,20 @@ color aschlick(
 			extern vector L;
 			extern color Cl;
 
-			vector Ln = normalize(L);
-			vector Hn = normalize(Vf + Ln);
+			Ln = normalize(L);
+			Hn = normalize(Vf + Ln);
 
-			float cospsi = Ln.Nf;
-			float cosbeta = Hn.xdir;
+			cospsi = Ln.Nf;
+			cosbeta = Hn.xdir;
 
 			/* self-obscuration */
-			float G = sgeoattenuation( costheta, roughness) *
+			G = sgeoattenuation( costheta, roughness) *
 						sgeoattenuation( cospsi, roughness );
 			/* anisotropy */
-			float A = angledependence( cosbeta, isotropy );
-			float Z = zenithdependence( Nf.Hn, roughness );
-			
-			float D = Z * A * G / (4 * cospsi * costheta) * cospsi;
+			A = angledependence( cosbeta, isotropy );
+			Z = zenithdependence( Nf.Hn, roughness );
+
+			D = Z * A * G / (4 * cospsi * costheta) * cospsi;
 
 			C += Cl * (1-nonspec) * D;
 		}
@@ -917,7 +1021,7 @@ color aschlick(
 // Heidrich-Seidel microfacet distribution functions, and the default //////////
 // Torrance-Sparrow geometric attenuation, Smith attenuation, and He-Torrance //
 // attenuation. ////////////////////////////////////////////////////////////////
-// TODO: Check Kelemen's paper. ////////////////////////////////////////////////
+// TODO: other distributions? (Bennett-Porteus, check Kelemen's paper) /////////
 ////////////////////////////////////////////////////////////////////////////////
 
 color
@@ -925,28 +1029,29 @@ cooktorrance(
 				normal Nn;
 				vector In, anisodir;
 				float ior, k, roughness;
-				uniform float distromodel, geomodel;
+				uniform float distmodel, geomodel;
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -normalize(In);
+	vector Vf = -normalize(In), Ln = vector(0), Hn = vector(0);
 
-	/* Store quantities */
-	float costheta = Nf.Vf;
-	
+	/* Initialize & store quantities */
+	float costheta = Nf.Vf, cosalpha = 0, cospsi = 0, cospsi2 = 0;
 	float D = 0, G = 0, F = 0;
+	uniform float nonspec = 0;
+	
 	color Ccook = color(0);
-
 	extern point P;
-	illuminance( P, Nf, PI/2 )
+	
+	illuminance( P, Nf, S_PI_2 )
 	{
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
 			extern vector L;
 			extern color Cl;
-			vector Ln = normalize(L);
+			Ln = normalize(L);
 			
 			/* In some references, as some available sources, the fresnel term
 			 * is the angle between viewer and mean surface normal, but the
@@ -959,19 +1064,19 @@ cooktorrance(
 			 * and finally the reflection coefficient of the microfacets
 			 * being lit in the incident vector direction. So, as reference,
 			 * microfacet normal H != mean surface normal N. */
-			vector Hn = normalize(Ln+Vf);
+			Hn = normalize(Ln+Vf);
 
 			/* store preset quantities */
-			float cosalpha = Nf.Hn;
-			float cospsi = Nf.Ln;
-			float cospsi2 = Ln.Hn;
+			cosalpha = Nf.Hn;
+			cospsi = Nf.Ln;
+			cospsi2 = Ln.Hn;
 
 			/* Probability distribution functions */
-			if (distromodel == 0) {
+			if (distmodel == 0) {
 				D = beckmann( cosalpha, roughness );
-			} else if (distromodel == 1) {
+			} else if (distmodel == 1) {
 				D = ward( cosalpha, roughness );
-			} else if (distromodel == 2) {
+			} else if (distmodel == 2) {
 				D = trowbridge_reitz( cosalpha, roughness );
 			} else {
 				D = heidrich_seidel( Nf, Vf, Ln, anisodir, roughness );
@@ -979,8 +1084,10 @@ cooktorrance(
 
 			/* Geometric attenuation term */
 			if (geomodel == 0) {
-				G = torrance_sparrow( costheta, cosalpha, cospsi, cospsi2 );
+				G = cook_torrance( costheta, cosalpha, cospsi, cospsi2 );
 			} else if (geomodel == 1) {
+				/* This would be the Schlick approximation of the Smith
+				 * shadowing & masking function */
 				G = smith( cospsi, costheta, roughness );
 			} else {
 				G = he_torrance( costheta, cospsi, roughness );
@@ -998,7 +1105,7 @@ cooktorrance(
 			F = clamp( F, 0, 1 );
 #endif
 
-			/* TODO: Re-read Heidrich & Seidel's paper, iirc, the anisotropic
+			/* FIXME: Re-read Heidrich & Seidel's paper, iirc, the anisotropic
 			 * specular term was meant to be coupled with an isotropic
 			 * specular term - confirm this - for the time being the
 			 * isotropic specular will be added via specularbrdf() shadeop */
@@ -1009,13 +1116,13 @@ cooktorrance(
 					cospsi);
 #else
 			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
-				cospsi + ( (distromodel == 3) ?
+				cospsi + ( (distmodel == 3) ?
 					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0) ) );
 #endif
 		}
 	}
-	/* at high grazing angles, the values seem to go up a lot(?)
-	 * (it is mentioned in the literature though... ) */
+	/* NOTE: normalization needed?? The values at high grazing angles seem
+	 * to go up a lot */
 	return clamp(Ccook, color(0), color(1));
 }
 
@@ -1049,7 +1156,7 @@ cooktorrance(
  * envname: name of environment map to use. If this is "" the shader will
  *   try to raytrace the environment if there are samples (envsamp > 0)
  * envsamp: number of samples to use when sampling the environment
-*/
+ * */
 
 color
 anisophongspec(
@@ -1059,43 +1166,40 @@ anisophongspec(
 				)
 {
 	normal Nf = faceforward( Nn, In);
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hv = vector(0);
+	
+	extern vector dPdu, dPdv;
+	vector vu = normalize(dPdu), vv = normalize(dPdv);
 	
 	/* preset quantities */
-	float ndotv = Nf.Vf;
+	float ndotv = Nf.Vf, ndoth = 0, ndotl = 0, speccont = 0;
+	float nu2 = 0, nv2 = 0, nunv = 0, nh = 0, nhmax = 0;
 
-    extern vector dPdu, dPdv;
-	extern point P;
+	uniform float nonspec = 0;
 	color C = color(0);
+	extern point P;
 
-    illuminance( P, Nf, PI/2 )
+    illuminance( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
-	        vector Ln = normalize(L);
-    	    vector Hv = normalize(Ln+Vf);
-
-	        vector vu = normalize(dPdu);
-    	    vector vv = normalize(dPdv);
+			Ln = normalize(L);
+    	    Hv = normalize(Ln+Vf);
 			
-			/* preset quantities */
-			float ndoth = Nf.Hv;
-			float ndoth2 = ndoth * ndoth;
-			float ndotl = Nf.Ln;
+			ndoth = Nf.Hv;
+			ndotl = Nf.Ln;
 
-        	float speccont = sqrt( (nu+1) * (nv+1) / (8*PI));
-			
-			float nu2 = nu * SQR( Hv.vu );
-			float nv2 = nv * SQR( Hv.vv );
-			float nunv = (nu2 + nv2) / (1 - ndoth2);
-			float nh = pow( ndoth, nunv );
-
-			float nhmax = ndoth * max( ndotl, ndotv);
+        	speccont = sqrt( (nu+1) * (nv+1) / (8*PI));
+			nu2 = nu * SQR( Hv.vu );
+			nv2 = nv * SQR( Hv.vv );
+			nunv = (nu2 + nv2) / (1 - SQR(ndoth));
+			nh = pow( ndoth, nunv );
+			nhmax = ndoth * max( ndotl, ndotv);
 			
 			C += Cl * (1-nonspec) * ndotl * (speccont * (nh / nhmax));
 		}
@@ -1137,7 +1241,7 @@ anisophongspec(
  * HISTORY:
  *   12/24/98 tal -- Updated to newer rman syntax
  *
- */
+ * */
 
 color
 shw_brushed_metal(
@@ -1153,33 +1257,34 @@ shw_brushed_metal(
     float cos_light, cos_eye;      /* Cosines of angles from tangent vector */
     
     normal Nf = faceforward (Nn, In);
-    vector Vf = -In;
+    vector Vf = -In, Ln = vector(0), Hn = vector(0);
+	float costheta = max( Nf.Vf, 0 );
     
     /* "Specular" highlight in the Phong sense: directional-diffuse */
     cos_eye = -vdir.Vf;
-    sin_eye = sqrt( 1.0 - cos_eye * cos_eye);
+    sin_eye = sqrt( 1.0 - SQR(cos_eye) );
     
-    extern point P;
+    uniform float nonspec = 0;
 	color C = color(0);
+	extern point P;
     
-    illuminance ( P, Nf, PI/2 )
+    illuminance ( P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
 		
-		uniform float nonspec = 0;
+		nonspec = 0;
 		lightsource("__nonspecular", nonspec);
 		
 		if (nonspec < 1) {
 			
-			vector Ln = normalize(L);
-			vector Hn = 0.5 * ( Vf + Ln );
+			Ln = normalize(L);
+			Hn = 0.5 * ( Vf + Ln );
 			
 	        cos_light = vdir.Ln;
-    	    sin_light = sqrt( 1.0 - cos_light * cos_light );
-			
+			sin_light = sqrt( max( 0, 1 - SQR(cos_light)));
         	aniso = max( cos_light*cos_eye + sin_light*sin_eye, 0.0 );
-       		shad = max( Nf.Vf, 0.0 ) * max( Nf.Ln, 0.0 );
+       		shad = costheta * max( Nf.Ln, 0.0 );
 			
         	C += Cl * (1-nonspec) * pow( aniso, 1.0/roughness ) * shad;
 		}
@@ -1223,7 +1328,7 @@ shw_brushed_metal(
  * nv: specular exponent perpendicular to xdir
  * samples: number of samples to take of the environment map
  * envmap: name of environment map
-*/
+ * */
 
 /* ---- fast fresnel --------
  * H: vector halfway between V and L ((V+L) / 2)
@@ -1231,7 +1336,7 @@ shw_brushed_metal(
  * f0: reflectance at normal incidence
  *
  * Schlick's approximation to the fresnel function
- */
+ * */
 float fastFresnel(vector Hn, Vf; float f0;)
 {
     return f0 + (1-f0)*pow(1 - (Hn.Vf), 5);
@@ -1248,33 +1353,33 @@ color LocIllumAshShir(
                         )
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -normalize(In);
+	vector Vf = -normalize(In), Ln = vector(0), Hn = vector(0);
 	
 	/* store preset quantities */
-	float ndotv = Nf.Vf;
+	float ndotv = Nf.Vf, ndotl = 0, ndoth = 0, nunv2 = 0;
+	float maxndotl = 0;
 	
     vector u_dir = xdir;
     vector v_dir = Nf ^ xdir;
 
-    float rho_d = 0, rho_s = 0;
-
-    /* calculations that can be done one time ... */
-	
+    /* calculations that can be done one time ... */	
 	float diffcont = ((28*Kd) / 23) * (1-Ks) * (1 - pow( 1-ndotv/2, 5));
 	float speccont = sqrt( (nu+1) * (nv+1)) / 8;
 
+	uniform float nondiff = 0, nonspec = 0;
+	float rho_d = 0, rho_s = 0;
     extern point P;
     
-    illuminance(P, Nf, PI/2 )
+    illuminance(P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
 
-        vector Ln = normalize(L);
+        Ln = normalize(L);
 		/* store preset quantities */
-		float ndotl = Nf.Ln;
+		ndotl = Nf.Ln;
 
-        uniform float nondiff = 0, nonspec = 0;
+        nondiff = 0; nonspec = 0;
         lightsource("__nondiffuse", nondiff);
         lightsource("__nonspecular", nonspec);
 		
@@ -1283,19 +1388,17 @@ color LocIllumAshShir(
         }
 		
         if (nonspec < 1) {
-			vector Hn = normalize(Vf + Ln);
+			Hn = normalize(Vf + Ln);
 			/* store preset quantities */
-			float ndoth = Nf.Hn;
-			
-			float nunv2 = ((nu * SQR( Hn.u_dir)) + (nv * SQR( Hn.v_dir))) /
-							(1 - SQR( ndoth ));
-
+			ndoth = Nf.Hn;
+		
+			nunv2 = ( (nu * SQR( Hn.u_dir)) + (nv * SQR( Hn.v_dir)) ) /
+							(1 - SQR(ndoth));
 			rho_s = speccont * pow( ndoth, nunv2) / (ndoth * max( ndotv,
 						ndotl)) * fastFresnel( Hn, Vf, Ks );
         }
 		
-		float maxndotl = max( 0, ndotl);
-		
+		maxndotl = max( 0, ndotl);	
 		aov_diffuse += (1-nondiff) * Cl * rho_d * maxndotl;
 		aov_specular += (1-nonspec) * Cl * rho_s * maxndotl;
 		
@@ -1309,7 +1412,7 @@ color LocIllumAshShir(
  * P: location of sample
  * R: reflection vector
  * envname: name of environment map - use raytracing if ""
- */
+ * */
 color SampleEnvironment(
                             point Pp;
                             vector Rn;
@@ -1319,8 +1422,8 @@ color SampleEnvironment(
     color C = 0;
     if (envname != "") {
         vector Rnn;
-        Rnn = vtransform("current", "object", Rn);
-        C = color environment(envname, Rnn);
+        Rnn = vtransform("camera", "object", Rn);
+        C = color environment (envname, Rnn );
     } else {
         C = trace(Pp, Rn);
     }
@@ -1330,17 +1433,17 @@ color SampleEnvironment(
 /* ---- helper function -----
  * nu, nv: anisotropic specular exponents
  * e1: random variable [0,1]
- */
+ * */
 float calcPhi(float nu, nv; float e1)
 {
     return atan( sqrt( (nu+1)/(nv+1) ) * tan( PI*e1/2) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/* Someone mentioned PRMan allowed a custom distribution of rays in gather()
- * but there's nothing about this on the public specs, nor in 3delight's docs.
- * In any case, this deserves some more reading on the topic to try and 
- * speed up things. */
+/* NOTE:Someone mentioned PRMan allowed a custom distribution of rays in
+ * gather() but there's nothing about this on the public specs, nor in
+ * 3delight's docs. In any case, this deserves some more reading on the
+ * topic to try and speed up things (i hope...) */
 
 color EnvIllumAshShir(
                         normal Nf;
@@ -1352,9 +1455,13 @@ color EnvIllumAshShir(
     uniform float i;
     color C = color(0);
 
+	float ph = 0, cosph = 0, sinph = 0, th = 0, e1 = 0, e2 = 0;
+	vector ydir = vector(0), Hn = vector(0);
+
+	extern point P;
+	
     for (i=0; i<samples; i+=1) {
-        float e1=random(), e2=random();
-        float ph;
+        e1=random(); e2=random();
 
     /* Split up the hemisphere into quarters and remap e1 to one quarter.
        This helps to stratify the samples, hopefully decreasing variance... */
@@ -1362,28 +1469,25 @@ color EnvIllumAshShir(
         if (e1 >= 0 && e1 < 0.25)
             ph = calcPhi(nu, nv, 1 - 4*(0.25 - e1));
         else if (e1 >= 0.25 && e1 < 0.5)
-            ph = calcPhi(nu, nv, 1 - 4*(0.5 - e1)) + PI/2;
+            ph = calcPhi(nu, nv, 1 - 4*(0.5 - e1)) + S_PI_2;
         else if (e1 >= 0.5 && e1 < 0.75)
             ph = calcPhi(nu, nv, 1 - 4*(0.75 - e1)) + PI;
         else
-            ph = calcPhi(nu, nv, 1 - 4*(1 - e1)) - PI/2;
+            ph = calcPhi(nu, nv, 1 - 4*(1 - e1)) - S_PI_2;
     
-        float cosph = cos(ph);
-        float sinph = sin(ph);
-		float th = acos( pow( 1-e2, 1/ (nu * cosph * cosph + nv * sinph 
-						* sinph + 1) ) );
+        cosph = cos(ph);
+        sinph = sin(ph);
+		th = acos( pow( 1-e2, 1/ (nu * SQR(cosph) + nv * SQR(sinph) + 1) ) );
 
-        if (th <= PI/2) { /* we don't want thetas below hemisphere */
+        if (th <= S_PI_2) { /* we don't want thetas below hemisphere */
     
             /* transform H (halfway vector) into space where frame is
 	        <xdir, ydir, N> */
-            vector ydir = Nf ^ xdir;
-			vector Hn = cosph * sin(th) * xdir + sinph * sin(th) * ydir
+            ydir = Nf ^ xdir;
+			Hn = cosph * sin(th) * xdir + sinph * sin(th) * ydir
 						+ cos(th) * Nf;
 			
-            extern point P;
-			
-            C += rs * SampleEnvironment(P, 2*Hn - Vf, envmap)
+            C += rs * SampleEnvironment(P, 2 * Hn - Vf, envmap)
                     * fastFresnel(Hn,Vf,rs);
 
             /* now generate the diffuse part using cos-weighted distribution. */
@@ -1443,7 +1547,7 @@ color EnvIllumAshShir(
  *			defined SQR()
  *
  * prev modified  28 January 1997 S. H. Westin
- */
+ * */
 
 // modified for inclusion in this header //
 
@@ -1457,31 +1561,32 @@ color velvet(
 
 {
     normal Nf = faceforward( Nn, In);
-    vector Vf = -In;
+    vector Vf = -In, Ln = vector(0);
 
-    float cosine, sine;
+    float cosine = 0, sine = 0;
+	float ndotv = max(Nf.Vf, 0);
 
-    extern point P;
+    uniform float nonspec = 0;
 	color rlobe = color(0), horizonscatter = color(0);
+	extern point P;
 	
-    illuminance( P, Nf, PI/2)
+    illuminance( P, Nf, S_PI_2)
 	{
         extern vector L;
         extern color Cl;
         
-        uniform float nonspec = 0;
+        nonspec = 0;
         lightsource("__nonspecular", nonspec);
 		
         if (nonspec < 1) {
-            vector Ln = normalize(L);
+            Ln = normalize(L);
 		
             /* Retroreflective lobe */
 			cosine = max( Ln.Vf, 0);
 			rlobe += (1-nonspec) * Cl * sheen * backscatter
 								* pow( cosine, 1/roughness);
 			/* Horizon scattering */
-			cosine = max( Nf.Vf, 0);
-			sine = sqrt( 1.0 - SQR( cosine ));
+			sine = sqrt( 1.0 - SQR( ndotv ));
 			horizonscatter += (1-nonspec) * Cl * sheen * Ln.Nf *
 								pow( sine, edginess );
 		}
@@ -1514,7 +1619,7 @@ color velvet(
  *
  * See SIGGRAPH 2001 course notes, "Advanced RenderMan 3: Render Harder,"
  * for notes and background information.
- */ 
+ * */
 
 /* Evaluate the Henyey-Greenstein phase function for two vectors with
  * an asymmetry value g.  v1 and v2 should be normalized and g should 
@@ -1523,8 +1628,8 @@ color velvet(
  * */
 
 float phase(vector v1, v2; float g) {
-	float costheta = -v1 . v2;
-	return (1. - g*g) / pow(1. + g*g - 2.*g*costheta, 1.5);
+	float costheta = -v1.v2;
+	return (1 - SQR(g) ) / pow(1 + SQR(g) - 2 * g * costheta, 1.5);
 }
 
 /* Compute a the single-scattering approximation to scattering from
@@ -1535,8 +1640,8 @@ float phase(vector v1, v2; float g) {
  * equation to approximate overall scattering. */
 
 float singleScatter(vector wi, wo; normal n; float g, albedo, thickness) {
-    float win = abs(wi . n);
-    float won = abs(wo . n);
+    float win = abs(wi.n);
+    float won = abs(wo.n);
 
     return albedo * phase(wo, wi, g) / (win + won) *
 		(1. - exp(-(1/win + 1/won) * thickness));
@@ -1545,8 +1650,8 @@ float singleScatter(vector wi, wo; normal n; float g, albedo, thickness) {
 vector efresnel(vector II; normal NN; float eta; output float Kr, Kt;) {
     vector R, T;
     fresnel(II, NN, eta, Kr, Kt, R, T);
-    Kr = smoothstep(0., .5, Kr);
-    Kt = 1. - Kr;
+    Kr = smoothstep(0, .5, Kr);
+    Kt = 1 - Kr;
     return normalize(T);
 }
 
@@ -1568,30 +1673,33 @@ color subsurfaceSkin(
 {
 	normal Nf = faceforward( Nn, Vf );
 	
-	float Kr, Kt, Kr2, Kt2;
-	extern point P;
-	color C = color(0);
+	float Kr = 0, Kt = 0, Kr2 = 0, Kt2 = 0;
+	float ldotn = 0, hdotn = 0;
 
 	vector T = efresnel(Vf, Nf, eta, Kr, Kt);
+	vector Ln = vector(0), Hn = vector(0), T2 = vector(0);
+
+	color C = color(0);
+	extern point P;
 	    
-	illuminance(P, Nf, PI/2 )
+	illuminance(P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
 		
-	    vector Ln = normalize(L);
-	    vector H = normalize(Ln + Vf);
+	    Ln = normalize(L);
+	    Hn = normalize(Ln + Vf);
 
 		/* preset quantities */
-		float ldotn = Ln.Nf;
-		float hdotn = H.Nf;
+		ldotn = Ln.Nf;
+		hdotn = Hn.Nf;
 		
 	    if ( hdotn > 0) {
 			C += Kr * sheenColor * Cl * ldotn * pow( hdotn, 4);
 		}
 	    C += Kr * sheenColor * Cl * ldotn * .2;
 
-	    vector T2 = efresnel(-Ln, Nf, eta, Kr2, Kt2);
+	    T2 = efresnel(-Ln, Nf, eta, Kr2, Kt2);
 
 		C += skinColor * Cl * ldotn * Kt * Kt2 *
 				( singleScatter( T, T2, Nf, .8, .8, thickness) +
@@ -1620,13 +1728,10 @@ color subsurfaceSkin(
  * Basic implementation of the Kubelka-Munk model for the composition
  * of layered surfaces.  See SIGGRAPH 2001 course notes, "Advanced 
  * RenderMan 3: Render Harder," for notes and background information.
- */
+ * */
 
-/* Note: this seems to kill both aqsis (1.4phase2) and pixie (r1162), but
- * this behaviour exists for quite some time */
-/* FIXME: read more on this model, particularly Neumann's Constructions on
- * BRDFs, the chapter on "sandwiched/layered models". I'm not using this
- * right. */
+/* note: check "sandwiched/layered models" from Neumann's "Constructions on
+ * BRDFs". */
 
 /* Hyperbolic sine function */
 void sinhcosh( float t; output float sinh, cosh; )
@@ -1647,6 +1752,7 @@ void sinhcosh( float t; output float sinh, cosh; )
  * */
 void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
 {
+	color a_over_s = color(0);
     if (Rinf == color(0) ) {
         sigma_a = color(1) ;
         sigma_s = color(0) ;
@@ -1654,7 +1760,7 @@ void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
     else {
 		/* someone mentioned lots of float/color type errors in prman 13,
 		 * - any reports on this would be apretiated - */
-        color a_over_s = (color(1) - Rinf) * (color(1) - Rinf)
+        a_over_s = (color(1) - Rinf) * (color(1) - Rinf)
 			/ (color(2) * Rinf);
         sigma_a = color(1);
         sigma_s = sigma_a / a_over_s;
@@ -1671,15 +1777,15 @@ void KM(	color sigma_a, sigma_s;
 			float thickness;
 			output varying color R, T; )
 {
-    float i;
+    uniform float i;
 	extern uniform float ncomps;
+	float s = 0, a = 0, aa = 0, b = 0, sh = 0, ch = 0;
 	
     for (i = 0; i < ncomps; i += 1) {
-        float s = comp(sigma_s, i), a = comp(sigma_a, i);
-        float aa = (s+a)/s;
-        float b = sqrt(max(aa*aa - 1., 0.));
+        s = comp(sigma_s, i); a = comp(sigma_a, i);
+        aa = (s+a)/s;
+        b = sqrt(max(aa*aa - 1., 0.));
 
-        float sh, ch;
         sinhcosh(b*s*thickness, sh, ch);
 
         setcomp(R, i, sh / (aa * sh + b * ch));
@@ -1691,13 +1797,14 @@ void KM(	color sigma_a, sigma_s;
  * scattering and attenuation parameters. */
 color KMInfinite( color sigma_a, sigma_s; )
 {
-	float i;
+	uniform float i;
 	extern uniform float ncomps;
+	float a = 0, r = 0;
 	
     color R = color(0);
     for (i = 0; i < ncomps; i += 1) {
-        float a = comp(sigma_a, i) / comp(sigma_s, i);
-        float r = 1. + a - sqrt(a*a + 2.*a);
+        a = comp(sigma_a, i) / comp(sigma_s, i);
+        r = 1. + a - sqrt(a*a + 2.*a);
         setcomp(R, i, r);
     }
     return R;
@@ -1776,7 +1883,7 @@ color KMOverGlossy(	normal Nn;
  * lambda: rgb wavelengths (use [645 525 445])
  * Kd: diffuse coefficient
  * Ks: specular coefficient
-*/
+ * */
 
 color
 LocIllumGranier(
@@ -1792,10 +1899,13 @@ LocIllumGranier(
 	/* initialize everything */
 	float Kr = 0, Kt = 0, Kro = 0, Kto = 0;
 	float specf = 0, difff = 0, td = 0;
+	float maxndotl = 0;
 	vector ti = vector(0), ri = vector(0);
 	vector rti = vector(0), to = vector(0), ro = vector(0);
+	vector Ln = vector(0);
 	color Cdiff = color(0), Cspec = color(0);
 	color diff = color(0), spec = color(0);
+	uniform float nondiff = 0, nonspec = 0;
 
 	/****** perform diffuse first *********/
 	uniform float i;
@@ -1809,16 +1919,16 @@ LocIllumGranier(
 	/****** specular *********/
 	extern point P;
 
-	illuminance(P, Nn, PI/2 )
+	illuminance(P, Nn, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 
 		/* store preset quantities whenever possible */
-		vector Ln = normalize(L);
-		float maxndotl = max( 0, Nn.Ln );
+		Ln = normalize(L);
+		maxndotl = max( 0, Nn.Ln );
 
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 		
@@ -1868,7 +1978,7 @@ LocIllumGranier(
 // for the lobes, taken from version by Ryan Heniser (that you can find at /////
 // The RenderMan Academy (www.rendermanacademy.com). ///////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// Slightly tweaked for Shrimp's structure /////////////////////////////////////
+// Slightly tweaked for Shrimp's structure, lobe data in the xml block /////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -1922,7 +2032,7 @@ LocIllumGranier(
  *		Multiply lobes by incident cosine. Before, I was trying to
  *		use diffuse(), which doesn't work.
  *
- */
+ * */
 
 /* Number of coefficients per lobe: 3 for an isotropic surface */
 #define LOBESIZE 3
@@ -1948,17 +2058,18 @@ lafortunersl (
 				)
 {
 	
-	varying vector local_z;
-	varying vector local_x, local_y;/* Unit vector in "u" and "v" directions */
-	varying vector Ln; /* Normalized vector to light */
-	varying float x, z, f; /* subterms */
-	varying float fr=0,fg=0,fb=0;/* RGB components of the non-Lambertian term */
-	uniform float basepointer, j; /* loop counters */
+	vector local_z = vector(0);
+	vector local_x = vector(0); /* unit vector in U direction */
+	vector local_y = vector(0); /* unit vector in V direction */
+	vector Ln = vector(0); /* Normalized vector to light */
+	float x = 0, z = 0, f = 0; /* subterms */
+	float fr=0,fg=0,fb=0;/* RGB components of the non-Lambertian term */
+	uniform float basepointer = 0, j = 0; /* loop counters */
 
 	/* Get unit vector in "u" parameter direction */
-	local_x = normalize ( dir );
+	local_x = normalize(dir);
 	
-	local_z = faceforward ( Nn, V);
+	local_z = faceforward( Nn, V );
 	
 	/* Get a local coordinate system. */
 	local_y = local_z^local_x;
@@ -1966,18 +2077,19 @@ lafortunersl (
 	/* The first term is the diffuse component. This should be the
 	 * diffuse component in the Lafortune model multiplied by pi. */
 	
+	uniform float nondiff = 0, nonspec = 0;
+	uniform float rexponent = 0, gexponent = 0, bexponent = 0;
 	color cdiff = color(0), cspec = color(0);
-		
 	extern point P;
 	
-	illuminance ( P, local_z, PI/2 )
+	illuminance ( P, local_z, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 
 		Ln = normalize(L);
 		
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 
@@ -1996,19 +2108,19 @@ lafortunersl (
 			z = - ( local_z.V * local_z.Ln );
 
 			/* Coefficient structures:
-			 * * for each lobe of Nlobes:
-			 * * for each channel of N_WAVES:
-			 * * cxy, cz, n
-			 * * where cxy, cz are the directional and scale components
-			 * * and n is the exponent for the cosine
+			 * for each lobe of Nlobes:
+			 * for each channel of N_WAVES:
+			 * cxy, cz, n
+			 * where cxy, cz, are the directional and scale components
+			 * and n is the exponent for the cosine
 			 * */
 			
 			for ( basepointer=0; basepointer < COEFFLEN ;
 					basepointer += LOBESIZE * N_WAVES )
 			{
-				uniform float rexponent = coeff[basepointer+2],
-							  gexponent = coeff[basepointer+LOBESIZE+2],
-							  bexponent = coeff[basepointer+2*LOBESIZE+2];
+				rexponent = coeff[basepointer+2];
+				gexponent = coeff[basepointer+LOBESIZE+2];
+				bexponent = coeff[basepointer+2*LOBESIZE+2];
 				
 				fr = fg = fb = 0.0;
 				f = -x * coeff[basepointer] + z * coeff[basepointer+1];
@@ -2084,7 +2196,7 @@ float strandspecular(
 {
 	vector Hn = normalize(Ln + Vn);
 	float dotth = Tn.Hn;
-	float sinth = max( 0.0, sqrt( 1.0 - dotth * dotth ) );
+	float sinth = max( 0.0, sqrt( 1.0 - SQR(dotth) ) );
 	float diratten = smoothstep(-1.0, 0.0, dotth);
 	return diratten * pow( sinth, exponent);
 }
@@ -2112,7 +2224,6 @@ color tshair(
 	 * contribution. */
 	
 	extern vector dPdv;
-	extern point P;
 	extern float v;
 	
 	vector T = normalize(dPdv);
@@ -2120,19 +2231,22 @@ color tshair(
 	
     vector t1 = shifttangent( T, Nf, shift - .5);
     vector t2 = shifttangent( T, Nf, shift2 - .5);
+	vector Ln = vector(0);
 	
 	float dottin = T.Vf;
 
+	uniform float nondiff = 0, nonspec = 0;
 	color Cdd = color(0);
 	color Css = color(0);
+	extern point P;
 	
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
-		vector Ln = normalize(L);
+		Ln = normalize(L);
 		
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 		
@@ -2182,41 +2296,41 @@ color kajiyakay(
 	 * construct, and the v coordinate for the color blend in the color
 	 * contribution. */
 	extern vector dPdv;
-	extern point P;
 	extern float v;
 	
-	vector T = normalize(dPdv);
+	vector T = normalize(dPdv), Ln = vector(0);
 	normal Nf = faceforward( Nn, Vf );
 	
-	float dottin = T.Vf;
+	float dottin = T.Vf, dottl = 0, sdottl = 0;
 
+	uniform float nondiff = 0, nonspec = 0;
 	color Cdiff = color(0);
 	color Cspec = color(0);
-	float dottl, sdottl;
+	extern point P;
 	
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
-		vector Ln = normalize(L);
+		Ln = normalize(L);
 		
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 		
 		/* Diffuse term */
 		if (nondiff < 1) {
 			dottl = T.Ln;
-			sdottl = max( 0.0, sqrt( 1.0 - dottl * dottl ));
+			sdottl = max( 0.0, sqrt( 1.0 - SQR(dottl) ));
 			Cdiff += Cl * (1-nondiff) * sdottl;
 		}
 		
 		/* Specular term */
 		if (nonspec < 1) {
 			dottl = T.Ln;
-			sdottl = max( 0.0, sqrt(1.0 - dottl * dottl));
-			Cspec += Cl * (1-nonspec) * pow(dottl*dottin + sdottl
-						*sqrt(1.0 - dottin*dottin), 1.0/rough);
+			sdottl = max( 0.0, sqrt(1.0 - SQR(dottl)));
+			Cspec += Cl * (1-nonspec) * pow( dottl * dottin + sdottl
+						* sqrt( 1.0 - SQR(dottin)), 1.0/rough );
 		}
 	}
 	
@@ -2272,24 +2386,23 @@ color MKgooch(
                 )
 {
     normal Nf = faceforward( Nn, In);
-    vector Vf = -In;
+    vector Vf = -In, Ln = vector(0);
     
     color blue = color(0, 0, b);
     color yellow = color(y, y, 0);
     color cgooch = color(0);
     
-    float ldotn, blendval;
-    color kcool, kwarm;
+    float ldotn = 0, blendval = 0;
+    color kcool = 0, kwarm = 0;
 
     kcool = blue + (SurfaceColor * calpha);
     kwarm = yellow + (SurfaceColor * cbeta);
-    
     extern point P;
 	
     illuminance( P, Nf, PI)
 	{
         extern vector L;
-        vector Ln = normalize(L);
+        Ln = normalize(L);
         
         ldotn = Ln.Nf;
         blendval = .5 * (1+ldotn);
@@ -2383,7 +2496,7 @@ color MKgooch(
  * HISTORY:
  * $Log: woodreflectance.sl,v $
  * Revision 1.2  2005/05/10 20:02:15  westin
- * Modified to use 4 TIFF texture maps rather than a single
+ * Modified to use 4 TIFF text ure maps rather than a single
  *  10-channel map.
  *
  * Revision 1.1  2005/05/09 21:10:18  westin
@@ -2404,16 +2517,15 @@ woodreflectance(
     uniform float sqrt2pi = 2.5066283;
     extern vector dPdu;
     extern float u, v;
-    extern point P;
 
-    vector local_z;             /* Surface normal in "world" space */
-    vector local_x, local_y;    /* Unit vector in "u" and "v" direction */
+    vector local_z = vector(0);	/* Surface normal in "world" space */
+    vector local_x = vector(0); /* unit vector in U direction */
+	vector local_y = vector(0); /* unit vector in V direction */
 
     normal Nf = faceforward( Nn, In);
-    color highlight;
-    vector axis;
-    float tx_beta;
-    vector Rdir = vector(0); /* Dummy */
+    color highlight = color(0);
+    vector axis = vector(0), Ln = vector(0), Rdir = vector(0), Hn = vector(0);
+    float tx_beta = 0;
 
     vector ssInDir, ssOutDir; /* Light and eye vector, possibly refracted */
     float thInPrime, thOutPrime;
@@ -2423,6 +2535,8 @@ woodreflectance(
     float Kr, Kt;           /* for output of fresnel() */
     float ssAtten;          /* Attenuation from going through the smooth
                              * interface twice */
+	float dummy = 0, ssAttenOut = 0, ssFactor = 0, cosIncline = 0;
+
     
     /* Get local coordinate system in terms of native parameters (u, v).
      * We should really use (s, t). */
@@ -2456,14 +2570,15 @@ woodreflectance(
     tx_beta = beta;
     thOutPrime = asin( ssOutDir.axis);
 
+	extern point P;
+	
     /* Calculate anisotropic highlight for each light */	
-    illuminance( P, Nf, PI/2 /* Hemisphere */ ) {
+    illuminance( P, Nf, S_PI_2 /* Hemisphere */ ) {
 		
         extern vector L;
         extern color Cl;
 		
-        vector Ln = normalize(L);
-		float dummy, ssAttenOut;
+        Ln = normalize(L);
 
         /* Refract at smooth surface */
         if ( eta != 1.0 ) {
@@ -2476,7 +2591,7 @@ woodreflectance(
             ssAttenOut = 1.0;
         }
 
-        float ssFactor = max( 0, -ssInDir.local_z) * ssAtten*ssAttenOut;
+        ssFactor = max( 0, -ssInDir.local_z) * ssAtten*ssAttenOut;
         thInPrime = asin( -ssInDir.axis);
         halfAngle = thOutPrime + thInPrime;
         diffAngle = thOutPrime - thInPrime;
@@ -2484,7 +2599,7 @@ woodreflectance(
         /* Compute value of Gaussian at this angle */
         fiberFactor = tx_beta * exp( -pow( halfAngle / tx_beta, 2)/2 )
                                 / sqrt2pi;
-        float cosIncline = cos( diffAngle / 2);
+        cosIncline = cos( diffAngle / 2);
         geometryFactor = 1 / pow( cosIncline, 2);
         fiberFactor *= geometryFactor;
 		
@@ -2495,7 +2610,7 @@ woodreflectance(
         aov_specular += Cl * fiberFactor * highlight * ssFactor;
 		
         /* Second Fresnel call is for strength of surface highlight. */
-        vector Hn = normalize( -In + Ln );
+        Hn = normalize( -In + Ln );
         fresnel( In, Hn, 1.0/eta, Kr, Kt);
 		
         /* Blinn/Phong highlight with Fresnel attenuation. */
@@ -2537,7 +2652,7 @@ locillumglassy(
 	extern point P;
 	color C = color(0);
 	
-	illuminance( P, Nf, PI/2)
+	illuminance( P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2572,9 +2687,8 @@ rtglass(
 {
 	
 #if RENDERER == pixie
-	/* Pixie's shader compiler protests about the binary conditionals, so
-	 * do nothing - there's a custom version of the glass shader for Pixie
-	 * further below.
+	/* Pixie's shader compiler protests about ?: conditionals, so do nothing
+	 * there's a custom version of the glass shader for Pixie further below
 	 * (read: lame excuse to use Pixie's built-in dispersion later :)) */
 #else
 	normal Nf = faceforward( Nn, In );
@@ -2805,37 +2919,37 @@ banksaniso(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
-	vector xdir = normalize( adir );
+	vector Vf = -In, Ln = vector(0), xdir = normalize(adir);
 
-	float costheta = Vf.xdir;
+	float costheta = Vf.xdir, cospsi = 0, ldotn = 0, pd = 0, ps = 0;
 
+	uniform float nondiff = 0, nonspec = 0;
 	extern point P;
 
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 
-		vector Ln = normalize(L);
-		float cospsi = Ln.xdir;
-		float pd = 1;
+		Ln = normalize(L);
+		cospsi = Ln.xdir;
+		pd = 1;
 
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 
 		if (nondiff < 1) {
 			
-			pd = sqrt( 1 - cospsi * cospsi);
-			float ldotn = Ln.Nf;
+			pd = sqrt( 1 - SQR(cospsi) );
+			ldotn = Ln.Nf;
 			aov_diffuse += (1-nondiff) * Cl * ldotn * Kd * pd;
 		}
 
 		if (nonspec < 1) {
 
-			float ps = sqrt( 1 - costheta * costheta );
-			float ldotn = Ln.Nf;
+			ps = sqrt( 1 - SQR(costheta) );
+			ldotn = Ln.Nf;
 			aov_specular += (1-nonspec) * Cl * ldotn * Ks *
 							pow( pd*ps - cospsi*costheta, 1/roughness);
 		}
@@ -2851,33 +2965,38 @@ banksaniso(
 /* Model constants */
 #define KF	1.12	/* Fresnel adjustment constant */
 #define KG	1.01	/* Geometric attenuation adjustment constant */
-#define	KJ	0.10	/* Specular reflectivity adjustment constant */
+#define	KJ	0.10	/* Constant for off-specular peaks for very rough
+					 * surfaces [0,1] range */
 
 /* Surface white color */
 #define CWHITE	color( 1, 1, 1)
 
-/* Strauss's fresnel approximation (expects angles in radians, not cosine
- * of angles, which are then divided by PI/2 to fit the expected parameter
- * range [0,1], and the same for the geometric attenuation approximation. */
-float straussfresnel( float x; )
+////////////////////////////////////////////////////////////////////////////////
+/* Fresnel reflectance approximation */
+float straussfresnel( float beta; )
 {
-	float f1 = 4 * SQR(KF-1) * x * (x-PI*KF);
-	float f2 = (2*KF-1) * SQR(2*x-PI*KF);
-	return -(f1 / f2);
+	float x = beta / S_PI_2; /* x in [0,1] range */
+	float A = (1 / SQR(x-KF)) - (1 / SQR(KF));
+	float B = (1 / SQR(1-KF)) - (1 / SQR(KF));
+	return A/B;
 }
 
-/* Strauss's geometric attenuation approximation */
-float straussgeoatten( float x; )
+////////////////////////////////////////////////////////////////////////////////
+/* Geometric attenuation approximation */
+float straussgeoatten( float beta; )
 {
-	float g1 = SQR(KG) * (2*x-PI) * (2*x-2*PI*KG+PI);
-	float g2 = (2*KG-1) * SQR(2*x-PI*KG);
-	return g1 / g2;
+	float x = beta / S_PI_2; /* x in [0,1] range */
+	float A = (1 / SQR(1-KG)) - (1 / SQR(x-KG));
+	float B = (1 / SQR(1-KG)) - (1 / SQR(KG));
+	return A/B;
 }
 
+////////////////////////////////////////////////////////////////////////////////
 color strauss(
 				color Csurface;
 				/* smoothness [0,1] = perfect diffuse/specular
-				 * metalness  [0,1] = perfect nonmetal/metal */
+				 * metalness  [0,1] = perfect non-metal, highlight = light 
+				 * color, 1 = metal, highlight = based on object color */
 				float smoothness, metalness;
 				float transparency;
 				normal Nn; vector In; /* normalized normal/viewer */
@@ -2885,64 +3004,74 @@ color strauss(
 		)
 {
 	normal Nf = faceforward( Nn, In );
-	vector Vf = -In;
+	vector Vf = -In, Ln = vector(0), Hn = vector(0);
+	float F = 0, j = 0, rj = 0, rs = 0;
 
 	/* preset quantities */
-	float cosgamma = Vf.Nf;
+	float cosgamma = Vf.Nf, cosalpha = 0, cosbeta = 0, alpha = 0;
 	
-	/* attenuate diffuse reflection for metallic surfaces */
+	/* Diffuse contribution factors */
+	/* diffuse reflectivity multiplier, attenuates diffuse reflection for
+	 * metallic surfaces */
 	float d = (1 - metalness * smoothness);
-	
 	/* diffuse reflectivity as function of roughness and transparency */
 	float rd = (1 - pow( smoothness, 3)) * (1 - transparency);
 
-	/* specular reflectivity at normal incidence */
+	/* Specular reflectivity at normal incidence, all light not transmitted
+	 * nor diffusely reflected, is reflected specularly */
 	float rn = (1 - transparency) - rd;
-	/* shininess exponent h */
+	/* specular exponent h */
 	float h = 3 / (1-smoothness);
 
-	extern point P;
+	uniform float nondiff = 0, nonspec = 0;
+	color Csw = color(0);
 	color Cdiff = color(0), Cspec = color(0);
+	extern point P;
 
-	illuminance( P, Nf, PI/2 )
+	illuminance( P, Nf, S_PI_2 )
 	{
-		uniform float nondiff = 0, nonspec = 0;
+		nondiff = 0; nonspec = 0;
 		lightsource("__nondiffuse", nondiff);
 		lightsource("__nonspecular", nonspec);
 
 		extern vector L;
 		extern color Cl;
 
-		vector Ln = normalize(L);
+		Ln = normalize(L);
 		/* preset quantities */
-		float cosalpha = Ln.Nf;
+		cosalpha = Ln.Nf;
 
-		/* diffuse contribution */
+		/* diffuse contribution, depends on roughness and transparency
+		 * with attenuation for metallic surfaces */
 		if (nondiff < 1) {
-			Cdiff += Cl * (1-nondiff) * rd * d * cosalpha;
+			Cdiff += Cl * (1-nondiff) * d * rd * cosalpha;
 		}
 		
-		/* specular contribution */
+		/* Specular contribution */
 		if (nonspec < 1) {
-			
-			vector Hn = normalize(Ln + Vf);
-
-			/* preset quantities */
-			float ralpha = acos( cosalpha );
+			/* Highlight vector H is the direction in which light along L
+			 * would be reflected if the surface were a perfect mirror */
+			Hn = normalize( reflect( -L, Nf ));
+			cosbeta = Hn.Vf;
+			alpha = acos(cosalpha);
 
 			/* reflectivity adjustment to account for off-specular peaks */
-			float F = straussfresnel( ralpha );
-			float j = F * straussgeoatten( ralpha ) *
-							straussgeoatten( acos( cosgamma ) );
+			/* Fresnel effects */
+			F = straussfresnel(alpha);
+			/* Geometric effects */
+			j = F * straussgeoatten(alpha) * straussgeoatten(acos(cosgamma));
 			
-			/* adjusted reflectivity */
-			float rj = min( 1, rn + (rn + KJ) * j);
+			/* Adjusted reflectivity, creates an incraese in specular
+			 * reflectivity near grazing incidence except for when viewer
+			 * or incident angles are close to PI/2, at angles close to PI/2
+			 * geometric and Fresnel equations take over */
+			rj = min( 1, rn + (rn + KJ) * j);
 
 			/* specular reflectivity */
-			float rs = pow( max( 0, Nf.Hn), h) * rj;
+			rs = pow( cosbeta, h) * rj;
 
-			/* specular color, approaching white at grazing angles */
-			color Csw = CWHITE + metalness * (1-F) * (Csurface - CWHITE);
+			/* Specular color, approaching white at grazing angles */
+			Csw = CWHITE + metalness * (1-F) * (Csurface - CWHITE);
 
 			Cspec += Cl * (1-nonspec) * rs * Csw * cosalpha;
 		}
@@ -2992,12 +3121,7 @@ fnc_diffuselgt(
 	return (Cout);
 }
 
-#ifndef luminance
-#define luminance(c)	comp(c,0)*0.299 + comp(c,1)*0.587 + comp(c,2)*.114
-#endif
-
 /* main */
-
 color
 SIG2k_srf_fur(
 				float Ka, Kd, Ks; /* usual meaning */
@@ -3029,8 +3153,9 @@ SIG2k_srf_fur(
 	float l = clamp( nSN.T, 0, 1 ); /* T and surface normal dot for blend */
 	float clump_darkening = 1.0;
 	float T_Dot_nL = 0;
-	float T_Dot_e = 0;
-	float Alpha = 0, Beta = 0, Kajiya = 0, darkening = 1.0;
+	float T_Dot_e = T.V;
+	float sinbeta = sqrt( max( 0, 1 - SQR(T_Dot_e))), sinalpha = 0;
+	float Kajiya = 0, darkening = 1.0;
 
 	/* values from light */
 	uniform float nonspecular = 0;
@@ -3064,11 +3189,9 @@ SIG2k_srf_fur(
 		nL = normalize(L);
 
 		T_Dot_nL = T.nL;
-		T_Dot_e = T.V;
-		Alpha = acos( T_Dot_nL );
-		Beta = acos( T_Dot_e );
+		sinalpha = sqrt( max( 0, 1 - SQR(T_Dot_nL)));
 
-		Kajiya = T_Dot_nL * T_Dot_e + sin( Alpha ) * sin( Beta );
+		Kajiya = T_Dot_nL * T_Dot_e + sinalpha * sinbeta;
 
 		/* Calculate diffuse components */
 		if ( clump_dark_strength > 0.0 ) {

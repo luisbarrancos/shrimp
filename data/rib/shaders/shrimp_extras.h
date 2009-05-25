@@ -6,47 +6,42 @@ float beckmann(
 				float cosalpha, roughness;
 		)
 {
-	float tanalpha_over_m = max( 0.0, sqrt( 1.0 -
-				(cosalpha * cosalpha)) / cosalpha ) / roughness;
-
-	float expv = exp( -( tanalpha_over_m * tanalpha_over_m ) );
-	return expv / (roughness * roughness * pow( cosalpha, 4) );
+	float tanalpha_over_m = max( 0, sqrt( 1 - SQR(cosalpha)) / cosalpha)
+		/ roughness;
+	return exp(-SQR(tanalpha_over_m)) / (SQR(roughness)*pow(cosalpha,4));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Ward distribution */
-
 float ward(
 			float cosalpha, roughness;
 		)
 {
-	float tanalpha = max( 0.0, sqrt( 1.0 - (cosalpha * cosalpha)) / cosalpha );
-	float m2 = roughness * roughness;
-	
-	float out = 1 / (m2 * PI * pow( cosalpha, 3) );
-	out *= exp( -( (tanalpha * tanalpha) / m2 ) );
-	return out;
+	float tanalpha = max( 0, sqrt( 1 - SQR(cosalpha)) / cosalpha );
+	float m2 = SQR(roughness);
+	float out = 1 / (m2 * PI * pow( cosalpha, 3 ));
+	out *= exp( -(SQR(tanalpha)/m2));
+	return out;	
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Trowbridge-Reitz distribution */
-/* Note: seems this function, like the gaussian distribution, needs an
- * normalization term. How do we get the normalization term? */
+/* Note: this distribution needs a normalization factor */
 
 float
 trowbridge_reitz(
 					float cosalpha, roughness;
 					)
 {
-	float cosalpha2 = cosalpha * cosalpha;
-	float m2 = roughness * roughness;
-	float d2 = m2 / (1 + (m2 -1) * cosalpha2);
-	return d2 * d2;
+	float m2 = SQR(roughness);
+	float cosalpha2 = SQR(cosalpha);
+	float d2 = m2 / (cosalpha2 * (m2-1)+1);
+	return SQR(d2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Heidrich-Seidel anisotropic distribution, meant to be coupled with an 
- * isotropic specular term */
+/* Heidrich-Seidel anisotropic distribution, some literature refers to
+ * coupling this with a isotropic specular term */
 float
 heidrich_seidel(
 					normal Nf;
@@ -58,8 +53,8 @@ heidrich_seidel(
 	vector dir = normalize( Nf ^ xdir );
 	float beta = Ln.dir;
 	float theta = Vf.dir;
-	float sinbeta = sqrt( max( 0.0, 1.0 - beta * beta) );
-	float sintheta = sqrt( max( 0.0, 1.0 - theta * theta) );
+	float sinbeta = sqrt( max( 0, 1 - SQR(beta)));
+	float sintheta = sqrt( max( 0, 1 - SQR(theta)));
 	return pow( sinbeta * sintheta - (beta * theta), 1/roughness);
 }
 
@@ -68,7 +63,7 @@ heidrich_seidel(
 
 /* Torrance-Sparrow */
 float
-torrance_sparrow(
+cook_torrance(
 					float costheta, cosalpha, cospsi, cospsi2;
 					)
 {	
@@ -99,9 +94,9 @@ float he_torrance(
 					float costheta, cosalpha, roughness;
 					)
 {
-	float cosalpha2 = cosalpha * cosalpha;
-	float costheta2 = costheta * costheta;
-	float m2 = roughness * roughness;
+	float cosalpha2 = SQR(cosalpha);
+	float costheta2 = SQR(costheta);
+	float m2 = SQR(roughness);
 
 	float hnl = cosalpha2 / (2 * m2 * (1 - cosalpha2) );
 	float hnv = costheta2 / (2 * m2 * (1 - costheta2) );

@@ -2,7 +2,7 @@
 	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="1.0"/>
     <input name="roughness" description="The apparent surface roughness."  type="float" default="0.2"/>
-	<input name="distro" description="Microfacet distributions, see help." type="float" storage="uniform" default="0"/>
+	<input name="dist" description="Microfacet distributions, see help." type="float" storage="uniform" default="0"/>
 	<input name="geo" description="Geometric attenuation, see help." type="float" storage="uniform" default="0"/>
     <input name="ior" description="Index of refraction" type="float" default="2"/>
 	<input name="k" description="Extinction coefficient" type="float" default="2"/>
@@ -14,8 +14,8 @@
 	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * cooktorrance( $(N), $(I), $(Dir),
-						$(ior), $(k), $(roughness), $(distro), $(geo) );
+						$(ior), $(k), $(roughness), $(dist), $(geo) );
 		$(Ci) = aov_specularcolor * aov_specular;
 	</rsl_code>
-    <usage>Cook-Torrance specular term. The distro variable controls the probability distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Torrance-Sparrow (default, 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, an isotropic specular term is added via specularbrdf(). The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets. The Fresnel term used is the complex Fresnel function, from the Odforce.net Odwiki, courtesy of Mario Marengo and the Odforce community. Takes the absolute IOR and extinction coefficient k.</usage>
+    <usage>Cook-Torrance specular term. The dist variable controls the microfacet distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The geo variable controls the geometric attenuation function being used, being 0 = Cook-Torrance (default), 1 = Smith, 2 = He-Torrance. In the case of the Heidrich-Seidel anisotropic distribution, some literature mentions adding an isotropic specular term, which is added here via specularbrdf(), but the user might want to override this in the respective header. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets. The Fresnel term used is the complex Fresnel function, from the Odforce.net Odwiki, courtesy of Mario Marengo and the Odforce community. Takes the absolute IOR and extinction coefficient k.</usage>
 </shrimp>
