@@ -1,4 +1,4 @@
-/* Probability distribution functions */
+/* Microfacet distribution functions */
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Beckmann distribution */
