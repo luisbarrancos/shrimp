@@ -6,13 +6,18 @@
  * RenderMan (R) is a registered trademark of Pixar.
  */
 
-light distantlight(
-	float intensity = 1;
-	color lightcolor = 1;
-	point from = point "shader"(0, 0, 0);
-	point to = point "shader"(0, 0, 1);
-)
+light
+distantlight(
+				float intensity = 1;
+				color lightcolor = color(1);
+				point from = point "shader"(0,0,0);
+				point to = point "shader"(0,0,1);
+				float __nondiffuse = 0;
+				float __nonspecular = 0;
+		)
 {
-	solar(to - from, 0) Cl = intensity * lightcolor;
+	solar(to - from, 0) {
+		Cl = intensity * lightcolor;
+	}
 }
 

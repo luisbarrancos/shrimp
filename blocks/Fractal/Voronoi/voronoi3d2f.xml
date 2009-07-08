@@ -9,7 +9,7 @@
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	/* initialize */
-	$(f1) = 0; $(pos1) = 0; $(f2) = 0; $(pos2) = 0;
+	$(f1) = 0; $(pos1) = point(0); $(f2) = 0; $(pos2) = point(0);
     	voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(f2), $(pos1),
 							$(pos2) );
 	</rsl_code>

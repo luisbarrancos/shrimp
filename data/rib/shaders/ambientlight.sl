@@ -6,12 +6,13 @@
  * RenderMan (R) is a registered trademark of Pixar.
  */
 
-light ambientlight(
-	float intensity = 1;
-	color lightcolor = 1;
+light
+ambientlight(
+				float intensity = 1;
+				color lightcolor = color(1);
 )
 {
 	Cl = intensity * lightcolor;
-	L = 0;
+	L = vector(0);
 }
 
