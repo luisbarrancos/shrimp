@@ -10,7 +10,7 @@
 
 		/* Pixie's diffuse() has 2 forms */
 		#define DIFFTYPE $(angle)
-		#if RENDERER == pixie && DIFFTYPE != 0
+		#if RENDERER == pixie &amp;&amp; DIFFTYPE != 0
 			aov_diffuse += $(Kd) * diffuse( $(PP), $(norm), $(angle) );
 		#else
 			aov_diffuse += $(Kd) * diffuse( $(norm) );
