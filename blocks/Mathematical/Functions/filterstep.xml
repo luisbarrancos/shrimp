@@ -15,5 +15,5 @@
 												"filter", $(filter) );
 		#endif
 	</rsl_code>
-	<usage>An antialiased step function. It's similar to step, but the result is filtered. If the optional max value is given, filters in range between min and max. The filter types are box, triangle, catmull-rom, and gaussian.</usage>
+	<usage>An antialiased step function. It's similar to step, but the result is filtered. If the optional max value is given, filters in range between min and max. The filter types are: box, triangle, catmull-rom, and gaussian. Pixie adds to these filters, the following: sinc, blackman-harris, mitchell.</usage>
 </shrimp>
