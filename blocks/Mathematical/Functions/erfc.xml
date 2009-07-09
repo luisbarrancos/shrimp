@@ -5,5 +5,5 @@
 	<rsl_code>
 	$(out) = mm_erfc( $(x) );
 	</rsl_code>
-<usage>Complementary error function, based on Mario Marengo's fast lookup table implementation of the error function.</usage>
+<usage>Complementary error function, based on Mario Marengo&apos;s fast lookup table implementation of the error function.</usage>
 </shrimp>

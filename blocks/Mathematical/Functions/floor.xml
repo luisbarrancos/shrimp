@@ -1,7 +1,8 @@
-<shrimp type="function" name="Floor" description="Return the largest integer not greater than a" author="rconstruct">
-	<input name="a" description="Input value" type="float" default="0"/>
-	<output name="out" description="The largest integer not greater than a" type="float"/>
+<shrimp type="function" name="Floor" description="Return the largest integer not greater than x" author="rconstruct">
+	<input name="x" description="Input value" type="float" default="0"/>
+	<output name="out" description="The largest integer not greater than x" type="float"/>
 	<rsl_code>
-	$(out) = floor( $(a) );
+		$(out) = floor( $(x) );
 	</rsl_code>
+	<usage>Returns the largest integer not greater than x.</usage>
 </shrimp>

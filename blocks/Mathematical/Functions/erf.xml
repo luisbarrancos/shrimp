@@ -5,5 +5,5 @@
 	<rsl_code>
 	$(out) = mm_erf( $(x) );
 	</rsl_code>
-<usage>Mario Marengo's fast lookup table implementation of the error function (also known as integrated Gauss function or integrated distribution).</usage>
+<usage>Mario Marengo&apos;s fast lookup table implementation of the error function (also known as integrated Gauss function or integrated distribution).</usage>
 </shrimp>

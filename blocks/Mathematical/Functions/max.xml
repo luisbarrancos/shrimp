@@ -1,8 +1,9 @@
 <shrimp type="function" name="Max" description="Return the largest input" author="rconstruct">
-	<input name="a" description="1st input" type_parent="out" type="float point vector normal color" default="0"/>
-	<input name="b" description="2nd or subsequent inputs" type_parent="out" type="float point vector normal color" multi="," default="1"/>
-	<output name="out" description="out = the largest input" type="float point vector normal color"/>
+	<input name="a" description="1st input" type_parent="out" type="color point vector normal float" default="0"/>
+	<input name="b" description="2nd or subsequent inputs" type_parent="out" type="color point vector normal float" multi="," default="1"/>
+	<output name="out" description="out = the largest input" type="color point vector normal float"/>
 	<rsl_code>
 		$(out) = max( $(a), $(b) );
 	</rsl_code>
+	<usage>Returns the maximum of the arguments given. When evaluating point type variables, the arguments will be evaluated on a component basis.</usage>
 </shrimp>

@@ -14,10 +14,12 @@
 	<rsl_code>
     #if RENDERER==pixie
         $(val) = $(val:type) texture( $(texname), $(xcoord), $(ycoord),
+								"blur", $(sblur),
 								"swidth", $(swidth),
 								"twidth", $(twidth),
                                 "filter", $(filter),
-								"fill", $(fill) ) ;
+								"fill", $(fill)
+								"samples", $(samples) ) ;
     #elif RENDERER==_3delight
 		$(val) = $(val:type) texture( $(texname)[$(channel)],
 								$(xcoord), $(ycoord),
@@ -39,5 +41,5 @@
 								"fill", $(fill) ) ;
     #endif
 	</rsl_code>
-<usage>The texture shadeop accesses at texture map at 2D coordinates, being able to return either a float or a color value. The default coordinates are S and T. Sblur and tblur specifies the blur in the S and T directions respectively, and swidth and twidth specifying the filter width in S and T respectively. Filter specifies the filter, being one of &quot;triangle&quot;, &quot;box&quot;, or &quot;gaussian&quot;. Fill controls the value being output if a certain channel isn't available in the texture, alpha for instance. Samples is used only in 3Delight, when the box filter is being used. Since a texture map can contain several channels, &quot;channel&quot; allows the user to choose the starting channel, defaults to 0.</usage>
+<usage>The texture shadeop accesses at texture map at 2D coordinates, being able to return either a float or a color value. The default coordinates are S and T. Sblur and tblur specifies the blur in the S and T directions respectively, and swidth and twidth specifying the filter width in S and T respectively. Filter specifies the filter, being one of &quot;triangle&quot;, &quot;box&quot;, or &quot;gaussian&quot;. Fill controls the value being output if a certain channel isn&apos;t available in the texture, alpha for instance. Samples is used only in 3delight when the &quot;box&quot; filter is being used. Pixie has a &quot;blur&quot; parameter, that specifies the blur of the texture, but since you can&apos;t specify the direction, this value is the value of sblur. The samples value is used as well, for the &quot;box&quot; filter only. Since a texture map can contain several channels, &quot;channel&quot; allows the user to choose the starting channel, defaults to 0.</usage>
 </shrimp>
