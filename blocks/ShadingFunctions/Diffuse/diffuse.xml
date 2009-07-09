@@ -2,11 +2,22 @@
 	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
 	<input name="Kd" description="The diffuse coefficient" type="float" default="1"/>
 	<input name="norm" description="The surface normal" type="normal" default="normalize(N)"/>
+	<input name="PP" description="Surface position, see usage" type="point" default="point(0)"/>
+	<input name="angle" description="Illuminance angle, see usage" type="float" default="0"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
-		aov_diffuse += $(Kd) * diffuse( $(norm) );
+
+		/* Pixie's diffuse() has 2 forms */
+		#define DIFFTYPE $(angle)
+		#if RENDERER == pixie && DIFFTYPE != 0
+			aov_diffuse += $(Kd) * diffuse( $(PP), $(norm), $(angle) );
+		#else
+			aov_diffuse += $(Kd) * diffuse( $(norm) );
+		#endif
+		#undef DIFFTYPE
+
 		$(Ci) = aov_surfacecolor * aov_diffuse;
 	</rsl_code>
-<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets.</usage>
+<usage>Lambertian Diffuse term. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets. Pixie's diffuse shadeop has 2 forms, the first one with a single argument, with the surface normal N, the second form, with 3 arguments, allowing the surface position and angle (in radians) to be specified as well. If angle is 0, the normal single argument diffuse shadeop is used, otherwise the 3 arguments diffuse shadeop.</usage>
 </shrimp>
