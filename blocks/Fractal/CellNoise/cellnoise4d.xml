@@ -2,10 +2,9 @@
 	<input name="p" description="point to sample noise at" type="point" default="P"/>
 	<input name="t" description="4th dimension value" type="float" default="time"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
-	<output name="val" description="Cell noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
+	<output name="val" description="Cell noise value at point (P,t), in range 0,1" type="float color point vector"/>
 	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) cellnoise( $(p), $(t) );
 	</rsl_code>
-	<usage>Cellnoise returns a random value between 0 and 1 for each integer 'cell'. It is much cheaper than calling noise.
-	</usage> 
+	<usage>Cellnoise returns a random value between 0 and 1 for each integer &quot;cell&quot;. It&apos;s much cheaper than calling noise.</usage> 
 </shrimp>
