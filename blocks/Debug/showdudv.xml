@@ -7,4 +7,5 @@
         $(Ci) = color(	filterwidth(u) * $(duscale),
 						filterwidth(v) * $(dvscale), .1 );
 	</rsl_code>
+	<usage>Show UV derivatives.</usage>
 </shrimp>

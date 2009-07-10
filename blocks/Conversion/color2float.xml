@@ -4,4 +4,5 @@
 	<rsl_code>
 	    $(out) = ( comp( $(in), 0) + comp( $(in), 1) + comp( $(in), 2)) / 3;
 	</rsl_code>
+	<usage>Averages a color input into a float output.</usage>
 </shrimp>

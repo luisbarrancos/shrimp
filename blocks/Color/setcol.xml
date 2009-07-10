@@ -8,4 +8,5 @@
 	setcomp( $(col), 1, $(g) );
 	setcomp( $(col), 2, $(b) );
 	</rsl_code>
+	<usage>Sets the components of a color</usage>
 </shrimp>

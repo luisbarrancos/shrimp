@@ -1,5 +1,5 @@
 <shrimp type="function" name="VaryEach" description="Vary Each by Larry Gritz" author="rconstruct">
-	<input name="cin" description="Input color" type="color" default="0.5"/>
+	<input name="cin" description="Input color" type="color" default="color(0.5)"/>
 	<input name="index" description="Index" type="float" default="1"/>
     <input name="varyhue" description="Hue variation" type="float" default="1"/>
     <input name="varysat" description="Saturation variation" type="float" default="1"/>
