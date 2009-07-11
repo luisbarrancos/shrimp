@@ -4,4 +4,5 @@
     <rsl_code>
 	    $(val) = Du( $(p) );
     </rsl_code>
+	<usage>Returns the derivative of arbitrary expression &quot;p&quot; with respect to surface parameter u.</usage>
 </shrimp>

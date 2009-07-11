@@ -39,7 +39,7 @@
 		<shader_compiler>aqsl -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>slx</compiled_shader_extension>
 		<renderer_command>aqsis %s -shaders=%i</renderer_command>
-		<displays>file framebuffer zfile zframebuffer shadow tiff xpm exr debugdd</displays>
+		<displays>file zfile legacyframebuffer framebuffer zframebuffer shadow tiff xpm exr bmp debugdd</displays>
 		<texture command="teqser" default="%s %i %o" extension="tex">
 			<formats>tiff jpg png exr bake zfile</formats>
 			<texture_switches>

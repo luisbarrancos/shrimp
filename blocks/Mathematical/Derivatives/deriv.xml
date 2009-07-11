@@ -5,5 +5,5 @@
 	<rsl_code>
 		$(val) = Deriv( $(num), $(den) );
 	</rsl_code>
-<usage>Computes the derivative of the first argument in regard to the second argument.</usage>
+<usage>Returns the derivative of the first argument with respect to a unit change in the second argument.</usage>
 </shrimp>

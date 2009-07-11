@@ -1,6 +1,6 @@
 <shrimp type="function" name="CalcNormal" description="Calculate the normal at p" author="rconstruct">
-	<input name = "p" description="Point to calculate normal at" type="point" default="P"/>
-	<output name="NN" description="NN is normal at p" type="normal"/>
+	<input name = "p" description="Point to calculate normal at" type="point" storage="varying" default="P"/>
+	<output name="NN" description="NN is normal at p" type="normal" storage="varying" />
 	<rsl_code>
 	$(NN) = calculatenormal( $(p) );
 	</rsl_code>
