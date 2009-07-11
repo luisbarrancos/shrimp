@@ -23,12 +23,18 @@
     #define usespace_$(usespace)
     
     #ifdef usespace_0
-        $(mout) = matrix( $(m01), $(m02), $(m03), $(m04), $(m11), $(m12), $(m13), $(m14), $(m21), $(m22), $(m23), $(m24), $(m31), $(m32), $(m33), $(m34) );
+        $(mout) = matrix(	$(m01), $(m02), $(m03), $(m04),
+							$(m11), $(m12), $(m13), $(m14),
+							$(m21), $(m22), $(m23), $(m24),
+							$(m31), $(m32), $(m33), $(m34) );
      #else
-        $(mout) = matrix $(spacename) ( $(m01), $(m02), $(m03), $(m04), $(m11), $(m12), $(m13), $(m14), $(m21), $(m22), $(m23), $(m24), $(m31), $(m32), $(m33), $(m34) );
+        $(mout) = matrix $(spacename) ( $(m01), $(m02), $(m03), $(m04),
+										$(m11), $(m12), $(m13), $(m14),
+										$(m21), $(m22), $(m23), $(m24),
+										$(m31), $(m32), $(m33), $(m34) );
     #endif
 	$(mstr) = $(spacename);
         
 	</rsl_code>
-<usage>Assigns components to a matrix. Defaults to a 0 matrix. A matrix can be constructed in reference to a named space, either existing spaces, or any name, that can later be referenced for transformations.</usage>
+<usage>Assigns components to a (4x4 homogeneous transformation) matrix. Defaults to a zero matrix. A matrix can be constructed in reference to a named space, either existing spaces, or any name, that can later be referenced for transformations. If &quot;usespace&quot; value is 1, then the matrix is built in reference to &quot;spacename&quot;.</usage>
 </shrimp>
