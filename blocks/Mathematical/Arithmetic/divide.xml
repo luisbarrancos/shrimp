@@ -5,5 +5,5 @@
 	<rsl_code>
 	$(val) = $(A) / $(B);
 	</rsl_code>
-	<usage>Both inputs must be of the same type. The operation is done in parallel for each component.</usage>
+	<usage>Divides input A by input B.</usage>
 </shrimp>

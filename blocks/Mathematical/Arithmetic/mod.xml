@@ -5,4 +5,5 @@
 	<rsl_code>
 	$(val) = mod( $(a), $(b) );
 	</rsl_code>
+	<usage>Returns &quot;a&quot; modulus &quot;b&quot;.<usage>
 </shrimp>
