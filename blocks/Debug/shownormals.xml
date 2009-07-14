@@ -1,6 +1,6 @@
 <shrimp type="function" name="ShowNormals" description="Show surface normals" author="rconstruct">
 	<input name="cspace" description="Coordinate space" type="string" storage="uniform" default="&quot;object&quot;"/>
-	<input name="crange" description="Mapping to range 0-1 on/off" type="float" storage="uniform" default="1"/>
+	<input name="crange" description="Mapping to range [0,1] on/off" type="float" storage="uniform" default="1"/>
 	<output name="Ci" description="Output value" type="color"/>
 	<rsl_code>
 	#define crange_$(crange)
