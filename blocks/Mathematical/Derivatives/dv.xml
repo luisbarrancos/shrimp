@@ -4,5 +4,5 @@
     <rsl_code>
 	    $(val) = Dv( $(p) );
     </rsl_code>
-	<usage>Returns the derivative of arbitrary expression &quot;p&quot; with respect to surface parameter v.</usage>
+	<usage>Returns the derivative of arbitrary expression &quot;p&quot; with respect to surface parameter &quot;v&quot;.</usage>
 </shrimp>

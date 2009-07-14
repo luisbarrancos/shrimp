@@ -2,6 +2,7 @@
 	<input name="deg" description="Input angle in degrees" type="float" default="1"/>
 	<output name="rad" description="Angle converted to radians" type="float"/>
 	<rsl_code>
-	$(rad) = radians( $(deg) );
+		$(rad) = radians( $(deg) );
 	</rsl_code>
+	<usage>Converts the input value from degrees to radians.</usage>
 </shrimp>

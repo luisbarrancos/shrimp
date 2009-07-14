@@ -7,4 +7,5 @@
 	else
 		$(out) = 0;
 	</rsl_code>
+	<usage>Returns 1 if the input is odd, otherwise returns 0.</usage>
 </shrimp>

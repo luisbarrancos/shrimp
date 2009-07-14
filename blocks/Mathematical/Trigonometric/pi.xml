@@ -1,7 +1,0 @@
-<shrimp type="function" name="PI" description="PI value" author="rconstruct">
-	<output name="PI" description="PI value" type="float"/>
-	<rsl_code>
-	$(PI) = PI;
-	</rsl_code>
-</shrimp>
-

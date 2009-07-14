@@ -1,13 +1,14 @@
 <shrimp type="function" name="Filterstep" description="Filterstep function" author="rconstruct">
 	<input name="x" description="value to test" type="float" default="s"/>
 	<input name="min" description="position of step" type="float" default="0"/>
-    <input name="max" description="optional 2nd value for range filtering" type="float" default="0"/>
+    <input name="max" description="optional 2nd value for range filtering" type="float" default="UND"/>
     <input name="width" description="filtering width" type="float" default="0.1"/>
     <input name="filter" description="filter type" storage="uniform" type="string" default="&quot;catmull-rom&quot;"/>
 	<output name="val" description="value of step function at x" type="float"/>
+	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		#define s2_$(max)
-		#ifdef s2_0
+		#ifdef s2_UND
 			$(val) = filterstep( $(x), $(min), "width", $(width),
 											"filter", $(filter));
 		#else
@@ -15,5 +16,5 @@
 												"filter", $(filter) );
 		#endif
 	</rsl_code>
-	<usage>An antialiased step() function. It&apos;s similar to step(), but the result is filtered. If the optional max value is given, filters in range between min and max. The filter types are: &quot;box&quot;, &quot;triangle&quot;, &quot;catmull-rom&quot;, and &quot;gaussian&quot;. Pixie adds to these filters, the following: &quot;sinc&quot;, &quot;blackman-harris&quot;, &quot;mitchell&quot;.</usage>
+	<usage>An antialiased step() function. It&apos;s similar to step(), but the result is filtered. If the optional max value is given, the result is filtered in the range between min and max. By default, max is unset (via &quot;UND&quot;(efined) symbol). The filter types are: &quot;box&quot;, &quot;triangle&quot;, &quot;catmull-rom&quot;, and &quot;gaussian&quot;. Pixie adds to these filters, the following: &quot;sinc&quot;, &quot;blackman-harris&quot;, &quot;mitchell&quot;.</usage>
 </shrimp>

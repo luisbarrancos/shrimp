@@ -1,8 +1,8 @@
 <shrimp type="function" name="Abs" description="Absolute value" author="rconstruct">
-	<input name="A" description="Input value" type="float" default="1"/>
-	<output name="val" description="val = the absolute value of A" type="float"/>
+	<input name="x" description="Input value" type="float" default="1"/>
+	<output name="val" description="Absolute value of x" type="float"/>
 	<rsl_code>
-	$(val) = abs( $(A) );
+		$(val) = abs( $(x) );
 	</rsl_code>
-	<usage>Returns the absolute value of the argument being passed.<usage>
+	<usage>Returns the absolute value of the argument being passed.</usage>
 </shrimp>

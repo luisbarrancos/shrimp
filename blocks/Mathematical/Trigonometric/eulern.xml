@@ -1,8 +1,0 @@
-<shrimp type="function" name="EulerN" description="Euler&apos;s number" author="rconstruct">
-	<output name="num" description="Euler&apos;s number" type="float"/>
-	<rsl_code>
-		$(num) = 2.718281828459045;
-	</rsl_code>
-	<usage>The number e, 2.71828 18284 59045... not to confuse with Euler-Mascheroni constant.</usage>
-</shrimp>
-

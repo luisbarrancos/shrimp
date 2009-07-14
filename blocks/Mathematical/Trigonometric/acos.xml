@@ -2,8 +2,7 @@
 	<input name="a" description="Input value" type="float" default="1"/>
 	<output name="val" description="val = acos( a )" type="float"/>
 	<rsl_code>
-	$(val) = acos( $(a) );
+		$(val) = acos( $(a) );
 	</rsl_code>
-	<usage>Returns the arc cosine in the range 0 to PI
-	</usage>
+	<usage>Returns the arc cosine in the range 0 to PI.</usage>
 </shrimp>

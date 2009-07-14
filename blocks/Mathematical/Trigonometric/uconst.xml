@@ -1,0 +1,17 @@
+<shrimp type="function" name="UConst" description="Useful constants" author="rconstruct">
+	<output name="A" description="PI value" type="float"/>
+	<output name="B" description="PI/2 value" type="float"/>
+	<output name="C" description="2PI value" type="float"/>
+	<output name="D" description="1/PI value" type="float"/>
+	<output name="E" description="Euler&apos;s number" type="float"/>
+	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_code>
+		$(A) = S_PI;
+		$(B) = S_PI_2;
+		$(C) = S_2PI;
+		$(D) = S_1_PI;
+		$(E) = S_E;
+	</rsl_code>
+	<usage>Useful constants: Euler&apos;s number, PI, PI/2, 2PI, 1/PI.</usage>
+</shrimp>
+

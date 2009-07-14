@@ -4,4 +4,5 @@
 	<rsl_code>
 	$(val) = sign( $(a) );
 	</rsl_code>
+	<usage>Returns 1 if the value being tested is positive or zero, otherwise returns -1.</usage>
 </shrimp>
