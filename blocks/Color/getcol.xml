@@ -1,12 +1,12 @@
-<shrimp type="function" name="GetCol" description="Get the components of a colour" author="rconstruct">
-	<input name="col" description="Colour to split into components" type="color" default="color(0)"/>
-	<output name="r" description="red component" type="float"/>
-	<output name="g" description="green component" type="float"/>
-	<output name="b" description="blue component" type="float"/>
+<shrimp type="function" name="GetCol" description="Get the components of a color" author="rconstruct">
+	<input name="col" description="Color to split into components" type="color" default="color(0)"/>
+	<output name="x" description="1st component" type="float"/>
+	<output name="y" description="2nd component" type="float"/>
+	<output name="z" description="3rd component" type="float"/>
 	<rsl_code>
-	$(r) = comp( $(col), 0 );
-	$(g) = comp( $(col), 1 );
-	$(b) = comp( $(col), 2 );
+	$(x) = comp( $(col), 0 );
+	$(y) = comp( $(col), 1 );
+	$(z) = comp( $(col), 2 );
 	</rsl_code>
-	<usage>Gets the components of a color.</usage>
+	<usage>Gets the components of a color type variable.</usage>
 </shrimp>
