@@ -23,6 +23,10 @@
 #define S_2PI	6.283185307179586
 #define S_1_PI	0.318309886183790
 
+/* for optional arguments to shadeops, blocks need to know if the optional
+ * arguments are set, we just need a symbol UND(efined) */
+#define UND		23
+
 ////////////////////////////////////////////////////////////////////////////////
 /* Hyperbolic cosine */
 float cosh( float theta; ) {

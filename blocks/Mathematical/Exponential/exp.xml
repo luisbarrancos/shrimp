@@ -4,4 +4,5 @@
 	<rsl_code>
 	$(val) = exp( $(x) );
 	</rsl_code>
+	<usage>Return e to the power of x.</usage>
 </shrimp>

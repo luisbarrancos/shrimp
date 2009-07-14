@@ -4,4 +4,5 @@
 	<rsl_code>
 	$(val) = sqrt( $(A) );
 	</rsl_code>
+	<usage>Returns the square root of the argument</usage>
 </shrimp>

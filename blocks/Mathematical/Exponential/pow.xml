@@ -5,4 +5,5 @@
 	<rsl_code>
 	$(val) = pow( $(A), $(x) );
 	</rsl_code>
+	<usage>Returns &quot;A&quot; raised to the power &quot;x&quot;.</usage>
 </shrimp>
