@@ -178,18 +178,18 @@ vector vfBm(	point p; float t, filtwidth;
 #define vfBm_default(p)  vfBm (p, sqrt(area(p)), 4, 2, 0.5)
 */
 
-/* The stuff that Ken Musgrave calls "VLNoise" */
+/* Ken Musgrave's Variable Lacunarity noise */
 
-#define VLNoise(Pt,scale) (snoise(vsnoise(Pt)*scale+Pt))
+#define VLNoise(Pt,scale) ( snoise( vsnoise(Pt) * scale + Pt) )
 
-#define VLNoisexy(x,y,scale) (snoisexy( snoise(x)*scale+x,snoise(y)*scale+y))
+#define VLNoisexy(x,y,scale) ( snoisexy( snoise(x)*scale+x,snoise(y)*scale+y))
 
 #define filteredVLNoise(Pt,fwidth,scale) \
-            (filteredsnoise(filteredvsnoise(Pt,fwidth)*scale+Pt,fwidth))
+            ( filteredsnoise( filteredvsnoise( Pt,fwidth)*scale+Pt,fwidth))
 
 #define filteredVLNoisexy(x,y,fwidth,scale) \
-			(filteredsnoisexy(filteredsnoise(x,fwidth)*scale+x,\
-			filteredsnoise(y,fwidth)*scale+y,fwidth))
+			( filteredsnoisexy( filteredsnoise( x,fwidth)*scale+x,\
+			filteredsnoise( y,fwidth)*scale+y,fwidth))
 
 float VLfBm(	point p; float filtwidth;
 				uniform float maxoctaves, lacunarity, gain, scale; )
@@ -232,8 +232,8 @@ float VLfBm(	float x, y, filtwidth;
     return sum;
 }
 
-float VLfBm(	point p; float t, filtwidth;
-				uniform float maxoctaves,lacunarity,gain,scale;)
+float VLfBm(	point p; float filtwidth;
+				uniform float t, maxoctaves,lacunarity,gain,scale;)
 {
     uniform float i;
     varying float amp = 1, tt = t, sum = 0, fw = filtwidth;
@@ -295,8 +295,8 @@ vector VLvfBm(	float x, y, filtwidth, maxoctaves;
     return sum;
 }
 
-vector VLvfBm(	point p; float t, filtwidth;
-				uniform float maxoctaves,lacunarity,gain,scale;)
+vector VLvfBm(	point p; float filtwidth;
+				uniform float t, maxoctaves,lacunarity,gain,scale;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth;
@@ -361,8 +361,8 @@ float turbulence(	float x, y, filtwidth;
     return sum;
 }
 
-float turbulence(	point p; float t, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+float turbulence(	point p; float filtwidth;
+					uniform float t, maxoctaves, lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth, sum = 0;
@@ -428,8 +428,8 @@ vector vturbulence(	float x, y, filtwidth;
     return sum;
 }
 
-vector vturbulence( point p; float t, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+vector vturbulence( point p; float filtwidth;
+					uniform float t, maxoctaves, lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth;
@@ -521,8 +521,8 @@ float Ridged( 	float x, y, filtwidth;
 	return value;
 }
 
-float Ridged( 	point p; float t, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+float Ridged( 	point p; float filtwidth;
+				uniform float t, maxoctaves, lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, value = 0, signal = 0, tt = t, weight = 1;
@@ -615,8 +615,8 @@ vector vRidged(	float x, y, filtwidth;
 	return value;
 }
 
-vector vRidged( point p; float t, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain )
+vector vRidged( point p; float filtwidth;
+				uniform float t, maxoctaves, lacunarity, offset, gain )
 {
 	uniform float i;
 	varying float amp = 1, tt = t, fw = filtwidth;

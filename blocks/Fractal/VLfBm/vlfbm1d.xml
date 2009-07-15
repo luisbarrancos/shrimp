@@ -1,12 +1,12 @@
-<shrimp type="function" name="VLfBm1D" description="1 dimensional fractional Brownian motion." author="rconstruct">
-	<input name="x" description="value to sample VLfBm at" type="float" default="s"/>
+<shrimp type="function" name="VLfBm1D" description="1 dimensional VLfBm" author="rconstruct">
+	<input name="x" description="Value to sample VLfBm at" storage="varying" type="float" default="s"/>
 	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
 	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
 	<input name="lacunarity" description="Controls the smoothness of the VLfBm" storage="uniform" type="float" default="2.17"/>
 	<input name="scale" description="VL scale" storage="uniform" type="float" default="0"/>
 	<input name="gain" description="Controls the contrast of the VLfBm" storage="uniform" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of VLfBm" type="float" default="1"/>
-	<output name="val" description="VLfBm value at x" type="float color point vector normal"/>
+	<output name="val" description="VLfBm value at x" type="color point vector normal float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
@@ -17,6 +17,5 @@
 					$(octaves), $(lacunarity),$(gain),$(scale) ) );		
 	#endif
 	</rsl_code>
-	<usage>VLfBm is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.
-	</usage> 
+	<usage>1 dimensional Variable Lacunarity fractional Brownian motion is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.</usage>
 </shrimp>

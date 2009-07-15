@@ -1,8 +1,8 @@
-<shrimp type="function" name="SNoise4D" description="Signed 4 dimensional perlin noise function" author="rconstruct">
-	<input name="p" description="point to sample noise at" type="point" default="P"/>
-	<input name="t" description="4th dimension value" type="float" default="time"/>
+<shrimp type="function" name="SNoise4D" description="Signed 4 dimensional Perlin noise function" author="rconstruct">
+	<input name="p" description="Point to sample noise at" storage="varying" type="point" default="P"/>
+	<input name="t" description="4th dimension value" storage="uniform" type="float" default="time"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
-	<output name="val" description="Noise value at (p,t), in range -1 - 1" type="float color point vector"/>
+	<output name="val" description="Noise value at (p,t)" type="color point vector float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
@@ -12,6 +12,5 @@
 		$(val) = $(amplitude) * $(val:type) vsnoisexy( $(p), $(t) );
 	#endif
 	</rsl_code>
-	<usage>SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
-	</usage> 
+	<usage>4 dimensional signed noise. SNoise is exactly like Noise, except that the result defaults to the range [-&quot;amplitude&quot;,&quot;amplitude&quot;] rather than [0,&quot;amplitude&quot;]. The average value is therefore zero. The parameter &quot;amplitude&quot; defaults to 1, so the noise range defaults to [-1,1]. The 4th dimensional parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform.</usage>
 </shrimp>

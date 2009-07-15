@@ -1,13 +1,13 @@
 <shrimp type="function" name="Ridged4D" description="4 dimensional Ridged multi-fractal." author="rconstruct">
-	<input name="p" description="point to sample fractal at" type="point" default="P"/>
-	<input name="t" description="4th dimension value" type="float" default="time"/>
+	<input name="p" description="point to sample fractal at" storage="varying" type="point" default="P"/>
+	<input name="t" description="4th dimension value" storage="uniform" type="float" default="time"/>
 	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
 	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
-	<input name="lacunarity" description="Controls the smoothness of the fractal" storage="uniform" type="float" default="2.17"/>
+	<input name="lacunarity" description="Gap between successive frequencies" storage="uniform" type="float" default="2.17"/>
 	<input name="gain" description="Controls the contrast of the fractal" storage="uniform" type="float" default="0.5"/>
 	<input name="offset" description="Controls the multifractality" storage="uniform" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
-	<output name="val" description="fractal value at (p,t)" type="float color vector point"/>
+	<output name="val" description="fractal value at (p,t)" type="color vector point float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
@@ -19,6 +19,5 @@
 					$(fwidth), $(octaves), $(lacunarity), $(offset), $(gain)));
 	#endif
 	</rsl_code>
-	<usage>This is Ken Musgrave's Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
-	</usage> 
+	<usage>Ken Musgrave&apos;s 4 dimensional Ridged Multifractal function. Note that offset can change the scale of the output drastically. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform.</usage> 
 </shrimp>

@@ -1,10 +1,10 @@
 <shrimp type="function" name="PNoise3D" description="3 dimensional periodic noise function" author="rconstruct">
-	<input name="p" description="point to sample noise at" type="point" default="P"/>
-	<input name="pperiod" description="Point period" type="point" default="5"/>
+	<input name="p" description="point to sample noise at" storage="varying" type="point" default="P"/>
+	<input name="pperiod" description="Point period" storage="uniform" type="point" default="point(5)"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
-	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
+	<output name="val" description="Noise value at point p" type="color point vector float"/>
 	<rsl_code>
 	$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(pperiod) );
 	</rsl_code>
-<usage>Periodic noise, maximum period = 256.</usage>
+<usage>3 dimensional periodic noise function. Point period should be integer up to 256. Output value is in the [0, &quot;amplitude&quot;] range.</usage>
 </shrimp>

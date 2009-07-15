@@ -1,12 +1,12 @@
 <shrimp type="function" name="Turbulence4D" description="4 dimensional turbulence function." author="rconstruct">
-	<input name="p" description="point to sample turbulence at" type="point" default="P"/>
-	<input name="t" description="4th dimension value" type="float" default="time"/>
+	<input name="p" description="Point to sample turbulence at" storage="varying" type="point" default="P"/>
+	<input name="t" description="4th dimension value" storage="uniform" type="float" default="time"/>
 	<input name="fwidth" description="Filter width for antialiasing" type="float" default="0"/>
 	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
-	<input name="lacunarity" description="Controls the smoothness of the turbulence" storage="uniform" type="float" default="2.17"/>
+	<input name="lacunarity" description="Gap in successive frequencies" storage="uniform" type="float" default="2.17"/>
 	<input name="gain" description="Controls the contrast of the turbulence" storage="uniform" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of turbulence" type="float" default="1"/>
-	<output name="val" description="turbulence value at (p,t)" type="float color vector point"/>
+	<output name="val" description="Turbulence value at (p,t)" type="color vector point float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
@@ -18,6 +18,5 @@
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
 	</rsl_code>
-	<usage>This is the Perlin turbulence function.
-	</usage> 
+	<usage>4 dimensional turbulence fractal function with Perlin noise basis. Returns a result in the [0,1] range by default. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform.</usage>
 </shrimp>

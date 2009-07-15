@@ -1,9 +1,9 @@
-<shrimp type="function" name="FSNoise2D" description="Filtered signed 2 dimensional perlin noise function" author="rconstruct">
-	<input name="x" description="noise x coordinate" type="float" default="s"/>
-	<input name="y" description="noise y coordinate" type="float" default="t"/>
+<shrimp type="function" name="FSNoise2D" description="Filtered signed 2 dimensional Perlin noise function" author="rconstruct">
+	<input name="x" description="Noise x coordinate" storage="varying" type="float" default="s"/>
+	<input name="y" description="Noise y coordinate" storage="varying" type="float" default="t"/>
 	<input name="width" description="Filter width" type="float" default="0"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
-	<output name="val" description="Noise value at (x,y), in range -1 - 1" type="float color point vector"/>
+	<output name="val" description="Noise value at (x,y)" type="color point vector float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	#define $(val)_$(val:type)
@@ -14,6 +14,5 @@
 																$(width) );
 	#endif
 	</rsl_code>
-	<usage>Filtered version of 2d signed noise. SNoise is exactly like Noise except that the result ranges from -1 to 1 rather than 0 to 1. The average value is therefore zero. 
-	</usage> 
+	<usage>Filtered version of 2 dimensional signed noise. SNoise is exactly like Noise except that the result defaults to the range [-&quot;amplitude&quot;,&quot;amplitude&quot;] rather than [0,&quot;amplitude&quot;]. The average value is therefore zero. The parameter &quot;amplitude&quot; defaults to 1, so the noise range defaults to [-1,1].</usage> 
 </shrimp>

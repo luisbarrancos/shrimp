@@ -1,14 +1,14 @@
 <shrimp type="function" name="Voronoi2D2F" description="2D Voronoi noise, 2 features." author="rconstruct">
-	<input name="ss" description="s coordinate" type="float" default="s"/>
-    <input name="tt" description="t coordinate" type="float" default="t"/>
+	<input name="ss" description="X coordinate" storage="varying" type="float" default="s"/>
+    <input name="tt" description="Y coordinate" storage="varying" type="float" default="t"/>
 	<input name="jitter" description="Jitter" type="float" default="1"/>
 	<input name="dtype" description="Distance metric, see help" storage="uniform" type="float" default="2"/>
     <output name="f1" description="feature 1" storage="varying" type="float"/>
-    <output name="spos1" description="s position 1" storage="varying" type="float"/>
-    <output name="tpos1" description="t position 1" storage="varying" type="float"/>
+    <output name="spos1" description="X position 1" storage="varying" type="float"/>
+    <output name="tpos1" description="X position 1" storage="varying" type="float"/>
     <output name="f2" description="feature 2" storage="varying" type="float"/>
-    <output name="spos2" description="s position 2" storage="varying" type="float"/>
-    <output name="tpos2" description="t position 2" storage="varying" type="float"/>
+    <output name="spos2" description="X position 2" storage="varying" type="float"/>
+    <output name="tpos2" description="X position 2" storage="varying" type="float"/>
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
 	/* initialize */
@@ -17,5 +17,5 @@
     voronoi_f1f2_2d( $(ss), $(tt), $(jitter), $(dtype), $(f1), $(f2),
 								 $(spos1), $(tpos1), $(spos2), $(tpos2));
 	</rsl_code>
-	<usage>2D Voronoi cell noise, 2 feature version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski's P parameter, with P = 1, as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, the metric tends towards a Tchebychev result.</usage> 
+	<usage>2D Voronoi cell noise, 2 feature version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1, as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, the metric tends towards a Tchebychev result.</usage> 
 </shrimp>
