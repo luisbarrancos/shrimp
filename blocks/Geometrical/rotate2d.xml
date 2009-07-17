@@ -1,4 +1,4 @@
-<shrimp type="function" name="Rotate2D" description="Rotate a 2d point about an origin" author="rconstruct">
+<shrimp type="function" name="Rotate2D" description="Rotates a 2d point about an origin" author="rconstruct">
 	<input name="x" description="X coordinate of point to rotate" type="float" default="s"/>
 	<input name="y" description="Y coordinate of point to rotate" type="float" default="t"/>
 	<input name="ox" description="X coordinate of rotation center" type="float" default="0.5"/>
@@ -10,6 +10,5 @@
 	<rsl_code>
 	rotate2d( $(x), $(y), $(angle), $(ox), $(oy), $(rx), $(ry) );
 	</rsl_code>
-	<usage>Rotates the point (x,y) angle radians about the point (ox,oy)
-	</usage>
+	<usage>Rotates the point (&quot;x&quot;,&quot;y&quot;) &quot;angle&quot; radians about the point (&quot;ox&quot;,&quot;oy&quot;).</usage>
 </shrimp>

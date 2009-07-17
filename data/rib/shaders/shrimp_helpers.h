@@ -6,7 +6,7 @@
 #endif
 
 #ifndef MINFILTWIDTH
-#	define MINFILTWIDTH 1.0e-6
+#define MINFILTWIDTH 1.0e-6
 #endif
 
 #ifndef SQR

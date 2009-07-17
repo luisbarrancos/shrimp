@@ -6,7 +6,7 @@ cartesian2polar2d(	float x, y;
 					output float rho, theta;
 		)
 {
-	rho = sqrt( x*x + y*y );
+	rho = sqrt( SQR(x) + SQR(y) );
 	theta = atan( y, x );
 }
 
@@ -18,7 +18,7 @@ polar2cartesian2d(	float rho, theta;
 		)
 {
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta) );
+	float sintheta = sin(theta);
 	x = rho * costheta;
 	y = rho * sintheta;
 }
@@ -32,7 +32,7 @@ cylindrical2cartesian(	normal in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta) );
+	float sintheta = sin(theta);
 	return normal ( rho * costheta,
 					rho * sintheta,
 					phi );
@@ -45,7 +45,7 @@ cylindrical2cartesian(	vector in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta) );
+	float sintheta = sin(theta);
 	return vector ( rho * costheta,
 					rho * sintheta,
 					phi );
@@ -58,7 +58,7 @@ cylindrical2cartesian(	point in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta) );
+	float sintheta = sin(theta);
 	return point (	rho * costheta,
 					rho * sintheta,
 					phi );
@@ -73,7 +73,7 @@ cartesian2cylindrical(	normal in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	return normal ( sqrt( x*x + y*y ),
+	return normal ( sqrt( SQR(x) + SQR(y) ),
 					atan( y, x ),
 					z );
 }
@@ -84,7 +84,7 @@ cartesian2cylindrical(	vector in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	return vector ( sqrt( x*x + y*y ),
+	return vector ( sqrt( SQR(x) + SQR(y) ),
 					atan( y, x ),
 					z );
 }
@@ -94,7 +94,7 @@ cartesian2cylindrical(	point in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	return point ( sqrt( x*x + y*y ),
+	return point ( sqrt( SQR(x) + SQR(y) ),
 					atan( y, x ),
 					z );
 }
@@ -108,12 +108,12 @@ spherical2cartesian(	normal in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta ) );
+	float sintheta = sin(theta);
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi*cosphi) );
-	return normal(	rho * sinphi * costheta,
-					rho * sinphi * sintheta,
-					costheta );
+	float sinphi = sin(phi);
+	return normal(	rho * costheta * sinphi,
+					rho * sintheta * sinphi,
+					rho * cosphi );
 }
 
 /* Vector */
@@ -123,12 +123,12 @@ spherical2cartesian(	vector in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta ) );
+	float sintheta = sin(theta);
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi * cosphi) );
-	return vector(	rho * sinphi * costheta,
-					rho * sinphi * sintheta,
-					costheta );
+	float sinphi = sin(phi);
+	return vector(	rho * costheta * sinphi,
+					rho * sintheta * sinphi,
+					rho * cosphi );
 }
 
 /* Point */
@@ -138,12 +138,12 @@ spherical2cartesian(	point in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float costheta = cos(theta);
-	float sintheta = sqrt( max( 0, 1 - costheta*costheta ) );
+	float sintheta = sin(theta);
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi * cosphi) );
-	return point(	rho * sinphi * costheta,
-					rho * sinphi * sintheta,
-					costheta );
+	float sinphi = sin(phi);
+	return point(	rho * costheta * sinphi,
+					rho * sintheta * sinphi,
+					rho * cosphi );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -154,11 +154,10 @@ cartesian2spherical(	normal in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	float x2 = x*x, y2 = y*y, z2 = z*z;
-	return normal ( sqrt( x2 + y2 + z2 ),
+	float rho = sqrt( SQR(x) + SQR(y) + SQR(z) );
+	return normal ( rho,
 					atan( y, x ),
-					atan( sqrt( x2 + y2 ), z ) );
-
+					acos( z / rho) );
 }
 
 /* Vector */
@@ -167,11 +166,10 @@ cartesian2spherical(	vector in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	float x2 = x*x, y2 = y*y, z2 = z*z;
-	return vector ( sqrt( x2 + y2 + z2 ),
+	float rho = sqrt( SQR(x) + SQR(y) + SQR(z) );
+	return vector ( rho,
 					atan( y, x ),
-					atan( sqrt( x2 + y2 ), z ) );
-
+					acos( z / rho) );
 }
 
 /* Point */
@@ -180,11 +178,10 @@ cartesian2spherical(	point in;
 		)
 {
 	float x = xcomp( in ), y = ycomp( in ), z = zcomp( in );
-	float x2 = x*x, y2 = y*y, z2 = z*z;
-	return point ( sqrt( x2 + y2 + z2 ),
+	float rho = sqrt( SQR(x) + SQR(y) + SQR(z) );
+	return point (	rho,
 					atan( y, x ),
-					atan( sqrt( x2 + y2 ), z ) );
-
+					acos( z / rho ) );
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -196,7 +193,7 @@ spherical2cylindrical(	normal in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi*cosphi ) );
+	float sinphi = sin(phi);
 	return normal (	rho * sinphi,
 					theta,
 					rho * cosphi );
@@ -209,7 +206,7 @@ spherical2cylindrical(	vector in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi*cosphi ) );
+	float sinphi = sin(phi);
 	return vector (	rho * sinphi,
 					theta,
 					rho * cosphi );
@@ -222,7 +219,7 @@ spherical2cylindrical(	point in;
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
 	float cosphi = cos(phi);
-	float sinphi = sqrt( max( 0, 1 - cosphi*cosphi ) );
+	float sinphi = sin(phi);
 	return point (	rho * sinphi,
 					theta,
 					rho * cosphi );
@@ -236,7 +233,7 @@ cylindrical2spherical(	normal in;
 		)
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
-	return normal(	sqrt( rho*rho + phi*phi ),
+	return normal(	sqrt( SQR(rho) + SQR(phi) ),
 					theta,
 					atan( rho, phi ) );
 }
@@ -247,7 +244,7 @@ cylindrical2spherical(	vector in;
 		)
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
-	return vector(	sqrt( rho*rho + phi*phi ),
+	return vector(	sqrt( SQR(rho) + SQR(phi) ),
 					theta,
 					atan( rho, phi ) );
 }
@@ -258,7 +255,7 @@ cylindrical2spherical(	point in;
 		)
 {
 	float rho = xcomp( in ), theta = ycomp( in ), phi = zcomp( in );
-	return point(	sqrt( rho*rho + phi*phi ),
+	return point(	sqrt( SQR(rho) + SQR(phi) ),
 					theta,
 					atan( rho, phi ) );
 }
@@ -279,7 +276,7 @@ tangent2object(
 
 	if (tangenttex != "") {
 		extern vector dPdu, dPdv;
-		vector lookup = vector( color texture( tangenttex, ss, tt)) * 2.0 - 1.0;
+		vector lookup = vector( color texture( tangenttex, ss, tt))* 2.0 - 1.0;
 		Nnew = normal( normalize(dPdu) * xcomp(lookup) +
 			   normalize(dPdv) * ycomp(lookup) +
 			   Nn * zcomp(lookup) );

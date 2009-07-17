@@ -1,10 +1,10 @@
 <shrimp type="function" name="SetComp" description="Set the components of a point, vector or normal" author="rconstruct">
-	<input name="x" description="x component" type="float" default="0"/>
-	<input name="y" description="y component" type="float" default="0"/>
-	<input name="z" description="z component" type="float" default="0"/>
-	<output name="out" description="point, vector, or normal with the specified components" type="point vector normal"/>
+	<input name="x" description="X component" type="float" default="0"/>
+	<input name="y" description="Y component" type="float" default="0"/>
+	<input name="z" description="Z component" type="float" default="0"/>
+	<output name="out" description="Point, vector, or normal with the specified components" type="point vector normal"/>
 	<rsl_code>
 	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
 	</rsl_code>
-<usage>Sets xyz components of a point, vector, or normal.</usage>
+	<usage>Sets the X, Y, and Z components of a point, vector, or normal.</usage>
 </shrimp>

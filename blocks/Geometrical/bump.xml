@@ -4,8 +4,7 @@
 	<input name="Scale" description="Amplitude of the bumping" type="float" default="0.5"/>
 	<output name="NN" description="The new surface normal" type="normal"/>
 	<rsl_code>
-	$(NN) = normalize( calculatenormal( $(P) + $(Dir)*$(Scale) ) );
+	$(NN) = normalize( calculatenormal( $(P) + $(Dir) * $(Scale) ) );
 	</rsl_code>
-	<usage>This is exactly like the displace function except that the new surface position is not computed.
-	</usage>
+	<usage>This is exactly like the displace function except that the new surface position is not computed. Calculates the normal of a position &quot;P&quot; displaced by amount &quot;Scale&quot; in direction &quot;Dir&quot;.</usage>
 </shrimp>

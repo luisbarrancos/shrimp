@@ -5,5 +5,5 @@
 	<rsl_code>
 	$(R) = reflect( $(I), $(N) );
 	</rsl_code>
-<usage>Returns the reflection vector given an incident direction I and an normal vector N ( I-2*(I.N)*N).</usage>
+<usage>Returns the vector &quot;I&quot; reflected about the unit length normal &quot;N&quot;. It&apos;s equivalent to: I-2*(N.I)*N.</usage>
 </shrimp>
