@@ -8,5 +8,5 @@
 	<rsl_code>
 		$(Tnormal) = tangent2object( $(ttex), $(scoord), $(tcoord), $(NN) );
 	</rsl_code>
-<usage>Read a tangent space normal map texture, like the ones generated from 3d sculpting applications. Uses the dPdu and dPdv parametric derivatives, S and T are used only for the texture lookup. The output normal vector is already normalized.</usage>
+	<usage>Read a tangent space normal map texture, like the ones generated from 3d sculpting applications. Uses the &quot;dPdu&quot; and &quot;dPdv&quot; parametric derivatives. The texture coordinates &quot;s&quot; and &quot;t&quot; are used only for the texture lookup. The output normal vector is already normalized.</usage>
 </shrimp>

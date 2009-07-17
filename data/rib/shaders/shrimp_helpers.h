@@ -172,14 +172,15 @@ void solvequad(
                 output float k1, k2;
         )
 {
-    float q = b * b - 4 * a * c;
+    float q = SQR(b) - 4*a*c;
     if ( q < 0 ) {
         k1 = 0;
         k2 = 0;
-    }
-    q = -.5 * ( b + sign(b) * sqrt(q));
-    k1 = q / a;
-    k2 = c / q;
+    } else {
+		q = -.5 * ( b + sign(b) * sqrt(q));
+		k1 = q / a;
+		k2 = c / q;
+	}
 }
 
 /* note: tweak color mapping later */
@@ -188,18 +189,15 @@ color scurvature(
                     float cmin, cmax;
                     uniform float greyscale;
                     normal Nn;
-                    vector In;
+                    point PP;
         )
 {
-    normal Nf = faceforward( Nn, In );
-
     float result = 0;
     color out = color(0);
-	extern point P;
 
     /* The needed partials */
-    vector  Xu = Du(P),
-			Xv = Dv(P),
+    vector  Xu = Du(PP),
+			Xv = Dv(PP),
 			Xuu = Du(Xu),
 			Xuv = Du(Xv),
 			Xvv = Dv(Xv);
@@ -210,9 +208,9 @@ color scurvature(
 			GG = Xv.Xv;
 
     /* Coefficients of the second fundamental form (II) */
-    float   ee = Nf.Xuu,
-			ff = Nf.Xuv,
-			gg = Nf.Xvv;
+    float   ee = Nn.Xuu,
+			ff = Nn.Xuv,
+			gg = Nn.Xvv;
 
     /* Coefficients for the quadeq. */
     float   dist = EE * GG - FF * FF;
