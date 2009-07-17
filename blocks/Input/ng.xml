@@ -3,5 +3,6 @@
 	<rsl_code>
 	$(Ng) = Ng;
 	</rsl_code>
+	<usage>Surface geometric normal. The availability of this global variable in the different shading contexts is renderer specific. It&apos;s not available in imager shaders.</usage>
 </shrimp>
 

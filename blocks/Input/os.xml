@@ -3,5 +3,6 @@
 	<rsl_code>
 	$(Os) = Os;
 	</rsl_code>
+	<usage>Surface opacity global variable. Only available in surface shaders.</usage>
 </shrimp>
 

@@ -3,6 +3,6 @@
 	<rsl_code>
 	$(Cl) = Cl;
 	</rsl_code>
-	<usage>Note that you can only access the light color Cl inside illuminance statements.</usage>
+	<usage>Note that you can only access the light color Cl inside &quot;illuminance&quot; statements.</usage>
 </shrimp>
 

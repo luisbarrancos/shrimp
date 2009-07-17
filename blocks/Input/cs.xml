@@ -3,5 +3,6 @@
 	<rsl_code>
 	$(Cs) = Cs;
 	</rsl_code>
+	<usage>Surface color. Only available in surface shaders.</usage>
 </shrimp>
 
