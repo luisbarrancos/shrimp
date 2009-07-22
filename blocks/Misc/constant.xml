@@ -1,6 +1,6 @@
 <shrimp type="function" name="Constant" description="Passes input to output unchanged" author="rconstruct">
-	<input name="in" description="Input" storage="uniform" type="float color point vector normal string" type_parent="out" default="0" />
-	<output name="out" description="Output = Input" type="float color point vector normal string"/>
+	<input name="in" description="Input" type_parent="out" type="float point vector normal string color" default="color(0)" />
+	<output name="out" description="Output = Input" type="float point vector normal string color"/>
 	<rsl_code>
 	$(out) = $(in);
 	</rsl_code>

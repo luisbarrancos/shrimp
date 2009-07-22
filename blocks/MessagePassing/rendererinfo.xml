@@ -1,9 +1,9 @@
 <shrimp name="RendererInfo" type="function" description="Returns information about the renderer" author="rconstruct">
-    <input name="sparam" description="Renderer data to query, see help." storage="uniform" type="string" default="&quot;&quot;"/>
-	<output name="result" description="Query value" type="float color normal vector point string"/>
+    <input name="sparam" description="Renderer data to query, see usage" storage="uniform" type="string" default="&quot;&quot;"/>
+	<output name="result" description="Query value" type="color normal vector point string float"/>
 	<output name="status" description="Exit status" type="float"/>
 	<rsl_code>
 		$(status) = rendererinfo( $(sparam), $(result) );
 	</rsl_code>
-    <usage>Returns information about the renderer, as long as the data queried is known to the renderer and of correct type, in which case result will contain the associated data content, and rendererinfo() will exit with 1.0, otherwise rendererinfo() will exit with 0. The data accessible by the rendererinfo() call is listed next, as well as its type: "renderer", uniform string; "version", uniform float[4]; "versionstring", uniform string. Notice that different renderer implementations of rendererinfo() might be able to access different data fields.</usage>
+    <usage>Returns information about the renderer, as long as the data queried is known to the renderer and of correct type in which case the result will contain the associated data content, and &quot;rendererinfo&quot; will exit with 1, otherwise &quot;rendererinfo&quot; will exit with 0. The data accessible by the &quot;rendererinfo&quot; function is listed next, as well as its type: &quot;renderer&quot;, uniform string; &quot;version&quot;, uniform float[4]; &quot;versionstring&quot;, uniform string. Notice that different renderer implementations of &quot;rendererinfo&quot; might be able to access different data fields. Have in mind that uniform to varying conversion is possible, however the reverse isn&apos;t, so you should consider the storage class of the variable you&apos;re going to query.</usage>
 </shrimp>

@@ -1,10 +1,10 @@
-<shrimp type="function" name="Mrotate" description="Rotates matrix m." author="rconstruct">
+<shrimp type="function" name="Mrotate" description="Rotates matrix M" author="rconstruct">
     <input name="minput" description="Matrix input" type="matrix" default="1"/>
-	<input name="vaxis" description="Vector axis" type="vector" default="1"/>
+	<input name="vaxis" description="Vector axis" type="vector" default="vector(1)"/>
 	<input name="angle" description="Angle" type="float" default="1"/>
     <output name="mout" description="Rotated matrix" type="matrix"/>
 	<rsl_code>
 	$(mout) = rotate( $(minput), $(angle), $(vaxis) );
 	</rsl_code>
-<usage>Rotates matrix m, on axis v, for x angle. These functions are similar to the Ri functions RiTranslate, RiRotate and RiScale, except that the rotation angle in rotate() is in radians, not in degrees, as with RiRotate.</usage>
+	<usage>Rotates a matrix M, on axis V, for X angle. These functions are similar to the Ri functions RiTranslate, RiRotate and RiScale, except that the rotation angle in rotate() is in radians, not in degrees, as with RiRotate.</usage>
 </shrimp>

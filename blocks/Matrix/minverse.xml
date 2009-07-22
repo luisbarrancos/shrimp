@@ -8,5 +8,5 @@
 		$(mout) = 1 / $(minput) ;
 	#endif
 	</rsl_code>
-<usage>Inverts the input matrix.</usage>
+	<usage>Inverts the input matrix.</usage>
 </shrimp>

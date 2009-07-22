@@ -6,5 +6,5 @@
 	<rsl_code>
     $(mcomponent) = comp( $(minput), $(row), $(column) );
 	</rsl_code>
-<usage>Gets the row/column component of matrix m.</usage>
+	<usage>Gets the row and column component of matrix M.</usage>
 </shrimp>

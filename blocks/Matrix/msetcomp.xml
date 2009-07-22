@@ -1,4 +1,4 @@
-<shrimp type="function" name="MatrixSetcomp" description="Set the components of a matrix" author="rconstruct">
+<shrimp type="function" name="MatrixSetcomp" description="Set the components of a matrix M" author="rconstruct">
 	<input name="m01" description="row 1, component 1" type="float" default="0"/>
 	<input name="m02" description="row 1, component 2" type="float" default="0"/>
 	<input name="m03" description="row 1, component 3" type="float" default="0"/>
@@ -36,5 +36,5 @@
 	$(mstr) = $(spacename);
         
 	</rsl_code>
-<usage>Assigns components to a (4x4 homogeneous transformation) matrix. Defaults to a zero matrix. A matrix can be constructed in reference to a named space, either existing spaces, or any name, that can later be referenced for transformations. If &quot;usespace&quot; value is 1, then the matrix is built in reference to &quot;spacename&quot;.</usage>
+	<usage>Assigns components to a (4x4 homogeneous transformation) matrix. Defaults to a zero matrix. A matrix can be constructed in reference to an existing named space, that can later be used for the transform, vtransform, ntransform functions. If &quot;usespace&quot; value is 1, then the matrix is built in reference to &quot;spacename&quot;. Please check your renderer&apos;s documentation for details regarding the matrix type and transformations.</usage>
 </shrimp>
