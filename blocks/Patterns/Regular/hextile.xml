@@ -1,17 +1,15 @@
 <shrimp type="function" name="HexTile" description="Hexagonal tiling" author="rconstruct">
-	<input name="x" description="X coordinate" type="float" default="s"/>
-	<input name="y" description="Y coordinate" type="float" default="t"/>
+	<input name="x" description="X coordinate" storage="varying" type="float" default="s"/>
+	<input name="y" description="Y coordinate" storage="varying" type="float" default="t"/>
 	<input name="tradius" description="Tile radius" type="float" default="0.2"/>
 	<input name="mwidth" description="Mortar width" type="float" default="0.02"/>
 	<input name="tvary" description="Tile variation" type="float" default="0.15"/>
-	<input name="NN" description="Surface normal" type="normal" default="normalize(N)"/>
-	<input name="V" description="Viewer vector" type="vector" default="normalize(I)"/>
 	<output name="mortar" description="Output mortar" type="float"/>
 	<output name="tindex" description="Tile index" type="float"/>
 	<rsl_include>shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
-		hextile( $(tradius), $(mwidth), $(tvary), $(x), $(y),$(NN), $(V),
+		hextile(	$(tradius), $(mwidth), $(tvary), $(x), $(y),
 					$(mortar), $(tindex) );
 	</rsl_code>
-<usage>Hexagonal tiling block, based on LGHexTile.sl by Larry Gritz.</usage>
+	<usage>Hexagonal tiling block, based on LGHexTile.sl by Larry Gritz.</usage>
 </shrimp>

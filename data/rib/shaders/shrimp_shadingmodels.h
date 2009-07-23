@@ -2658,11 +2658,6 @@ rtglass(
 	   )
 {
 	
-#if RENDERER == pixie
-	/* Pixie's shader compiler protests about ?: conditionals, so do nothing
-	 * there's a custom version of the glass shader for Pixie further below
-	 * (read: lame excuse to use Pixie's built-in dispersion later :)) */
-#else
 	normal Nf = faceforward( Nn, In );
 	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
 
@@ -2728,7 +2723,8 @@ rtglass(
 	
 	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
 	 * just leave everything in place (there's always frankenrender,
-	 * but i haven't tested it this way (w/BMRT's rayserver)) */
+	 * but i haven't tested it this way (w/BMRT's rayserver)).
+	 * Note that ternary operator seems unsupported in Aqsis */
 #if RENDERER == aqsis
 	if (Ka > 0) aov_ambient +=  Ka * ambient();
 	if (Kd > 0) aov_diffuse += Kd * diffuse(Nf);
@@ -2765,117 +2761,9 @@ rtglass(
 							* attenrefr, krefr ) );
 	
 #endif
-
-#endif
 	
 	return aov_ambient + aov_diffuse + aov_specular + aov_reflection
 						+ aov_refraction;
-}
-
-/* Pixie doesn't likes binary conditionals, we might as well make a custom
- * version (and using Pixie's dispersion effect, TODO later). */
-
-color
-rtglasspixie(
-			float Ka, Kd, Ks, Kr, Kt, ior, roughness, sharpness;
-			color basecolor, attencolor;
-			float krblur, ktblur, aexp, aamp;
-			uniform float samples, refrmaxdist, reflmaxdist;
-			uniform string spectype;
-			uniform float rbounces, sbounces, krefl, krefr;
-			vector In; normal Nn;
-			uniform string envmap;
-			DECLARE_AOV_OUTPUT_PARAMETERS
-	   )
-
-{
-	normal Nf = faceforward( Nn, In );
-	float idotn = In.Nn; /* need to know the face orientation, hence Nn */
-
-	vector refldir, refrdir;
-	float kr, kt;
-
-	/* if I.N>0, ray is entering the medium, else ray is exiting and eta is the
-	   reverse of the ior when ray is entering the medium. */
-	float entering = 0;
-	float eta = 1 / ior;
-	normal Tn = Nn;
-
-	if (idotn > 0) {
-		entering = 1; eta = ior;
-		Tn = -Nn; /* we're inside the medium, so reverse surface normals */
-	}
-
-	fresnel( In, Tn, eta, kr, kt, refldir, refrdir);
-
-	kt = 1 - kr; /* physically incorrect but portable */
-	kr *= Kr; kt *= Kt;
-
-	/* get current ray depth and scale down samples as ray depth goes up */
-	/* if needed */
-	uniform float raydepth = 0, specdepth = 0;
-	rayinfo("depth", raydepth);
-	rayinfo("speculardepth", specdepth);
-	uniform float rsamples = samples;
-	if (raydepth > 1) rsamples = max(1, samples/pow( 2, raydepth));
-
-	/* we don't need ambient nor diffuse at higher ray levels (if at all?).
-	 * As for speculars, restricted to number of specular bounces, if faces
-	 * are facing outwards only. Note: scale specular by fresnel term?
-	 * What about diffuse? Wolff's smooth dielectric surfaces model ? */
-	float ka = Ka, kd = Kd, ks = Ks;
-	if (raydepth > 0) {
-		ka = 0; kd = 0;
-	}
-	if (specdepth > sbounces || entering == 1) ks = 0;
-	if (specdepth > rbounces) kr = 0;
-
-	color crefl = color(0), crefr = color(0);
-
-	/* should be raytrace, but added envmap, just in case */
-	if (kr > 0) /* reflections, if active */
-		crefl = environment( envmap, refldir, "samples", rsamples,
-					"blur", krblur, "maxdist", reflmaxdist );
-	if (kt > 0) /* refractions, if active */
-		crefr = environment( envmap, refrdir, "samples", rsamples,
-					"blur", ktblur, "maxdist", refrmaxdist );
-
-
-	/* attenuation, when there are ray hits */
-	extern vector I; /* we just passed the normalized viewer as argument
-						but we need the ray lenght */
-	color attenrefl = 1, attenrefr = 1;
-	if (raydepth > 0 && (kr > 0 || kt > 0)) {
-		float ilen = length(I);
-		float d = pow( ilen, aamp) * aexp;
-		color atten = color ( exp( comp( attencolor, 0) * -d),
-								exp( comp( attencolor, 1) * -d),
-								exp( comp( attencolor, 2) * -d) );
-		if (kt > 0 && entering == 0) attenrefr *= atten;
-		if (kr > 0 && entering == 1) attenrefl *= atten;
-	}
-
-	if (ka > 0) aov_ambient +=  Ka * ambient();
-	if (kd > 0) aov_diffuse += Kd * diffuse(Nf);
-	if (ks > 0) {
-		if (spectype == "glossy")
-				aov_specular += locillumglassy( Nf, -In, roughness, sharpness);
-		else aov_specular += specular(Nf, -In, roughness);
-	}
-	/* attenuation blends */
-	if (kr > 0) {
-		if (krefl > 0) aov_reflection += mix( kr * crefl, kr * crefl
-											* attenrefl, krefl);
-		else aov_reflection += kr * crefl;
-	}
-	if (kt > 0) {
-		if (krefr > 0) aov_refraction += mix( kt * crefr, kt * crefr
-											* attenrefr, krefr);
-		else aov_refraction += kt * crefr;
-	}
-		
-	return aov_ambient + aov_diffuse + aov_specular + aov_reflection +
-			aov_refraction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

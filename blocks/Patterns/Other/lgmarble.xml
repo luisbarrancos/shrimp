@@ -1,4 +1,4 @@
-<shrimp type="function" name="LGMarble" description="Larry Gritzs marble veining" author="rconstruct">
+<shrimp type="function" name="LGMarble" description="Larry Gritz&apos;s marble veining function" author="rconstruct">
 	<input name="veinfreq" description="Veining frequency" type="float" default="1"/>
 	<input name="veinlevels" description="Veining levels" type="float" default="2"/>
 	<input name="warpfreq" description="Warping frequency" type="float" default="1"/>
@@ -14,5 +14,5 @@
 								$(warping), $(sharpness), $(basecolor),
 								$(veincolor), $(pp) );
 	</rsl_code>
-	<usage>Larry Gritz's LGMarble veining pattern, mixing basecolor to veincolor.</usage> 
+	<usage>Larry Gritz&apos;s LGMarble veining pattern, mixing basecolor to veincolor. Have in mind that &quot;pp&quot; is transformed to &quot;shader&quot; space in the function - see the header for more information.</usage> 
 </shrimp>

@@ -6,5 +6,5 @@
 	<rsl_code>
         $(val) = mrrand( $(maxiter), $(useuv) );
 	</rsl_code>
-	<usage>Michael Rivero's Mandelbrot fractal shader. Maxiter defines the maximum number of iterations, and usev = 1/0 toggles between using UV surface parameters and ST surface texture parameters.</usage>
+	<usage>Michael Rivero&apos;s Mandelbrot fractal shader. &quot;Maxiter&quot; defines the maximum number of iterations, and &quot;usev&quot; = 1/0 toggles between using UV surface parameters and ST surface texture parameters.</usage>
 </shrimp>

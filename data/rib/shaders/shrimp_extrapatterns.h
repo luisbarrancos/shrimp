@@ -2,10 +2,6 @@
 #include "shrimp_fractal.h"
 #include "shrimp_helpers.h"
 
-#ifndef SQR
-#define SQR(X)  ( (X) * (X) )
-#endif
-
 // By Derek Ledbetter
 // Based on the projection method described in 
 //   N. G. de Bruijn,
@@ -16,78 +12,73 @@
 void
 find_penrose_rhomb(
                 	output float outTileX,outTileY;
-	                output float outTileType; // 0 = skinny, 1 = fat
+	                output float outTileType; /* 0 = skinny, 1 = fat */
 	                float s,t;
                     )
 
 {
-	uniform float phi = 0.5 * (sqrt(5) + 1); // golden ratio
-	uniform float
-		sin36 = sin(radians(36)),
-		sin72 = sin(radians(72)),
-		cos36 = cos(radians(36)),
-		cos72 = cos(radians(72));
+	uniform float phi = 1.618033989; /* Golden ratio */
+	/* sine 32, 72 degrees, cosine 32, 72 degrees */
+	uniform float sin36 = 0.5877852523, sin72 = 0.9510565163;
+	uniform float cos36 = 0.8090169944, cos72 = 0.3090169944;
     
-	uniform float root3 = sqrt(3);
-	uniform float i;
+	uniform float root3 = 1.732050808; /* sqrt(3) */
 	
 	uniform float basisS[5] = { 1, -cos36, cos72, cos72, -cos36 };
 	uniform float basisT[5] = { 0, -sin36, sin72, -sin72, sin36 };
 
-	/* Pixie and Aqsis expect arrays to be assigned with all elements */
-	float originalPt[5] = { 0, 0, 0, 0, 0 };
-	float pt[5] = { 0, 0, 0, 0, 0 };
-
-	for(i = 0; i < 5; i += 1)
+	float originalPt[5];
+	float pt[5];
+	
+	uniform float i;
+	for( i = 0; i < 5; i += 1 )
 	{
-		float p = .4*(basisS[i]*s + basisT[i]*t) + PI;
-		originalPt[i] = mod(p + 1.25, 1) - 1.25;
+		float p = .4 * ( basisS[i] * s + basisT[i] * t) + S_PI;
+		originalPt[i] = mod( p + 1.25, 1 ) - 1.25;
 	}
 	
 	float bestDistance = 1000;
 	
-	uniform float shift,rotation,tileType;
-	for(shift = 0; shift < 32; shift += 1)
+	uniform float shift, rotation, tileType;
+	for( shift = 0; shift < 32; shift += 1 )
 	{
 		uniform float remainingShift = shift;
-		for(i = 0; i < 5; i += 1)
+		for( i = 0; i < 5; i += 1 )
 		{
-			uniform float thisShift = mod(remainingShift, 2);
-			remainingShift = (remainingShift-thisShift)/2;
+			uniform float thisShift = mod( remainingShift, 2 );
+			remainingShift = ( remainingShift - thisShift ) / 2;
 			pt[i] = originalPt[i] + thisShift;
 		}
 
-		for(rotation = 0; rotation < 5; rotation += 1)
+		for( rotation = 0; rotation < 5; rotation += 1 )
 		{
 			uniform float factor = phi;
-			for(tileType = 0; tileType < 2; tileType += 1)
+			for( tileType = 0; tileType < 2; tileType += 1 )
 			{
 				uniform float
 					index1 = 0,
-					index2 = (tileType+1),
-					index3 = 2*(tileType+1),
-					indexX = 5-2*(tileType+1),
-					indexY = 5-(tileType+1);
+					index2 = ( tileType + 1 ),
+					index3 = 2 * ( tileType + 1 ),
+					indexX = 5 - 2 * ( tileType + 1 ),
+					indexY = 5 - ( tileType + 1 );
 				
 				float 
-					boxPt0 = -(pt[index1] + pt[indexX] + factor*pt[indexY]),
-					boxPt1 = -pt[index2] + factor*(pt[indexX] + pt[indexY]),
-					boxPt2 = -(pt[index3] + pt[indexY] + factor*pt[indexX]);
+					boxPt0 = -( pt[index1] + pt[indexX] + factor*pt[indexY] ),
+					boxPt1 = -pt[index2] + factor*( pt[indexX] + pt[indexY] ),
+					boxPt2 = -( pt[index3] + pt[indexY] + factor*pt[indexX] );
 				
 				if(0 <= boxPt0 && 0 <= boxPt1 && 0 <= boxPt2
-					&& 1 >= boxPt0 && 1 >= boxPt1 && 1 >= boxPt2)
+					&& 1 >= boxPt0 && 1 >= boxPt1 && 1 >= boxPt2 )
 				{
-					float
-						boxPt3 = pt[indexX] - pt[index1] + factor*(pt[index2] -
-                                pt[index3]),
-						boxPt4 = pt[indexY] - pt[index3] + factor*(pt[index2] -
-                                pt[index1]);
+					float boxPt3 = pt[indexX] - pt[index1]
+						+ factor * ( pt[index2] - pt[index3] );
+					float boxPt4 = pt[indexY] - pt[index3]
+						+ factor * ( pt[index2] - pt[index1] );
 	
-					float thisDistance = max(
-						abs(boxPt3 - 0.5),
-						abs(boxPt4 - 0.5));
+					float thisDistance = max( abs(boxPt3 - 0.5),
+							abs(boxPt4 - 0.5));
 	
-					if(bestDistance > thisDistance)
+					if( bestDistance > thisDistance )
 					{
 						bestDistance = thisDistance;
 						outTileX = boxPt3;
@@ -95,12 +86,13 @@ find_penrose_rhomb(
 						outTileType = tileType;
 					}
 				}
-				factor = 1 - factor; // change phi to -1/phi
+				factor = 1 - factor; /* change phi to -1/phi */
 			}
 			
-			// rotate pt
+			/* rotate pt */
 			float temp = pt[0];
-			for(i = 0; i < 4; i += 1)
+			
+			for( i = 0; i < 4; i += 1 )
 			{
 				pt[i] = pt[i+1];
 			}
@@ -129,10 +121,10 @@ painted_tiling(
     find_penrose_rhomb( tileX, tileY, tileType, scaledS, scaledT );
 
     float distanceToBoundary = min( tileX, 1-tileX, tileY, 1-tileY);
-    float intensity = smoothstep( 0, .1, distanceToBoundary);
+    float intensity = smoothstep( 0, .1, distanceToBoundary );
 
-	/* Seems Aqsis & Pixie don't like binary evaluations */
-#if RENDERER == aqsis || RENDERER == pixie
+	/* Workaround for ternary operator in Aqsis */
+#if RENDERER == aqsis
 	color tileColor = 0;
 	if (tileType == 0) {
 		tileColor = intensity * cskinny;
@@ -141,7 +133,7 @@ painted_tiling(
 	}
 #else
     color tileColor = intensity *
-        ((tileType == 0) ? cskinny : cfat );
+        ( tileType == 0 ? cskinny : cfat );
 #endif
     
     return tileColor;
@@ -151,6 +143,29 @@ painted_tiling(
 // Larry Gritz's LGVeinedMarble ////////////////////////////////////////////////
 // from The RenderMan Repository , http://www.renderman.org ////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+/*
+ * greenmarble.sl -- RenderMan compatible shader for green veined marble.
+ *
+ * DESCRIPTION:
+ *   Makes a marble-like surface using a turbulence function.
+ *   
+ * 
+ * PARAMETERS:
+ *   Ka, Kd, Ks, roughness, specularcolor - work just like the plastic
+ *   txtscale - overall scaling for the texture
+ *   darkcolor, lightcolor - colors of the underlying substrate
+ *   veincolor - color of the bright veins
+ *   veinfreq - controls the frequency of the veining effects
+ *   sharpness - how sharp the veins appear
+ *
+ *
+ * AUTHOR: Larry Gritz, the George Washington University
+ *         email: gritz AT seas DOT gwu DOT edu 
+ *
+ *
+ * last modified  11 July 1994 by Larry Gritz
+ */
 
 /* slightly tweaked for shimp */
 
@@ -163,7 +178,8 @@ veinedmarble(
 
 {
 
-    float i, turb, freq, j, turbsum;
+    float turb, freq, j, turbsum;
+	uniform float i;
     point PP, offset;
 
     PP = transform( "shader", ppn);
@@ -225,7 +241,7 @@ color mrrand(
     extern float u, v, s, t;
     float lt, ls;
     
-    color C = 0;
+    color C = color(0);
     
     /* Map the U and V values to the bounds of the Mandelbrot set. */
 
@@ -254,8 +270,8 @@ color mrrand(
     float creal = real;
     float cimag = imag;
 
-    color whitecolor = 1;
-    color blackcolor = 0;
+    color whitecolor = color(1);
+    color blackcolor = color(0);
 
     for ( iter = 0; iter < maxiteration && got_away == 0; iter += 1)
     {
@@ -330,49 +346,49 @@ color mrrand(
 void hextile(
 				float tileradius, mortarwidth, tilevary;
                 float xx, yy;
-				normal Nn;
-				vector In;
                 output float mortar;
                 output float tileindex;
 		)
 {
-	normal Nf = faceforward( Nn, In);
-
     extern float du;
     extern float dv;
 
 	float swidth, twidth, sfuzz, tfuzz, fuzzmax, tilewidth,
 		  tt, ttile, ss, stile, mw2, x, y;
 
-	swidth = abs(Du(xx)*du) + abs(Dv(xx)*dv);
-	twidth = abs(Du(yy)*du) + abs(Dv(yy)*dv);
+	swidth = abs( Du(xx) * du) + abs( Dv(xx) * dv);
+	twidth = abs( Du(yy) * du) + abs( Dv(yy) * dv);
 	sfuzz = 0.5 * swidth;
 	tfuzz = 0.5 * twidth;
 	fuzzmax = max( sfuzz, tfuzz );
 
 	tilewidth = tileradius * 1.7320508; /* sqrt(3) */
 	tt = mod( yy, 1.5 * tileradius);
-	ttile = floor( yy/(1.5*tileradius));
-	if (mod (ttile/2, 1) == 0.5) {
+	ttile = floor( yy / (1.5*tileradius) );
+	
+	if (mod ( ttile/2, 1) == 0.5) {
 		ss = xx + tilewidth/2;
 	} else {
 		ss = xx;
 	}
-	stile = floor( ss / tilewidth);
-	ss = mod( ss, tilewidth);
+	
+	stile = floor( ss / tilewidth );
+	ss = mod( ss, tilewidth );
 	mw2 = mortarwidth / 2;
+	
 	if ( tt < tileradius) {
-		mortar = 1 - (smoothstep( mw2, mw2 + sfuzz, ss ) *
-					(1 - smoothstep(tilewidth-mw2-sfuzz, tilewidth-mw2, ss)));
+		mortar = 1 - ( smoothstep( mw2, mw2 + sfuzz, ss ) *
+					(1 - smoothstep( tilewidth-mw2-sfuzz, tilewidth-mw2, ss)));
 	} else {
-		x = tilewidth / 2 - abs( ss - tilewidth/2);
+		x = tilewidth / 2 - abs( ss - tilewidth/2 );
 		y = 1.7320508 * (tt - tileradius);
+		
 		if (y > x) {
-			if (mod (ttile/2, 1) == 0.5) {
+			if ( mod (ttile/2, 1 ) == 0.5) {
 				stile -= 1;
 			}
 			ttile += 1;
-			if (ss > tilewidth/2) {
+			if ( ss > tilewidth/2 ) {
 				stile += 1;
 			}
 		}
@@ -560,10 +576,11 @@ oaktexture(
     float dPgrain = filterwidthp( Pgrain );
     float grain = 0;
     
-    float i, amp = 1;
+    float amp = 1;
+	uniform float i;
     
     for( i = 0; i < 2; i += 1) {
-        float grain1valid = 1-smoothstep(.2, .6, dPgrain);
+        float grain1valid = 1 - smoothstep( .2, .6, dPgrain);
         if (grain1valid > 0) {
             float g = grain1valid * snoise( Pgrain);
             g *= (0.3 + 0.7 * inring);
@@ -649,4 +666,5 @@ voronoi_km_f1f2_2d(
     f1 = sqrt(f1);  f2 = sqrt(f2);
 }
 
-			
+////////////////////////////////////////////////////////////////////////////////
+

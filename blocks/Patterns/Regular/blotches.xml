@@ -1,15 +1,15 @@
 <shrimp type="function" name="Blotches" description="Generates blotches" author="rconstruct">
-	<input name="PP" description="Surface point to evaluate" type="point" default="P"/>
-	<input name="radius" description="Blotch radius" type="float" default="0.25"/>
-	<input name="freq" description="Frequency" type="float" default="0.1"/>
+	<input name="PP" description="Surface point to evaluate" storage="varying" type="point" default="P"/>
+	<input name="radius" description="Blotch radius" type="float" default="0.15"/>
+	<input name="freq" description="Frequency" type="float" default="1"/>
 	<input name="offset" description="Offset" type="float" default="0.35"/>
 	<input name="jitter" description="Jittering" type="float" default="0.65"/>
-	<input name="dtype" description="Voronoi distance metric" type="float" default="2"/>
+	<input name="dtype" description="Voronoi distance metric" storage="uniform" type="float" default="2"/>
 	<output name="val" description="Output value" type="float"/>
 	<rsl_include>shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 		$(val) = blotches( $(radius), $(freq), $(offset), $(jitter),
 							$(dtype), $(PP) );
 	</rsl_code>
-	<usage>Blotches block. Generates random blotches, based on single feature voronoi cell noise. Jitter controls the voronoi cell noise jittering, generating a less or more evenly distribution of blotches. Offset controls the center offset, a value of 0 generating a hollow blotch, and 1.0 an solid blotch. Radius controls the radius, frequency, the frequency of the blotches. Dtype controls the distance metric used for the Voronoi noise, when not 0, the Minkowski metric, with dtype as Minkowski's P parameter, being P = 1, the Manhattan metric, P = 2 the Euclidian metric, and allowing higher orders of P tending towards Tchebychev results.</usage>
+	<usage>Generates random blotches, based on single feature Voronoi cell noise. &quot;Jitter&quot; controls the Voronoi cell noise jittering, generating a less or more evenly distribution of blotches. &quot;Offset&quot; controls the center offset, a value of 0 generating a hollow blotch, and 1.0 an solid blotch. &quot;Radius&quot; controls the radius, and &quot;frequency&quot;, the frequency of the blotches. &quot;Dtype&quot; controls the distance metric used for the Voronoi noise, when different than 0 the metric being the Minkowski metric, with &quot;dtype&quot; as Minkowski&apos;s P parameter, being P = 1, the Manhattan metric, P = 2 the Euclidian metric, and allowing higher orders of P tending towards Tchebychev results.</usage>
 </shrimp>

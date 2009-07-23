@@ -1,6 +1,6 @@
 <shrimp type="function" name="VoronoiKM2D2F" description="2D Voronoi noise, 2 features, Karlsruhe (Moscow) metric" author="rconstruct">
-	<input name="ss" description="s coordinate" type="float" default="s"/>
-    <input name="tt" description="t coordinate" type="float" default="t"/>
+	<input name="ss" description="X coordinate" storage="varying" type="float" default="s"/>
+    <input name="tt" description="Y coordinate" storage="varying" type="float" default="t"/>
 	<input name="jitter" description="Jitter" type="float" default="1"/>
     <output name="f1" description="feature 1" type="float"/>
     <output name="spos1" description="s position 1" type="float"/>

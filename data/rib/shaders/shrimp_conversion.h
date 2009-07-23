@@ -1,3 +1,5 @@
+#include "shrimp_helpers.h"
+
 /* Utility functions to convert between coordinate systems */
 
 /* Cartesian to polar coordinates */
