@@ -1,5 +1,9 @@
-/* Microfacet distribution functions */
+#ifndef SHRIMP_EXTRAS_H
+#define SHRIMP_EXTRAS_H	1
 
+#include <shrimp_helpers.h>
+
+/* Microfacet distribution functions */
 ////////////////////////////////////////////////////////////////////////////////
 /* Beckmann distribution */
 float beckmann(
@@ -19,7 +23,7 @@ float ward(
 {
 	float tanalpha = max( 0, sqrt( 1 - SQR(cosalpha)) / cosalpha );
 	float m2 = SQR(roughness);
-	float out = 1 / (m2 * PI * pow( cosalpha, 3 ));
+	float out = 1 / (m2 * S_PI * pow( cosalpha, 3 ));
 	out *= exp( -(SQR(tanalpha)/m2));
 	return out;	
 }
@@ -41,7 +45,7 @@ trowbridge_reitz(
 
 ////////////////////////////////////////////////////////////////////////////////
 /* Heidrich-Seidel anisotropic distribution, some literature refers to
- * coupling this with a isotropic specular term */
+ * coupling the anisotropic specular term with a isotropic specular term */
 float
 heidrich_seidel(
 					normal Nf;
@@ -101,9 +105,12 @@ float he_torrance(
 	float hnl = cosalpha2 / (2 * m2 * (1 - cosalpha2) );
 	float hnv = costheta2 / (2 * m2 * (1 - costheta2) );
 
-	float gnl = sqrt( PI * hnl * (2 - mm_erfc( sqrt( hnl ))));
-	float gnv = sqrt( PI * hnv * (2 - mm_erfc( sqrt( hnv ))));
+	float gnl = sqrt( S_PI * hnl * (2 - mm_erfc( sqrt( hnl ))));
+	float gnv = sqrt( S_PI * hnv * (2 - mm_erfc( sqrt( hnv ))));
 
 	return (gnl / (gnl +1) ) * (gnv / (gnv + 1) );
 }
+
+////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_EXTRAS_H */
 

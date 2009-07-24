@@ -1,7 +1,10 @@
-#include "shrimp_helpers.h"
+#ifndef SHRIMP_CONVERSION_H
+#define SHRIMP_CONVERSION_H	1
+
+#include <shrimp_helpers.h>
 
 /* Utility functions to convert between coordinate systems */
-
+////////////////////////////////////////////////////////////////////////////////
 /* Cartesian to polar coordinates */
 void
 cartesian2polar2d(	float x, y;
@@ -286,5 +289,7 @@ tangent2object(
 	}
 	return Nnew;
 }
+
 ////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_CONVERSION_H */
 

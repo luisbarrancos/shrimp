@@ -1,19 +1,16 @@
 #ifndef SHRIMP_FRACTAL_H
-#define SHRIMP_FRACTAL_H
+#define SHRIMP_FRACTAL_H 1
 
-/* 
-	Some noise and Fractal functions.
-	These are based on the functions given in noises.h written by
-	Larry Gritz and distributed with BMRT. see www.bmrt.org
-	Used with permission.
-*/
+/* Some noise and Fractal functions.
+ * These are based on the functions given in noises.h written by
+ * Larry Gritz and distributed with BMRT. see www.bmrt.org
+ * Used with permission. */
 
-/* Note, we did some modifications to give shrimp some extra blocks */
+/* Note, some modifications were made to give shrimp some extra blocks */
 
 #ifndef snoise
 
-/*
- * Signed noise -- the original Perlin kind with range (-1,1) We prefer
+/* Signed noise -- the original Perlin kind with range [-1,1]. We prefer
  * signed noise to regular noise mostly because its average is zero.
  * We define three simple macros:
  *   snoise(p) - Perlin noise on either a 1-D (float) or 3-D (point) domain.
@@ -57,6 +54,7 @@
 #define filteredvsnoisexy(x,y,width) (vsnoisexy(x,y) * \
 		(1-smoothstep (0.2,0.75,width)))
 
+////////////////////////////////////////////////////////////////////////////////
 /* Having filteredsnoise leads easily to an antialiased version of fBm. */
 float fBm(	point p; float filtwidth;
 			uniform float maxoctaves, lacunarity, gain; )
@@ -178,6 +176,7 @@ vector vfBm(	point p; float t, filtwidth;
 #define vfBm_default(p)  vfBm (p, sqrt(area(p)), 4, 2, 0.5)
 */
 
+////////////////////////////////////////////////////////////////////////////////
 /* Ken Musgrave's Variable Lacunarity noise */
 
 #define VLNoise(Pt,scale) ( snoise( vsnoise(Pt) * scale + Pt) )
@@ -191,6 +190,8 @@ vector vfBm(	point p; float t, filtwidth;
 			( filteredsnoisexy( filteredsnoise( x,fwidth)*scale+x,\
 			filteredsnoise( y,fwidth)*scale+y,fwidth))
 
+////////////////////////////////////////////////////////////////////////////////
+/* Variable Lacunarity fractional Brownian motion */
 float VLfBm(	point p; float filtwidth;
 				uniform float maxoctaves, lacunarity, gain, scale; )
 {
@@ -247,7 +248,8 @@ float VLfBm(	point p; float filtwidth;
     return sum;
 }
 
-/* extra VLfBm's for shrimp, to return color/vector, etc... */
+////////////////////////////////////////////////////////////////////////////////
+/* extra VLfBm's for color/vector types */
 vector VLvfBm(	point p; float filtwidth;
 				uniform float maxoctaves, lacunarity, gain, scale;)
 {
@@ -316,6 +318,7 @@ vector VLvfBm(	point p; float filtwidth;
 #define VLfBm_default(p)      VLfBm (p, sqrt(area(p)), 4, 2, 0.5, 1.0)
 */
 
+////////////////////////////////////////////////////////////////////////////////
 /* Antialiased turbulence.  Watch out -- the abs() call introduces infinite
  * frequency content, which makes our antialiasing efforts much trickier!
  */
@@ -450,9 +453,10 @@ vector vturbulence( point p; float filtwidth;
 #define turbulence_default(p)  turbulence (p, sqrt(area(p)), 4, 2, 0.5)
 */
 
-/* Ken Musgrave's Ridged MultiFractal 
-   For an explanation see "Texturing and Modelling" chap 9
-*/ 
+////////////////////////////////////////////////////////////////////////////////
+/* Ken Musgrave's Ridged MultiFractal
+ * For an explanation see "Texturing and Modelling" chap 9
+ * */ 
 float Ridged( 	point p; 
 				float filtwidth;
 				uniform float maxoctaves, lacunarity, offset, gain; )
@@ -644,7 +648,7 @@ vector vRidged( point p; float filtwidth;
 */
 
 ////////////////////////////////////////////////////////////////////////////////
-// Voronoi (Worley) tweaked, with Minkowski distance added /////////////////////
+// Voronoi (Worley) cell noise tweaked, with Minkowski distance added //////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /* Voronoi cell noise (a.k.a. Worley noise) -- 3-D, 1-feature version. */
@@ -866,8 +870,8 @@ voronoi_f1f2_2d(    float ss, tt;
     f1 = sqrt(f1);  f2 = sqrt(f2);
 }
 
-/*
- * Some small, commonly needed macros and functions.
+////////////////////////////////////////////////////////////////////////////////
+/* Some small, commonly needed macros and functions.
  * These are based on, and replace, the similar functions found
  * in patterns.h by Larry Gritz as distributed with BMRT.
  * Some of the macros are also based on similar ones given in
@@ -875,7 +879,7 @@ voronoi_f1f2_2d(    float ss, tt;
  * http://accad.osu.edu/~smay/RManNotes/rmannotes.html
  * or taken from Darwyn Peachey's chapter
  * in "Texturing and Modelleling" by Ebert et al.
- */
+ * */
 
 /* signed noise
  *
@@ -883,5 +887,6 @@ voronoi_f1f2_2d(    float ss, tt;
 //#define snoise(x)    (noise(x) * 2 - 1)
 #define snoise2(x,y) (noise(x,y) * 2 - 1)
 
-#endif
+////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_FRACTAL_H */
 

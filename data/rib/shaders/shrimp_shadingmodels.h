@@ -1,16 +1,14 @@
-////////////////////////////////////////////////////////////////////////////////
+#ifndef SHRIMP_SHADING_MODELS_H
+#define SHRIMP_SHADING_MODELS_H	1
 
-#include "shrimp_helpers.h" /* useful constants & others */
-#include "shrimp_extras.h" /* for PDFs and Geometric attenuation, for the 
+#include <shrimp_helpers.h>	/* useful constants & others */
+#include <shrimp_extras.h>	/* for PDFs and Geometric attenuation, for the 
 							   Cook-Torrance model */
-#include "shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
+#include <shrimp_aov.h>		/* for the AOVs macros. Note that we initialize
 							   all the AOVs to zero in the first statement
 							   of the preview shader with INIT_AOV_PARAMETERS*/
-#include "odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
+#include <odwikicomplex.h>	/* Complex math, from the Odforce.net's Odwiki,
 							   including full formula for complex Fresnel. */
-
-#ifndef SHRIMP_SHADING_MODELS
-#define SHRIMP_SHADING_MODELS
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wrapped diffuse illumination model, based on ZJ's wrapped diffuse model /////
@@ -30,7 +28,7 @@ wrappeddiffuse(
 	color C = color(0);
 	uniform float nondiff;
 
-	illuminance( P, Nf, PI )
+	illuminance( P, Nf, S_PI )
 	{
 		extern vector L;
 		extern color Cl;
@@ -126,7 +124,7 @@ Buratti(
 			alpha = acos(cosalpha);
 			
 			/* macroscopic roughness */
-			R = (alpha < PI/2 - EPS) ?
+			R = (alpha < S_PI_2 - EPS) ?
 				2 - tanalpha / 2 / sden * (1 - exp(-sden/tanalpha)) *
 				(3 - exp(-sden/tanalpha)) : 1;
 
@@ -208,8 +206,7 @@ Minnaert(
 // function for the Lunar Surface", in Journal of Geophysical Research,vol.68 //
 // no.15, 1963 /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// slightly tweaked to fit shrimp's structure //////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+/* slightly tweaked to fit Shrimp's structure */
 
 /*
  * Szymon Rusinkiewicz
@@ -239,7 +236,7 @@ float Eval(
 	float R = (alpha < S_PI_2 - EPS) ?
 		2 - tanalpha/2/g * (1-exp(-g/tanalpha)) * (3-exp(-g/tanalpha)) : 1;
 	/* opposition effect */
-	float S = 2 / 3 / PI * ( (sinalpha + (PI - alpha) * cosalpha) / PI
+	float S = 2 / 3 / S_PI * ( (sinalpha + (S_PI - alpha) * cosalpha) / S_PI
 			+ f * SQR(1 - cosalpha));
 
 	return r*R*S/(vin.vn + vout.vn);
@@ -270,7 +267,7 @@ color Hapke(
 
         	Ln = normalize(L);
         	Ct += Cl * Eval( Ln, Vf, Nf, sden, fscat, refl) 
-					* Ln.Nf * PI;
+					* Ln.Nf * S_PI;
 		}
     }
     return Ct;
@@ -286,7 +283,7 @@ color Hapke(
 #define AIR 1.000293 /* ior for air */
 #endif
 
-/* formula for the Fresnel reflection factor for unpolarized  light */
+/* formula for the Fresnel reflection factor for unpolarized light */
 float nfresnel( float cos_theta, eta; )
 {
 	float g2 = sqrt( SQR(eta) - 1 + SQR(cos_theta) );
@@ -351,8 +348,7 @@ color Wolff(
 // implementation by Szymon Rusinkiewicz  //////////////////////////////////////
 // from http://unix.math2.us.edu.pl/~perry/mp/wyklBRDF.pdf /////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-// slighly tweaked to fit shrimp's structure ///////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
+/* slightly tweaked to better fit Shrimp's structure */
 
 /*
  * Oren and Nayar's generalization of Lambert's reflection
@@ -456,8 +452,7 @@ OrenNayar(
  *
  * */
 
-/* tweaked a bit to fit Shrimp's structure.
- * TODO: it could use some optimization */
+/* tweaked a bit to fit Shrimp's structure. */
 
 color
 LG_OrenNayar(
@@ -501,7 +496,7 @@ LG_OrenNayar(
 			if (cos_phi_diff >= 0) {
 				C2 *= sin(alpha);
 			} else {
-				C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
+				C2 *= (sin(alpha) - pow( 2 * beta / S_PI, 3));
 			}
 				C3 = .125 * sigma2 / (sigma2 + .09) * pow( 4 * alpha
 						* beta / S_2PI, 2);
@@ -584,7 +579,7 @@ OrenNayarWolff(
 			if (cos_phi_diff >= 0) {
 				C2 *= sin(alpha);
 			} else {
-				C2 *= (sin(alpha) - pow( 2 * beta / PI, 3));
+				C2 *= (sin(alpha) - pow( 2 * beta / S_PI, 3));
 			}
 			/* 3rd coefficient (Qualitative model only uses C1+C2) */
 			C3 = .125 * sigma2 / (sigma2 + .09) * pow( 4 * alpha *
@@ -667,7 +662,7 @@ anisophongdiff(
 
        		ndotl = Nf.Ln;
 
-			C += Cl * (28 * Kd / (23*PI)) * (1-Ks) * (1-pow(1-ndotl/2,5))
+			C += Cl * (28 * Kd / (23*S_PI)) * (1-Ks) * (1-pow(1-ndotl/2,5))
 					* (1-pow(1-ndotv/2,5)) * ndotl;
 		}
     }
@@ -1097,8 +1092,7 @@ cooktorrance(
 #endif
 		}
 	}
-	/* NOTE: normalization needed?? The values at high grazing angles seem
-	 * to go up a lot */
+	/* NOTE: the values at high grazing angles seem to go up a lot */
 	return clamp(Ccook, color(0), color(1));
 }
 
@@ -1237,7 +1231,7 @@ shw_brushed_metal(
     
     /* "Specular" highlight in the Phong sense: directional-diffuse */
     cos_eye = -vdir.Vf;
-    sin_eye = sqrt( 1.0 - SQR(cos_eye) );
+    sin_eye = sqrt( max(0, 1.0 - SQR(cos_eye)));
     
     uniform float nonspec;
 	color C = color(0);
@@ -1409,7 +1403,7 @@ color SampleEnvironment(
  * */
 float calcPhi(float nu, nv; float e1)
 {
-    return atan( sqrt( (nu+1)/(nv+1) ) * tan( PI*e1/2) );
+    return atan( sqrt( (nu+1)/(nv+1) ) * tan( S_PI * e1/2) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1446,7 +1440,7 @@ color EnvIllumAshShir(
         else if (e1 >= 0.25 && e1 < 0.5)
             ph = calcPhi(nu, nv, 1 - 4*(0.5 - e1)) + S_PI_2;
         else if (e1 >= 0.5 && e1 < 0.75)
-            ph = calcPhi(nu, nv, 1 - 4*(0.75 - e1)) + PI;
+            ph = calcPhi(nu, nv, 1 - 4*(0.75 - e1)) + S_PI;
         else
             ph = calcPhi(nu, nv, 1 - 4*(1 - e1)) - S_PI_2;
     
@@ -1468,7 +1462,7 @@ color EnvIllumAshShir(
             /* now generate the diffuse part using cos-weighted distribution. */
             e1 = random();
             e2 = random();
-			Hn = cos( 2 * PI * e1) * sqrt(1-e2) * xdir + sin( 2 * PI * e1)
+			Hn = cos(S_2PI * e1) * sqrt(1-e2) * xdir + sin(S_2PI * e1)
 					* sqrt(1-e2) * ydir + sqrt(e2) * Nf;
       
             C += rd * SampleEnvironment(P, Hn, envmap);
@@ -1710,8 +1704,9 @@ color subsurfaceSkin(
 void sinhcosh( float t; output float sinh, cosh; )
 {
     float t2 = t;
-    if (t2 > 10)
+    if (t2 > 10) {
 		t2 = 10;
+	}
     float ex = exp(t2);
     float invex = 1 / ex;
 
@@ -1875,14 +1870,14 @@ LocIllumGranier(
 	float maxndotl;
 	vector ti, ri, rti, to, ro, Ln;
 	color Cdiff = color(0), Cspec = color(0);
-	color diff = 0, spec = 0;
+	color diff = color(0), spec = color(0);
 	uniform float nondiff, nonspec;
 
 	/****** perform diffuse first *********/
 	uniform float i;
 	for ( i = 0; i < 3; i += 1) {
 		td = (80 / 21) * ( ior[i] / SQR( ior[i] + 1) );
-		difff = 1 + 2 * cos( 4 * PI * ior[i] * d / lambda[i] )
+		difff = 1 + 2 * cos( 4 * S_PI * ior[i] * d / lambda[i] )
 				* sqrt( td * (1 - td) );
 		setcomp( diff, i, difff/2 );
 	}
@@ -2167,23 +2162,23 @@ float strandspecular(
 
 /* Main */
 color tshair(
-					float Ka, Kd, Ks; //ambient, diffuse, specular coefficients
-					float shift; // primary specular highlight shift
-                    float shift2; // secondary specular highlight shift
-					float exponent; // primary specular exponent
-                    float exponent2; // secondary specular exponenet
-                    float specmask; // specular mask, to shift secondary spec
-					color Cdiff; // surface color,sometimes bound to geo
-					color Cbase; // hair base color
-					color Ctip; // hair tip color
-					color Cspec; // primary specular color
-                    color Cspec2; // secondary specular color
-					normal Nn; // normal vector
-					vector Vf; // viewer vector
+					float Ka, Kd, Ks; /* ambient, diffuse, specular coeffs */
+					float shift; /* primary specular highlight shift */
+                    float shift2; /* secondary specular highlight shift */
+					float exponent; /* primary specular exponent */
+                    float exponent2; /* secondary specular exponenet */
+                    float specmask; /* specular mask,to shift secondary spec */
+					color Cdiff; /* surface color,sometimes bound to geo */
+					color Cbase; /* hair base color */
+					color Ctip; /* hair tip color */
+					color Cspec; /* primary specular color */
+                    color Cspec2; /* secondary specular color */
+					normal Nn; /* normal vector */
+					vector Vf; /* viewer vector */
 					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
-	/* We're going to need dPdv for direction, P for the illuminance
+	/* dPdv is needed for direction, P for the illuminance
 	 * construct, and the v coordinate for the color blend in the color
 	 * contribution. */
 	
@@ -2243,14 +2238,14 @@ color tshair(
 ////////////////////////////////////////////////////////////////////////////////
 
 color kajiyakay(
-					float Ka, Kd, Ks; //ambient, diffuse, specular coefficients
-					float rough; // specular roughness
-					color Cdd; // "hidden" surface color,sometimes bound to geo
-					color Cbase; // hair base color
-					color Ctip; // hair tip color
-					color Css; // specular color
-					normal Nn; // normal vector
-					vector Vf; // viewer vector
+					float Ka, Kd, Ks; /*ambient, diffuse, specular coeffs */
+					float rough; /* specular roughness */
+					color Cdd; /* "hidden" surf color,sometimes bound to geo */
+					color Cbase; /* hair base color */
+					color Ctip; /* hair tip color */
+					color Css; /* specular color */
+					normal Nn; /* normal vector */
+					vector Vf; /* viewer vector */
 					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -2361,7 +2356,7 @@ color MKgooch(
     kwarm = yellow + (SurfaceColor * cbeta);
     extern point P;
 	
-    illuminance( P, Nf, PI)
+    illuminance( P, Nf, S_PI)
 	{
         extern vector L;
         Ln = normalize(L);
@@ -2724,7 +2719,8 @@ rtglass(
 	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
 	 * just leave everything in place (there's always frankenrender,
 	 * but i haven't tested it this way (w/BMRT's rayserver)).
-	 * Note that ternary operator seems unsupported in Aqsis */
+	 * Note: the ternary operator seems to have problems with color types
+	 * in Aqsis (cannot find a suitable cast for the expression) */
 #if RENDERER == aqsis
 	if (Ka > 0) aov_ambient +=  Ka * ambient();
 	if (Kd > 0) aov_diffuse += Kd * diffuse(Nf);
@@ -3096,5 +3092,5 @@ SIG2k_srf_fur(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_SHADING_MODELS_H */
 
-#endif

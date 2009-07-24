@@ -1,13 +1,19 @@
-#include "shrimp_conversion.h"
-#include "shrimp_fractal.h"
-#include "shrimp_helpers.h"
+#ifndef SHRIMP_EXTRA_PATTERNS_H
+#define SHRIMP_EXTRA_PATTERNS_H	1
 
-// By Derek Ledbetter
-// Based on the projection method described in 
-//   N. G. de Bruijn,
-//   Algebraic theory of Penrose's non-periodic tilings of the plane,
-//   Proceedings of the Koninklijke Nederlandse Akademie van Wetenschappen,
-//   Series A, 84, 1981. 
+#include <shrimp_conversion.h>
+#include <shrimp_fractal.h>
+#include <shrimp_helpers.h>
+
+////////////////////////////////////////////////////////////////////////////////
+// Penrose rhomb tiling ////////////////////////////////////////////////////////
+/* By Derek Ledbetter
+ * based on the projection method described in: N.G. de Bruijn,
+ * "Algebraic theory of Penrose's non-periodic tilings of the plane",
+ * Proceedings of the Koninklijke nederlandse Akademie van Wetenschappen,
+ * Series A, 84, 1981 */
+
+/* slightly tweaked to fit Shrimp's structure */
 
 void
 find_penrose_rhomb(
@@ -17,18 +23,18 @@ find_penrose_rhomb(
                     )
 
 {
-	uniform float phi = 1.618033989; /* Golden ratio */
-	/* sine 32, 72 degrees, cosine 32, 72 degrees */
-	uniform float sin36 = 0.5877852523, sin72 = 0.9510565163;
-	uniform float cos36 = 0.8090169944, cos72 = 0.3090169944;
-    
-	uniform float root3 = 1.732050808; /* sqrt(3) */
+	uniform float basisS[5] = { 1, -S_COS36, S_COS72, S_COS72, -S_COS36 };
+	uniform float basisT[5] = { 0, -S_SIN36, S_SIN72, -S_SIN72, S_SIN36 };
 	
-	uniform float basisS[5] = { 1, -cos36, cos72, cos72, -cos36 };
-	uniform float basisT[5] = { 0, -sin36, sin72, -sin72, sin36 };
-
-	float originalPt[5];
-	float pt[5];
+	/* can't initialize arrays with a single element in Pixie or Aqsis */
+	/* initialize  originalPt & pt just to get rid of the warnings */
+#if RENDERER == pixie || RENDERER == aqsis
+	float originalPt[5] = { 0, 0, 0, 0, 0 };
+	float pt[5] = { 0, 0, 0, 0, 0 };
+#else
+	float originalPt[5] = 0;
+	float pt[5] = 0;
+#endif
 	
 	uniform float i;
 	for( i = 0; i < 5; i += 1 )
@@ -52,7 +58,7 @@ find_penrose_rhomb(
 
 		for( rotation = 0; rotation < 5; rotation += 1 )
 		{
-			uniform float factor = phi;
+			uniform float factor = S_PHI;
 			for( tileType = 0; tileType < 2; tileType += 1 )
 			{
 				uniform float
@@ -103,7 +109,6 @@ find_penrose_rhomb(
 
 ////////////////////////////////////////////////////////////////////////////////
 // Painted Penrose rhomb tiling, by Derek Ledbetter ////////////////////////////
-// slightly changed for shrimp /////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 color
@@ -123,9 +128,10 @@ painted_tiling(
     float distanceToBoundary = min( tileX, 1-tileX, tileY, 1-tileY);
     float intensity = smoothstep( 0, .1, distanceToBoundary );
 
-	/* Workaround for ternary operator in Aqsis */
+	/* Workaround for ternary operator in Aqsis (cannot find a suitable
+	 * cast for the expression) */
 #if RENDERER == aqsis
-	color tileColor = 0;
+	color tileColor = color(0);
 	if (tileType == 0) {
 		tileColor = intensity * cskinny;
 	} else {
@@ -362,7 +368,7 @@ void hextile(
 	tfuzz = 0.5 * twidth;
 	fuzzmax = max( sfuzz, tfuzz );
 
-	tilewidth = tileradius * 1.7320508; /* sqrt(3) */
+	tilewidth = tileradius * S_SQRT3;
 	tt = mod( yy, 1.5 * tileradius);
 	ttile = floor( yy / (1.5*tileradius) );
 	
@@ -381,7 +387,7 @@ void hextile(
 					(1 - smoothstep( tilewidth-mw2-sfuzz, tilewidth-mw2, ss)));
 	} else {
 		x = tilewidth / 2 - abs( ss - tilewidth/2 );
-		y = 1.7320508 * (tt - tileradius);
+		y = S_SQRT3 * (tt - tileradius);
 		
 		if (y > x) {
 			if ( mod (ttile/2, 1 ) == 0.5) {
@@ -645,7 +651,7 @@ voronoi_km_f1f2_2d(
 		cartesian2polar2d( spos, tpos, nspos, ntpos );
 
 		float qx = min( nss, nspos );
-		float qy = min( abs(ntt - ntpos), 6.28 - abs(ntt - ntpos) );
+		float qy = min( abs(ntt - ntpos), S_2PI - abs(ntt - ntpos) );
 
 		float dist = 0;
 		if ( ntt >= 0 && ntt <= 2) {
@@ -667,4 +673,5 @@ voronoi_km_f1f2_2d(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_EXTRA_PATTERNS_H */
 

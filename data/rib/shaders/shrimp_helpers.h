@@ -1,5 +1,8 @@
 #ifndef SHRIMP_HELPERS_H
-	#define SHRIMP_HELPERS_H
+#define SHRIMP_HELPERS_H 1
+
+/* Useful macros, functions and quantities */
+////////////////////////////////////////////////////////////////////////////////
 
 #ifndef EPS
 #define EPS 0.0001
@@ -17,14 +20,21 @@
 #define luminance(c)	comp(c,0)*0.299 + comp(c,1)*0.587 + comp(c,2)*.114
 #endif
 
-#define S_E		2.718281828459045
-#define S_PI	3.141592653589793
-#define S_PI_2	1.570796326794896
-#define S_2PI	6.283185307179586
-#define S_1_PI	0.318309886183790
+#define S_E			2.718281828459045	/* Euler's number */
+#define S_PI		3.141592653589793	/* PI */
+#define S_PI_2		1.570796326794896	/* PI/2 */
+#define S_2PI		6.283185307179586	/* 2*PI */
+#define S_1_PI		0.318309886183790	/* 1/PI */
+#define S_PHI		1.618033988749894	/* Golden ratio */
+#define S_SIN36		0.587785252292473	/* sin(radians(36)) */
+#define S_SIN72		0.951056516295153	/* sin(radians(72)) */
+#define S_COS36		0.809016994374947	/* cos(radians(36)) */
+#define S_COS72		0.309016994374947	/* cos(radians(72)) */
+#define S_SQRT2		1.414213562373095	/* sqrt(2) */
+#define S_SQRT3		1.732050807568877	/* sqrt(3) */
 
 /* for optional arguments to shadeops, blocks need to know if the optional
- * arguments are set, we just need a symbol UND(efined) */
+ * arguments are set, an UND(efined) symbol makes things easier */
 #define UND		23
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -124,7 +134,8 @@ rotate2d( float x, y, theta, ox, oy;
 #define udn2(x,y,lo,hi) (smoothstep(.25, .75, noise(x,y)) * ((hi)-(lo))+(lo))
 
 ////////////////////////////////////////////////////////////////////////////////
-
+/* The filterwidth macro takes a float and returns the approximate amount
+ * that the float changes from pixel to adjacent pixel */
 #ifndef filterwidth
 #	define filterwidth(x)  ( max( abs( Du(x)*du ) + abs( Dv(x)*dv ), \
 			MINFILTWIDTH ) )
@@ -213,7 +224,7 @@ color scurvature(
 			gg = Nn.Xvv;
 
     /* Coefficients for the quadeq. */
-    float   dist = EE * GG - FF * FF;
+    float   dist = EE * GG - SQR(FF);
     float   a = (ff * FF - ee * GG ) / dist,
 			b = (gg * FF - ff * GG ) / dist,
 			c = (ee * FF - ff * EE ) / dist,
@@ -231,15 +242,21 @@ color scurvature(
 	 * Gaussian K=K1*K2 or K = eg-f^2/EG-F^2
 	 * */
 
+	/* Curvature type */
     if ( ctype == "mean" ) {
+		/* Mean */
         result = ( ee * GG - 2 * ff * FF + gg * EE ) / ( 2 * dist );
     } else if ( ctype == "amean" ) {
+		/* Absolute mean */
         result = abs( (ee * GG - 2 * ff * FF + gg * EE ) / ( 2 * dist ) );
     } else if ( ctype == "gauss" ) {
+		/* Gaussian */
         result = ( ee * gg - ff * ff ) / dist;
     } else if ( ctype == "min" ) {
+		/* Minimum */
         result = Kmin;
     } else if( ctype == "max" ) {
+		/* Maximum */
         result = Kmax;
     } else { result = 0; } // no ctype
 
@@ -261,9 +278,9 @@ color scurvature(
 
 ////////////////////////////////////////////////////////////////////////////////
 // extra helpers, from Larry Gritz's patterns.h ////////////////////////////////
-// slightly tweaked for shrimp use, and we only want some functions in /////////
-// particular. /////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+/* slightly tweaked for Shrimp use, only some particular functions are needed*/
 
 /************************************************************************
  * patterns.h - Some handy functions for various patterns.  Wherever
@@ -287,10 +304,10 @@ color scurvature(
 float filteredabs (float x, dx)
 {
     float integral (float t) {
-	return sign(t) * 0.5 * t*t;
+	return sign(t) * 0.5 * SQR(t);
     }
 
-    float x0 = x - 0.5*dx;
+    float x0 = x - 0.5 * dx;
     float x1 = x0 + dx;
     return (integral(x1) - integral(x0)) / dx;
 }
@@ -307,25 +324,25 @@ float filteredabs (float x, dx)
 float filteredsmoothstep (float e0, e1, x, dx)
 {
     float integral (float t) {
-	return -0.5*t*t * (t*t - 2*t);
+	return -0.5 * SQR(t) * ( SQR(t) - 2 * t);
     }
 
     /* Compute x0, x1 bounding region of integration, and normalize so that
      * e0==0, e1==1 */
     float edgediff = e1 - e0;
-    float x0 = (x-e0)/edgediff;
+    float x0 = (x - e0) / edgediff;
     float fw = dx / edgediff;
-    x0 -= 0.5*fw;
+    x0 -= 0.5 * fw;
     float x1 = x0 + fw;
 
     /* Region 1 always contributes nothing */
     float int = 0;
     /* Region 2 - compute integral in region between 0 and 1 */
     if (x0 < 1 && x1 > 0)
-    	int += integral(min(x1,1)) - integral(max(x0,0));
+    	int += integral( min( x1, 1) ) - integral( max( x0, 0) );
     /* Region 3 - is 1.0 */
     if (x1 > 1)
-    	int += x1-max(1,x0);
+    	int += x1 - max( 1, x0 );
     return int / fw;
 }
 
@@ -353,13 +370,13 @@ float filteredpulsetrain (float edge, period, x, dx)
     /* First, normalize so period == 1 and our domain of interest is > 0 */
     float w = dx/period;
     float x0 = x/period - w/2;
-    float x1 = x0+w;
+    float x1 = x0 + w;
     float nedge = edge / period;   /* normalized edge value */
 
     /* Definite integral of normalized pulsetrain from 0 to t */
     float integral (float t) { 
         extern float nedge;
-        return ((1-nedge)*floor(t) + max(0,t-floor(t)-nedge));
+        return ( (1-nedge) * floor(t) + max( 0, t-floor(t)-nedge) );
     }
 
     /* Now we want to integrate the normalized pulsetrain over [x0,x1] */
@@ -396,7 +413,7 @@ float smoothpulsetrain (float e0, e1, e2, e3, period, x)
 
 ////////////////////////////////////////////////////////////////////////////////
 
-/* varyEach takes a computed color, then tweaks each indexed item
+/* varyEach takes a (rgb) computed color, then tweaks each indexed item
  * separately to add some variation.  Hue, saturation, and lightness
  * are all independently controlled.  Hue adds, but saturation and
  * lightness multiply.
@@ -404,7 +421,7 @@ float smoothpulsetrain (float e0, e1, e2, e3, period, x)
 
 color varyEach (color Cin; float index, varyhue, varysat, varylum;)
 {
-    /* Convert to "hsl" space, it's more convenient */
+    /* Convert to "hsl" space, it's more convenient, assumes "rgb" input */
     color Chsl = ctransform ("hsl", Cin);
     float hue = comp( Chsl, 0), sat = comp( Chsl, 1), lum = comp( Chsl, 2);
 	
@@ -506,19 +523,21 @@ void mpcurvature(
 	 * Mathworld.com.
 	 * Implementation by Matthew Parrot, mparrot@vt.edu */
 
-	float ku, kv, kuv; // curvature in u and v
+	float ku, kv, kuv; /* curvature in u and v */
 	vector dpdu = Du(pp);
-	float ddpddu = length( Du(Du(pp)));
+	float ddpddu = length( Du(Du(pp)) );
 	vector dpdv = Dv(pp);
-	float ddpddv = length( Dv(Dv(pp)));
-	float ddpdudv = length( Du(Dv(pp)));
+	float ddpddv = length( Dv(Dv(pp)) );
+	float ddpdudv = length( Du(Dv(pp)) );
 
 	ku = ddpddu / pow( length(dpdu), 2);
 	kv = ddpddv / pow( length(dpdv), 2);
-	kuv = ddpdudv / ( length(dpdu) * length(dpdv));
+	kuv = ddpdudv / ( length(dpdu) * length(dpdv) );
 
-	float theta = atan(((2 * kuv) / (ku-kv)))/ 2;
-	float pm = 2 * kuv * sin(theta) * cos(theta); //+ minus portion of curvature
+	float theta = atan( 2 * kuv / (ku-kv)) / 2;
+	
+	/* + minus portion of curvature */
+	float pm = 2 * kuv * sin(theta) * cos(theta);
 	float base = ku * pow( sin( theta), 2) + kv * pow( cos(theta), 2);
 	float kmaxt = base + pm;
 	float kmint = base - pm;
@@ -532,6 +551,7 @@ void mpcurvature(
 ////////////////////////////////////////////////////////////////////////////////
 
 /* behaves like a brigthness filter */
+/* the block operates on a per component basis for color types */
 float bias( float x, val )
 {
 	return (val > 0) ? pow(x, log(val) / log(0.5)) : 0;
@@ -579,5 +599,5 @@ float mm_erfc( float x; ) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+#endif /* SHRIMP_HELPERS_H */
 
-#endif

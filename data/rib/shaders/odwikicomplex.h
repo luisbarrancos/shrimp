@@ -36,11 +36,11 @@
    without express or implied warranty.
  *****************************************************************************/
 
-/* Some tweaks were needed to fit Shrimp's structure */
-#include "shrimp_helpers.h"
-
 #ifndef ODWIKI_COMPLEX_SHRIMP_H
-#define ODWIKI_COMPLEX_SHRIMP_H
+#define ODWIKI_COMPLEX_SHRIMP_H	1
+
+/* Some tweaks were needed to fit Shrimp's structure */
+#include <shrimp_helpers.h>
 
 ////////////////////////////////////////////////////////////////////////////////
 // Complex data type
@@ -86,14 +86,7 @@ float cx_mod( complex z; ) {
 }
 
 float cx_mod( float x; ) {
-#if RENDERER == aqsis || RENDERER == pixie
-	float xout;
-	if (x < 0.0) xout = -x;
-	else xout = x;
-	return xout;
-#else
 	return x < 0.0 ? -x : x;
-#endif
 }
 
 float cx_mod2( complex z; ) {
@@ -226,16 +219,8 @@ complex cx_mul( complex a, b; ) {
 // This does not check for division by zero!
 complex cx_div( complex a; float b; ) {
 	float l2 = b * b;
-	complex result = (0);
-#if RENDERER == aqsis || RENDERER == pixie
-	if (l2 != 0) {
-		result = cx_set( ( xcomp(a) * b) / l2, ( ycomp(a) * b) / l2 );
-	}
-	return result;
-#else
 	return l2 == 0 ? complex(0) : cx_set( ( xcomp(a) * b) / l2,
 			( ycomp(a) * b) / l2 );
-#endif
 }
 
 complex cx_div( complex a, b; ) {
@@ -297,7 +282,7 @@ complex cx_pow( complex base; float expo; ) {
 complex cx_pow( float base; complex expo; ) {
 	float expx = xcomp(expo), expy = ycomp(expo),
 		  re = log( cx_abs( complex(base) )),
-		  im = PI * 2,
+		  im = S_2PI, /* PI*2 */
 		  re2 = (re * expx) - (im * expy),
 		  im2 = (re * expy) + (im * expx),
 		  ere = exp( re2 );
@@ -341,12 +326,7 @@ complex cx_sqrt( complex z; ) {
 complex cx_sqrt( float x; ) {
 	complex z;
 	if (x >= 0.0) {
-#if RENDERER == aqsis || RENDERER == pixie
-		if (x != 0.0) z = cx_setR( sqrt(x) );
-		else z = complex(0);
-#else
 		z = x == 0.0 ? complex(0) : cx_setR( sqrt(x));
-#endif
 	} else {
 		z = cx_sqrt( cx_setR(x));
 	}
@@ -449,5 +429,5 @@ float fresnel_kt(	float cosalpha;	complex ior; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-#endif
+#endif /* ODWIKI_COMPLEX_SHRIMP_H */
 

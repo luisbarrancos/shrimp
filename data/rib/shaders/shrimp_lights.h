@@ -1,3 +1,9 @@
+#ifndef SHRIMP_LIGHT_H
+#define SHRIMP_LIGHT_H 1
+
+/* Collection of useful light shaders/functions */
+////////////////////////////////////////////////////////////////////////////////
+
 ////////////////////////////////////////////////////////////////////////////////
 // Siggraph 2000 shadow spot light shader, by Tal Lancaster, from //////////////
 // The RenderMan Repository, http://www.renderman.org //////////////////////////
@@ -40,7 +46,7 @@ sig2kshadowspot(
 		extern vector L;
 		extern point Ps;
 
-		cosangle = L.A / length( L );
+		cosangle = L.A / length(L);
 		attenuation = atten * pow( cosangle, beamdistribution) /
 									( atten + length(L));
 		attenuation *= smoothstep( cosoutside, cosinside, cosangle);
@@ -107,11 +113,11 @@ slideprojector(
 	reIU = reIV ^ reIT;
 
 	color C = color(0);
-	illuminate( from, vector( reIT), atan( 1.414213562 / spread)) /* sqrt(2) */
+	illuminate( from, vector( reIT), atan( S_SQRT2 / spread)) /* sqrt(2) */
 	{
 		extern vector L;
 		extern point Ps;
-		L = Ps - from; /* direction of light soruce from surface point */
+		L = Ps - from; /* direction of light source from surface point */
 		Pt = L.reIT;   /* direction of Ps along reIT, reIU, reIV */
 		Pu = L.reIU;
 		Pv = L.reIV;
@@ -142,7 +148,6 @@ sdistantlight(
 				color lightcolor;
 		)
 {
-
 	extern point Ps;
 
 	color C = color(0);
@@ -177,7 +182,7 @@ spointlight(
 		extern vector L;
 		extern point Ps;
 		
-		float l2 = L . L;
+		float l2 = L.L;
 		if (decay == 1.0) {
 			C = intensity * ( lightcolor / l2 );
 		} else {
@@ -194,5 +199,5 @@ spointlight(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
+#endif /* SHRIMP_LIGHT_H */
 

@@ -1,8 +1,8 @@
 <shrimp type="function" name="Disc" description="Returns 1 if inside the disc, otherwise returns 0" author="rconstruct">
-	<input name="x" description="x,y give the point to be tested" type="float" default="s"/>
-	<input name="y" description="x,y give the point to be tested" type="float" default="t"/>
-	<input name="ox" description="ox,oy give the centre of the disc" type="float" default="0.5"/>
-	<input name="oy" description="ox,oy give the centre of the disc" type="float" default="0.5"/>
+	<input name="x" description="X surface coordinate" storage="varying" type="float" default="s"/>
+	<input name="y" description="Y surface coordinate" storage="varying" type="float" default="t"/>
+	<input name="ox" description="X component of disc center" type="float" default="0.5"/>
+	<input name="oy" description="Y component of disc center" type="float" default="0.5"/>
 	<input name="radius" description="The radius of the disc" type="float" default="0.2"/>
 	<input name="blur" description="The amount the edge is to be blurred" type="float" default="0.001"/>
 	<output name="out" description="returns 1 if x,y lies within the disc" type="float"/>
@@ -11,7 +11,5 @@
 	<rsl_code>
 		$(out) = shDisc( $(ox),$(oy),$(x),$(y),$(radius),$(blur) );
 	</rsl_code>
-	<usage>Tests whether a 2d point lies inside a 2d Disc.
-Blur can be used to control the antialiasing. The output varies smoothly between 0 and 1 in the blurred region.
-	</usage>
+	<usage>Tests whether a 2D point lies inside a 2D Disc. Blur can be used to control the antialiasing. The output varies smoothly between 0 and 1 in the blurred region.</usage>
 </shrimp>
