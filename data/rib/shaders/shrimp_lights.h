@@ -1,6 +1,8 @@
 #ifndef SHRIMP_LIGHT_H
 #define SHRIMP_LIGHT_H 1
 
+#include <shrimp_helpers.h>
+
 /* Collection of useful light shaders/functions */
 ////////////////////////////////////////////////////////////////////////////////
 
