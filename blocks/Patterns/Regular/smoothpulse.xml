@@ -1,5 +1,5 @@
 <shrimp type="function" name="Smoothpulse" description="Larry Gritz&apos;s smoothpulse" author="rconstruct">
-	<input name="x" description="Value to test" type="float" default="s"/>
+	<input name="x" description="Value to test" storage="varying" type="float" default="s"/>
 	<input name="e0" description="E0" type="float" default="0"/>
 	<input name="e1" description="E1" type="float" default="0.3"/>
 	<input name="e2" description="E2" type="float" default="0.7"/>
@@ -9,5 +9,5 @@
 	<rsl_code>
 		$(val) = smoothpulse( $(e0), $(e1), $(e2), $(e3), $(x) );
 	</rsl_code>
-	<usage>Smoothpulse by Larry Gritz. Returns smoothstep(e0, e1, x) - smoothstep( e2, e3, x).</usage>
+	<usage>Larry Gritz&apos;s &quot;smoothpulse&quot; function, returns smoothstep(e0,e1,x)-smoothstep(e2,e3,x).</usage>
 </shrimp>

@@ -9,7 +9,8 @@
 	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_include>shrimp_shapes.h</rsl_include>
 	<rsl_code>
-		$(out) = shDisc( $(ox),$(oy),$(x),$(y),$(radius),$(blur) );
+		$(out) = shDisc(	$(ox), $(oy), $(x), $(y),
+							$(radius), $(blur) );
 	</rsl_code>
 	<usage>Tests whether a 2D point lies inside a 2D Disc. Blur can be used to control the antialiasing. The output varies smoothly between 0 and 1 in the blurred region.</usage>
 </shrimp>

@@ -1,5 +1,5 @@
 <shrimp type="function" name="Stripe" description="Repeating stripe pattern" author="rconstruct">
-	<input name="x" description="x is the value to be tested" type="float" default="s"/>
+	<input name="x" description="x is the value to be tested" storage="varying" type="float" default="s"/>
 	<input name="freq" description="The frequency of the stripe" type="float" default="1"/>
 	<input name="width" description="The width of the stripe" type="float" default="0.5"/>
 	<input name="blur" description="The amount of blur" type="float" default="0.001"/>
@@ -7,8 +7,7 @@
 	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_include>shrimp_shapes.h</rsl_include>
 	<rsl_code>
-	$(out) = shStripe( $(width), $(freq), $(x), $(blur) );
+		$(out) = shStripe( $(width), $(freq), $(x), $(blur) );
 	</rsl_code>
-	<usage>Blur can be used to control antialiasing of stripe edges.
-	</usage>
+	<usage>This function generates stripes of width &quot;width&quot; at the given frequency &quot;freq&quot; for the &quot;x&quot; value to be tested, with &quot;blur&quot; controlling the antialiasing of the stripe edges.</usage>
 </shrimp>

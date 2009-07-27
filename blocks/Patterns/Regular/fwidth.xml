@@ -1,5 +1,5 @@
 <shrimp type="function" name="FWidth" description="Determine correct sample size for antialiasing" author="rconstruct">
-	<input name="p" description="point under consideration" type="float point" default="P"/>
+	<input name="p" description="point under consideration" storage="varying" type="float point" default="P"/>
 	<output name="fwidth" description="An estimate of the sample width at p" type="float"/>
 	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
