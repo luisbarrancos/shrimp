@@ -1,13 +1,28 @@
 <shrimp name="Caustic" type="function" description="Returns caustic on surface point" author="rconstruct">
-    <input name="PP" description="Surface point" type="point" default="P"/>
-	<input name="NN" description="Surface normal" type="normal" default="normalize(N)"/>
+    <input name="PP" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="NN" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
+	<input name="cmap" description="Caustic map" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="estim" description="Number of photons" storage="uniform" type="float" default="100"/>
 	<input name="ltype" description="Lookup type" storage="uniform" type="string" default="&quot;irradiance&quot;"/>
-	<input name="estim" description="Photon count" type="float" default="100"/>
 	<output name="val" description="Caustic value" type="color"/>
 	<rsl_code>
+	#if RENDERER == pixie
+		/* get caustic map and estimator from rib attributes */
+		uniform float estimator_$(blockname) = $(estim);
+		uniform string cmap_$(blockname) = $(cmap);
+		attribute(&quot;photon:estimator&quot;, estimator_$(blockname) );
+		if (1 == attribute(&quot;photon:causticmap&quot;,
+			cmap_$(blockname) ) &amp;&amp;
+			cmap_$(blockname) != &quot;&quot; ) {
+			aov_caustics += photonmap(	cmap_$(blockname), $(PP), $(NN),
+							&quot;estimator&quot;, estimator_$(blockname) );
+		}
+	#elif RENDERER == aqsis /* do nothing (0) */
+	#else
 		aov_caustics += caustic( $(PP), $(NN), "lookuptype", $(ltype),
 							"estimator", $(estim) );
+	#endif
 		$(val) = aov_caustics;
 	</rsl_code>
-    <usage>Returns caustics from a caustic photon map lookup, on a surface area defined by surface point P and surface normal N, the name of the caustics photon map and number of photons used, being retrieved from the RIB file (Attribute "photon" "causticmap" and Attribute "photon" "estimator"). Note that you can also add the caustics value using the photonmap block, in which case you'll have to pass the caustics photon map name and photon count, as arguments of the shadeop, instead of having them set in the RIB file. The caustics value is passed to aov_caustics AOV preset.</usage>
+    <usage>This function returns caustics from a caustic photon map lookup, on a surface area defined by surface point &quot;P&quot; and surface normal &quot;N&quot;, the name of the caustics photon map &quot;cmap&quot; and number of photons used as defined in &quot;estim&quot;, with the look-up type &quot;ltype&quot; being &quot;irradiance&quot;. This can be done also using &quot;photonmap&quot;, retrieving the caustic map and the photon estimator via &quot;attribute&quot;. The caustics value is passed to &quot;aov_caustics&quot; AOV preset.</usage>
 </shrimp>
