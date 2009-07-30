@@ -1,98 +1,116 @@
 <shrimp name="Occlusion" type="function" description="Ambient occlusion function" author="rconstruct" rolled="1">
-    <input name="inpoint" description="Surface point" type="point" default="P"/>
-	<input name="indir" description="Direction" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
-	<input name="adapt" description="Turns adaptive sampling on/off" type="float" storage="uniform" default="1"/>
-	<input name="minsamp" description="Minimum number of samples to use" type="float" storage="uniform" default="16"/>	
+    <input name="inpoint" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="indir" description="Direction" storage="varying" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
+	<input name="adapt" description="Turns adaptive sampling on/off" storage="uniform" type="float" default="1"/>
+	<input name="minsamp" description="Minimum number of samples to use" storage="uniform" type="float" default="16"/>	
     <input name="samples" description="Samples" type="float" default="32"/>
-	<input name="samplebase" description="Controls ray origin jittering" type="float" storage="uniform" default="1"/>
-    <input name="maxdist" description="Maximum distance" type="float" storage="uniform" default="1e38"/>
+	<input name="samplebase" description="Controls ray origin jittering" storage="uniform" type="float" default="1"/>
+    <input name="maxdist" description="Maximum distance" storage="uniform" type="float" default="1e38"/>
 	<input name="maxpixeldist" description="Maximum samples distance" type="float" default="-1"/>
-	<input name="maxsangle" description="Maximum solid angle, in steradians" type="float" storage="uniform" default="0.05"/>
+	<input name="maxsangle" description="Maximum solid angle, in steradians" storage="uniform" type="float" default="0.05"/>
 	<input name="maxerror" description="Quality vs speed" type="float" default="-1"/>
 	<input name="bias" description="Bias to control self-intersection" type="float" default="0.01" />
-	<input name="coneangle" description="Cone angle" type="float" storage="uniform" default="1.570796327"/>
-	<input name="axis" description="Direction of light casting hemisphere" type="vector" storage="uniform" default="vector(0)"/>
-	<input name="distribution" description="Distribution" type="string" storage="uniform" default="&quot;cosine&quot;"/>
-	<input name="hitsides" description="Side of surface to consider by a ray hit" type="string" storage="uniform" default="&quot;both&quot;"/>
-	<input name="hitmode" description="Ray hit mode" type="string" storage="uniform" default="&quot;default&quot;"/>
+	<input name="coneangle" description="Cone angle" storage="uniform" type="float" default="1.570796327"/>
+	<input name="axis" description="Direction of light casting hemisphere" storage="uniform" type="vector" default="vector(0)"/>
+	<input name="distribution" description="Distribution" storage="uniform" type="string" default="&quot;cosine&quot;"/>
+	<input name="hitsides" description="Side of surface to consider by a ray hit" storage="uniform" type="string" default="&quot;front&quot;"/>
+	<input name="hitmode" description="Ray hit mode" storage="uniform" type="string" default="&quot;default&quot;"/>
 	<input name="label" description="Ray lavel" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="subset" description="Objects subset considered" type="string" storage="uniform" default="&quot;&quot;"/>
-	<input name="envmap" description="Environment map" type="string" storage="uniform" default="&quot;&quot;"/>
-	<input name="envspace" description="Environment space" type="string" storage="uniform" default="&quot;world&quot;"/>
-	<input name="occmap" description="Occlusion map" type="string" storage="uniform" default="&quot;raytrace;&quot;"/>
+	<input name="subset" description="Objects subset considered" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
+	<input name="occmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
 	<input name="usept" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
-	<input name="pfile" description="Point cloud filename" type="string" storage="uniform" default="&quot;&quot;"/>
-	<input name="coordsys" description="Point cloud coordinate system" type="string" storage="uniform" default="&quot;world&quot;"/>
+	<input name="pfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="coordsys" description="Point cloud coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="clamp" description="Clamp excessive occlusion" storage="uniform" type="float" default="0"/>
-	<output name="Occ" description="Occlusion value" type="float" storage="varying" />
-	<output name="Envcolor" description="Environment color lookup result"  type="color" storage="varying" />
-	<output name="Envdir" description="Average unoccluded direction"  type="vector" storage="varying" />
-	<output name="Irrad" description="Irradiance"  type="color" storage="varying" />
+	<input name="sbleeding" description="Sort bleeding" storage="uniform" type="float" default="0"/>
+	<input name="floffmode" description="Falloff mode, exponential or polynomial" storage="uniform" type="float" default="0"/>
+	<input name="falloff" description="Falloff, 1 = linear" storage="uniform" type="float" default="0"/>
+	<output name="Occ" description="Occlusion value" storage="varying" type="float" />
+	<output name="Envcolor" description="Environment color lookup result" storage="varying" type="color" />
+	<output name="Envdir" description="Average unoccluded direction" storage="varying" type="vector" />
+	<output name="Irrad" description="Irradiance" storage="varying" type="color" />
 	<rsl_code>
 	
 	/* initialize */
 	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Irrad) = color(0);
-	
-	#if RENDERER==prman
-	aov_occlusion += occlusion( $(inpoint), $(indir), $(samples),
-					"adaptive", $(adapt), "minsamples", $(minsamp),
-					"coordsystem", $(coordsys), "distribution", $(distribution),
-					"maxdist", $(maxdist), "coneangle", $(coneangle),
-					"samplebase", $(samplebase), "hitmode", $(hitmode),
-					"hitsides", $(hitsides), "subset", $(subset),
-					"label", $(label), "environmentmap", $(envmap),
-					"environmentspace", $(envspace), "bias", $(bias),
-					"maxpixeldist", $(maxpixeldist), "maxerror", $(maxerror),
-					"pointbased", $(usept), "filename", $(pfile),
-					"maxsolidangle", $(maxsangle), "clamp", $(clamp),
-					"environmentcolor", $(Envcolor),
-					"environmentdir", $(Envdir) );
-	$(Occ) = 1 - aov_occlusion;
-	
-	#elif RENDERER==pixie
-	aov_occlusion += occlusion( $(inpoint), $(indir), $(samples),
-				"coordsystem", $(coordsys), "maxdist", $(maxdist),
-				"coneangle", $(coneangle), "samplebase", $(samplebase),
-				"label", $(label), "bias", $(bias), "maxerror", $(maxerror),
-				"pointbased", $(usept), "environmentmap", $(envmap),
-				"filename", $(pfile), "maxpixeldist", $(maxpixeldist),
-				"maxsolidangle", $(maxsangle),
-				"environmentcolor", $(Envcolor) );
-	$(Occ) = 1 - aov_occlusion;
-	
-	#elif RENDERER==_3delight
-	aov_occlusion += occlusion( $(inpoint), $(indir), $(samples),
-				"label", $(label), "subset", $(subset), "bias", $(bias),
-				"hitmode", $(hitmode), "coneangle", $(coneangle),
-				"axis", $(axis), "samplebase", $(samplebase),
-				"maxdist", $(maxdist), "environmentmap", $(envmap),
-				"environmentspace", $(envspace),
-				"distribution", $(distribution),
-				"environmentcolor", $(Envcolor),
-				"environmentdir", $(Envdir), "adaptive", $(adapt),
-				"minsamples", $(minsamp), "pointbased", $(usept),
-				"filename", $(pfile), "hitsides", $(hitsides),
-				"maxsolidangle", $(maxsangle), "clamp", $(clamp),
-				"coordsystem", $(coordsys) );
-	$(Occ) = 1 - aov_occlusion;
-	
-	#elif RENDERER==air
-	aov_occlusion += occlusion( $(occmap), $(inpoint), $(indir), $(angle),
-				"bias", $(bias), "label", $(label), "maxdist", $(maxdist),
-				"maxerror", $(maxerror), "maxpixeldist", $(maxpixeldist),
-				"samples", $(samples), "subset", $(subset) );
-	$(Occ) = 1 - aov_occlusion;
-	
-	#elif RENDERER==aqsis
-	aov_occlusion += occlusion( $(occmap), $(inpoint), $(indir), $(samples),
-				"blur", $(blur), "bias", $(bias) );
-	$(Occ) = 1 - aov_occlusion;
-	#else
-	$(Occ) = 0;
-				
+
+	/* make sure options are clear */
+	/* and set them according to shadeop and renderer */
+	#ifdef RAYOPTIONS
+	#undef RAYOPTIONS
 	#endif
 	
+	#if RENDERER == _3delight
+	#define RAYOPTIONS	"label", $(label), "subset", $(subset), \
+						"bias", $(bias), "hitmode", $(hitmode), \
+						"coneangle", $(coneangle), "axis", $(axis), \
+						"samplebase", $(samplebase), "maxdist", $(maxdist), \
+						"environmentmap", $(envmap), \
+						"environmentspace", $(envspace), \
+						"distribution", $(distribution), \
+						"environmentcolor", $(Envcolor), \
+						"environmentdir", $(Envdir), "adaptive", $(adapt), \
+						"minsamples", $(minsamp), \
+						"falloffmode", $(floffmode), "falloff", $(falloff), \
+						"pointbased", $(usept), "filename", $(pfile), \
+						"hitsides", $(hitsides), \
+						"maxsolidangle", $(maxsangle), "clamp", $(clamp), \
+						"sortbleeding", $(sbleeding), \
+						"coordsystem", $(coordsys)
+	#elif RENDERER == pixie
+	#define RAYOPTIONS	"coordsystem", $(coordsys), "maxdist", $(maxdist), \
+						"coneangle", $(coneangle), \
+						"samplebase", $(samplebase), "label", $(label), \
+						"bias", $(bias), "maxerror", $(maxerror), \
+						"pointbased", $(usept), "environmentmap", $(envmap), \
+						"filename", $(pfile), "maxpixeldist", $(maxpixeldist), \
+						"maxsolidangle", $(maxsangle), \
+						"environmentcolor", $(Envcolor)
+	#elif RENDERER == prman
+	#define RAYOPTIONS	"adaptive", $(adapt), "minsamples", $(minsamp), \
+						"coordsystem", $(coordsys), \
+						"distribution", $(distribution), \
+						"maxdist", $(maxdist), "coneangle", $(coneangle), \
+						"samplebase", $(samplebase), "hitmode", $(hitmode), \
+						"hitsides", $(hitsides), "subset", $(subset), \
+						"label", $(label), "environmentmap", $(envmap), \
+						"environmentspace", $(envspace), "bias", $(bias), \
+						"maxpixeldist", $(maxpixeldist), \
+						"maxerror", $(maxerror), "falloffmode", $(floffmode), \
+						"falloff", $(falloff), "pointbased", $(usept), \
+						"filename", $(pfile), "maxsolidangle", $(maxsangle), \
+						"clamp", $(clamp), "environmentcolor", $(Envcolor), \
+						"environmentdir", $(Envdir)		
+	#elif RENDERER == air
+	#define RAYOPTIONS	"bias", $(bias), "label", $(label), \
+						"maxdist", $(maxdist), "maxerror", $(maxerror), \
+						"maxpixeldist", $(maxpixeldist), \
+						"samples", $(samples), "subset", $(subset)
+	#elif RENDERER == aqsis
+	#define RAYOPTIONS	"blur", $(blur), "bias", $(bias)
+	#else /* entropy, bmrt, renderdotc? */
+	#endif /* RENDERER */
+
+	/* different order of arguments */
+	#if RENDERER == _3delight || RENDERER == pixie || RENDERER == prman
+		aov_occlusion += occlusion(	$(inpoint), $(indir), $(samples),
+									RAYOPTIONS );
+		$(Occ) = 1 - aov_occlusion;
+	#elif RENDERER == air /* shadow map based, unless map = "raytrace" */
+		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
+									$(angle), RAYOPTIONS );
+		$(Occ) = 1 - aov_occlusion;
+	#elif RENDERER == aqsis /* shadow map based occlusion */
+		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
+									$(samples), RAYOPTIONS );
+		$(Occ) = 1 - aov_occlusion;
+	#else /* entropy, bmrt, renderdotc? */
+		$(Occ) = 0;		
+	#endif /* RENDERER */
+	
 	</rsl_code>
-    <usage>Ambient occlusion block. Coneangle defaults to PI/2. Distribution can be one of cosine or uniform, defaults to cosine. Can use an optional environment map to use when rays don't hit the geometry. Environment direction vector is the average of the unoccluded direction, but needs to be transformed into world space, in order to be used in environment() calls. Note, you can use either the surface normal, or the reflection vector, for indir variable, in which case you'll have ambient occlusion, or reflection occlusion. You can also use point-based occlusion, or Aqsis's implementation which uses multiple shadow maps. Note that this shadeop varies considerably from implementation to implementation, so please consult your renderer's documentation for details. The occlusion value is passed to aov_occlusion AOV preset, as occlusion, not 1 - occlusion.</usage>
+    <usage>This function returns the ambient occlusion, and optionally environment color, environment direction and indirect lighting. This function&apos;s arguments vary with each renderer&apos;s implementation, so make sure to consult your renderer&apos;s documentation. This block provided the following arguments: &quot;coneangle&quot;, defaults to PI/2; &quot;distribution&quot;, can be &quot;cosine&quot; or &quot;uniform&quot;, defaults to &quot;cosine&quot;. This function can use an optional environment map to use when rays don&apos;t hit the geometry, and can also return the environment direction vector, the average of the unoccluded direction. Note that you can use either the surface normal, or the reflection vector, for the &quot;indir&quot; variable, in which case the function will output ambient occlusion or reflection occlusion respectively. You can also use point-based occlusion, or Aqsis&apos;s implementation which uses multiple shadow maps. Note that this function varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details. The occlusion value is passed to aov_occlusion AOV preset, as occlusion, not 1 - occlusion.</usage>
 </shrimp>

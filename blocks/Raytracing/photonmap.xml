@@ -1,23 +1,25 @@
 <shrimp type="function" name="PhotonMap" description="Photon map lookup" author="rconstruct">
+	<input name="PP" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="NN" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
 	<input name="pmap" description="Photon map filename" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
-	<input name="PP" description="Surface point" type="point" default="P"/>
 	<input name="ltype" description="Lookup type" storage="uniform" type="string" default="&quot;irradiance&quot;"/>
-	<input name="estim" description="Number of photons" type="float" default="50"/>
+	<input name="estim" description="Number of photons" storage="uniform" type="float" default="100"/>
 	<input name="mindepth" description="Number of photon bounces" type="float" default="1"/>
 	<output name="val" description="Output value" type="color"/>
 	<rsl_code>
-	#if RENDERER==_3delight
+	#if RENDERER == _3delight
 		$(val) = photonmap( $(pmap), $(PP), $(NN), "lookuptype", $(ltype),
 							"estimator", $(estim), "mindepth", $(mindepth) );
-		
-	#elif RENDERER==aqsis
-		$(val) = 0;
-		
-	#else
+	#elif RENDERER == pixie
+		$(val) = photonmap( $(pmap), $(PP), $(NN), "estimator", $(estim) );
+	#elif RENDERER == aqsis
+		$(val) = color(0);
+	#elif RENDERER == prman
 		$(val) = photonmap( $(pmap), $(PP), $(NN), "lookuptype", "irradiance",
 							"estimator", $(estim) );
+	#else /* Air has no photonmap()? */
+		$(val) = color(0);
 	#endif
 	</rsl_code>
-	<usage>Performs a photon map lookup of a surface point P with a surface normal N. Lookup type can be irradiance, or radiance, in which case the lookup is performed before the BRDF calculation, and after the BRDF calculation respectively. Estimator specifies the number of photons used, and mindepth the depth at which to consider the photons. This varies with renderer implementation, check your renderer documentation for more details.</usage>
+	<usage>This function performs a photon map lookup of a surface point &quot;PP&quot; with a surface normal &quot;NN&quot;. The lookup type can be &quot;irradiance&quot;, or &quot;radiance&quot;, in which case the lookup is performed before the BRDF calculation, and after the BRDF calculation respectively. The &quot;estimator&quot; specifies the number of photons used, and &quot;mindepth&quot; the depth at which to consider the photons. This varies with renderer implementation, check your renderer documentation for more details.</usage>
 </shrimp>

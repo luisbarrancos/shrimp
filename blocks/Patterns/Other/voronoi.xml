@@ -15,28 +15,25 @@
     <output name="f1" description="1st feature" storage="varying" type="float"/>
     <output name="f2" description="2nd feature" storage="varying" type="float" />
     <output name="pos1" description="1st position" storage="varying" type="point" />
-    <output name="pos2" description="2nd position" storage="varying" type="point" />
-    <output name="cc" description="Temp color" type="color" />
-    <output name="po" description="Temp po" type="point" />
-    <output name="pp" description="Temp pp" type="point" />
+    <output name="pos2" description="2nd position" storage="varying" type="point" />	
     <output name="sfactor" description="scale factor" type="float" />
 	<rsl_include>shrimp_fractal.h</rsl_include>
 	<rsl_code>
-        $(po) = transform( $(cspace), $(p) );
+		point po_$(blockname) = transform( $(cspace), $(p) );
+		point pp_$(blockname) = po_$(blockname) / $(scale) + $(squiggle)
+							* vfBm( po_$(blockname) / $(scale) * $(freq),
+							$(fwidth), $(octaves), $(lacun), $(gain) );
 
-        $(pp) = $(po) / $(scale) + $(squiggle) * vfBm( $(po) / $(scale) *
-                        $(freq), $(fwidth), $(octaves), $(lacun), $(gain) );
+		voronoi_f1f2_3d( pp_$(blockname), $(jitter), $(dtype), $(f1), $(f2),
+							$(pos1), $(pos2) );
 
-        voronoi_f1f2_3d( $(pp), $(jitter), $(dtype), $(f1), $(f2),
-									$(pos1), $(pos2) );
+		color cc_$(blockname) = color cellnoise( vector(10,0,0) + $(pos1) );
+		$(sfactor) = distance( $(pos1), $(pos2) ) / distance( $(pos1),
+					pp_$(blockname) ) + distance( pp_$(blockname), $(pos2) );
 
-        $(cc) = color cellnoise( vector(10, 0, 0) + $(pos1) );
-        $(sfactor) = distance( $(pos1), $(pos2) ) / distance( $(pos1), $(pp) )
-                             + distance( $(pp) , $(pos2) );
+		cc_$(blockname) *= step( $(lthick) * $(sfactor), $(f2) - $(f1) );
 
-        $(cc) *= step( $(lthick) * $(sfactor), $(f2) - $(f1) );
-
-        $(val) = $(cc);
+		$(val) = cc_$(blockname);
 	</rsl_code>
 	<usage>Voronoi example shader. Can be constructed with the cell noise and Voronoi blocks, as can be seen in an example scene, but it&apos;ll be provided in a block form for convenience as well. When &quot;dtype&quot; = 0, distance metric is Tchebychev, when different than 0, then the distance metric = Minkowski, being &quot;dtype&quot;, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P, as P increases, towards Tchebychev results. The &quot;cspace&quot; variable defaults to &quot;shader&quot; space, so the supplied points are transformed from &quot;current&quot; to &quot;shader&quot; space by default.</usage> 
 </shrimp>
