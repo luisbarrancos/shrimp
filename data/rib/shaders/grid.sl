@@ -1,8 +1,9 @@
 #ifndef filteredpulse
-#define filteredpulse( a, b, x, dx) ( max( 0, (min( (x-dx/2)+dx, b) - max( x-dx/2, a)) / dx ))
-#endif
+#define filteredpulse( a, b, x, dx) ( max( 0, (min( (x-dx/2)+dx, b) \
+									- max( x-dx/2, a)) / dx ))
+#endif /* filteredpulse */
 
-#include "shrimp_aov.h"
+#include "rsl_shrimp_aov.h"
 
 surface grid(
 				float hfreq = 1;
