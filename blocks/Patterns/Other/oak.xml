@@ -12,7 +12,7 @@
     <input name="grainy" description="Grain weight scale" type="float" default="1"/>
     <input name="PP" description="Surface point to be evaluated" type="point" default="P"/>
 	<output name="val" description="Output color" type="color"/>
-	<rsl_include>shrimp_extrapatterns.h</rsl_include>
+	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
         $(val) = oaktexture( $(PP), $(ringfreq), $(ringunevenness),
 								$(grainfreq), $(ringnoise),

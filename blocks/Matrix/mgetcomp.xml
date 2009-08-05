@@ -4,7 +4,7 @@
     <input name="column" description="Input column" type="float" default="1"/>
     <output name="mcomponent" description="Matrix component" type="float"/>
 	<rsl_code>
-    $(mcomponent) = comp( $(minput), $(row), $(column) );
+	    $(mcomponent) = comp( $(minput), $(row), $(column) );
 	</rsl_code>
 	<usage>Gets the row and column component of matrix M.</usage>
 </shrimp>

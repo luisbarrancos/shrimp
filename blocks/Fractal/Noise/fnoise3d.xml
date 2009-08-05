@@ -3,14 +3,15 @@
 	<input name="width" description="Filter width" type="float" default="0"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point p" type="color vector point float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * $(val:type) filterednoise( $(p), $(width) );
 	#else
 		$(val) = $(amplitude) * $(val:type) filteredvnoise( $(p), $(width) );
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 	<usage>Filtered three dimensional Perlin noise function, in [0, &quot;amplitude&quot;] range.</usage>
 </shrimp>

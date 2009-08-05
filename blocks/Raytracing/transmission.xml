@@ -16,23 +16,27 @@
 
 	/* make sure options are clear */
 	/* and set them according to shadeop and renderer */
-	#ifdef RAYOPTIONS
-	#undef RAYOPTIONS
-	#endif
+	#ifdef SHADEOP_ARGUMENTS
+	#undef SHADEOP_ARGUMENTS
+	#endif /* SHADEOP_ARGUMENTS */
 
 	#if RENDERER == _3delight
-	#define RAYOPTIONS	"label", $(label), "subset", $(subset), "bias", \
-						$(bias), "hitmode", $(hitmode), "samplecone", \
-						$(samplecone), "samples", $(samples)
+	#define SHADEOP_ARGUMENTS	"label", $(label), "subset", $(subset), \
+								"bias", $(bias), "hitmode", $(hitmode), \
+								"samplecone", $(samplecone), \
+								"samples", $(samples)
 	#elif RENDERER == pixie
-	#define RAYOPTIONS	"samples", $(samples), "bias", $(bias), "samplecone", \
-						$(samplecone), "sampleBase", $(samplebase), \
-						"maxdist", $(maxdist), "label", $(label)
+	#define SHADEOP_ARGUMENTS	"samples", $(samples), "bias", $(bias), \
+								"samplecone", $(samplecone), \
+								"sampleBase", $(samplebase), \
+								"maxdist", $(maxdist), "label", $(label)
 	#elif RENDERER == prman
-	#define RAYOPTIONS	"samples", $(samples), "minsamples", $(minsamples), \
-						"samplecone", $(samplecone), "samplebase", \
-						$(samplebase), "bias", $(bias), "label", $(label), \
-						"subset", $(subset), "hitmode", $(hitmode)
+	#define SHADEOP_ARGUMENTS	"samples", $(samples), \
+								"minsamples", $(minsamples), \
+								"samplecone", $(samplecone), \
+								"samplebase", $(samplebase), "bias", $(bias), \
+								"label", $(label), "subset", $(subset), \
+								"hitmode", $(hitmode)
 	#else /* no transmission() available */
 	#define NOSHADEOP
 	#endif /* RENDERER */
@@ -41,10 +45,10 @@
 	#ifdef NOSHADEOP
 		$(Ctr) = color(1);
 	#else
-		$(Ctr) = transmission( $(pointfrom), $(pointto), RAYOPTIONS );
+		$(Ctr) = transmission( $(pointfrom), $(pointto), SHADEOP_ARGUMENTS );
 	#endif /* NOSHADEOP */
 	
-	#undef RAYOPTIONS
+	#undef SHADEOP_ARGUMENTS
 	#undef NOSHADEOP
 
 	</rsl_code>

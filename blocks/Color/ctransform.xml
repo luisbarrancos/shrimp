@@ -6,5 +6,5 @@
 	<rsl_code>
 		$(val) = ctransform( $(from_space), $(to_space), $(incolor) );
 	</rsl_code>
-<usage>Transforms the color C from fromspace to tospace. If fromspace isn&apos;t passed, it&apos;s assumed to be RGB. Color spaces are &quot;rgb&quot; (red, green, and blue), &quot;hsv&quot; (hue, saturation, value), &quot;hsl&quot; (hue, saturation, lightness), &quot;xyz&quot; or &quot;XYZ&quot; (CIE XYZ coordinates), &quot;xyY&quot; or &quot;xyy&quot; (CIE xy and Y), and &quot;YIQ&quot; or &quot;yiq&quot; (NTSC coordinates).</usage>
+<usage>Transforms the color &quot;C&quot; from &quot;fromspace&quot; to &quot;tospace&quot;. If fromspace isn&apos;t passed, it&apos;s assumed to be RGB. Color spaces are &quot;rgb&quot; (red, green, and blue), &quot;hsv&quot; (hue, saturation, value), &quot;hsl&quot; (hue, saturation, lightness), &quot;xyz&quot; or &quot;XYZ&quot; (CIE XYZ coordinates), &quot;xyY&quot; or &quot;xyy&quot; (CIE xy and Y), and &quot;YIQ&quot; or &quot;yiq&quot; (NTSC coordinates).</usage>
 </shrimp>

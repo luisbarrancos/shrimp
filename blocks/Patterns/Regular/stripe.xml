@@ -4,8 +4,8 @@
 	<input name="width" description="The width of the stripe" type="float" default="0.5"/>
 	<input name="blur" description="The amount of blur" type="float" default="0.001"/>
 	<output name="out" description="1 if x is in the stripe, 0 if inbetween stripes" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
-	<rsl_include>shrimp_shapes.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_shapes.h</rsl_include>
 	<rsl_code>
 		$(out) = shStripe( $(width), $(freq), $(x), $(blur) );
 	</rsl_code>

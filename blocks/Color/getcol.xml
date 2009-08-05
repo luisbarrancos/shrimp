@@ -4,9 +4,9 @@
 	<output name="y" description="2nd component" type="float"/>
 	<output name="z" description="3rd component" type="float"/>
 	<rsl_code>
-	$(x) = comp( $(col), 0 );
-	$(y) = comp( $(col), 1 );
-	$(z) = comp( $(col), 2 );
+		$(x) = comp( $(col), 0 );
+		$(y) = comp( $(col), 1 );
+		$(z) = comp( $(col), 2 );
 	</rsl_code>
 	<usage>Gets the components of a color type variable.</usage>
 </shrimp>

@@ -4,7 +4,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Cell noise value at point (P,t)" type="color vector point float"/>
 	<rsl_code>
-	$(val) = $(amplitude) * $(val:type) cellnoise( $(p), $(t) );
+		$(val) = $(amplitude) * $(val:type) cellnoise( $(p), $(t) );
 	</rsl_code>
 	<usage>Cellnoise returns a random value between 0 and &quot;amplitude&quot; for each integer &quot;cell&quot;. It&apos;s much cheaper than calling noise. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform.</usage> 
 </shrimp>

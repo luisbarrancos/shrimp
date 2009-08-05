@@ -8,16 +8,17 @@
 	<input name="offset" description="Controls the multifractality" storage="uniform" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="val" description="fractal value at (p,t)" type="color vector point float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * Ridged( $(p), $(t), $(fwidth), $(octaves),
 									$(lacunarity), $(offset), $(gain) );
 	#else
 		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(p), $(t),
 					$(fwidth), $(octaves), $(lacunarity), $(offset), $(gain)));
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 	<usage>Ken Musgrave&apos;s 4 dimensional Ridged Multifractal function. Note that offset can change the scale of the output drastically. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform.</usage> 
 </shrimp>

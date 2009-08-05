@@ -18,45 +18,50 @@
 	<output name="trans" description="Option transmission value" storage="varying" type="color"/>
 	<output name="alpha" description="Unoccluded fraction of trace" type="float"/>
 	<rsl_code>
+	
 	/* make sure options are clear */
 	/* and set them according to shadeop and renderer */
-	#ifdef RAYOPTIONS
-	#undef RAYOPTIONS
-	#endif
+	#ifdef SHADEOP_ARGUMENTS
+	#undef SHADEOP_ARGUMENTS
+	#endif /* SHADEOP_ARGUMENTS */
 
 	/* initialize output */
 	$(dist) = 0; $(alpha) = 0; $(trans) = color(0);
 
 	#if RENDERER == pixie
-	#define RAYOPTIONS	"bias", $(bias), "samples", \
-						$(samples), "samplecone", $(coneangle)			
+	#define SHADEOP_ARGUMENTS	"bias", $(bias), "samples", \
+								$(samples), "samplecone", $(coneangle)			
 	#elif RENDERER == _3delight
-	#define RAYOPTIONS	$(dist), "label", $(label), "subset", $(subset), \
-						"bias", $(bias), "hitmode", $(hitmode), "maxdist", \
-						$(maxdist), "samplecone", $(coneangle), "samples", \
-						$(samples), "transmission", $(trans)
+	#define SHADEOP_ARGUMENTS	$(dist), "label", $(label), \
+								"subset", $(subset), \
+								"bias", $(bias), "hitmode", $(hitmode), \
+								"maxdist", $(maxdist), \
+								"samplecone", $(coneangle), \
+								"samples", $(samples), "transmission", $(trans)
 	#elif RENDERER == prman
-	#define RAYOPTIONS	"samplecone", $(coneangle), "bias", $(bias), "label", \
-						$(label), "subset", $(subset), "hitmode", $(hitmode), \
-						"hitsides", $(hitsides)
+	#define SHADEOP_ARGUMENTS	"samplecone", $(coneangle), \
+								"bias", $(bias), "label", $(label), \
+								"subset", $(subset), "hitmode", $(hitmode), \
+								"hitsides", $(hitsides)
 	#elif RENDERER == air
-	#define RAYOPTIONS	"bias", $(bias), "blur", $(blur), "label", $(label), \
-						"maxdist", $(maxdist), "samples", $(samples), \
-						"subset", $(subset), "majoraxis", $(majoraxis), \
-						"majorblur", $(majorblur), "weight", $(weight), \
-						"alpha", $(alpha)
+	#define SHADEOP_ARGUMENTS	"bias", $(bias), "blur", $(blur), \
+								"label", $(label), "maxdist", $(maxdist), \
+								"samples", $(samples), "subset", $(subset), \
+								"majoraxis", $(majoraxis), \
+								"majorblur", $(majorblur), \
+								"weight", $(weight), "alpha", $(alpha)
 	/* Aqsis has a trace shadeop but returns 0, it can(could?) use */
 	/* BMRT's rayserver though. */
 	#else
-	#define RAYOPTIONS	"bias", $(bias)
+	#define SHADEOP_ARGUMENTS	"bias", $(bias)
 	#endif /* RENDERER */
 	
 	#define $(blockname)_$(val:type)
 	#ifdef $(blockname)_float
 		$(val) = $(val:type) trace( $(inpoint), $(indir) );
 	#else
-		$(val) = $(val:type) trace( $(inpoint), $(indir), RAYOPTIONS );
-	#endif /* float or color trace */
+		$(val) = $(val:type) trace( $(inpoint), $(indir), SHADEOP_ARGUMENTS );
+	#endif /* $(blockname)_$(val:type) */
 	#undef $(blockname)_$(val:type)
 
 	</rsl_code>

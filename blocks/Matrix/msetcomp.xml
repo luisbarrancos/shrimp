@@ -21,7 +21,6 @@
 	<output name="mstr" description="Optional space name string" type="string"/>
     <rsl_code>
     #define usespace_$(usespace)
-    
     #ifdef usespace_0
         $(mout) = matrix(	$(m01), $(m02), $(m03), $(m04),
 							$(m11), $(m12), $(m13), $(m14),
@@ -32,9 +31,10 @@
 										$(m11), $(m12), $(m13), $(m14),
 										$(m21), $(m22), $(m23), $(m24),
 										$(m31), $(m32), $(m33), $(m34) );
-    #endif
-	$(mstr) = $(spacename);
-        
+    #endif /* usespace_$(usespace) */
+	#undef usespace_$(usespace)
+	
+	$(mstr) = $(spacename);    
 	</rsl_code>
 	<usage>Assigns components to a (4x4 homogeneous transformation) matrix. Defaults to a zero matrix. A matrix can be constructed in reference to an existing named space, that can later be used for the transform, vtransform, ntransform functions. If &quot;usespace&quot; value is 1, then the matrix is built in reference to &quot;spacename&quot;. Please check your renderer&apos;s documentation for details regarding the matrix type and transformations.</usage>
 </shrimp>

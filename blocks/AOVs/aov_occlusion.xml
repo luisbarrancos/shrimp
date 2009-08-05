@@ -1,6 +1,6 @@
 <shrimp type="function" name="AOV_Occlusion" description="Occlusion AOV" author="rconstruct">
-	<input name="in" description="Value for AOV" type="float color point vector normal" type_parent="val" multi="+" default="1"/>
-	<output name="val" description="Value passed for AOV" type="float color point vector normal"/>
+	<input name="in" description="Value for AOV" storage="varying" type="float" multi="+" default="0"/>
+	<output name="val" description="Value passed for AOV" storage="varying" type="float"/>
 	<rsl_code>
 		aov_occlusion += $(in);
 		$(val) = $(in);

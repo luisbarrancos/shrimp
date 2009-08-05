@@ -37,10 +37,10 @@
  *****************************************************************************/
 
 #ifndef ODWIKI_COMPLEX_SHRIMP_H
-#define ODWIKI_COMPLEX_SHRIMP_H	1
+#define ODWIKI_COMPLEX_SHRIMP_H 1
 
 /* Some tweaks were needed to fit Shrimp's structure */
-#include <shrimp_helpers.h>
+#include "rsl_shrimp_helpers.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Complex data type

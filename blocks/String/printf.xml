@@ -1,25 +1,25 @@
 <shrimp type="function" name="Printf" description="Prints values of variables" author="rconstruct">
-	<input name="str" description="String to use, see help" storage="uniform" type="string" default="&quot;Content of var =&quot;"/>
+	<input name="str" description="String to use, see usage" storage="uniform" type="string" default="&quot;Content of var =&quot;"/>
 	<input name="var" description="Variable input" type_parent="val" type="color normal vector point matrix string float" default="0"/>
 	<output name="val" description="Variable output" type="color normal vector point matrix string float"/>
 	<rsl_code>
-	#define var_$(var:type)
-	#ifdef var_float
+	
+	#define $(blockname)_$(var:type) 1
+	#ifdef $(blockname)_float
 		printf( concat( $(str), " %f\n"), $(var) );
-	#endif
-	#ifdef var_color
+	#elif $(blockname)_color
 		printf( concat( $(str), " %c\n"), $(var) );
-	#endif
-	#ifdef var_matrix
+	#elif $(blockname)_matrix
 		printf( concat( $(str), " %m\n"), $(var) );
-	#endif
-	#ifdef var_string
+	#elif $(blockname)_string
 		printf( concat( $(str), " %s\n"), $(var) );
 	#else
 		printf( concat( $(str), " %p\n"), $(var) );
-	#endif
+	#endif /* $(blockname)_$(var:type) */
+	#undef $(blockname)_$(var:type)
 	
 		$(val) = $(var);
+		
 	</rsl_code>
-	<usage>Similar to the C printf, prints the contents of the specified variables into stdout. The formatting for the string uses %f, %c, %p, %m and %s, for variables of type float, color, normal/vector/point, matrix, and string. The string has the variable type and a newline concatenated. See block code for details.</usage>
+	<usage>Similar to the C &quot;printf&quot;, prints the contents of the specified variables into stdout. The formatting for the string uses &quot;%f&quot;, &quot;%c&quot;, &quot;%p&quot;, &quot;%m&quot; and &quot;%s&quot;, for variables of type float, color, normal/vector/point, matrix, and string. The string has the variable type and a newline concatenated. See block code for details.</usage>
 </shrimp>

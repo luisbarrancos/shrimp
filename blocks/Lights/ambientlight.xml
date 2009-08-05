@@ -6,5 +6,5 @@
 		$(Cl) = $(inten) * $(lcolor);
 		L = vector(0);
 	</rsl_code>
-<usage>Ambient light shader.</usage>
+	<usage>Ambient light shader.</usage>
 </shrimp>

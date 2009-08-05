@@ -39,73 +39,89 @@
 
 	/* make sure options are clear */
 	/* and set them according to shadeop and renderer */
-	#ifdef RAYOPTIONS
-	#undef RAYOPTIONS
-	#endif
+	#ifdef SHADEOP_ARGUMENTS
+	#undef SHADEOP_ARGUMENTS
+	#endif /* SHADEOP_ARGUMENTS */
 	
 	#if RENDERER == _3delight
-	#define RAYOPTIONS	"label", $(label), "subset", $(subset), \
-						"bias", $(bias), "hitmode", $(hitmode), \
-						"coneangle", $(coneangle), "axis", $(axis), \
-						"samplebase", $(samplebase), "maxdist", $(maxdist), \
-						"environmentmap", $(envmap), \
-						"environmentspace", $(envspace), \
-						"distribution", $(distribution), \
-						"environmentcolor", $(Envcolor), \
-						"environmentdir", $(Envdir), "adaptive", $(adapt), \
-						"minsamples", $(minsamp), \
-						"falloffmode", $(floffmode), "falloff", $(falloff), \
-						"pointbased", $(usept), "filename", $(pfile), \
-						"hitsides", $(hitsides), \
-						"maxsolidangle", $(maxsangle), "clamp", $(clamp), \
-						"sortbleeding", $(sbleeding), \
-						"coordsystem", $(coordsys)
+	#define SHADEOP_ARGUMENTS	"label", $(label), "subset", $(subset), \
+								"bias", $(bias), "hitmode", $(hitmode), \
+								"coneangle", $(coneangle), "axis", $(axis), \
+								"samplebase", $(samplebase), \
+								"maxdist", $(maxdist), \
+								"environmentmap", $(envmap), \
+								"environmentspace", $(envspace), \
+								"distribution", $(distribution), \
+								"environmentcolor", $(Envcolor), \
+								"environmentdir", $(Envdir), \
+								"adaptive", $(adapt), \
+								"minsamples", $(minsamp), \
+								"falloffmode", $(floffmode), \
+								"falloff", $(falloff), "pointbased", $(usept), \
+								"filename", $(pfile), "hitsides", $(hitsides), \
+								"maxsolidangle", $(maxsangle), \
+								"clamp", $(clamp), \
+								"sortbleeding", $(sbleeding), \
+								"coordsystem", $(coordsys)
 	#elif RENDERER == pixie
-	#define RAYOPTIONS	"coordsystem", $(coordsys), "maxdist", $(maxdist), \
-						"coneangle", $(coneangle), \
-						"samplebase", $(samplebase), "label", $(label), \
-						"bias", $(bias), "maxerror", $(maxerror), \
-						"pointbased", $(usept), "environmentmap", $(envmap), \
-						"filename", $(pfile), "maxpixeldist", $(maxpixeldist), \
-						"maxsolidangle", $(maxsangle), \
-						"environmentcolor", $(Envcolor)
+	#define SHADEOP_ARGUMENTS	"coordsystem", $(coordsys), \
+								"maxdist", $(maxdist), \
+								"coneangle", $(coneangle), \
+								"samplebase", $(samplebase), \
+								"label", $(label), "bias", $(bias), \
+								"maxerror", $(maxerror), \
+								"pointbased", $(usept), \
+								"environmentmap", $(envmap), \
+								"filename", $(pfile), \
+								"maxpixeldist", $(maxpixeldist), \
+								"maxsolidangle", $(maxsangle), \
+								"environmentcolor", $(Envcolor)
 	#elif RENDERER == prman
-	#define RAYOPTIONS	"adaptive", $(adapt), "minsamples", $(minsamp), \
-						"coordsystem", $(coordsys), \
-						"distribution", $(distribution), \
-						"maxdist", $(maxdist), "coneangle", $(coneangle), \
-						"samplebase", $(samplebase), "hitmode", $(hitmode), \
-						"hitsides", $(hitsides), "subset", $(subset), \
-						"label", $(label), "environmentmap", $(envmap), \
-						"environmentspace", $(envspace), "bias", $(bias), \
-						"maxpixeldist", $(maxpixeldist), \
-						"maxerror", $(maxerror), "falloffmode", $(floffmode), \
-						"falloff", $(falloff), "pointbased", $(usept), \
-						"filename", $(pfile), "maxsolidangle", $(maxsangle), \
-						"clamp", $(clamp), "environmentcolor", $(Envcolor), \
-						"environmentdir", $(Envdir)		
+	#define SHADEOP_ARGUMENTS	"adaptive", $(adapt), \
+								"minsamples", $(minsamp), \
+								"coordsystem", $(coordsys), \
+								"distribution", $(distribution), \
+								"maxdist", $(maxdist), \
+								"coneangle", $(coneangle), \
+								"samplebase", $(samplebase), \
+								"hitmode", $(hitmode), \
+								"hitsides", $(hitsides), "subset", $(subset), \
+								"label", $(label), \
+								"environmentmap", $(envmap), \
+								"environmentspace", $(envspace), \
+								"bias", $(bias), \
+								"maxpixeldist", $(maxpixeldist), \
+								"maxerror", $(maxerror), \
+								"falloffmode", $(floffmode), \
+								"falloff", $(falloff), "pointbased", $(usept), \
+								"filename", $(pfile), \
+								"maxsolidangle", $(maxsangle), \
+								"clamp", $(clamp), \
+								"environmentcolor", $(Envcolor), \
+								"environmentdir", $(Envdir)		
 	#elif RENDERER == air
-	#define RAYOPTIONS	"bias", $(bias), "label", $(label), \
-						"maxdist", $(maxdist), "maxerror", $(maxerror), \
-						"maxpixeldist", $(maxpixeldist), \
-						"samples", $(samples), "subset", $(subset)
+	#define SHADEOP_ARGUMENTS	"bias", $(bias), "label", $(label), \
+								"maxdist", $(maxdist), \
+								"maxerror", $(maxerror), \
+								"maxpixeldist", $(maxpixeldist), \
+								"samples", $(samples), "subset", $(subset)
 	#elif RENDERER == aqsis
-	#define RAYOPTIONS	"blur", $(blur), "bias", $(bias)
+	#define SHADEOP_ARGUMENTS	"blur", $(blur), "bias", $(bias)
 	#else /* entropy, bmrt, renderdotc? */
 	#endif /* RENDERER */
 
 	/* different order of arguments */
 	#if RENDERER == _3delight || RENDERER == pixie || RENDERER == prman
 		aov_occlusion += occlusion(	$(inpoint), $(indir), $(samples),
-									RAYOPTIONS );
+									SHADEOP_ARGUMENTS );
 		$(Occ) = 1 - aov_occlusion;
 	#elif RENDERER == air /* shadow map based, unless map = "raytrace" */
 		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
-									$(angle), RAYOPTIONS );
+									$(angle), SHADEOP_ARGUMENTS );
 		$(Occ) = 1 - aov_occlusion;
 	#elif RENDERER == aqsis /* shadow map based occlusion */
 		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
-									$(samples), RAYOPTIONS );
+									$(samples), SHADEOP_ARGUMENTS );
 		$(Occ) = 1 - aov_occlusion;
 	#else /* entropy, bmrt, renderdotc? */
 		$(Occ) = 0;		

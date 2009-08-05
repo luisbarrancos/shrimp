@@ -2,7 +2,7 @@
 	<input name="x" description="Input value" type="float" default="0"/>
 	<output name="out" description="The smallest integer not smaller than x" type="float"/>
 	<rsl_code>
-	$(out) = ceil( $(x) );
+		$(out) = ceil( $(x) );
 	</rsl_code>
 	<usage>Returns the smallest integer not smaller than x.</usage>
 </shrimp>

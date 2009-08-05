@@ -5,7 +5,7 @@
 	<input name="P2" description="2nd line endpoint" type="point" default="point(1)"/>
 	<output name="out" description="Rotated point" type="point"/>
 	<rsl_code>
-	$(out) = rotate( $(Q), $(angle), $(P1), $(P2) );
+		$(out) = rotate( $(Q), $(angle), $(P1), $(P2) );
 	</rsl_code>
 	<usage>Rotates the point &quot;Q&quot; by &quot;angle&quot; radians about the axis through points &quot;P1&quot; and &quot;P2&quot;.</usage>
 </shrimp>

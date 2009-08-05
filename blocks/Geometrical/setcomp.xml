@@ -4,7 +4,7 @@
 	<input name="z" description="Z component" type="float" default="0"/>
 	<output name="out" description="Point, vector, or normal with the specified components" type="point vector normal"/>
 	<rsl_code>
-	$(out) = $(out:type) ( $(x), $(y), $(z) ); 
+		$(out) = $(out:type) ( $(x), $(y), $(z) ); 
 	</rsl_code>
 	<usage>Sets the X, Y, and Z components of a point, vector, or normal.</usage>
 </shrimp>

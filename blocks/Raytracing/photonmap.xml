@@ -7,6 +7,7 @@
 	<input name="mindepth" description="Number of photon bounces" type="float" default="1"/>
 	<output name="val" description="Output value" type="color"/>
 	<rsl_code>
+	
 	#if RENDERER == _3delight
 		$(val) = photonmap( $(pmap), $(PP), $(NN), "lookuptype", $(ltype),
 							"estimator", $(estim), "mindepth", $(mindepth) );
@@ -19,7 +20,8 @@
 							"estimator", $(estim) );
 	#else /* Air has no photonmap()? */
 		$(val) = color(0);
-	#endif
+	#endif /* RENDERER */
+
 	</rsl_code>
 	<usage>This function performs a photon map lookup of a surface point &quot;PP&quot; with a surface normal &quot;NN&quot;. The lookup type can be &quot;irradiance&quot;, or &quot;radiance&quot;, in which case the lookup is performed before the BRDF calculation, and after the BRDF calculation respectively. The &quot;estimator&quot; specifies the number of photons used, and &quot;mindepth&quot; the depth at which to consider the photons. This varies with renderer implementation, check your renderer documentation for more details.</usage>
 </shrimp>

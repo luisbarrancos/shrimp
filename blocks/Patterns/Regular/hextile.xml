@@ -6,7 +6,7 @@
 	<input name="tvary" description="Tile variation" type="float" default="0.15"/>
 	<output name="mortar" description="Output mortar" type="float"/>
 	<output name="tindex" description="Tile index" type="float"/>
-	<rsl_include>shrimp_extrapatterns.h</rsl_include>
+	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 		hextile(	$(tradius), $(mwidth), $(tvary), $(x), $(y),
 					$(mortar), $(tindex) );

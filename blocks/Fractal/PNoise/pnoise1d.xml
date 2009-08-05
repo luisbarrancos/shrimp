@@ -4,7 +4,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at x" type="color point vector float"/>
 	<rsl_code>
-	$(val) = $(amplitude) * $(val:type) pnoise( $(x), $(period) );
+		$(val) = $(amplitude) * $(val:type) pnoise( $(x), $(period) );
 	</rsl_code>
 <usage>1 dimensional periodic noise function. Period should be an integer up to 256. Output value is in the [0, &quot;amplitude&quot;] range.</usage>
 </shrimp>

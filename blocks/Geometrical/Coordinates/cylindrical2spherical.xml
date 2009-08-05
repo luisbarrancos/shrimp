@@ -1,8 +1,8 @@
 <shrimp type="function" name="Cylindrical2Spherical" description="Converts cylindrical coordinates to spherical coordinates" author="rconstruct">
 	<input name="in" description="Input normal, vector or point" type_parent="out" type="normal vector point" default="point(0)"/>
 	<output name="out" description="Converted normal, vector or point" type="normal vector point"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
-	<rsl_include>shrimp_conversion.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_conversion.h</rsl_include>
 	<rsl_code>
 		$(out) = cylindrical2spherical( $(in) );
 	</rsl_code>

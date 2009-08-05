@@ -3,7 +3,7 @@
 	<input name="B" description="2nd or subsequent inputs" type="normal color point vector float" type_parent="val" multi="+" default="1"/>
 	<output name="val" description="val = A + B" type="normal color point vector float"/>
 	<rsl_code>
-	$(val) = $(A) + $(B);
+		$(val) = $(A) + $(B);
 	</rsl_code>
 	<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.</usage>
 </shrimp>

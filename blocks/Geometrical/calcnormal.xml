@@ -2,7 +2,7 @@
 	<input name = "p" description="Point to calculate normal at" storage="varying" type="point" default="P"/>
 	<output name="NN" description="NN is normal at p" storage="varying" type="normal"/>
 	<rsl_code>
-	$(NN) = calculatenormal( $(p) );
+		$(NN) = calculatenormal( $(p) );
 	</rsl_code>
 <usage>Returns the surface normal of the given point on the surface. You should always recalculate the normals after a displacement.</usage>
 </shrimp>

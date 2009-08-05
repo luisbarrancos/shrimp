@@ -1,7 +1,7 @@
 #ifndef SHRIMP_CONVERSION_H
-#define SHRIMP_CONVERSION_H	1
+#define SHRIMP_CONVERSION_H 1
 
-#include <shrimp_helpers.h>
+#include "rsl_shrimp_helpers.h"
 
 /* Utility functions to convert between coordinate systems */
 ////////////////////////////////////////////////////////////////////////////////

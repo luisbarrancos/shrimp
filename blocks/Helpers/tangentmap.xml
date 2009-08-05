@@ -4,7 +4,7 @@
 	<input name="tcoord" description="Texture coordinate along T" storage="varying" type="float" default="t"/>
 	<input name="NN" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
 	<output name="Tnormal" description="Converted normal" storage="varying" type="normal"/>
-	<rsl_include>shrimp_conversion.h</rsl_include>
+	<rsl_include>rsl_shrimp_conversion.h</rsl_include>
 	<rsl_code>
 		$(Tnormal) = tangent2object( $(ttex), $(scoord), $(tcoord), $(NN) );
 	</rsl_code>

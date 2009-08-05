@@ -2,7 +2,7 @@
 	<input name = "A" description="Input vector" type="point normal vector" default="vector(1)"/>
 	<output name="val" description="The lenght of the vector" type="float"/>
 	<rsl_code>
-	$(val) = length( $(A) );
+		$(val) = length( $(A) );
 	</rsl_code>
 	<usage>Returns the length of a vector ( sqrt(V.V) ).</usage>
 </shrimp>

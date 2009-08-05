@@ -4,40 +4,31 @@
 	<input name="to_space" description="The coordinate system to transform into" storage="uniform" type="string" default="&quot;shader&quot;"/>
 	<input name="mmat" description="Use this matrix instead of a predefined coordinate system" type="matrix" default="UND"/>
 	<output name="pp" description="The transformed point, vector or normal" type="normal vector point"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-	#define $(p)_$(p:type)
-	#define mmat_$(mmat)
-	
-	/* Transform point, optionally with supplied matrix */
-	#ifdef $(p)_point
-	#ifdef mmat_UND
-		$(pp) = transform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = transform( $(from_space), $(mmat), $(p) );
-	#endif
-	#endif
-	
-	/* Transform vector, optionally with supplied matrix */
-	#ifdef $(p)_vector
-	#ifdef mmat_UND
-		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = vtransform( $(from_space), $(mmat), $(p) );
-	#endif
-	#endif
-	
-	/* Transform normal, optionally with supplied matrix */
-	#ifdef $(p)_normal
-	#ifdef mmat_UND
-		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
-	#else
-		$(pp) = ntransform( $(from_space), $(mmat), $(p) );
-	#endif
+	#ifdef TRANSFORM_ARGUMENTS
+	#undef TRANSFORM_ARGUMENTS
 	#endif
 
-	#undef $(p)_$(p:type)
+	#define mmat_$(mmat)
+	#ifdef mmat_UND
+		#define TRANSFORM_ARGUMENTS $(to_space)
+	#else
+		#define TRANSFORM_ARGUMENTS	$(mmat)
+	#endif /* mmat_UND */
+
+	#define $(blockname)_$(p:type) 1
+	#ifdef $(blockname)_point
+		$(pp) = transform( $(from_space), TRANSFORM_ARGUMENTS , $(p) );
+	#elif $(blockname)_vector
+		$(pp) = vtransform( $(from_space), TRANSFORM_ARGUMENTS , $(p) );
+	#elif $(blockname)_normal
+		$(pp) = ntransform( $(from_space), TRANSFORM_ARGUMENTS , $(p) );
+	#endif /* $(blockname)_$(p:type) */
+	#undef $(blockname)_$(p:type)
+	
 	#undef mmat_$(mmat)
+	#undef TRANSFORM_ARGUMENTS
 	</rsl_code>
 	<usage>A block for the &quot;transform&quot;, &quot;vtransform&quot; and &quot;ntransform&quot; functions, to transform the supplied point &quot;P&quot;, vector &quot;V&quot; or normal &quot;N&quot; respectively, from the coordinate system &quot;fromspace&quot; to the coordinate system &quot;tospace&quot;, with &quot;fromspace&quot; defaulting to &quot;current&quot;. Note that &quot;current&quot; is implementation specific. Predefined coordinate systems are: &quot;current&quot;, &quot;object&quot;, &quot;shader&quot;, &quot;world&quot;, &quot;camera&quot;, &quot;screen&quot;, &quot;raster&quot; and &quot;NDC&quot;. A transformation matrix might be given instead of a &quot;tospace&quot; coordinate system. User defined coordinate systems can also be refered to.</usage>
 </shrimp>

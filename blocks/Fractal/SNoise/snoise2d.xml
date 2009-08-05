@@ -3,14 +3,15 @@
 	<input name="y" description="Noise y coordinate" storage="varying" type="float" default="t"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at (x,y)" type="color point vector float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * snoisexy( $(x), $(y) );
 	#else
 		$(val) = $(amplitude) * $(val:type) vsnoisexy( $(x), $(y) );
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 	<usage>2 dimensional signed noise. SNoise is exactly like Noise except that the result to the range [-&quot;amplitude&quot;,&quot;amplitude&quot;] rather than [0,&quot;amplitude&quot;]. The average value is therefore zero. The parameter &quot;amplitude&quot; defaults to 1, so the noise range defaults to [-1,1].</usage>
 </shrimp>

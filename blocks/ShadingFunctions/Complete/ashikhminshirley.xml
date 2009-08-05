@@ -8,32 +8,34 @@
     <input name="nu" description="Specularity along U direction" type="float" default="1000"/>
     <input name="nv" description="Specularity along V direction" type="float" default="10"/>
 	<input name="Kr" description="Reflection coefficient" type="float" default="0.1"/>
-	<input name="rsamples" description="Environment samples" type="float" storage="uniform" default="0"/>
+	<input name="rsamples" description="Environment samples" storage="uniform" type="float" default="0"/>
     <input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
-	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
-	<input name="xdir" description="Direction vector" type="vector" default="normalize(dPdu)"/>
+	<input name="N" description="Surface normal" storage="varying" type="normal vector" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
+	<input name="xdir" description="Direction vector" storage="varying" type="vector" default="normalize(dPdu)"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
-        #define ver_$(rsamples)
+	
+	#define $(blockname)_$(rsamples)
+	
+	aov_surfacecolor += $(Cdiff);
+	aov_specularcolor += $(Cspec);
 		
-		aov_surfacecolor += $(Cdiff);
-		aov_specularcolor += $(Cspec);
-		
-        $(Ci) = LocIllumAshShir( $(N), $(I), $(xdir),
-									$(Cdiff), $(Cspec),
+		$(Ci) = LocIllumAshShir(	$(N), $(I), $(xdir), $(Cdiff), $(Cspec),
 									$(Kd), $(Ks), $(nu), $(nv),
 									DECLARE_AOV_PARAMETERS );
-        #ifdef ver_0
-			$(Ci) = $(Ci);
-		#else
-			aov_reflection += $(Crefl) * EnvIllumAshShir(
+	#ifdef $(blockname)_0
+		$(Ci) = $(Ci);
+	#else /* add environment sampling */
+		aov_reflection += $(Crefl) * EnvIllumAshShir(
 								faceforward( $(N), $(I) ), -$(I),
 								$(xdir), $(Kd), $(Ks), $(nu), $(nv),
 								$(rsamples), $(envmap) );
-			$(Ci) += aov_reflection;
-		#endif
+		$(Ci) += aov_reflection;
+	#endif /* $(blockname)_$(rsamples) */
+	#undef $(blockname)_$(rsamples)
+	
 	</rsl_code>
-	<usage>Based on Peter Stuart's implementation of the Ashikhmin-Shirley shading model. If environment samples >0 , then samples environment reflections, if = 0, bypasses this. Notice that the more samples you use, the longer it takes to render. Have in mind that if no environment map is given, then raytracing is used. The parameters Nu and Nv control the specularity along the anisotropy direction, and anisotropy perpendicular direction, being the parameter xdir, the anisotropy direction, which defaults to dPdu. This block passes the resulting values to the aov_surfacecolor, aov_diffuse, aov_specularcolor, aov_specular, and aov_reflection AOV presets.</usage>
+	<usage>Based on Peter Stuart&apos;s implementation of the Ashikhmin-Shirley shading model. Samples the environment according to the number of ray samples. Notice that the more samples you use, the longer it takes to render. The parameters &quot;Nu&quot; and &quot;Nv&quot; control the specularity of the anisotropy direction along X, and Y respectively, being the parameter &quot;xdir&quot;, the anisotropy direction, which defaults to &quot;dPdu&quot;. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_diffuse&quot;, &quot;aov_specularcolor&quot;, &quot;aov_specular&quot;, and &quot;aov_reflection&quot; AOV presets.</usage>
 </shrimp>

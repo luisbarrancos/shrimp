@@ -4,11 +4,11 @@
 	<input name="dtype" description="Distance metric, see help" storage="uniform" type="float" default="2"/>
     <output name="f1" description="Feature 1" storage="varying" type="float"/>
 	<output name="pos1" description="Position 1" storage="varying" type="point"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	/* initialize */
-	$(f1) = 0; $(pos1) = point(0);
-    voronoi_f1_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1) );
+		/* initialize */
+		$(f1) = 0; $(pos1) = point(0);
+		voronoi_f1_3d( $(p), $(jitter), $(dtype), $(f1), $(pos1) );
 	</rsl_code>
 	<usage>3D Voronoi cell noise, single feature version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1, as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.</usage> 
 </shrimp>

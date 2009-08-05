@@ -1,15 +1,15 @@
 <shrimp type="function" name="FWidth" description="Determine correct sample size for antialiasing" author="rconstruct">
 	<input name="p" description="point under consideration" storage="varying" type="float point" default="P"/>
 	<output name="fwidth" description="An estimate of the sample width at p" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-	#define val_$(p:type)
-	#ifdef val_float
+	#define $(blockname)_$(p:type)
+	#ifdef $(blockname)_float
 		$(fwidth) = filterwidth( $(p) );
 	#else
 		$(fwidth) = filterwidthp( $(p) );
-	#endif
-	#undef val_$(p:type)
+	#endif /* $(blockname)_$(p:type) */
+	#undef $(blockname)_$(p:type)
 	</rsl_code>
 	<usage>The filterwidth function takes a float, or point inputs, and returns the approximate amount that the float or point changes from pixel to adjacent pixel. It&apos;s used to filter frequencies that would otherwise produce aliasing.</usage>
 </shrimp>

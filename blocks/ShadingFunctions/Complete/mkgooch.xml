@@ -9,15 +9,15 @@
 	<input name="roughness" description="Specular roughness" type="float" default=".1"/>
 	<input name="cdiff" description="Surface color" type="color" default="color(.2)"/>
 	<input name="cspec" description="Specular color" type="color" default="color(1)"/>
-    <input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
-    <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
+    <input name="NN" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
+    <input name="IN" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
         $(Ci) = MKgooch(	$(NN), $(IN), $(Ka), $(Kd), $(Ks), $(calpha),
 							$(cbeta), $(roughness), $(B), $(Y),
 							$(cdiff), $(cspec),
 							DECLARE_AOV_PARAMETERS );
 	</rsl_code>
-    <usage>Gooch non photorealistic shading model, by Mike King, as described in an "A Non-Photorealistic Lighting Model for Automatic Technical Illustration", in the Siggraph 1998 proceedings. Ka, Kd, Ks, ambient, diffuse, and specular coefficients respectively, calpha and cbeta, the Gooch cool and warm color factors. B and Y used to contruct the cool and warm color, roughness and specular color, to control specular roughness and color respectively. This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
+    <usage>Gooch non photorealistic shading model, by Mike King, as described in an &quot;A Non-Photorealistic Lighting Model for Automatic Technical Illustration&quot;, in the Siggraph 1998 proceedings. &quot;Ka&quot;, &quot;Kd&quot;, &quot;Ks&quot;, are the ambient, diffuse, and specular coefficients respectively, with &quot;calpha&quot; and &quot;cbeta&quot;, the Gooch cool and warm color factors. &quot;B&quot; and &quot;Y&quot; are used to contruct the cool and warm color, and &quot;roughness&quot; and &quot;cspec&quot;, to control the apparent specular roughness and specular color respectively. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot;, &quot;aov_specularcolor&quot; and &quot;aov_specular&quot; AOV presets.</usage>
 </shrimp>

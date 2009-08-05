@@ -15,8 +15,8 @@
 				smoothstep(comp( $(min),0), comp( $(max), 0), comp( $(x), 0)),
 				smoothstep(comp( $(min),1), comp( $(max), 1), comp( $(x), 1)),
 				smoothstep(comp( $(min),2), comp( $(max), 2), comp( $(x), 2)));
-		#endif
-	#endif
+		#endif /* stype_$(min:type) */
+	#endif /* RENDERER */
 	#undef stype_$(min:type)
 		
 	</rsl_code>

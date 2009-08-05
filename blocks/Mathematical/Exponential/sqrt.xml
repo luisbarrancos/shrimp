@@ -2,7 +2,7 @@
 	<input name="A" description="Input value" type="float" default="1"/>
 	<output name="val" description="val = sqrt( A )" type="float"/>
 	<rsl_code>
-	$(val) = sqrt( $(A) );
+		$(val) = sqrt( $(A) );
 	</rsl_code>
 	<usage>Returns the square root of the argument</usage>
 </shrimp>

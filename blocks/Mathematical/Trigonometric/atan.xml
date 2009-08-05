@@ -4,12 +4,13 @@
 	<output name="val" description="Arc tangent value" type="float"/>
 	<rsl_include>shrimp_helpers.h</rsl_include>
 	<rsl_code>
-		#define tanxy_$(b)
-		#ifdef tanxy_UND
-			$(val) = atan( $(a) );
-		#else
-			$(val) = atan( $(a), $(b) );
-		#endif
+	#define tanxy_$(b)
+	#ifdef tanxy_UND
+		$(val) = atan( $(a) );
+	#else
+		$(val) = atan( $(a), $(b) );
+	#endif /* tanxy_$(b) */
+	#undef tanxy_$(b)
 	</rsl_code>
-	<usage>Returns the arc tangent in the range -PI/2 to +PI/2 with one argument. With two arguments, returns the arc tangent of y/x in the range -PI to +PI. The second argument defaults to &quot;UND&quot;(efined), so the single argument form is used by default.</usage>
+	<usage>Returns the arc tangent in the [-PI/2,PI/2] range with one argument. With two arguments, returns the arc tangent of y/x in the [-PI,PI] range. The second argument defaults to &quot;UND&quot;(efined), so the single argument form is used by default.</usage>
 </shrimp>

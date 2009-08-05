@@ -6,7 +6,7 @@
 	<input name="jitter" description="Jittering" type="float" default="0.65"/>
 	<input name="dtype" description="Voronoi distance metric" storage="uniform" type="float" default="2"/>
 	<output name="val" description="Output value" type="float"/>
-	<rsl_include>shrimp_extrapatterns.h</rsl_include>
+	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 		$(val) = blotches( $(radius), $(freq), $(offset), $(jitter),
 							$(dtype), $(PP) );

@@ -8,8 +8,8 @@
 	<input name="thickness" description="The thickness of the line" type="float" default="0.1"/>
 	<input name="blur" description="The amount the edge is to be blurred" type="float" default="0.001"/>
 	<output name="out" description="Returns 1 if X,Y lies on the line" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
-	<rsl_include>shrimp_shapes.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_shapes.h</rsl_include>
 	<rsl_code>
 		$(out) = shLine(	$(x0), $(y0), $(x1), $(y1),
 							$(x), $(y), $(thickness), $(blur) );

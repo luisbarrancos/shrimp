@@ -3,8 +3,8 @@
 	<input name="p" description="Point, vector or normal" type_parent="out" type="normal point vector" default="vector(0)"/>
 	<output name="out" description="Resulting point, vector or normal." type="normal point vector"/>
 	<rsl_code>
-	setzcomp( $(p:type) $(p), $(z) );
-	$(out) = $(p);
+		setzcomp( $(p:type) $(p), $(z) );
+		$(out) = $(p);
 	</rsl_code>
 	<usage>Sets the Z component of a point, vector, or normal.</usage>
 </shrimp>

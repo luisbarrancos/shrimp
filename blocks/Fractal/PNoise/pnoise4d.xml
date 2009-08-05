@@ -6,7 +6,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point (p,t)" type="color point vector float"/>
 	<rsl_code>
-	$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(t), $(pperiod), 
+		$(val) = $(amplitude) * $(val:type) pnoise( $(p), $(t), $(pperiod), 
 												$(tperiod) );
 	</rsl_code>
 <usage>4 dimensional period noise function. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform. Both the point period and the 4th dimension variable period should be integers up to 256. The noise output value is in the [0, &quot;amplitude&quot;] range.</usage>

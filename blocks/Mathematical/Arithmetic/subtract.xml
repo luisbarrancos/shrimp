@@ -3,7 +3,7 @@
 	<input name="B" description="2nd input" type="float color point vector normal float" type_parent="val" default="1"/>
 	<output name="val" description="val = A - B" type="float color point vector normal float"/>
 	<rsl_code>
-	$(val) = $(A) - $(B);
+		$(val) = $(A) - $(B);
 	</rsl_code>
 	<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.</usage>
 </shrimp>

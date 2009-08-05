@@ -4,16 +4,17 @@
 	<input name="width" description="Filter width" type="float" default="0"/>
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at point (p,t)" type="color vector point float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * $(val:type) filterednoisexy( $(p), $(t),
 															 $(width) );
 	#else
 		$(val) = $(amplitude) * $(val:type) filteredvnoisexy( $(p), $(t),
 																$(width) );
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 <usage>Filtered four dimensional Perlin noise function. The 4th dimension parameter defaults to the global variable &quot;time&quot;, the current shutter time as defined by RiShutter. Note that &quot;time&quot;&apos;s storage class is uniform. Output value is in [0, &quot;amplitude&quot;] range.</usage>
 </shrimp>

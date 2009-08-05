@@ -1,18 +1,23 @@
 <shrimp type="function" name="Gain" description="Adjust gain." author="rconstruct">
-	<input name="nput" description="Input to be adjusted" type="float color" type_parent="val" default="1"/>
+	<input name="nput" description="Input to be adjusted" type_parent="val" type="float color" default="color(1)"/>
 	<input name="gain" description="Gain value" type="float" default="0.5"/>
 	<output name="val" description="Adjusted value." type="float color"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = gain($(nput), $(gain));
 	#else
-		float xtmp = comp( $(val:type) $(nput), 0);
-		float ytmp = comp( $(val:type) $(nput), 1);
-		float ztmp = comp( $(val:type) $(nput), 2);
-		$(val) = $(val:type) (gain(xtmp, $(gain)), gain(ytmp, $(gain)), gain(ztmp, $(gain)));
-	#endif
+		float $(blockname)_xtmp = comp( $(val:type) $(nput), 0);
+		float $(blockname)_ytmp = comp( $(val:type) $(nput), 1);
+		float $(blockname)_ztmp = comp( $(val:type) $(nput), 2);
+		$(val) = $(val:type) (	gain( $(blockname)_xtmp, $(gain)),
+								gain( $(blockname)_ytmp, $(gain)),
+								gain( $(blockname)_ztmp, $(gain)) );
+	#endif /* $(blockname)_$(val:type) */
+	#undef $(blockname)_$(val:type)
+
 	</rsl_code>
-	<usage>Similar to a contrast adjustment</usage>
+	<usage>This function operates on both float and color types, and it&apos;s similar to a contrast adjustment.</usage>
 </shrimp>

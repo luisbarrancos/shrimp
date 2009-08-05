@@ -6,7 +6,7 @@
 		$(mout) = inverse( $(minput) );
 	#else
 		$(mout) = 1 / $(minput) ;
-	#endif
+	#endif /* RENDERER */
 	</rsl_code>
 	<usage>Inverts the input matrix.</usage>
 </shrimp>

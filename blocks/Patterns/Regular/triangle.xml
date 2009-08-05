@@ -3,7 +3,7 @@
 	<input name = "amp" description="Amplitude of the wave" type="float" default="1"/>
 	<output name="val" description="Value of the wave at x" type="float"/>
 	<rsl_code>
-	$(val) = $(amp) * 2*abs( 0.5 - mod( $(x), 1 ) );
+		$(val) = $(amp) * 2*abs( 0.5 - mod( $(x), 1 ) );
 	</rsl_code>
 	<usage>This function generates a triangle wave.</usage>
 </shrimp>

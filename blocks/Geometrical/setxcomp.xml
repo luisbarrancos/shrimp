@@ -3,8 +3,8 @@
 	<input name="p" description="Point, vector or normal" type_parent="out" type="normal point vector" default="vector(0)"/>
 	<output name="out" description="Resulting point, vector or normal." type="normal point vector"/>
 	<rsl_code>
-	setxcomp( $(p:type) $(p), $(x) );
-	$(out) = $(p);
+		setxcomp( $(p:type) $(p), $(x) );
+		$(out) = $(p);
 	</rsl_code>
 	<usage>Sets the X component of a point, vector, or normal.</usage>
 </shrimp>

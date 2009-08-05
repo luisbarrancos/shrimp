@@ -1,18 +1,22 @@
 <shrimp type="function" name="Bias" description="Adjust bias." author="rconstruct">
-	<input name="nput" description="Input to be adjusted" type="float color" type_parent="val"default="1"/>
+	<input name="nput" description="Input to be adjusted" type_parent="val" type="float color" default="color(1)"/>
 	<input name="bias" description="Bias value" type="float" default="0.5"/>
 	<output name="val" description="Adjusted value." type="float color"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
-		$(val) = ($(bias) > 0) ? pow($(nput), log($(bias)) / log(0.5)) : 0;
+	
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
+		$(val) = ( $(bias) > 0) ? pow( $(nput), log($(bias)) / log(0.5)) : 0;
 	#else
-		float xtmp = comp( $(val:type) $(nput), 0);
-		float ytmp = comp( $(val:type) $(nput), 1);
-		float ztmp = comp( $(val:type) $(nput), 1);
-		$(val) = $(val:type) (bias(xtmp, $(bias)), bias(ytmp, $(bias)), bias(ztmp, $(bias)));
-	#endif
+		float $(blockname)_xtmp = comp( $(val:type) $(nput), 0);
+		float $(blockname)_ytmp = comp( $(val:type) $(nput), 1);
+		float $(blockname)_ztmp = comp( $(val:type) $(nput), 1);
+		$(val) = $(val:type) (	bias( $(blockname)_xtmp, $(bias)),
+								bias( $(blockname)_ytmp, $(bias)),
+								bias( $(blockname)_ztmp, $(bias)) );
+	#endif /* $(blockname)_$(val:type) */
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
-	<usage>Similar to a brighness adjustement</usage>
+	<usage>Gain function, operates on float or color types, it&apos;s similar to a brighness adjustement</usage>
 </shrimp>

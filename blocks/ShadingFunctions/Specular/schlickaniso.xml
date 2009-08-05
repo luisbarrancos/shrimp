@@ -4,17 +4,16 @@
     <input name="roughness" description="The apparent surface roughness." type="float" default="0.2"/>
 	<input name="isotropy" description="Surface isotropy" type="float" default="0.1"/>
 	<input name="ior" description="Index of refraction" type="float" default="2.0"/>
-	<input name="dir" description="Anisotropy direction" type="vector" default="normalize(dPdu)"/>
-	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
-	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<input name="dir" description="Anisotropy direction" storage="varying" type="vector" default="normalize(dPdu)"/>
+	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * aschlick( $(roughness), $(isotropy),
 						$(ior), $(N), $(I), $(dir) );
         $(Ci) = aov_specularcolor * aov_specular;
-
 	</rsl_code>
-    <usage>Christope Schlick's anisotropic specular term. Isotropy controls surface isotropy, 0 being anisotropic, 1 being isotropic. Roughness controls apparent surface roughness, 0 being smooth, 1 being rough. Index of refraction controls the reflection coefficient contribution from the fresnel term. Dir is the anisotropy direction, defaults to dPdu. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
+    <usage>Christope Schlick&apos;s anisotropic specular term. &quot;Isotropy&quot; controls surface isotropy, 0 being anisotropic, 1 being isotropic; &quot;roughness&quot; controls apparent surface roughness, 0 being smooth, 1 being rough; &quot;ior&quot;, the index of refraction controls the reflection coefficient contribution from the Fresnel term; &quot;dir&quot; is the anisotropy direction, defaults to &quot;dPdu&quot;. The specular color value is passed to &quot;aov_specularcolor&quot;, while the specular value, to the &quot;aov_specular&quot; AOV presets.</usage>
 </shrimp>

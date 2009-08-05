@@ -1,7 +1,7 @@
 #ifndef SHRIMP_EXTRAS_H
-#define SHRIMP_EXTRAS_H	1
+#define SHRIMP_EXTRAS_H 1
 
-#include <shrimp_helpers.h>
+#include "rsl_shrimp_helpers.h"
 
 /* Microfacet distribution functions */
 ////////////////////////////////////////////////////////////////////////////////

@@ -4,5 +4,5 @@
 	<rsl_code>
 		$(val) = acos( $(a) );
 	</rsl_code>
-	<usage>Returns the arc cosine in the range 0 to PI.</usage>
+	<usage>Returns the arc cosine in the [0,PI] range.</usage>
 </shrimp>

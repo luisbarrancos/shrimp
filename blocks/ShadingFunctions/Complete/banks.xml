@@ -5,11 +5,11 @@
 	<input name="Kd" description="Diffuse light coefficient" type="float" default="0.5"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="1"/>
     <input name="roughness" description="Surface roughness" type="float" default="0.25"/>
-	<input name="adir" description="Anisotropy direction" type="vector" default="dPdu"/>
-    <input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
-    <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
+	<input name="adir" description="Anisotropy direction" storage="varying" type="vector" default="dPdu"/>
+    <input name="NN" description="Normal vector" storage="varying" type="normal" default="normalize(N)"/>
+    <input name="IN" description="Eye vector" storage="varying" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color" />
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
 		aov_specularcolor += $(Cspec);
@@ -18,7 +18,6 @@
 		$(Ci) = aov_surfacecolor * aov_ambient + banksaniso(
 				$(Cdiff), $(Cspec), $(Kd), $(Ks), $(roughness), $(NN),
 				$(IN), $(adir), DECLARE_AOV_PARAMETERS ) ;
-
 	</rsl_code>
-    <usage>Implementation of the Banks fast anisotropic model, based on the paper "Illumination in Diverse Codimensions", by David C. Banks. The anisotropy direction is specified via the adir parameter, defaulting to dPdu, while the parameter roughness controls the apparent surface roughness.  This block passes the resulting values to the aov_surfacecolor, aov_ambient, aov_diffuse, aov_specularcolor and aov_specular AOV presets.</usage>
+    <usage>Implementation of the Banks fast anisotropic model, based on the paper &quot;Illumination in Diverse Codimensions&quot;, by David C. Banks. The anisotropy direction is specified via the &quot;adir&quot; parameter, defaulting to &quot;dPdu&quot;, while the parameter &quot;roughness&quot; controls the apparent surface roughness.  This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot;, &quot;aov_specularcolor&quot; and &quot;aov_specular&quot; AOV presets.</usage>
 </shrimp>

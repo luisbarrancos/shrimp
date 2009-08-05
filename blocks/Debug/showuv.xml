@@ -1,5 +1,5 @@
 <shrimp type="function" name="ShowUV" description="Show UV parameters" author="rconstruct">
-	<output name="Ci" description="Output value" type="color"/>
+	<output name="Ci" description="Output value" storage="varying" type="color"/>
 	<rsl_code>
         $(Ci) = color( u, v, .1 );
 	</rsl_code>

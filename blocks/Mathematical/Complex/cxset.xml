@@ -2,14 +2,15 @@
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<input name="B" description="2nd input" type="float" default="0"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<rsl_include>odwikicomplex.h</rsl_include>
+	<rsl_include>rsl_odwikicomplex.h</rsl_include>
 	<rsl_code>
-		#define A$(A)_$(A:type)
-		#ifdef A$(A)_vector
+	#define $(blockname)_$(A:type)
+	#ifdef $(blockname)_vector
 		$(val) = vector( xcomp( $(A) ), ycomp( $(A) ), 0 );
-		#else
+	#else
 		$(val) = vector( $(A), $(B), 0);
-		#endif
+	#endif
+	#undef $(blockname)_$(A:type)
 	</rsl_code>
-	<usage>Create a complex number. Based on Odforce's odwiki complex.h.</usage>
+	<usage>Create a complex number. Based on Odforce&apos;s odwiki complex.h.</usage>
 </shrimp>

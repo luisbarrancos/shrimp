@@ -3,7 +3,7 @@
 	<input name="B" description="2nd input" type="color point vector normal float" type_parent="val" default="1"/>
 	<output name="val" description="val = A / B" type="color point vector normal float"/>
 	<rsl_code>
-	$(val) = $(A) / $(B);
+		$(val) = $(A) / $(B);
 	</rsl_code>
 	<usage>Divides input A by input B.</usage>
 </shrimp>

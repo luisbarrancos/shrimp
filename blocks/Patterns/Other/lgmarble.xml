@@ -8,7 +8,7 @@
 	<input name="veincolor" description="Veining color" type="color" default="color( .37, .58, .37 )"/>
 	<input name="pp" description="Surface point" type="point" default="P"/>
 	<output name="val" description="Output color" type="color"/>
-	<rsl_include>shrimp_extrapatterns.h</rsl_include>
+	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
 	<rsl_code>
 		$(val) = veinedmarble(	$(veinfreq), $(veinlevels), $(warpfreq),
 								$(warping), $(sharpness), $(basecolor),

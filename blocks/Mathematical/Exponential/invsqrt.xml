@@ -2,7 +2,7 @@
 	<input name="x" description="Input value" type="float" default="1"/>
 	<output name="val" description="val = the inverse sqare root of x" type="float"/>
 	<rsl_code>
-	$(val) = inversesqrt( $(x) );
+		$(val) = inversesqrt( $(x) );
 	</rsl_code>
 	<usage>Returns 1/sqrt(x).</usage>
 </shrimp>

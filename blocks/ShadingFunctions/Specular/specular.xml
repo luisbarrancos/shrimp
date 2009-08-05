@@ -1,8 +1,8 @@
 <shrimp type="function" name="Specular" description="Computes specular light at surface" author="rconstruct">
 	<input name="Cspec" description="Specular color" type="color" default="color(1)"/>
 	<input name="Ks" description="Specular coefficient" type="float" default="1"/>
-	<input name="norm" description="The surface normal" type="normal vector" default="normalize(N)"/>
-	<input name="viewer" description="The viewer vector" type="normal vector" default="-normalize(I)"/>
+	<input name="norm" description="The surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
+	<input name="viewer" description="The viewer vector" storage="varying" type="vector" default="-normalize(I)"/>
 	<input name="roughness" description="The specular roughness" type="float" default="0.3"/>
 	<output name="Ci" description="The amount of diffuse light" type="color" />
 	<rsl_code>
@@ -10,5 +10,5 @@
 		aov_specular += $(Ks) * specular( $(norm), $(viewer), $(roughness) );
 		$(Ci) = aov_specularcolor * aov_specular;
 	</rsl_code>
-<usage>Specular term, using specular() call. Note that what is a standard specular() might vary with the renderer you're using. The specular color value is passed to aov_specularcolor, while the specular value, to the aov_specular AOV presets.</usage>
+<usage>Specular term, using the &quot;specular&quot; function. Note that what is a standard &quot;specular&quot; might vary with the renderer you&apos;re using. The specular color value is passed to &quot;aov_specularcolor&quot;, while the specular value is passed to the &quot;aov_specular&quot; AOV presets.</usage>
 </shrimp>

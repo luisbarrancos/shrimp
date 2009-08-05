@@ -4,5 +4,5 @@
 	<rsl_code>
 		$(val) = tan( $(theta) );
 	</rsl_code>
-	<usage>Standard trigonomic tan function.</usage>
+	<usage>Standard trigonomic tangent function.</usage>
 </shrimp>

@@ -1,9 +1,9 @@
 #ifndef SHRIMP_EXTRA_PATTERNS_H
-#define SHRIMP_EXTRA_PATTERNS_H	1
+#define SHRIMP_EXTRA_PATTERNS_H 1
 
-#include <shrimp_conversion.h>
-#include <shrimp_fractal.h>
-#include <shrimp_helpers.h>
+#include "rsl_shrimp_conversion.h"
+#include "rsl_shrimp_fractal.h"
+#include "rsl_shrimp_helpers.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 // Penrose rhomb tiling ////////////////////////////////////////////////////////

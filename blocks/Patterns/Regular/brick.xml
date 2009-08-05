@@ -11,7 +11,7 @@
     <output name="column" description="Output column" type="float"/>
     <output name="xtile" description="X position with this tile" type="float"/>
     <output name="ytile" description="Y position with this tile" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		basicbrick( $(x), $(y), $(twidth), $(theight), $(rstagger),
 					$(rsvary), $(jfreq), $(jamp),

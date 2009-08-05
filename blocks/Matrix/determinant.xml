@@ -2,7 +2,7 @@
     <input name="minput" description="Matrix input" type="matrix" default="0"/>
     <output name="mdeter" description="Matrix determinant" type="float"/>
 	<rsl_code>
-    $(mdeter) = determinant( $(minput) );
+	    $(mdeter) = determinant( $(minput) );
 	</rsl_code>
 	<usage>Gets the determinant of matrix M.</usage>
 </shrimp>

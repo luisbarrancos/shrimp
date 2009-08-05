@@ -2,7 +2,7 @@
 	<input name="in" description="Input" type_parent="out" type="float point vector normal string color" default="color(0)" />
 	<output name="out" description="Output = Input" type="float point vector normal string color"/>
 	<rsl_code>
-	$(out) = $(in);
+		$(out) = $(in);
 	</rsl_code>
 	<usage>Useful for supplying multiple inputs with the same value.</usage>
 </shrimp>

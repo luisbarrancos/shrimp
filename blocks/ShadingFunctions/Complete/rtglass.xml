@@ -13,20 +13,20 @@
 	<input name="ktblur" description="Refraction blur" type="float" default="0"/>
 	<input name="aexp" description="Attenuation exponent" type="float" default="0.3"/>
 	<input name="aamp" description="Attenuation scale" type="float" default="1"/>
-	<input name="samples" description="Ray samples" type="float" storage="uniform" default="1"/>
-	<input name="refrmaxdist" description="Maximum refraction ray distance" type="float" storage="uniform" default="1e38"/>
-	<input name="reflmaxdist" description="Maximum reflection ray distance" type="float" storage="uniform" default="1e38"/>
+	<input name="samples" description="Ray samples" storage="uniform" type="float" default="1"/>
+	<input name="refrmaxdist" description="Maximum refraction ray distance" storage="uniform" type="float" default="1e+38"/>
+	<input name="reflmaxdist" description="Maximum reflection ray distance" storage="uniform" type="float" default="1e+38"/>
 	<input name="spectype" description="Specular type, glossy or standard specular" storage="uniform" type="string" default="&quot;glossy&quot;"/>
-	<input name="rbounces" description="Maximum number of reflection bounces" type="float" storage="uniform" default="1"/>
-	<input name="sbounces" description="Maximum number of specular bounces" type="float" storage="uniform"  default="1"/>
-	<input name="krefl" description="Reflection blend factor" type="float" storage="uniform" default="1"/>
-	<input name="krefr" description="Refraction blend factor" type="float" storage="uniform"  default="1"/>
-	<input name="envmap" description="Env map to use, instead of raytracing" type="string" storage="uniform" default="&quot;raytrace&quot;"/>
-    <input name="NN" description="Normal vector" type="normal" default="normalize(N)"/>
-    <input name="IN" description="Eye vector" type="vector" default="normalize(I)"/>
+	<input name="rbounces" description="Maximum number of reflection bounces" storage="uniform" type="float" default="1"/>
+	<input name="sbounces" description="Maximum number of specular bounces" storage="uniform" type="float" default="1"/>
+	<input name="krefl" description="Reflection blend factor" storage="uniform" type="float" default="1"/>
+	<input name="krefr" description="Refraction blend factor" storage="uniform" type="float" default="1"/>
+	<input name="envmap" description="Env map to use, instead of raytracing" storage="uniform" type="string" default="&quot;raytrace&quot;"/>
+    <input name="NN" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
+    <input name="IN" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
     <output name="Ci" description="Shaded color" type="color"/>
 	<output name="Oi" description="Shaded opacity" type="color"/>
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
 		$(Oi) = Os;
         $(Ci) = rtglass( $(Ka), $(Kd), $(Ks), $(Kr), $(Kt), $(ior),
@@ -37,5 +37,5 @@
 					$(envmap),
 					DECLARE_AOV_PARAMETERS );
 	</rsl_code>
-    <usage>Raytraced glass shader, based on Larry Gritz&apos;s glass shader, and in Mario Marengo&apos;s VEX work and discussion at odforce.net. Uses attenuation, and blending between pure non-attenuated glass and attenuated (with attenuation color) glass. Defaults to primary reflections, and primary specular highlights only, controlled by &quot;rbounces&quot; and &quot;sbounces&quot; respectively. Refraction and reflection blur defaults to 0, ray samples default to 1, so you can increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by &quot;aexp&quot; and &quot;aamp&quot; variables, the attenuation exponent and scale respectively, while the blend between pure non attenuated glass and attenuated (attencolor colored) glass, is controlled by &quot;krefl&quot; and &quot;krefr&quot;, which control the blend of reflections and refractions respectively. Basecolor is the medium color used for the ambient and diffuse contribution, when they&apos;re set, while attencolor is the attenuation color. Spectype defaults to &quot;glossy&quot; (Larry Gritz&apos;s glossy specular model), any other value will get you specular highlights using the standard &quot;specular&quot; function. Maximum ray distance defaults to 1e38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink. Note that you need to set your RIB raytracing options and attributes, and that the surface must be dual sided to have internal reflections. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets.</usage>
+	<usage>Raytraced glass shader, based on Larry Gritz&apos;s glass shader, and in Mario Marengo&apos;s VEX work and discussion at odforce.net. Uses attenuation, and blending between pure non-attenuated glass and attenuated (with attenuation color) glass. Defaults to primary reflections, and primary specular highlights only, controlled by &quot;rbounces&quot; and &quot;sbounces&quot; respectively. Refraction and reflection blur defaults to 0, ray samples default to 1, so you can increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by &quot;aexp&quot; and &quot;aamp&quot; variables, the attenuation exponent and scale respectively, while the blend between pure non attenuated glass and attenuated (attencolor colored) glass, is controlled by &quot;krefl&quot; and &quot;krefr&quot;, which control the blend of reflections and refractions respectively. Basecolor is the medium color used for the ambient and diffuse contribution, when they&apos;re set, while attencolor is the attenuation color. Spectype defaults to &quot;glossy&quot; (Larry Gritz&apos;s glossy specular model), any other value will get you specular highlights using the standard &quot;specular&quot; function. Maximum ray distance defaults to 1e38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink. Note that you need to set your RIB raytracing options and attributes, and that the surface must be dual sided to have internal reflections. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets.</usage>
 </shrimp>

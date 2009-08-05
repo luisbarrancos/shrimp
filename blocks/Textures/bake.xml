@@ -1,32 +1,33 @@
 <shrimp type="function" name="Bake" description="Bakes associated data" author="rconstruct">
 	<input name="bakefile" description="Baked map filename" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="ss" description="X coordinate" type="float" default="s"/>
-	<input name="tt" description="Y coordinate" type="float" default="t"/>
+	<input name="ss" description="X coordinate" storage="varying" type="float" default="s"/>
+	<input name="tt" description="Y coordinate" storage="varying" type="float" default="t"/>
 	<input name="bdata" description="Data to bake" type="point color float" type_parent="bdataout" default="0"/>
 	<input name="ascii" description="ASCII/binary file toggle" type="float" default="1"/>
 	<output name="bdataout" description="Baked data" type="point color float" />
 	<rsl_code>
+	
 	#if RENDERER==aqsis
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
 		$(bdataout) = $(bdata);
 		
 	#elif RENDERER==_3delight
-	
 	/* default is to save in ASCII format */
 	#define bakeformat_$(ascii)
 	#ifdef bakeformat_1
 		bake( $(bakefile), $(ss), $(tt), $(bdata) );
 		$(bdataout) = $(bdata);
 	#else
-		bake( concat( $(bakefile), "&binary"), $(ss), $(tt), $(bdata) );
+		bake( concat( $(bakefile), "&amp;binary"), $(ss), $(tt), $(bdata) );
 		$(bdataout) = $(bdata);
-	#endif
+	#endif /* bakeformat_$(ascii) */
+	#undef bakeformat_$(ascii)
 		
 	#else
-	/* bake() is only supported on Aqsis and 3delight apparently */
+	/* bake() is only supported on Aqsis and 3delight */
 		$(bdataout) = $(bdata);
-	#endif
+	#endif /* RENDERER */
 			
 	</rsl_code>
-<usage>Bakes the supplied data channel into a bakefile. Note that this shadeop is only supported in Aqsis and 3Delight; you can use bake3d in other implementations. In 3Delight's case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default.</usage>
+<usage>Bakes the supplied data channel into a bakefile. In 3Delight&apos;s case, you can force the baked file to be in binary format, instead of ASCII format, by toggling the ascii parameter, which is enabled (ascii on) by default. Check your renderer&apos;s documentation, since this function is isn&apos;t available in all renderers.</usage>
 </shrimp>

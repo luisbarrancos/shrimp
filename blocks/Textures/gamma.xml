@@ -1,18 +1,24 @@
-<shrimp type="function" name="Gamma" description="Adjust gamma." author="rconstruct">
-	<input name="nput" description="Input to be adjusted" type="float color" type_parent="val" default="1"/>
+<shrimp type="function" name="Gamma" description="Gamma adjustement function" author="rconstruct">
+	<input name="nput" description="Input to be adjusted" type_parent="val" type="float color" default="color(1)"/>
 	<input name="gammaval" description="Range lower point" type="float" default="1"/>
 	<output name="val" description="Remapped value." type="float color"/>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
-		$(val) = pow( $(nput), 1 / max(0.001, $(gammaval)));
+	
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
+		$(val) = pow( $(nput), 1/max(EPS, $(gammaval)));
 	#else
-		float xtmp = comp( $(val:type) $(nput), 0);
-		float ytmp = comp( $(val:type) $(nput), 1);
-		float ztmp = comp( $(val:type) $(nput), 2);
-		$(val) = $(val:type) ( pow( xtmp, 1/ max(0.001, $(gammaval))),
-								pow( ytmp, 1/ max(0.001, $(gammaval))),
-								pow( ztmp, 1/ max(0.001, $(gammaval))) );
-	#endif
+		float $(blockname)_xtmp = comp( $(val:type) $(nput), 0);
+		float $(blockname)_ytmp = comp( $(val:type) $(nput), 1);
+		float $(blockname)_ztmp = comp( $(val:type) $(nput), 2);
+		$(val) = $(val:type) (
+					pow( $(blockname)_xtmp, 1/max(EPS, $(gammaval)) ),
+					pow( $(blockname)_ytmp, 1/max(EPS, $(gammaval)) ),
+					pow( $(blockname)_ztmp, 1/max(EPS, $(gammaval)) ) );
+	#endif /* $(blockname)_$(val:type) */
+	#undef $(blockname)_$(val:type)
+
 	</rsl_code>
+	<usage>A gamma adjustment function, that operates on float and color types.</usage>
 </shrimp>

@@ -1,7 +1,7 @@
 <shrimp type="function" name="Sinh" description="Hyperbolic sine block" author="rconstruct">
 	<input name="theta" description="Input value in radians" type="float" default="1"/>
 	<output name="val" description="Output value" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		$(val) = sinh( $(theta) );
 	</rsl_code>

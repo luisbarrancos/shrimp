@@ -17,7 +17,7 @@
     <output name="pos1" description="1st position" storage="varying" type="point" />
     <output name="pos2" description="2nd position" storage="varying" type="point" />	
     <output name="sfactor" description="scale factor" type="float" />
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
 		point po_$(blockname) = transform( $(cspace), $(p) );
 		point pp_$(blockname) = po_$(blockname) / $(scale) + $(squiggle)

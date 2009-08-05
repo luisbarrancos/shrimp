@@ -2,9 +2,9 @@
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<input name="B" description="2nd input" type="float" default="1"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<rsl_include>odwikicomplex.h</rsl_include>
+	<rsl_include>rsl_odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_root( $(A), $(B) );
 	</rsl_code>
-	<usage>Complex Nth root, for a complex or a real number. Based on Odforce's odwiki complex.h.</usage>
+	<usage>Complex Nth root, for a complex or a real number. Based on Odforce&apos;s odwiki complex.h.</usage>
 </shrimp>

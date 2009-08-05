@@ -6,7 +6,7 @@
 	<input name="ctype" description="Curvature type, see usage." storage="uniform" type="string" default="&quot;gauss&quot;"/>
     <input name="greys" description="Greyscale on/off" storage="uniform" type="float" default="0"/>
 	<output name="val" description="Curvature output" type="color"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
         $(val) = scurvature( $(ctype), $(cmin), $(cmax), $(greys),
 								$(NN), $(PP));

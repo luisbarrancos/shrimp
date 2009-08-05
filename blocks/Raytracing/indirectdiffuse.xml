@@ -37,52 +37,70 @@
 
 	/* make sure options are clear */
 	/* and set them according to shadeop and renderer */
-	#ifdef RAYOPTIONS
-	#undef RAYOPTIONS
-	#endif
+	#ifdef SHADEOP_ARGUMENTS
+	#undef SHADEOP_ARGUMENTS
+	#endif /* SHADEOP_ARGUMENTS */
 
 	#if RENDERER == _3delight
-	#define RAYOPTIONS	"label", $(label), "subset", $(subset), \
-						"bias", $(bias), "hitmode", $(hitmode), \
-						"coneangle", $(coneangle), "axis", $(axis), \
-						"samplebase", $(samplebase), "maxdist", $(maxdist), \
-						"environmentmap", $(envmap), \
-						"environmentspace", $(envspace), \
-						"distribution", $(distribution), \
-						"adaptive", $(adapt), "minsamples", $(minsamp), \
-						"falloffmode", $(floffmode), "falloff", $(falloff), \
-						"pointbased", $(usept), "filename", $(pfile), \
-						"hitsides", $(hitsides), \
-						"maxsolidangle", $(maxsangle), "clamp", $(clamp), \
-						"sortbleeding", $(srtbleed), \
-						"coordsystem", $(coordsys), "occlusion", $(Occ)
+	#define SHADEOP_ARGUMENTS	"label", $(label), "subset", $(subset), \
+								"bias", $(bias), "hitmode", $(hitmode), \
+								"coneangle", $(coneangle), "axis", $(axis), \
+								"samplebase", $(samplebase), \
+								"maxdist", $(maxdist), \
+								"environmentmap", $(envmap), \
+								"environmentspace", $(envspace), \
+								"distribution", $(distribution), \
+								"adaptive", $(adapt), \
+								"minsamples", $(minsamp), \
+								"falloffmode", $(floffmode), \
+								"falloff", $(falloff), \
+								"pointbased", $(usept), "filename", $(pfile), \
+								"hitsides", $(hitsides), \
+								"maxsolidangle", $(maxsangle), \
+								"clamp", $(clamp), \
+								"sortbleeding", $(srtbleed), \
+								"coordsystem", $(coordsys), "occlusion", $(Occ)
 	#elif RENDERER == pixie
-	#define RAYOPTIONS	"coordsystem", $(coordsys), "maxdist", $(maxdist), \
-						"coneangle", $(coneangle), \
-						"samplebase", $(samplebase), "label", $(label), \
-						"bias", $(bias), "maxerror", $(maxerror), \
-						"pointbased", $(usept), "environmentmap", $(envmap), \
-						"filename", $(pfile), "maxpixeldist", $(maxpixeldist), \
-						"maxsolidangle", $(maxsangle), "occlusion", $(Occ)
+	#define SHADEOP_ARGUMENTS	"coordsystem", $(coordsys), \
+								"maxdist", $(maxdist), \
+								"coneangle", $(coneangle), \
+								"samplebase", $(samplebase), \
+								"label", $(label), "bias", $(bias), \
+								"maxerror", $(maxerror), \
+								"pointbased", $(usept), \
+								"environmentmap", $(envmap), \
+								"filename", $(pfile), \
+								"maxpixeldist", $(maxpixeldist), \
+								"maxsolidangle", $(maxsangle), \
+								"occlusion", $(Occ)
 	#elif RENDERER == prman
-	#define RAYOPTIONS	"adapt", $(adapt), "minsamples", $(minsamp), \
-						"coordsystem", $(coordsys), \
-						"distribution", $(distribution), \
-						"maxdist", $(maxdist), "falloffmode", $(floffmode), \
-						"falloff", $(falloff), "coneangle", $(coneangle), \
-						"samplebase", $(samplebase), "hitmode", $(hitmode), \
-						"hitsides", $(hitsides), "subset", $(subset), \
-						"label", $(label), "environmentmap", $(envmap), \
-						"environmentspace", $(envspace), "bias", $(bias), \
-						"maxpixeldist", $(maxpixeldist), \
-						"maxerror", $(maxerror), "pointbased", $(usept), \
-						"filename", $(pfile), "maxsolidangle", $(maxsangle), \
-						"clamp", $(clamp), "environmentcolor", $(Envcolor), \
-						"environmentdir", $(Envdir), "occlusion", $(Occ)	
+	#define SHADEOP_ARGUMENTS	"adapt", $(adapt), "minsamples", $(minsamp), \
+								"coordsystem", $(coordsys), \
+								"distribution", $(distribution), \
+								"maxdist", $(maxdist), \
+								"falloffmode", $(floffmode), \
+								"falloff", $(falloff), \
+								"coneangle", $(coneangle), \
+								"samplebase", $(samplebase), \
+								"hitmode", $(hitmode), \
+								"hitsides", $(hitsides), "subset", $(subset), \
+								"label", $(label), \
+								"environmentmap", $(envmap), \
+								"environmentspace", $(envspace), \
+								"bias", $(bias), \
+								"maxpixeldist", $(maxpixeldist), \
+								"maxerror", $(maxerror), \
+								"pointbased", $(usept), \
+								"filename", $(pfile), \
+								"maxsolidangle", $(maxsangle), \
+								"clamp", $(clamp), \
+								"environmentcolor", $(Envcolor), \
+								"environmentdir", $(Envdir), \
+								"occlusion", $(Occ)	
 	#elif RENDERER == air
-	#define RAYOPTIONS	"environmentmap", $(envmap), \
-						"environmentspace", $(envspace), "label", $(label), \
-						"subset", $(subset)
+	#define SHADEOP_ARGUMENTS	"environmentmap", $(envmap), \
+								"environmentspace", $(envspace), \
+								"label", $(label), "subset", $(subset)
 	#else /* no indirectdiffuse() available */
 	#define NOSHADEOP /* what about bmrt, entropy, renderdotc? */
 	#endif /* RENDERER */
@@ -91,14 +109,14 @@
 		$(Ci) = 0;
 	#else
 		aov_indirectdiffuse += indirectdiffuse(	$(inpoint), $(indir),
-												$(samples), RAYOPTIONS );
+												$(samples), SHADEOP_ARGUMENTS );
 		aov_occlusion += $(Occ);
 		$(Ci) = aov_indirectdiffuse;
 		$(Occ) = 1 - $(Occ);
 	#endif /* NOSHADEOP */
 	
 	#undef NOSHADEOP
-	#undef RAYOPTIONS
+	#undef SHADEOP_ARGUMENTS
 	
 	</rsl_code>
     <usage>Indirect diffuse retrieves the diffuse illumination from indirect light, allowing effects such as color bleeding.  Coneangle defaults to PI/2. Distribution can be one of &quot;cosine&quot; or &quot;uniform&quot;, defaulting to &quot;cosine&quot;. This function can use an optional environment map to use when rays don&apos;t hit the geometry. You can also use point-based &quot;indirectdiffuse&quot;. Note that this function varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details. This function passes the indirect diffuse value into the &quot;aov_indirectdiffuse&quot;, and the optional occlusion value into the &quot;aov_occlusion&quot; AOV presets (as occlusion, not 1 - occlusion).</usage>

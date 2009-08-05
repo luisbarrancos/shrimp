@@ -3,7 +3,7 @@
 	<input name="vaxis" description="Vector axis" type="vector" default="vector(1)"/>
     <output name="mout" description="Translated matrix" type="matrix"/>
 	<rsl_code>
-	$(mout) = translate( $(minput), $(vaxis) );
+		$(mout) = translate( $(minput), $(vaxis) );
 	</rsl_code>
-	<usage>Translates a matrix M. These functions are similar to the Ri functions RiTranslate, RiRotate, and RiScale, except that the rotation angle in rotate() is in radians, not in degrees as with RiRotate.</usage>
+	<usage>Translates a matrix M. These functions are similar to the RI statements &quot;RiTranslate&quot;, &quot;RiRotate&quot;, and &quot;RiScale&quot;, except that the rotation angle in &quot;rotate&quot; is in radians, not in degrees as with &quot;RiRotate&quot;.</usage>
 </shrimp>

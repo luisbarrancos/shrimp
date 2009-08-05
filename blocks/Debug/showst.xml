@@ -1,5 +1,5 @@
 <shrimp type="function" name="ShowST" description="Show ST coordinates" author="rconstruct">
-	<output name="Ci" description="Output value" type="color"/>
+	<output name="Ci" description="Output value" storage="varying" type="color"/>
 	<rsl_code>
         $(Ci) = color( s, t, .1 );
 	</rsl_code>

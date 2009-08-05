@@ -7,5 +7,5 @@
 		aov_ambient += $(Ka) * ambient();
 		$(Ci) = aov_surfacecolor * aov_ambient;
 	</rsl_code>
-    <usage>Ambient term. The surface color value is passed to aov_surfacecolor, and ambient value, to the aov_ambient AOV presets.</usage>
+    <usage>Ambient term. The surface color value is passed to &quot;aov_surfacecolor&quot;, and ambient value, to the &quot;aov_ambient&quot; AOV presets.</usage>
 </shrimp>

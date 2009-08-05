@@ -4,8 +4,8 @@
 	<output name="tx" description="out tile X" type="float"/>
 	<output name="ty" description="out tile Y" type="float"/>
 	<output name="ttype" description="Tile type" type="float"/>
-	<rsl_include>shrimp_extrapatterns.h</rsl_include>
-	<rsl_include>shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
 		find_penrose_rhomb( $(tx), $(ty), $(ttype), $(sx), $(sy) );
 	</rsl_code>

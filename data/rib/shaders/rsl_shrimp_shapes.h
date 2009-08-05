@@ -3,9 +3,9 @@
  * Author: A.Gill,  August 2000 */
 
 #ifndef SHRIMP_SHAPES_H
-#define SHRIMP_SHAPES_H	1
+#define SHRIMP_SHAPES_H 1
 
-#include <shrimp_helpers.h>
+#include "rsl_shrimp_helpers.h"
 
 ////////////////////////////////////////////////////////////////////////////////
 float

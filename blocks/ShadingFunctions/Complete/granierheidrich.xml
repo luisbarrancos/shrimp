@@ -1,4 +1,4 @@
-<shrimp name="GranierHeidrich" type="function" description="Thin-film interference BRDF" author="rconstruct">
+<shrimp name="GranierHeidrich" type="function" description="Granier-Heidrich Thin-film interference BRDF" author="rconstruct">
 	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.7"/>
     <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
@@ -11,40 +11,46 @@
     <input name="freqmax" description="frequency maximum" type="float" default="70"/>
     <input name="dev" description="deviation" type="float" default="0.2"/>
     <input name="seed" description="noise seed" type="float" default="1234"/>
-	<input name="ss" description="noise X coordinates" type="float" default="s"/>
-	<input name="tt" description="noise Y coordinates" type="float" default="t"/>
-	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
-	<input name="I" description="Direction of viewer" type="vector" default="normalize(I)"/>
+	<input name="ss" description="noise X coordinates" storage="varying" type="float" default="s"/>
+	<input name="tt" description="noise Y coordinates" storage="varying" type="float" default="t"/>
+	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
+	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color" />
-	<rsl_include>shrimp_shadingmodels.h</rsl_include>
-	<rsl_include>shrimp_helpers.h</rsl_include>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
 
-        normal Nf = faceforward( $(N) , $(I) );
-        vector Vf = -$(I);
+        normal $(blockname)_Nf = faceforward( $(N) , $(I) );
+        vector $(blockname)_Vf = -$(I);
 
-        float drange[2] = { $(drangemin), $(drangemax) };
-        float iorrgb[3] = { xcomp( $(ior) ), ycomp( $(ior) ), zcomp( $(ior) ) } ;
-        float spec[2] = { $(specmin), $(specmax) };
-        float freq[2] = { $(freqmin), $(freqmax) };
+		float $(blockname)_drange[2] = { $(drangemin), $(drangemax) };
+		float $(blockname)_iorrgb[3] = {	xcomp( $(ior) ),
+											ycomp( $(ior) ),
+											zcomp( $(ior) ) };
+		float $(blockname)_spec[2] = { $(specmin), $(specmax) };
+		float $(blockname)_freq[2] = { $(freqmin), $(freqmax) };
 
-        float lambda[3] = { 645, 525, 445 };
+		float $(blockname)_lambda[3] = { 645, 525, 445 }; /* wavelenght */
+		
+		float $(blockname)_d = blend( $(blockname)_drange[0],
+						$(blockname)_drange[1], noise( $(ss)
+						* $(blockname)_freq[0] + $(seed) + 1998122 ));
 
-        float d = blend( drange[0], drange[1], noise( $(ss) * freq[0] +
-						 $(seed) + 19928, $(tt) *freq[0] / 2 + $(seed) +
-						 1998122));
-
-        normal Nl = normalize( normal( Nf + $(dev) * snoise2( $(ss) * freq[1] +
-								 $(seed) + 19928, $(tt) *freq[1] / 2 + 
-								$(seed) + 1998122)));
+		normal $(blockname)_Nl = normalize( normal( $(blockname)_Nf
+						+ $(dev) * snoise2( $(ss) * $(blockname)_freq[1]
+						+ $(seed) + 19928, $(tt) * $(blockname)_freq[1]
+						/ 2 + $(seed) + 1998122 )));
 
 		aov_surfacecolor += $(Cdiff);
-		
-        $(Ci) = LocIllumGranier( Nf, Nl, Vf, spec[0], spec[1], d, iorrgb,
-								lambda, $(Cdiff), $(Kd), $(Ks),
-								DECLARE_AOV_PARAMETERS );
+
+		$(Ci) = LocIllumGranier( $(blockname)_Nf, $(blockname)_Nl,
+							$(blockname)_Vf, $(blockname)_spec[0],
+							$(blockname)_spec[1], $(blockname)_d,
+							$(blockname)_iorrgb, $(blockname)_lambda,
+							$(Cdiff), $(Kd), $(Ks),
+							DECLARE_AOV_PARAMETERS );
 
 	</rsl_code>
-    <usage>Peter Stuart's implementation of the Granier-Heidrich thin-film interference BRDF, as described in "A Simple Layered RGB BRDF Model", by Granier and Heidrich. The parameter drange controls the minimum and maximum substrate thickness, with ior, the RGB index of refraction of the substrate. The parameter spec, controls the minimum and maximum specular exponent of the rays reflected on the substrate, with freq as the minimum and maximum frequency of the perlin noise, and dev, the deviation of the normals in the range [0,1]. This block passes the resulting values to the aov_surfacecolor, aov_diffuse and aov_specular AOV presets.</usage>
+    <usage>Peter Stuart&apos;s implementation of the Granier-Heidrich thin-film interference BRDF, as described in &quot;A Simple Layered RGB BRDF Model&quot;, by Xavier Granier and Wolfgang Heidrich. The parameter &quot;drange&quot; controls the minimum and maximum substrate thickness, with &quot;ior&quot;, the RGB index of refraction of the substrate. The parameter &quot;spec&quot;, controls the minimum and maximum specular exponent of the rays reflected on the substrate, with &quot;freq&quot; as the minimum and maximum frequency of the perlin noise, and &quot;dev&quot;, the deviation of the normals in the range [0,1]. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_diffuse&quot; and &quot;aov_specular&quot; AOV presets.</usage>
 </shrimp>

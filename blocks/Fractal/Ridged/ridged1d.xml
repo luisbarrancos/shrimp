@@ -7,16 +7,17 @@
 	<input name="offset" description="Controls the multifractality" storage="uniform" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="val" description="Fractal value at x" type="color vector point float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * Ridged( $(x), $(fwidth), $(octaves),
 										$(lacunarity), $(offset), $(gain) );
 	#else
 		$(val) = $(amplitude) * $(val:type) (vector vRidged( $(x), $(fwidth),
 					$(octaves), $(lacunarity), $(offset), $(gain)));
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 	<usage>Ken Musgrave&apos;s 1 dimensional Ridged Multifractal function. Note that offset can change the scale of the output drastically.</usage> 
 </shrimp>

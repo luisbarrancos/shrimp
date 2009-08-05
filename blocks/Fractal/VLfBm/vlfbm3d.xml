@@ -7,16 +7,17 @@
 	<input name="gain" description="Controls the contrast of the VLfBm" storage="uniform" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of VLfBm" type="float" default="1"/>
 	<output name="val" description="VLfBm value at p" type="color point vector normal float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * VLfBm( $(p), $(fwidth), $(octaves),
 					$(lacunarity), $(gain), $(scale) );
 	#else
 		$(val) = $(amplitude) * $(val:type) ( vector VLvfBm( $(p), $(fwidth),
 					$(octaves), $(lacunarity), $(gain), $(scale) ) );
 	#endif
+	#undef $(blockname)_$(val:type)
 	</rsl_code>
 	<usage>3 dimensional Variable Lacunarity fractional Brownian motion is a sumation of noises at different frequencies, using VLNoise instead of signed noise. Note that the output is not clamped and may exceed +1 or -1.</usage>
 </shrimp>

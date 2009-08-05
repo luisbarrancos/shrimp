@@ -6,7 +6,7 @@
 	<input name="amplitude" description="Amplitude of noise" type="float" default="1"/>
 	<output name="val" description="Noise value at (x,y)" type="color point vector float"/>
 	<rsl_code>
-	$(val) = $(amplitude) * $(val:type) pnoise( $(x), $(y), $(xperiod),
+		$(val) = $(amplitude) * $(val:type) pnoise( $(x), $(y), $(xperiod),
 												$(yperiod) );
 	</rsl_code>
 <usage>2 dimensional periodic noise function. XY periods should be integers up to 256. Output value is in the [0, &quot;amplitude&quot;] range.</usage>

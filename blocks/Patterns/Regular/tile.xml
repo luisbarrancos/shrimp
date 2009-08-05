@@ -7,10 +7,11 @@
 	<output name="yt" description="The y coordinate inside the tile" type="float"/>
 	<output name="column" description="The column number of the current tile" type="float"/>
 	<output name="row" description="The row number of the current tile" type="float"/>
-	<rsl_include>shrimp_helpers.h</rsl_include>
-	<rsl_include>shrimp_shapes.h</rsl_include>
+	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
+	<rsl_include>rsl_shrimp_shapes.h</rsl_include>
 	<rsl_code>
-		shTile( $(x),$(y),$(xfreq),$(yfreq),$(xt),$(yt),$(column),$(row) );
+		shTile( $(x), $(y), $(xfreq), $(yfreq), $(xt), $(yt),
+				$(column), $(row) );
 	</rsl_code>
 	<usage>This function takes a point X,Y and returns the coordinates inside the tile (&quot;xt&quot;,&quot;yt&quot;) and the tile &quot;column&quot; and &quot;row&quot;, with &quot;xfreq&quot; and &quot;yfreq&quot; affecting the frequency (and consequently the shape) of the tiles in the X and Y directions.</usage>
 </shrimp>

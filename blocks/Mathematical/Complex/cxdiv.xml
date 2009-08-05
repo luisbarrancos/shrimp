@@ -2,9 +2,9 @@
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<input name="B" description="2nd input" type="float vector" default="vector(0,0,0)"/>
 	<output name="val" description="Complex result" type="vector"/>
-	<rsl_include>odwikicomplex.h</rsl_include>
+	<rsl_include>rsl_odwikicomplex.h</rsl_include>
 	<rsl_code>
 		$(val) = cx_div( $(A), $(B) );
 	</rsl_code>
-	<usage>Complex division, for two complex numbers, a complex and a real, or a real and a complex. Based on Odforce's odwiki complex.h.</usage>
+	<usage>Complex division, for two complex numbers, a complex and a real, or a real and a complex. Based on Odforce&apos;s odwiki complex.h.</usage>
 </shrimp>

@@ -3,7 +3,7 @@
 	<input name="x" description="exponent" type="float" default="1"/>
 	<output name="val" description="val = A raised to the power x" type="float"/>
 	<rsl_code>
-	$(val) = pow( $(A), $(x) );
+		$(val) = pow( $(A), $(x) );
 	</rsl_code>
 	<usage>Returns &quot;A&quot; raised to the power &quot;x&quot;.</usage>
 </shrimp>

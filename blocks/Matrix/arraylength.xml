@@ -4,5 +4,5 @@
 	<rsl_code>
 	    $(val) = arraylength( $(var) );
 	</rsl_code>
-	<usage>Returns the number of elements in array var, or -1 if var is an scalar. Notice that RSL allows for single dimensional arrays of any basic data type.</usage>
+	<usage>Returns the number of elements in the supplied array &quot;var&quot;, or -1 if &quot;var&quot; is an scalar. Notice that RSL allows for single dimensional arrays of any basic data type.</usage>
 </shrimp>

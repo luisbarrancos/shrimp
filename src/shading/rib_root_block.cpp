@@ -253,7 +253,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	/* all blocks should be aware of the AOV macros, so instead of including
 	 * shrimp_aov.h in all blocks, we might as well make it a part of the
 	 * standard shader body. */
-	shader_code += "#include <shrimp_aov.h>\n";
+	shader_code += "#include <rsl_shrimp_aov.h>\n";
 
 	// initialize code build process, get includes, parameters and locals
 	std::set<std::string> includes;

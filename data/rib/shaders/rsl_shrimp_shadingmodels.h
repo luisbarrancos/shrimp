@@ -1,14 +1,15 @@
 #ifndef SHRIMP_SHADING_MODELS_H
-#define SHRIMP_SHADING_MODELS_H	1
+#define SHRIMP_SHADING_MODELS_H 1
 
-#include <shrimp_helpers.h>	/* useful constants & others */
-#include <shrimp_extras.h>	/* for PDFs and Geometric attenuation, for the 
-							   Cook-Torrance model */
-#include <shrimp_aov.h>		/* for the AOVs macros. Note that we initialize
-							   all the AOVs to zero in the first statement
-							   of the preview shader with INIT_AOV_PARAMETERS*/
-#include <odwikicomplex.h>	/* Complex math, from the Odforce.net's Odwiki,
-							   including full formula for complex Fresnel. */
+#include "rsl_shrimp_helpers.h"	/* useful constants & others */
+#include "rsl_shrimp_extras.h"	/* for PDFs and Geometric attenuation, for the
+								   Cook-Torrance model */
+#include "rsl_shrimp_aov.h"		/* for the AOVs macros. Note that we initialize
+								   all the AOVs to zero in the first statement
+								   of the preview shader with
+								   INIT_AOV_PARAMETERS*/
+#include "rsl_odwikicomplex.h"	/* Complex math, from the Odforce.net's Odwiki,
+								   including full formula for complex Fresnel */
 
 ////////////////////////////////////////////////////////////////////////////////
 // Wrapped diffuse illumination model, based on ZJ's wrapped diffuse model /////

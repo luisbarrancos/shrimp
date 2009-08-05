@@ -7,16 +7,17 @@
 	<input name="gain" description="Controls the contrast of the turbulence" storage="uniform" type="float" default="0.5"/>
 	<input name="amplitude" description="Amplitude of turbulence" type="float" default="1"/>
 	<output name="val" description="Turbulence value at (x,y)" type="color vector point float"/>
-	<rsl_include>shrimp_fractal.h</rsl_include>
+	<rsl_include>rsl_shrimp_fractal.h</rsl_include>
 	<rsl_code>
-	#define $(val)_$(val:type)
-	#ifdef $(val)_float
+	#define $(blockname)_$(val:type)
+	#ifdef $(blockname)_float
 		$(val) = $(amplitude) * turbulence( $(x), $(y), $(fwidth), $(octaves),
 					$(lacunarity), $(gain));
 	#else
 		$(val) = $(amplitude) * $(val:type) ( vector vturbulence( $(x), $(y),
 					$(fwidth), $(octaves), $(lacunarity), $(gain) ) );
 	#endif
+	#undef $(blockname)_$(val:type)
 
 	</rsl_code>
 	<usage>2 dimensional turbulence fractal function with Perlin noise basis. Returns a result in the [0,1] range by default.</usage>

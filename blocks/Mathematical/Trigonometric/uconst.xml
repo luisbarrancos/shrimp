@@ -1,8 +1,8 @@
 <shrimp type="function" name="UConst" description="Useful constants" author="rconstruct">
-	<output name="Pi" description="PI value" type="float"/>
-	<output name="Piover2" description="PI/2 value" type="float"/>
-	<output name="2Pi" description="2PI value" type="float"/>
-	<output name="1overPi" description="1/PI value" type="float"/>
+	<output name="PI" description="PI value" type="float"/>
+	<output name="PIover2" description="PI/2 value" type="float"/>
+	<output name="2PI" description="2PI value" type="float"/>
+	<output name="1overPI" description="1/PI value" type="float"/>
 	<output name="E" description="Euler&apos;s number" type="float"/>
 	<output name="Phi" description="The golden ratio" type="float"/>
 	<output name="Sin36" description="sin(radians(36))" type="float"/>
