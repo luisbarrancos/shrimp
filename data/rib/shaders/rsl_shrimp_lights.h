@@ -33,9 +33,9 @@ sig2kshadowspot(
 				 float intensity; color lightcolor;
 				 point from, to;
 				 uniform float coneangle, conedeltaangle, beamdistribution;
+				 uniform float shadowsamples, shadowbias, shadowwidth;
 				 uniform string shadowname, shadowfilter;
-				 float shadowsamples, shadowblur, shadowbias, atten,
-				 shadowwidth;
+				 float shadowblur, atten;
 		)
 {
 	float attenuation, cosangle;
@@ -44,9 +44,18 @@ sig2kshadowspot(
 				  cosinside = cos( coneangle - conedeltaangle );
 
 	color C = color(0);
+
 	illuminate( from, A, coneangle ) {
 		extern vector L;
 		extern point Ps;
+		/* According to the RI specs both Cl and Ol are global light
+		 * shader variables, accessible in the light shader, but some
+		 * renderers have problems accessing Cl and Ol outside solar
+		 * and illuminate constructs, when only light direction vector L
+		 * is exclusively available inside solar and illuminate constructs.
+		 * Workaround follows, instead of letting the shrimp blocks set
+		 * Cl and Ol in the main xml statements. */
+		extern color Cl;
 
 		cosangle = L.A / length(L);
 		attenuation = atten * pow( cosangle, beamdistribution) /
@@ -67,7 +76,8 @@ sig2kshadowspot(
 						"width", shadowwidth, "filter", shadowfilter );
 			}
 		}
-		C = attenuation * lightcolor;
+		Cl = attenuation * lightcolor;
+		C = Cl;
 	}
 	return C;
 }
@@ -92,7 +102,8 @@ slideprojector(
 				uniform float fieldofview;
 				point from, to, up;
 				uniform string slidename, shadowname, shadowfilter;
-				float shadowblur, shadowsamples, shadowwidth, shadowbias;
+				float shadowblur;
+				uniform float shadowsamples, shadowwidth, shadowbias;
 		)
 {
 	varying vector reIT, /* normalized direction vector */
@@ -115,8 +126,10 @@ slideprojector(
 	reIU = reIV ^ reIT;
 
 	color C = color(0);
+	
 	illuminate( from, vector( reIT), atan( S_SQRT2 / spread)) /* sqrt(2) */
 	{
+		extern color Cl;
 		extern vector L;
 		extern point Ps;
 		L = Ps - from; /* direction of light source from surface point */
@@ -127,12 +140,13 @@ slideprojector(
 		tloc = spread * Pv / Pt;
 		sloc = sloc * .5 + .5; /* correction from [-1,1] to [0,1] */
 		tloc = tloc * .5 + .5;
-		C = color texture( slidename, sloc, tloc);
+		Cl = color texture( slidename, sloc, tloc);
 		if (shadowname != "") {
-			C *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
+			Cl *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
 							"blur", shadowblur, "width", shadowwidth,
 							"filter", shadowfilter, "bias", shadowbias );
 		}
+		C = Cl;
 	}
 	return C;
 }
@@ -145,7 +159,8 @@ color
 sdistantlight(
 				point from, to;
 				uniform string shadowname, shadowfilter;
-				float shadowsamples, shadowwidth, shadowblur, shadowbias;
+				uniform float shadowsamples, shadowwidth;
+				uniform float shadowblur, shadowbias;
 				float intensity;
 				color lightcolor;
 		)
@@ -153,13 +168,16 @@ sdistantlight(
 	extern point Ps;
 
 	color C = color(0);
+	
 	solar( to - from, 0) {
-		C = intensity * lightcolor;
+		extern color Cl;
+		Cl = intensity * lightcolor;
 		if (shadowname != "") {
-			C *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
+			Cl *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
 							"blur", shadowblur, "width", shadowwidth,
 							"filter", shadowfilter,	"bias", shadowbias );
 		}
+		C = Cl;
 	}
 	return C;
 }
@@ -171,7 +189,8 @@ sdistantlight(
 color
 spointlight(
 				point from;
-				float intensity, decay, blur, width, samples, bias;
+				float intensity, decay, blur;
+				uniform float width, samples, bias;
 				uniform string shadowmap, filter;
 				color lightcolor;
 		)
@@ -180,22 +199,23 @@ spointlight(
 	color C = color(0);
 
 	illuminate( from ) {
-	
 		extern vector L;
 		extern point Ps;
+		extern color Cl;
 		
 		float l2 = L.L;
 		if (decay == 1.0) {
-			C = intensity * ( lightcolor / l2 );
+			Cl = intensity * ( lightcolor / l2 );
 		} else {
-			C = intensity * ( lightcolor / pow( l2, .5 * decay));
+			Cl = intensity * ( lightcolor / pow( l2, .5 * decay));
 		}
 
 		if (shadowmap != "") {
-			C *= 1 - color shadow( shadowmap, Ps, "samples", samples, "blur",
+			Cl *= 1 - color shadow( shadowmap, Ps, "samples", samples, "blur",
 									blur, "width", width, "bias", bias,
 									"filter", filter );
 		}
+		C = Cl;
 	}
 	return C;
 }

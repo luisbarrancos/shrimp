@@ -7,7 +7,7 @@
 	<input name="samples" description="Shadow map samples" type="float" default="4"/>
 	<input name="width" description="Shadow map filter width" type="float" default="1"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
-	<input name="bias" description="Shadow map bias" type="float" default="-1"/>
+	<input name="bias" description="Shadow map bias" type="float" default="0.01"/>
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<rsl_include>rsl_shrimp_lights.h</rsl_include>
