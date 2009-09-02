@@ -245,7 +245,7 @@ void scene_view::draw_grid() {
 	glDisable (GL_BLEND);
 	glLineWidth (1.0);
 
-	glColor3f (0.4, 0.4, 0.4);
+	glColor3f (0.3, 0.3, 0.3);
 
 	// grid's horizontal lines
 	glBegin (GL_LINES);
@@ -797,7 +797,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		glColor4f (0.0, 1.0, 0.0, alpha);
 	else
 		// other ones are blue
-		glColor4f (0.0, 0.0, 1.0, alpha);
+		glColor4f (0.33, 0.47, 0.69, alpha);
 
 	glBegin (GL_QUADS);
 		glVertex3d (X, Y, 0);
@@ -958,34 +958,12 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 		// show property name
 		glsetfont (fltk::HELVETICA, m_font_size);
 		glColor4f (1.0, 1.0, 1.0, 1.0);
+		// FIXME: Name.c_str() is input name, not description 
 		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.2), (float) (Y - Size), (float)0);
 	}
 	else if ("colour" == Type || "color" == Type) {
 
 		// R G B
-		glBegin (GL_QUADS);
-			glColor3f (1.0, 0.0, 0.0);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - third, 0);
-			glVertex3d (X, Y - third, 0);
-
-			glColor3f (0.0, 1.0, 0.0);
-			glVertex3d (X, Y - third, 0);
-			glVertex3d (X + Size, Y - third, 0);
-			glVertex3d (X + Size, Y - 2*third, 0);
-			glVertex3d (X, Y - 2*third, 0);
-
-			glColor3f (0.0, 0.0, 1.0);
-			glVertex3d (X, Y - 2*third, 0);
-			glVertex3d (X + Size, Y - 2*third, 0);
-			glVertex3d (X + Size, Y - 3*third, 0);
-			glVertex3d (X, Y - 3*third, 0);
-		glEnd();
-	}
-	else if ("point" == Type || "vector" == Type || "normal" == Type) {
-
-		// arrow
 		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -993,8 +971,62 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		
+		glBegin (GL_QUADS);
+			glColor3f (1.0, 0.0, 0.0);
+			glVertex3d (X + small , Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - third * 1.2, 0);
+			glVertex3d (X + small, Y - third * 1.2, 0);
 
-		glColor3f (0.0, 0.0, 1.0);
+			glColor3f (0.0, 1.0, 0.0);
+			glVertex3d (X + small, Y - third * 1.2, 0);
+			glVertex3d (X + Size - small, Y - third * 1.2, 0);
+			glVertex3d (X + Size - small, Y - 1.8 * third, 0);
+			glVertex3d (X + small, Y - 1.8 * third, 0);
+
+			glColor3f (0.0, 0.0, 1.0);
+			glVertex3d (X + small, Y - 1.8 * third, 0);
+			glVertex3d (X + Size - small, Y - 1.8 * third, 0);
+			glVertex3d (X + Size - small, Y - 3*third + small, 0);
+			glVertex3d (X + small, Y - 3*third + small, 0);
+		glEnd();
+	}
+	else if ("point" == Type) {
+
+		// circle
+		glColor3f (0.45, 0.83, 0.97);
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.03, 0.14, 0.17);
+		const int sections = 16;
+		const double radius = Size / 4.0;
+		// draw a filled circle
+		glBegin (GL_TRIANGLE_FAN);
+//			glVertex3d (X, Y, 0);
+			for (int i = 0; i <= sections; ++i) {
+				const double angle = static_cast<double> (i) * 2 * M_PI / static_cast<double> (sections);
+				glVertex3d ((X+Size/2.0) + radius * cos (angle), (Y-Size/2.0) + radius * sin (angle), 0);
+			}
+		glEnd();
+	}
+	else if ("vector" == Type) {
+
+		// arrow
+		glColor3f (0.80, 0.91, 0.31);
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.11, 0.12, 0.09);
 		glBegin (GL_LINES);
 			glVertex3d (X + small, Y - Size + small, 0);
 			glVertex3d (X + Size - small, Y - small, 0);
@@ -1006,10 +1038,58 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size - small, Y - small - third, 0);
 		glEnd();
 	}
+	else if ("normal" == Type) {
+
+		// arrow
+		glColor3f (0.97, 0.74, 0.28);
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.14, 0.11, 0.04);
+		glBegin (GL_LINES);
+			
+			glVertex3d ( X + Size/2, Y - Size + small, 0);
+			glVertex3d ( X + Size/2, Y - small, 0 );
+
+			glVertex3d ( X + Size/2, Y - small, 0 );
+			glVertex3d ( X + Size - small, Y - small - third, 0 );
+
+			glVertex3d ( X + Size/2, Y - small, 0 );
+			glVertex3d ( X + small, Y - small - third, 0 );
+
+			glVertex3d ( X + small, Y - Size + small, 0 );
+			glVertex3d ( X + Size - small, Y - Size + small, 0 );
+		
+		glEnd();
+	}
 	else if ("string" == Type) {
 
 		// two horizontal lines
-		glColor3f (0.8, 0.8, 0.8);
+		glColor3f (0.6, 0.6, 0.6);
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.0, 0.0, 0.0);
+		glBegin (GL_LINES);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+
+			glVertex3d (X + small, Y - 2*small, 0);
+			glVertex3d (X + Size - small, Y - 2*small, 0);
+		glEnd();
+	}
+	else if ("matrix" == Type) {
+
+		// two horizontal lines
+		glColor3f (0.79, 0.66, 0.89);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1020,9 +1100,9 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
 			glVertex3d (X + small, Y - third, 0);
-			glVertex3d (X + Size - small, Y - third, 0);
-
 			glVertex3d (X + small, Y - 2*third, 0);
+
+			glVertex3d (X + Size - small, Y - third, 0);
 			glVertex3d (X + Size - small, Y - 2*third, 0);
 		glEnd();
 	}
@@ -1091,13 +1171,13 @@ void scene_view::draw_group_body (int Group)
 
 void scene_view::draw_group_body (const double X, const double Y)
 {
-	const int sections = 20;
-	const double radius = 1;
+	const int sections = 6;
+	const double radius = 0.5;
 
 	// draw a filled circle
-	glColor3f (1, 0, 1);
+	glColor3f (0.36, 0.34, 0.55);
 	glBegin (GL_TRIANGLE_FAN);
-		glVertex3d (X, Y, 0);
+//		glVertex3d (X, Y, 0);
 		for (int i = 0; i <= sections; ++i) {
 			const double angle = static_cast<double> (i) * 2 * M_PI / static_cast<double> (sections);
 			glVertex3d (X + radius * cos (angle), Y + radius * sin (angle), 0);
