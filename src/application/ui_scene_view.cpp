@@ -802,26 +802,127 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		// other ones are blue
 		glColor4f (0.33, 0.47, 0.69, alpha);
 
+	const float radius = 0.1;
+	const float step = 0.01;
+
 	glBegin (GL_QUADS);
-		glVertex3d (X, Y, 0);
-		glVertex3d (X + width, Y, 0);
-		glVertex3d (X + width, Y - height, 0);
-		glVertex3d (X, Y - height, 0);
+		// center rectangle
+		glVertex3d (X + radius, Y - radius, 0);
+		glVertex3d (X + width - radius, Y - radius, 0);
+		glVertex3d (X + width - radius, Y - height + radius, 0);
+		glVertex3d (X + radius, Y - height + radius, 0);
+		// top rectangle
+		glVertex3d ( X + radius, Y - radius, 0);
+		glVertex3d ( X + width - radius, Y - radius, 0);
+		glVertex3d ( X + width - radius, Y, 0);
+		glVertex3d ( X + radius, Y, 0);
+		// bottom rectangle
+		glVertex3d ( X + radius, Y - height + radius, 0);
+		glVertex3d ( X + width - radius, Y - height + radius, 0);
+		glVertex3d ( X + width - radius, Y - height, 0);
+		glVertex3d ( X + radius, Y - height, 0);
+		// left rectangle 
+		glVertex3d ( X + radius, Y - radius, 0);
+		glVertex3d ( X, Y - radius, 0);
+		glVertex3d ( X, Y - height + radius, 0);
+		glVertex3d ( X + radius, Y - height + radius, 0);
+		// right rectangle
+		glVertex3d ( X + width, Y - radius, 0);
+		glVertex3d ( X + width - radius, Y - radius, 0);
+		glVertex3d ( X + width - radius, Y - height + radius, 0);
+		glVertex3d ( X + width, Y - height + radius, 0);
 	glEnd();
+
+	// corners
+	glBegin (GL_POLYGON);
+		// top left
+		float xcoord = X + radius;
+		float ycoord = Y - radius;
+		glVertex3d (xcoord, ycoord, 0);
+		for (float angle = M_PI/2; angle <= M_PI; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_POLYGON);
+		// top right
+		xcoord = X + width - radius;
+		ycoord = Y - radius;
+		glVertex3d (xcoord, ycoord, 0);
+		for (float angle = 0; angle <= M_PI/2; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_POLYGON);
+		// bottom left
+		xcoord = X + radius;
+		ycoord = Y - height + radius;
+		glVertex3d (xcoord, ycoord, 0);
+		for (float angle = -M_PI; angle <= -M_PI/2; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_POLYGON);
+		// bottom right
+		xcoord = X + width - radius;
+		ycoord = Y - height + radius;
+		glVertex3d (xcoord, ycoord, 0);
+		for (float angle = -M_PI/2; angle <= 0; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+
+	// block outline (and external block text)
 
 	glColor3f (1.0, 1.0, 1.0);
 	glBegin (GL_LINES);
-		glVertex3d (X, Y, 0);
-		glVertex3d (X + width, Y, 0);
-		glVertex3d (X + width, Y, 0);
-		glVertex3d (X + width, Y - height, 0);
-		glVertex3d (X + width, Y - height, 0);
-		glVertex3d (X, Y - height, 0);
-		glVertex3d (X, Y - height, 0);
-		glVertex3d (X, Y, 0);
+		// top rectangle contour
+		glVertex3d ( X + radius, Y, 0);
+		glVertex3d ( X + width - radius, Y, 0);
+		// bottom rectangle contour
+		glVertex3d ( X + radius, Y - height, 0);
+		glVertex3d ( X + width - radius, Y - height, 0);
+		// left rectangle contour
+		glVertex3d ( X, Y - height + radius, 0);
+		glVertex3d ( X, Y - radius, 0);
+		// right rectangle contour
+		glVertex3d ( X + width, Y - height + radius, 0);
+		glVertex3d ( X + width, Y - radius, 0);
+	glEnd();
+
+	// corners
+	glBegin (GL_LINE_STRIP);
+		// top left
+		xcoord = X + radius;
+		ycoord = Y - radius;
+		for (float angle = M_PI/2; angle <= M_PI; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_LINE_STRIP);
+		// top right
+		xcoord = X + width - radius;
+		ycoord = Y - radius;
+		for (float angle = 0; angle <= M_PI/2; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_LINE_STRIP);
+		// bottom left
+		xcoord = X + radius;
+		ycoord = Y - height + radius;
+		for (float angle = -M_PI; angle <= -M_PI/2; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
+	glEnd();
+	glBegin (GL_LINE_STRIP);
+		// bottom right
+		xcoord = X + width - radius;
+		ycoord = Y - height + radius;
+		for (float angle = -M_PI/2; angle <= 0; angle += step) {
+			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
+		}
 	glEnd();
 }
-
 
 void scene_view::draw_rolled_block_body (const shader_block* Block, const double X, const double Y) {
 

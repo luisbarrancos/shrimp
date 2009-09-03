@@ -493,7 +493,7 @@ application_window::application_window() :
 
 		// zoom slider
 		m_zoom_slider.labelfont (fltk::HELVETICA_BOLD);
-		m_zoom_slider.labelcolor ((fltk::Color)136);
+		m_zoom_slider.labelcolor (fltk::Color(0x7486A200));
 		m_zoom_slider.minimum (0);
 		m_zoom_slider.maximum (5);
 		m_zoom_slider.step (0.02);

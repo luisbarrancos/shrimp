@@ -29,6 +29,8 @@
 #include <fltk/Style.h>
 #include <fltk/run.h>
 #include <fltk/visual.h>
+#include <fltk/Tooltip.h>
+#include <fltk/LightButton.h>
 
 
 // Launch FLTK and Shrimp's main window
@@ -53,11 +55,8 @@ int main(int argc, char** argv) {
 	fltk::Color bg_colour (0x44444400);
 	fltk::Color bg_darkcolour (0x33333300);
 	fltk::Color text_colour (0xFFFFFF00);
-	fltk::Color text_lightcolour (0xB9D3EE00);
+//	fltk::Color text_lightcolour (0xB9D3EE00);
 	fltk::Color selection_colour (0x3A5FCD00);
-	fltk::Color red (0xFF000000);
-	fltk::Color green (0x00FF0000);
-	fltk::Color yellow (0xFFFF0000);
 	fltk::Color hover_colour(0xFF8C0000);
 	// Window
 	fltk::Window::default_style->color (bg_colour);
@@ -101,7 +100,13 @@ int main(int argc, char** argv) {
 	fltk::InvisibleBox::default_style->textcolor (text_colour);
 	fltk::InvisibleBox::default_style->box (fltk::BORDER_BOX);
 	fltk::InvisibleBox::default_style->buttonbox (fltk::BORDER_BOX);
-
+	// Tooltip
+	fltk::Tooltip::default_style->color (selection_colour);
+	fltk::Tooltip::default_style->textcolor (text_colour);
+	// LightButton
+	fltk::LightButton::default_style->color (bg_colour);
+	fltk::LightButton::default_style->textcolor (text_colour);
+	fltk::LightButton::default_style->selection_color (hover_colour);
 
 	// check preferences for splash screen
 	general_options prefs;
