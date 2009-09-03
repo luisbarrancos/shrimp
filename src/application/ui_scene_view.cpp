@@ -471,6 +471,8 @@ void scene_view::draw_shader() {
 		else {
 			// draw a line between the connection start and mouse pointer
 			glColor3f (0.8, 0.0, 0.0);
+			glLineStipple(3, 0xAAAA);
+			glEnable(GL_LINE_STIPPLE);
 			glPushMatrix();
 				glMatrixMode (GL_PROJECTION);
 				glLoadIdentity();
@@ -480,6 +482,7 @@ void scene_view::draw_shader() {
 					glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
 				glEnd();
 			glPopMatrix();
+			glDisable(GL_LINE_STIPPLE);
 		}
 	}
 }
@@ -871,8 +874,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		}
 	glEnd();
 
-	// block outline (and external block text)
-
+	// block outline (and external block text)	
 	glColor3f (1.0, 1.0, 1.0);
 	glBegin (GL_LINES);
 		// top rectangle contour
