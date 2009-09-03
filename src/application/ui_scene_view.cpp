@@ -535,6 +535,9 @@ void scene_view::draw() {
 	glEnable (GL_BLEND);
 	glBlendFunc (GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 
+	// background color
+	glClearColor( 0.2f, 0.2f, 0.2f, 1);
+
 	glClear (GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 	glPushMatrix();

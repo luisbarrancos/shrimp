@@ -47,22 +47,61 @@ int main(int argc, char** argv) {
 
 	log() << aspect << "Starting Shrimp" << std::endl;
 
-	// theme
+	// theme colours
+	/* color, textcolor, selection_color, buttoncolor, highlight_color */
+	/* highlight_textcolor, labelcolor, selection_textcolor */
 	fltk::Color bg_colour (0x44444400);
+	fltk::Color bg_darkcolour (0x33333300);
 	fltk::Color text_colour (0xFFFFFF00);
-
-/*
-	fltk::Widget::default_style->color (bg_colour);
-	fltk::Widget::default_style->textcolor (text_colour);
+	fltk::Color text_lightcolour (0xB9D3EE00);
+	fltk::Color selection_colour (0x3A5FCD00);
+	fltk::Color red (0xFF000000);
+	fltk::Color green (0x00FF0000);
+	fltk::Color yellow (0xFFFF0000);
+	fltk::Color hover_colour(0xFF8C0000);
+	// Window
+	fltk::Window::default_style->color (bg_colour);
+	fltk::Window::default_style->textcolor (text_colour);
+	// Menu
+	fltk::Menu::default_style->color (bg_colour);
+	fltk::Menu::default_style->textcolor (text_colour);
+	fltk::Menu::default_style->selection_color (selection_colour);
+	fltk::Menu::default_style->buttoncolor (bg_colour);
+	fltk::Menu::default_style->highlight_color (selection_colour);
+	fltk::Menu::default_style->labelcolor (text_colour);
+	// Button
 	fltk::Button::default_style->color (bg_colour);
 	fltk::Button::default_style->textcolor (text_colour);
-*/	fltk::Menu::default_style->color (bg_colour);
-	fltk::Menu::default_style->textcolor (text_colour);
-/*	fltk::PopupMenu::default_style->color (bg_colour);
+	fltk::Button::default_style->labelcolor (text_colour);
+	fltk::Button::default_style->buttoncolor (bg_colour);
+	fltk::Button::default_style->highlight_color(hover_colour);
+	// Widget
+	fltk::Widget::default_style->color (bg_colour);
+	fltk::Widget::default_style->textcolor (text_colour);
+	fltk::Widget::default_style->selection_color (selection_colour);
+	fltk::Widget::default_style->buttoncolor (bg_colour);
+	fltk::Widget::default_style->highlight_color (hover_colour);
+	fltk::Widget::default_style->labelcolor (text_colour);
+	fltk::Widget::default_style->box (fltk::BORDER_BOX);
+	fltk::Widget::default_style->buttonbox (fltk::BORDER_BOX);
+	// PopupMenu
+	fltk::PopupMenu::default_style->color (bg_colour);
 	fltk::PopupMenu::default_style->textcolor (text_colour);
+	// Slider
 	fltk::Slider::default_style->color (bg_colour);
 	fltk::Slider::default_style->textcolor (text_colour);
-*/
+//	fltk::Slider::default_style->textsize (10);
+	// Group
+	fltk::Group::default_style->color (bg_colour);
+	fltk::Group::default_style->textcolor (text_colour);
+	fltk::Group::default_style->box (fltk::BORDER_BOX);
+	fltk::Group::default_style->buttonbox (fltk::BORDER_BOX);
+	// File preview
+	fltk::InvisibleBox::default_style->color (bg_darkcolour);
+	fltk::InvisibleBox::default_style->textcolor (text_colour);
+	fltk::InvisibleBox::default_style->box (fltk::BORDER_BOX);
+	fltk::InvisibleBox::default_style->buttonbox (fltk::BORDER_BOX);
+
 
 	// check preferences for splash screen
 	general_options prefs;
