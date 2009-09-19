@@ -2657,6 +2657,7 @@ rtglass(
 			DECLARE_AOV_OUTPUT_PARAMETERS
 	   )
 {
+	normal Nf = Nn;
 	// useful functions, vector exp, max, min
 	color expc( color c; ) { return color( exp(c[0]), exp(c[1]), exp(c[2])); }
 	float vmax( color c; ) { return max( c[0], c[1], c[2]); }
@@ -2667,19 +2668,22 @@ rtglass(
 	float kr = 0, kt = 0;
 
 	/* if I.N>0, ray is entering the medium, else ray is exiting and eta
-	 * is the reverse of the ior when ray is entering the medium.
-	 * */
+	 * is the reverse of the ior when ray is entering the medium. Only
+	 * 3delight seems not to need reversed N when ray is travelling inside,
+	 * other renderers need -N). */
 	float entering, eta;
 	if (idotn > 0) {
 		entering = 1;
 		eta = 1/ior;
+		Nf = Nn;
 	} else {
 		entering = 0;
 		eta = ior;
+		Nf = -Nn;
 	}
 
 	// Fresnel term
-	fresnel( In, Nn, eta, kr, kt, rdir, tdir);
+	fresnel( In, Nf, eta, kr, kt, rdir, tdir);
 	kt = 1 - kr; // physically incorrect but portable
 
 	/* get current ray depth and scale down samples as ray depth goes up
@@ -2717,7 +2721,7 @@ rtglass(
 	if (Kr * kr > 0) {
 		color k = mix( color(kr), kr * acoeff, Kr);
 		color maxcont = vmax(k);
-		if (maxcont != 0) {
+		if (maxcont != color(0)) {
 			crefl = k * environment( envmap, rdir, "samples", rsamples,
 					"blur", krblur, "maxdist", rmaxdist, "bias", bias );
 		}
@@ -2727,7 +2731,7 @@ rtglass(
 	if (Kt * kt > 0) {
 		color k = mix( color(kt), kt * acoeff, Kt);
 		color maxcont = vmax(k);
-		if (maxcont != 0) {
+		if (maxcont != color(0)) {
 			crefr = k * environment( envmap, tdir, "samples", rsamples,
 					"blur", ktblur, "maxdist", tmaxdist, "bias", bias );
 		}
