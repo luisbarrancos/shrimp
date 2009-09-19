@@ -2720,8 +2720,8 @@ rtglass(
 	// reflection, note: envmap after last ray bounce ?
 	if (Kr * kr > 0) {
 		color k = mix( color(kr), kr * acoeff, Kr);
-		color maxcont = vmax(k);
-		if (maxcont != color(0)) {
+		float maxcont = vmax(k);
+		if (maxcont > 0) {
 			crefl = k * environment( envmap, rdir, "samples", rsamples,
 					"blur", krblur, "maxdist", rmaxdist, "bias", bias );
 		}
@@ -2730,8 +2730,8 @@ rtglass(
 	// refractions, note: envmap after last ray bounce ?)
 	if (Kt * kt > 0) {
 		color k = mix( color(kt), kt * acoeff, Kt);
-		color maxcont = vmax(k);
-		if (maxcont != color(0)) {
+		float maxcont = vmax(k);
+		if (maxcont > 0) {
 			crefr = k * environment( envmap, tdir, "samples", rsamples,
 					"blur", ktblur, "maxdist", tmaxdist, "bias", bias );
 		}
