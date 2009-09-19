@@ -2649,7 +2649,7 @@ rtglass(
 			float Ka, Kd, Ks, Kr, Kt, ior, roughness, sharpness;
 			color attencolor;
 			float krblur, ktblur, aexp, aamp;
-			uniform float samples, rmaxdist, tmaxdist;
+			uniform float samples, rmaxdist, tmaxdist, bias;
 			uniform string spectype;
 			uniform float rbounces;
 			vector In; normal Nn;
@@ -2719,7 +2719,7 @@ rtglass(
 		color maxcont = vmax(k);
 		if (maxcont != 0) {
 			crefl = k * environment( envmap, rdir, "samples", rsamples,
-					"blur", krblur, "maxdist", rmaxdist);
+					"blur", krblur, "maxdist", rmaxdist, "bias", bias );
 		}
 	}
 
@@ -2729,7 +2729,7 @@ rtglass(
 		color maxcont = vmax(k);
 		if (maxcont != 0) {
 			crefr = k * environment( envmap, tdir, "samples", rsamples,
-					"blur", ktblur, "maxdist", tmaxdist);
+					"blur", ktblur, "maxdist", tmaxdist, "bias", bias );
 		}
 	}
 		
