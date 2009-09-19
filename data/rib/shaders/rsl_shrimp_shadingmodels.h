@@ -2659,8 +2659,8 @@ rtglass(
 {
 	// useful functions, vector exp, max, min
 	color expc( color c; ) { return color( exp(c[0]), exp(c[1]), exp(c[2])); }
-	color vmax( color c; ) { return max( c[0], c[1], c[2]); }
-	color vmin( color c; ) { return min( c[0], c[1], c[2]); }
+	float vmax( color c; ) { return max( c[0], c[1], c[2]); }
+	float vmin( color c; ) { return min( c[0], c[1], c[2]); }
 	
 	float idotn = -In.Nn; // need to know the face orientation, hence Nn
 	vector rdir = vector(0), tdir = vector(0);
