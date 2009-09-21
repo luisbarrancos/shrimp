@@ -2597,16 +2597,21 @@ woodreflectance(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Raytraced glass shader, based on Larry Gritz's glass shader, and on Mario ///
-// Marengo's glass shader (altough not even remotely as good/complete as ///////
-// Mario's VEX shader). The Larry Gritz glass shader was taken from ////////////
-// The RenderMan Repository - http://www.renderman.org  ////////////////////////
+// Raytraced glass shader, based on Larry Gritz's glass shader, on Mario ///////
+// Marengo's glass shader, and on Alan Warren's port of Mario Marengo's VEX ////
+// glass shader. No optics table or dispersion added yet (for RYGCBV ///////////
+// wavelenghts - a test shader was made but it's horrendously slow. The Larry //
+// Gritz's glass shader can be fount at The RenderMan Repository: //////////////
+// http://www.renderman.org ////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /* Tweaked to fit Shrimp's structure and needs, added attenuation, blend
  * factors for reflection and refraction, as Mario Marengo suggested in his
  * VEX glass shader ( http://forums.odforce.net/index.php?showtopic=4196 ).
- * Dispersion, or optics tables not added yet. (TODO?). */
+ * Also based transmission from Alan Warren's glass shader, the RSL port of
+ * Mario Marengo's glass shader (RSL2, no optics or dispersion though).
+ * Dispersion, or optics tables not added yet. (TODO?) - A test shader was
+ * made but it was/is horrendously slow (RYGCBV) */
 
 /* Compute the color of a glass-like surface with coherent reflections
  * and refractions.
@@ -2644,7 +2649,7 @@ locillumglassy(
 }
 
 // glass body
-color
+void
 rtglass(
 			float Ka, Kd, Ks, Kr, Kt, ior, roughness, sharpness;
 			color attencolor;
@@ -2654,6 +2659,7 @@ rtglass(
 			uniform float rbounces;
 			vector In; normal Nn;
 			uniform string envmap;
+			output varying color ci, oi;
 			DECLARE_AOV_OUTPUT_PARAMETERS
 	   )
 {
@@ -2687,11 +2693,13 @@ rtglass(
 	kt = 1 - kr; // physically incorrect but portable
 
 	/* get current ray depth and scale down samples as ray depth goes up
-	 * if needed */
+	 * if needed. Get ray type, for transmission rays in shadows */
 	uniform float raydepth = 0;
+	uniform string rtype = "";
 	rayinfo("depth", raydepth);
+	rayinfo("type", rtype);
 	uniform float rsamples = (raydepth > 1) ? max( 1, samples /
-								pow( 2, raydepth)) : samples ;
+								pow( 2, raydepth)) : samples ;		
 
 	// no ambient, diffuse at higher ray levels, specular max bounces
 	float ka = Ka, kd = Kd, ks = Ks;
@@ -2709,61 +2717,87 @@ rtglass(
 	
 	// attenuation
 	if (raydepth > 0 && entering == 0) {
-			extern vector I; // need ray length
-			float ilen = length(I);
-			float d = (aexp == 1) ? ilen : pow( ilen, aexp);
-			acoeff = expc( (cabs - vmax(cabs) - vmin(cabs)) * 2 * aamp * d);
-		} else {
-			acoeff = color(1);
-		}
-
-	// reflection, note: envmap after last ray bounce ?
-	if (Kr * kr > 0) {
-		color k = mix( color(kr), kr * acoeff, Kr);
-		float maxcont = vmax(k);
-		if (maxcont > 0) {
-			crefl = k * environment( envmap, rdir, "samples", rsamples,
-					"blur", krblur, "maxdist", rmaxdist, "bias", bias );
-		}
+		extern vector I; // need ray length
+		float ilen = length(I);
+		float d = (aexp == 1) ? ilen : pow( ilen, aexp);
+		acoeff = expc( (cabs - vmax(cabs) - vmin(cabs)) * 2 * aamp * d);
+	} else {
+		acoeff = color(1);
 	}
 
-	// refractions, note: envmap after last ray bounce ?)
-	if (Kt * kt > 0) {
-		color k = mix( color(kt), kt * acoeff, Kt);
-		float maxcont = vmax(k);
-		if (maxcont > 0) {
-			crefr = k * environment( envmap, tdir, "samples", rsamples,
-					"blur", ktblur, "maxdist", tmaxdist, "bias", bias );
+	// get shadows, or reflection+refraction
+	if (rtype == "transmission") {
+		color opacity = mix( color(kt), kt * acoeff, Kt);
+		color darkmix = mix( color(kr), kr * acoeff, Kr);
+		color shad = attencolor;
+		// convert to hsv
+		opacity = ctransform("rgb", "hsv", opacity);
+		darkmix = ctransform("rgb", "hsv", darkmix);
+		// desaturate and convert to rgb
+		opacity = ctransform("hsv", "rgb", color( opacity[0], 0, opacity[2]));
+		darkmix = ctransform("hsv", "rgb", color( darkmix[0], 0, darkmix[2]));
+		// convert shad to hsv, invert its hue, then back to rgb
+		color component = ctransform("rgb", "hsv", shad);
+		float reversehue = component[0]+0.5;
+
+		reversehue = (reversehue > 1) ? reversehue - 1.0 : reversehue;
+		setcomp( component, 0, reversehue);
+		shad = ctransform("hsv", "rgb", component);
+		
+		ci = shad;
+		oi = (opacity * shad) + darkmix;
+			
+	} else {
+
+		// reflection, note: envmap after last ray bounce ?
+		if (Kr * kr > 0) {
+			color k = mix( color(kr), kr * acoeff, Kr);
+			float maxcont = vmax(k);
+			if (maxcont > 0) {
+				crefl = k * environment( envmap, rdir, "samples", rsamples,
+						"blur", krblur, "maxdist", rmaxdist, "bias", bias );
+			}
 		}
-	}
+
+		// refractions, note: envmap after last ray bounce ?)
+		if (Kt * kt > 0) {
+			color k = mix( color(kt), kt * acoeff, Kt);
+			float maxcont = vmax(k);
+			if (maxcont > 0) {
+				crefr = k * environment( envmap, tdir, "samples", rsamples,
+						"blur", ktblur, "maxdist", tmaxdist, "bias", bias );
+			}
+		}
+			
+		/* Well, Aqsis doesn't supports raytracing yet, but we might as well
+		 * just leave everything in place (there's always frankenrender,
+		 * but i haven't tested it this way (w/BMRT's rayserver)).
+		 * Note: the ternary operator seems to have problems with color types
+		 * in Aqsis (cannot find a suitable cast for the expression) */
+	#if RENDERER == aqsis
+		if (Ka > 0) aov_ambient += Ka * ambient();
+		if (Kd > 0) aov_diffuse += Kd * diffuse(faceforward(Nn, In));
+		if (Ks > 0) {
+			if (spectype == "glossy")
+				aov_specular += locillumglassy( faceforward(Nn, In), -In,
+						roughness, sharpness);
+			else aov_specular += specular(faceforward(Nn, In), -In, roughness);
+		}
+	#else
+		// set illumination terms if active
+		aov_ambient += (ka == 0) ? color(0) : ka * ambient();
+		aov_diffuse += (kd == 0) ? color(0) : kd*diffuse( faceforward(Nn, In));
+		aov_specular += (ks == 0) ? color(0) : ks * ( (spectype == "glossy") ?
+				locillumglassy( faceforward(Nn, In),-In,roughness,sharpness) :
+				specular( faceforward(Nn, In), -In, roughness) );
+	#endif
+		aov_reflection += crefl;
+		aov_refraction += crefr;
 		
-	/* Well, Aqsis doesn't supports raytracing yet, but we might as well
-	 * just leave everything in place (there's always frankenrender,
-	 * but i haven't tested it this way (w/BMRT's rayserver)).
-	 * Note: the ternary operator seems to have problems with color types
-	 * in Aqsis (cannot find a suitable cast for the expression) */
-#if RENDERER == aqsis
-	if (Ka > 0) aov_ambient += Ka * ambient();
-	if (Kd > 0) aov_diffuse += Kd * diffuse(faceforward(Nn, In));
-	if (Ks > 0) {
-		if (spectype == "glossy")
-			aov_specular += locillumglassy( faceforward(Nn, In), -In,
-					roughness, sharpness);
-		else aov_specular += specular(faceforward(Nn, In), -In, roughness);
+		ci = aov_ambient + aov_diffuse + aov_specular + aov_reflection
+			+ aov_refraction;
+		oi = color(1);
 	}
-#else
-	// set illumination terms if active
-	aov_ambient += (ka == 0) ? color(0) : ka * ambient();
-	aov_diffuse += (kd == 0) ? color(0) : kd * diffuse( faceforward(Nn, In));
-	aov_specular += (ks == 0) ? color(0) : ks * ( (spectype == "glossy") ?
-			locillumglassy( faceforward(Nn, In), -In, roughness, sharpness) :
-			specular( faceforward(Nn, In), -In, roughness) );
-#endif
-	aov_reflection += crefl;
-	aov_refraction += crefr;
-		
-	return aov_ambient + aov_diffuse + aov_specular + aov_reflection
-						+ aov_refraction;
 }
 
 ////////////////////////////////////////////////////////////////////////////////

@@ -13,9 +13,13 @@
 	<input name="width" description="Shadow map filter width" type="float" default="1"/>
 	<input name="bias" description="Shadow map bias" type="float" default="0.01"/>
 	<input name="atten" description="Attenuation" type="float" default="1e6"/>
+	<input name="nondiff" description="Non-diffuse light" storage="uniform" type="float" default="0" />
+	<input name="nonspec" description="Non-specular light" storage="uniform" type="float" default="0" />
 	<output name="Cl" description="Light ray color" type="color"/>
 	<rsl_include>rsl_shrimp_lights.h</rsl_include>
 	<rsl_code>
+		__nondiffuse = $(nondiff);
+		__nonspecular = $(nonspec);
 		$(Cl) = sig2kshadowspot( $(inten), $(lcolor), $(lpos), $(ltar),
 					radians( $(coneangle) ), radians( $(conedelta) ),
 					$(bdist), $(samples), $(bias), $(width),

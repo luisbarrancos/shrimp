@@ -321,7 +321,10 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 
 		case LIGHT:
 			shader_code += "light " + ShaderName
-				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\n"
+				+ "output uniform float __nondiffuse = 0;\n"
+				+ "output uniform float __nonspecular = 0;\n"
+				+ "DEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case VOLUME:
@@ -1014,16 +1017,8 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 		file << "Display \"+" + TempDir + "/" + "aov_occlusion"
 			+ ".tif" + "\" \"file\" \"varying float aov_occlusion\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-
-		// this line creates "+aov_/path/..." which isn't correct
-//		std::string tmptif = TempDir + "/" + parent_name + ".tif";
-		// should instead be:
-//		std::string tmptif = TempDir + "/" + "aov_" + parent_name
-//			+ ".tif";
-//		file << "Display \"+aov_" + tmptif + "\" \"file\" \"" << parent_name << "\"\n";
-//		file << "Display \"+" + tmptif + "\" \"file\" \""
-//			<< parent_name << "\"\n";
 	}
+	
 	file << "\n";
 	file << m_general_statements << "\n";
 	file << "\n";

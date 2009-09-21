@@ -9,9 +9,13 @@
 	<input name="samples" description="Shadow map samples" type="float" default="1"/>
 	<input name="bias" description="Shadow map bias" type="float" default="0.01"/>
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
+	<input name="nondiff" description="Non-diffuse light" storage="uniform" type="float" default="0" />
+	<input name="nonspec" description="Non-specular light" storage="uniform" type="float" default="0" />
 	<output name="Cl" description="Light ray color" type="color"/>
 	<rsl_include>rsl_shrimp_lights.h</rsl_include>
 	<rsl_code>
+		__nondiffuse = $(nondiff);
+		__nonspecular = $(nonspec);
 		$(Cl) = spointlight( $(lpos), $(inten), $(decay), $(blur), $(width),
 					$(samples), $(bias), $(shadowmap), $(filter), $(lcolor) );
 	</rsl_code>

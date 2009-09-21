@@ -21,16 +21,17 @@
 	<input name="envmap" description="Environment map, raytracing" storage="uniform" type="string" default="&quot;raytrace&quot;"/>
     <input name="NN" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
     <input name="IN" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
-    <output name="Ci" description="Shaded color" type="color"/>
-	<output name="Oi" description="Shaded opacity" type="color"/>
+    <output name="Ci" description="Shaded color" storage="varying" type="color"/>
+	<output name="Oi" description="Shaded opacity" storage="varying" type="color"/>
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
-		$(Oi) = Os;
-        $(Ci) = rtglass( $(Ka), $(Kd), $(Ks), $(Kr), $(Kt), $(ior),
+		$(Ci) = color(0);
+		$(Oi) = color(0);
+        rtglass(	$(Ka), $(Kd), $(Ks), $(Kr), $(Kt), $(ior),
 					$(roughness), $(sharpness), $(attencolor),
 					$(krblur), $(ktblur), $(aexp), $(aamp), $(samples),
 					$(rmaxdist), $(tmaxdist), $(bias), $(spectype),
-					$(rbounces), $(IN), $(NN), $(envmap),
+					$(rbounces), $(IN), $(NN), $(envmap), $(Ci), $(Oi),
 					DECLARE_AOV_PARAMETERS );
 	</rsl_code>
 	<usage>Raytraced glass shader, based on Larry Gritz&apos;s glass shader, and in Mario Marengo&apos;s VEX work and discussion at odforce.net. Refraction and reflection blur defaults to 0, ray samples default to 1, so you can increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by &quot;aexp&quot; and &quot;aamp&quot; variables, the attenuation exponent and scale respectively, while &quot;attencolor&quot; is the attenuation color. Spectype defaults to &quot;glossy&quot; (Larry Gritz&apos;s glossy specular model), any other value will get you specular highlights using the standard &quot;specular&quot; function. Maximum ray distance defaults to 1e+38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink (it might be a good idea to use trace sets as well). Note that you need to set your RIB raytracing options and attributes, and make sure the geometry is correctly oriented. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets.</usage>
