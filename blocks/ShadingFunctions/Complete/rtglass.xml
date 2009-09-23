@@ -18,6 +18,8 @@
 	<input name="bias" description="Raytracing bias" storage="uniform" type="float" default="0.001"/>
 	<input name="spectype" description="Specular type, glossy or standard specular" storage="uniform" type="string" default="&quot;glossy&quot;"/>
 	<input name="rbounces" description="Maximum number of reflection bounces" storage="uniform" type="float" default="3"/>
+	<input name="usespec6" description="Toggle between RGB or spec6(RYGCBV) model" storage="uniform" type="float" default="0" />
+	<input name="optics" description="Optics model for spec6, range [0,112]" storage="uniform" type="float" default="50" />
 	<input name="envmap" description="Environment map, raytracing" storage="uniform" type="string" default="&quot;raytrace&quot;"/>
     <input name="NN" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
     <input name="IN" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
@@ -31,8 +33,9 @@
 					$(roughness), $(sharpness), $(attencolor),
 					$(krblur), $(ktblur), $(aexp), $(aamp), $(samples),
 					$(rmaxdist), $(tmaxdist), $(bias), $(spectype),
-					$(rbounces), $(IN), $(NN), $(envmap), $(Ci), $(Oi),
+					$(rbounces), $(optics), $(usespec6), $(IN), $(NN),
+					$(envmap), $(Ci), $(Oi),
 					DECLARE_AOV_PARAMETERS );
 	</rsl_code>
-	<usage>Raytraced glass shader, based on Larry Gritz&apos;s glass shader, and in Mario Marengo&apos;s VEX work and discussion at odforce.net. Refraction and reflection blur defaults to 0, ray samples default to 1, so you can increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by &quot;aexp&quot; and &quot;aamp&quot; variables, the attenuation exponent and scale respectively, while &quot;attencolor&quot; is the attenuation color. Spectype defaults to &quot;glossy&quot; (Larry Gritz&apos;s glossy specular model), any other value will get you specular highlights using the standard &quot;specular&quot; function. Maximum ray distance defaults to 1e+38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink (it might be a good idea to use trace sets as well). Note that you need to set your RIB raytracing options and attributes, and make sure the geometry is correctly oriented. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets.</usage>
+	<usage>Raytraced glass shader, based on Larry Gritz&apos;s glass shader, Mario Marengo&apos;s VEX work and discussion at odforce.net, and Alan Warren&apos;s port of Mario Marengo&apos;s VEX shader. Refraction and reflection blur defaults to 0, ray samples default to 1, so you can increase samples to get better antialiasing, or when blur is used. Attenuation is controlled by &quot;aexp&quot; and &quot;aamp&quot; variables, the attenuation exponent and scale respectively, while &quot;attencolor&quot; is the attenuation color. Spectype defaults to &quot;glossy&quot; (Larry Gritz&apos;s glossy specular model), any other value will get you specular highlights using the standard &quot;specular&quot; function. Maximum ray distance defaults to 1e+38, set this to a lower value, otherwise you'll be raytracing everything + the kitchen sink (it might be a good idea to use trace sets as well). Note that you need to set your RIB raytracing options and attributes, and make sure the geometry is correctly oriented. This block passes the resulting values to the aov_ambient, aov_diffuse, aov_specular, aov_reflection and aov_refraction AOV presets. The &quot;usespec6&quot; variable toggles between normal RGB model (1 sample), or spec6/RYGCVC model (6 samples), in which case, the index of refraction for the 6 wavelenghts is determined by the glass model chosen in &quot;optics&quot;, the valid range being [0,112]. Note, that this is at the moment, very expensive to render.</usage>
 </shrimp>
