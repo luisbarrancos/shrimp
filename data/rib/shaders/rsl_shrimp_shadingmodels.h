@@ -2699,8 +2699,9 @@ glasssample(
 		// convert to hsv
 		opacity = ctransform("rgb", "hsv", opacity );
 		darkmix = ctransform("rgb", "hsv", darkmix );
-		// desaturate and convert to rgb
+		
 #if RENDERER == aqsis // can only access components with (xyz)comp
+		// desaturate and convert to rgb
 		opacity = ctransform("hsv", "rgb", color( comp(opacity,0), 0,
 					comp(opacity, 2)));
 		darkmix = ctransform("hsv", "rgb", color( comp(darkmix,0), 0,
@@ -2709,12 +2710,13 @@ glasssample(
 		color component = ctransform("rgb", "hsv", shad);
 		float reversehue = comp(component, 0) + 0.5;
 #else
+		// desaturate and convert to rgb
 		opacity = ctransform("hsv", "rgb", color( opacity[0], 0, opacity[2]));
 		darkmix = ctransform("hsv", "rgb", color( darkmix[0], 0, darkmix[2]));
 		// convert shad to hsv, invert its hue, then back to rgb
 		color component = ctransform("rgb", "hsv", shad);
 		float reversehue = component[0] + 0.5;
-#endif
+#endif // component access
 
 		reversehue = (reversehue > 1) ? reversehue - 1.0 : reversehue;
 		setcomp( component, 0, reversehue);
@@ -2766,24 +2768,24 @@ rtglass(
 	color crefl = color(0), crefr = color(0), ctran = color(0);
 
 	color attenhsv = ctransform("rgb", "hsv", attencolor);
+	
 #if RENDERER == aqsis // can only access components with (xyz)comp
-	color cabs = ctransform("hsv", "rgb", color(
-				comp(attenhsv,0), comp(attenhsv,1), 1));
+	color cabs = ctransform("hsv", "rgb", color( comp(attenhsv, 0),
+				comp(attenhsv, 1), 1));
 #else
 	color cabs = ctransform("hsv", "rgb", color(attenhsv[0], attenhsv[1], 1));
-#endif
 	cabs = cabs - vmax(cabs) - vmin(cabs) * 2 * aamp;
+#endif // component access
 
 	normal Nf = Nn;
 	float entering = 1;
-	// problems in Pixie, crashes in r1209, only error reported is
-	// inability to assign to whole arrays. Aqsis can't initialize
-	// arrays with single scalar either.
-#if RENDERER == pixie || RENDERER == aqsis
+
+#if RENDERER == aqsis || RENDERER == pixie
+	// can't initialize arrays with single scalar in Aqsis & Pixie
 	uniform float etas[6] = {0,0,0,0,0,0};
 #else
 	uniform float etas[6] = 0;
-#endif
+#endif // array initialization workaround for Aqsis & Pixie
 
 	/* get current ray depth and scale down samples as ray depth goes up
 	 * if needed. Get ray type, for transmission rays in shadows */
@@ -2794,22 +2796,30 @@ rtglass(
 	uniform float rsamples = (raydepth > 1) ? max( 1, samples /
 								pow( 2, raydepth)) : samples ;
 
+	// dispersion in spec6. A workaround needs to be added for Pixie.
+	// It can't initialize arrays with a single element, needs to be
+	// filled with all element. Also seems to dislike arrays as function
+	// arguments - this needs some testing, so for the time being, RYGCBV
+	// dispersion is disabled for Pixie in the XML block.
+	// NOTE: still, it crashes, as of r1209
+	// 
 	if (spec6 == 1) { // RYGCBV
+		
 		uniform float i;
 
 		// get eta for RYGCBV wavelenghts
 		etaTableRYGCBV( optics, etas );
 
-#if RENDERER == pixie || RENDERER == aqsis // can't assign to whole array
 		// temp storage
-		varying float frefl[6] = {0,0,0,0,0,0}, frefr[6] = {0,0,0,0,0,0};
-		varying float ftran[6] = {0,0,0,0,0,0}, srefl[6] = {0,0,0,0,0,0};
-		varying float srefr[6] = {0,0,0,0,0,0}, stran[6] = {0,0,0,0,0,0};
-#else
-		// temp storage
+#if RENDERER == aqsis || RENDERER == pixie
+		// can't initialize arrays with single scalar in Aqsis & Pixie
+		varying float	frefl[6] = {0,0,0,0,0,0}, frefr[6] = {0,0,0,0,0,0},
+						ftran[6] = {0,0,0,0,0,0}, srefl[6] = {0,0,0,0,0,0},
+						srefr[6] = {0,0,0,0,0,0}, stran[6] = {0,0,0,0,0,0};
+#else			
 		varying float frefl[6] = 0, frefr[6] = 0, ftran[6] = 0;
 		varying float srefl[6] = 0, srefr[6] = 0, stran[6] = 0;
-#endif
+#endif // array initialization workaround for Aqsis & Pixie
 		
 		for(i = 0; i < 6; i += 1) { // for each R,Y,G,C,B,V
 
@@ -2838,15 +2848,16 @@ rtglass(
 			rgbToSpec6( crefl, srefl );
 			rgbToSpec6( crefr, srefr );
 			rgbToSpec6( ctran, stran );
-			// only store, RYGCBV according to iteration
+			// fill R,Y,G,C,B,V
 			frefl[i] = srefl[i];
 			frefr[i] = srefr[i];
 			ftran[i] = stran[i];
 		}
-		// convert spec6 to rgb
+		// convert spec6 to rgb		
 		crefl = spec6ToRgb( frefl );
 		crefr = spec6ToRgb( frefr );
 		ctran = spec6ToRgb( ftran );
+		
 		// clear storage, or expect wouwous
 		for (i = 0; i < 6; i += 1) {
 			frefl[i] = 0; frefr[i] = 0; ftran[i] = 0;
@@ -3239,6 +3250,92 @@ SIG2k_srf_fur(
 				* aov_specular;
 	
 	return clamp( C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Thin film interference, based on Jens's VEX shader, at OdForce forums: //////
+// http://forums.odforce.net/index.php?/topic/4788-coatings-iridescence ////////
+////////////////////////////////////////////////////////////////////////////////
+
+float
+intef( float lambda, in_eps, n, d; )
+{
+	float out_eps = 2 * d * n * sqrt( SQR(n) + SQR(in_eps) - 1);
+	return out_eps / (n * lambda);
+}
+
+/* Evaluate the intensity integral for two sine waves with relative offset
+ * s and weights a, b, for value w. */
+float
+inten_sin(	float a, b, w, z; )
+{
+	float t1, t2, t3;
+	t1 = SQR(a) * (w * .5 - .25 * sin(w));
+	t2 = SQR(b) * (w * .5 - .25 * sin(w+z));
+	t3 = 2 * a * b * (-.25 * sin(2*w*z) + w * .5 * cos(z));
+	return (t1 + t2 + t3);
+}
+
+// main
+void
+thinfilm(
+			float depth; // coating thickness in nanometers
+			vector In; // normalize(I)
+			normal Nn; // normalize(N)
+			uniform float ior[6]; // ior data for RYGCBV
+			color Csurf; // surface color
+			output varying color out_ci, out_oi;
+			DECLARE_AOV_OUTPUT_PARAMETERS
+	   )
+{
+	out_ci = color(0); out_oi = color(1);
+	
+	vector Vf = -In; // -normalize(I)
+	normal Nf = Nn;
+
+	float costheta = Vf.Nn;
+
+	// need to know surface orientation, reverse normals if needed
+	if (costheta < 0) {
+		Nf = -Nn;
+		costheta = Vf.Nf;
+	}
+
+	uniform float i;
+	uniform float lambda[6] = LAMBDA;
+#if RENDERER == aqsis || RENDERER == pixie
+	// can't initialize arrays with single element, need to explicitly
+	// set all elements
+	varying float	rygcbv[6] = {0,0,0,0,0,0}, ishift[6] = {0,0,0,0,0,0},
+					phaseshift[6] = {0,0,0,0,0,0}, kr[6] = {0,0,0,0,0,0},
+					kt[6] = {0,0,0,0,0,0}, norm[6] = {0,0,0,0,0,0},
+					cout[6] = {0,0,0,0,0,0};
+#else
+	varying float rygcbv[6] = 0, phaseshift[6] = 0, ishift[6] = 0;
+	varying float kr[6] = 0, kt[6] = 0, norm[6] = 0, cout[6] = 0;
+#endif // Aqsis & Pixie array initialization
+	
+	rgbToSpec6( Csurf, rygcbv );
+
+	for (i = 0; i < 6; i += 1) {
+		// Calculate phaseshift for each component.
+		// To get the phaseshift in nm, multiply
+		// with its wavelenght.
+		phaseshift[i] = intef( lambda[i], costheta, ior[i], depth) * S_2PI;
+		// Fresnel term
+		fresnel( In, Nf, 1/ior[i], kr[i], kt[i]);
+
+		// Intensity change of each component due to phase shift
+		ishift[i] = inten_sin( kr[i], kt[i], S_2PI, phaseshift[i]) -
+					inten_sin( kr[i], kt[i], 0, phaseshift[i]);
+
+		norm[i] = inten_sin( kr[i], kt[i], S_2PI, 0) -
+					inten_sin( kr[i], kt[i], 0, 0 );
+
+		cout[i] = ishift[i] / norm[i] * rygcbv[i];
+	}
+	out_oi = spec6ToRgb( kr );
+	out_ci = spec6ToRgb( cout );
 }
 
 ////////////////////////////////////////////////////////////////////////////////

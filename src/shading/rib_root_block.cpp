@@ -1017,6 +1017,9 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 		file << "Display \"+" + TempDir + "/" + "aov_occlusion"
 			+ ".tif" + "\" \"file\" \"varying float aov_occlusion\" "
 			+ "\"quantize\" [0 255 0 255]\n";
+		file << "Display \"+" + TempDir + "/" + "aov_opacity"
+			+ ".tif" + "\" \"file\" \"varying color aov_opacity\" "
+			+ "\"quantize\" [0 255 0 255]\n";
 	}
 	
 	file << "\n";

@@ -15,7 +15,8 @@
 	aov_translucence,				\
 	aov_shadows,					\
 	aov_occlusion,					\
-	aov_caustics
+	aov_caustics,					\
+	aov_opacity
 
 #define INIT_AOV_PARAMETERS			\
 	aov_surfacecolor	= color(0);	\
@@ -31,7 +32,8 @@
 	aov_translucence	= color(0);	\
 	aov_shadows			= color(0);	\
 	aov_occlusion		= 0;		\
-	aov_caustics		= color(0);
+	aov_caustics		= color(0);	\
+	aov_opacity			= color(0);
 
 #define	DECLARE_AOV_OUTPUT_PARAMETERS			\
 	output varying color aov_surfacecolor;		\
@@ -47,7 +49,8 @@
 	output varying color aov_translucence;		\
 	output varying color aov_shadows;			\
 	output varying float aov_occlusion;			\
-	output varying color aov_caustics;
+	output varying color aov_caustics;			\
+	output varying color aov_opacity;
 
 #define DEFAULT_AOV_OUTPUT_PARAMETERS						\
 	output varying color aov_surfacecolor		= color(0);	\
@@ -63,7 +66,8 @@
 	output varying color aov_translucence		= color(0);	\
 	output varying color aov_shadows			= color(0);	\
 	output varying float aov_occlusion			= 0;		\
-	output varying color aov_caustics			= color(0);
+	output varying color aov_caustics			= color(0);	\
+	output varying color aov_opacity			= color(0);
 
 ////////////////////////////////////////////////////////////////////////////////
 #endif /* SHRIMP_AOV_H */

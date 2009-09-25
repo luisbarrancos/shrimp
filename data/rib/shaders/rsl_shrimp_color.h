@@ -17,27 +17,25 @@ rgbToSpec6(
 			output varying float rygcbv[6];
 		)
 {
-#if RENDERER == aqsis // can only access components with (xyz)comp
-	float R = comp(rgb, 0), G = comp(rgb, 1), B = comp(rgb, 2);
-	float R2 = SQR(R), G2 = SQR(G), B2 = SQR(B);
-	// can't seem to be able to assign to arrays no matter what O_o
-	// as of 1.4.2
-	rygcbv[0] = R * .5; rygcbv[1] = (R2 + G2 - B) * w;
-	rygcbv[2] = G * .5; rygcbv[3] = (G2 + B2 - R) * w;
-	rygcbv[4] = B * .5; rygcbv[5] = (B2 + R2 - G) * w;
+#if RENDERER == aqsis // can access components with (xyz)comp only
+	float R2 = comp(rgb, 0) * 2, G2 = comp(rgb, 1) * 2, B2 = comp(rgb, 2) * 2;
+	float w = 1/6;
+	rygcbv[0] = comp(rgb, 0) * .5; rygcbv[1] = (R2 + G2 - comp(rgb, 2)) * w;
+	rygcbv[2] = comp(rgb, 1) * .5; rygcbv[3] = (G2 + B2 - comp(rgb, 0)) * w;
+	rygcbv[4] = comp(rgb, 2) * .5; rygcbv[5] = (B2 + R2 - comp(rgb, 1)) * w;
 #else
 	float R2 = rgb[0] * 2, G2 = rgb[1] * 2, B2 = rgb[2] * 2, w = 1/6;
 	rygcbv[0] = rgb[0] * .5; rygcbv[1] = (R2 + G2 - rgb[2]) * w;
 	rygcbv[2] = rgb[1] * .5; rygcbv[3] = (G2 + B2 - rgb[0]) * w;
 	rygcbv[4] = rgb[2] * .5; rygcbv[5] = (B2 + R2 - rgb[1]) * w;
-#endif
+#endif // component access for Aqsis
 }
 
 ////////////////////////////////////////////////////////////////////////////////
 // convert rygcbv to rgb
 color
 spec6ToRgb(
-			float rygcbv[6];
+			varying float rygcbv[6];
 		)
 {
 	float y2 = rygcbv[1] * 2, c2 = rygcbv[3] * 2, v2 = rygcbv[5] * 2, w = 1/3;

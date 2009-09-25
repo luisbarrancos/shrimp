@@ -599,5 +599,20 @@ float mm_erfc( float x; ) {
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Vector exponent, maximum, minimum
+#if RENDERER == aqsis // can only access components with (xyz)comp
+color expc( color c; ) {
+	return color( exp( comp(c, 0)), exp( comp(c, 1)), exp(comp(c, 2)));
+}
+
+float vmax( color c; ) { return max( comp(c, 0), comp(c, 1), comp(c, 2)); }
+float vmin( color c; ) { return min( comp(c, 0), comp(c, 1), comp(c, 2)); }
+#else
+color expc( color c; ) { return color( exp(c[0]), exp(c[1]), exp(c[2]) ); }
+float vmax( color c; ) { return max( c[0], c[1], c[2] ); }
+float vmin( color c; ) { return min( c[0], c[1], c[2] ); }
+#endif // Aqsis component selection workaround
+
+////////////////////////////////////////////////////////////////////////////////
 #endif /* SHRIMP_HELPERS_H */
 
