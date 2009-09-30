@@ -2,11 +2,11 @@
 	<input name="x" description="1st component" type="float" default="0"/>
 	<input name="y" description="2nd component" type="float" default="0"/>
 	<input name="z" description="3rd component" type="float" default="0"/>
-	<output name="col" description="Color output" type="color"/>
+	<output name="Cout" description="Color output" type="color"/>
 	<rsl_code>
-		setcomp( $(col), 0, $(x) );
-		setcomp( $(col), 1, $(y) );
-		setcomp( $(col), 2, $(z) );
+		setcomp( $(Cout), 0, $(x) );
+		setcomp( $(Cout), 1, $(y) );
+		setcomp( $(Cout), 2, $(z) );
 	</rsl_code>
 	<usage>Sets the components of a color type variable.</usage>
 </shrimp>

@@ -1,6 +1,6 @@
 <shrimp type="function" name="ShowFacing" description="Show orientation of surface" author="rconstruct">
-	<input name="NN" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
-	<input name="VV" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
+	<input name="N" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
+	<input name="I" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Output value" type="color"/>
 	<rsl_code>
 		$(Ci) = mix( color( 0, 1, 0), color(1, 0, 0),
