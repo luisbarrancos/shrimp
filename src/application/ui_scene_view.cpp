@@ -1011,7 +1011,7 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 		std::string type = Block->input_type (input->m_name);
 		// FIXME: Name.c_str() is input name, not description
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size);
+		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.7); // scale with zoom level
 		glColor4f (0.65, 0.77, 0.97, 1.0); // #a5c5f7 light blue
 		fltk::gldrawtext (input->m_name.c_str(), (float) (start_x + property_size * 1.25), (float) (start_y - 0.135), (float)0);
 
@@ -1067,9 +1067,9 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 		glEnd();
 
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size);
+		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.7); // scale with zoom level
 		glColor4f (1.0, 0.55, 0.0, 1.0); // orange hover color
-		// FIXME: Name.c_str() is input name, not description 
+		// FIXME: Name.c_str() is input name, not description
 		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.25), (float) (Y - 0.135), (float)0);
 	}
 	else if ("colour" == Type || "color" == Type) {
