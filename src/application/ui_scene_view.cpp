@@ -796,8 +796,8 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	const bool is_selected = s->is_selected (Block);
 	// block color
 	if (is_selected)
-		// selected blocks are yellow
-		glColor4f (1.0, 1.0, 0.0, alpha);
+		// selected blocks are "hover orange"
+		glColor4f (1.0, 0.55, 0.0, alpha);
 	else if (!Block->m_inputs.size())
 		// inputs are green
 		glColor4f (0.0, 1.0, 0.0, alpha);
@@ -942,8 +942,8 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 	const bool is_selected = s->is_selected (Block);
 	// block color
 	if (is_selected)
-		// selected blocks are yellow
-		glColor4f (1.0, 1.0, 0.0, alpha);
+		// selected blocks are "hover orange"
+		glColor4f (1.0, 0.55, 0.0, alpha);
 	else if (!Block->m_inputs.size())
 		// inputs are green
 		glColor4f (0.0, 1.0, 0.0, alpha);
@@ -978,7 +978,7 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 void scene_view::draw_block_name (const shader_block* Block, const double X, const double Y) {
 
 	// show block name
-	glsetfont (fltk::HELVETICA, m_font_size);
+	glsetfont (fltk::HELVETICA_BOLD, m_font_size); // gets a bit more readable if bold
 	fltk::gldrawtext (Block->name().c_str(), (float)X, (float) (Y + .05), (float)0);
 }
 
@@ -1009,6 +1009,11 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 		}
 
 		std::string type = Block->input_type (input->m_name);
+		// FIXME: Name.c_str() is input name, not description
+		// show property name
+		glsetfont (fltk::HELVETICA, m_font_size);
+		glColor4f (0.65, 0.77, 0.97, 1.0); // #a5c5f7 light blue
+		fltk::gldrawtext (input->m_name.c_str(), (float) (start_x + property_size * 1.25), (float) (start_y - 0.135), (float)0);
 
 		if (std::make_pair (Block->name(), input->m_name) == m_active_property)
 			type = "selected";
@@ -1052,8 +1057,8 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 	if ("selected" == Type) {
 
-		// all red
-		glColor3f (0.8, 0.0, 0.0);
+		// orange hover color
+		glColor3f (1.0, 0.55, 0.0 );
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1063,9 +1068,9 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 		// show property name
 		glsetfont (fltk::HELVETICA, m_font_size);
-		glColor4f (1.0, 1.0, 1.0, 1.0);
+		glColor4f (1.0, 0.55, 0.0, 1.0); // orange hover color
 		// FIXME: Name.c_str() is input name, not description 
-		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.2), (float) (Y - Size), (float)0);
+		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.25), (float) (Y - 0.135), (float)0);
 	}
 	else if ("colour" == Type || "color" == Type) {
 
@@ -1258,9 +1263,10 @@ void scene_view::draw_groups() {
 
 		// show group name
 		glColor3f (1, 1, 1);
-		glsetfont (fltk::HELVETICA, m_font_size);
+		glsetfont (fltk::HELVETICA_BOLD, m_font_size);
 		std::string name = m_scene->get_group_name (group);
-		fltk::gldrawtext (name.c_str(), (float) (x), (float) (y), (float)0);
+		// position with hexagon/group radius taken into account
+		fltk::gldrawtext (name.c_str(), (float) (x-0.3f), (float) (y+0.4f), (float)0);
 	}
 }
 
@@ -1278,19 +1284,18 @@ void scene_view::draw_group_body (int Group)
 void scene_view::draw_group_body (const double X, const double Y)
 {
 	const int sections = 6;
-	const double radius = 0.5;
+	const double radius = 0.4;
 
-	// draw a filled circle
-	glColor3f (0.36, 0.34, 0.55);
+	// draw a filled hexagon, "hover blue"
+	glColor3f (0.23, 0.37, 0.80);
 	glBegin (GL_TRIANGLE_FAN);
-//		glVertex3d (X, Y, 0);
 		for (int i = 0; i <= sections; ++i) {
 			const double angle = static_cast<double> (i) * 2 * M_PI / static_cast<double> (sections);
 			glVertex3d (X + radius * cos (angle), Y + radius * sin (angle), 0);
 		}
 	glEnd();
 
-	// draw a white circle around
+	// draw a white hexagon around
 	glColor3f (1, 1, 1);
 	glBegin (GL_LINES);
 		double prev_x = X + radius * cos (0);
