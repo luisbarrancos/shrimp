@@ -1,15 +1,15 @@
 <shrimp name="LommelSeeliger" type="function" description="Lommel-Seeliger lunar surface model" author="rconstruct">
 	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.8"/>
-	<input name="tau" description="Layer optical depth, see info" type="float" default="0.2"/>
+	<input name="depth" description="Layer optical depth, see info" type="float" default="0.2"/>
 	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
 	<output name="Ci" description="Shaded color" type="color"/>
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
 		aov_surfacecolor += $(Cdiff);
-		aov_diffuse += $(Kd) * LommelSeeliger( $(N), $(I), $(tau) );
+		aov_diffuse += $(Kd) * LommelSeeliger( $(N), $(I), $(depth) );
         $(Ci) = aov_surfacecolor * aov_diffuse;
 	</rsl_code>
-	<usage>Lommel-Seeliger lunar surface model for spherical surfaces. The variable &quot;tau&quot; controls the thickness of the layer.</usage>
+	<usage>Lommel-Seeliger lunar surface model for spherical surfaces. The variable &quot;depth&quot; (&quot;tau&quot;) controls the optical thickness of the layer.</usage>
 </shrimp>
