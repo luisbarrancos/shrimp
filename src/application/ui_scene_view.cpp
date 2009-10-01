@@ -348,7 +348,6 @@ void scene_view::draw_shader() {
 
 	// draw connections
 	glColor3f (0.8, 0.4, 0.4);
-	glBegin (GL_LINES);
 		for (scene::dag_t::const_iterator connection = m_scene->m_dag.begin(); connection != m_scene->m_dag.end(); ++connection) {
 
 			const scene::io_t to = connection->first;
@@ -451,11 +450,32 @@ void scene_view::draw_shader() {
 				from_y = from_property->second.position_y;
 			}
 
-			// draw a line between property centers
-			glVertex3d (to_x, to_y, 0);
-			glVertex3d (from_x, from_y, 0);
+//			// draw a line between property centers
+//			glVertex3d (to_x, to_y, 0);
+//			glVertex3d (from_x, from_y, 0);
+			// draw a spline between property centers
+			GLfloat ctrlpoints[6][3] = {
+				{ from_x+0.1,from_y,0.0}, {from_x+0.25,from_y,0.0},{from_x+1.0,from_y,0.0},
+				{ to_x-1.1,to_y,0.0}, {to_x-0.35,to_y,0.0}, {to_x-0.1,to_y,0.0}
+
+			};
+			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
+			glEnable(GL_MAP1_VERTEX_3);
+			glBegin(GL_LINE_STRIP);
+			for (int i = 0; i <= 30; i ++) {
+				glEvalCoord1f((GLfloat) i/30.0);
+			}
+			glEnd();
+			glDisable(GL_MAP1_VERTEX_3);
+
+			// draw arrow heads
+			glBegin(GL_TRIANGLES);
+			glVertex3f( to_x-0.1, to_y, 0.0);
+			glVertex3f( to_x-0.18, to_y+0.08, 0.0);
+			glVertex3f( to_x-0.18, to_y-0.08, 0.0);
+			glVertex3f( to_x-0.1, to_y, 0.0);
+			glEnd();
 		}
-	glEnd();
 
 	// draw groups
 	draw_groups();
@@ -474,19 +494,39 @@ void scene_view::draw_shader() {
 			glLineStipple(3, 0xAAAA);
 			glEnable(GL_LINE_STIPPLE);
 			glPushMatrix();
-				glMatrixMode (GL_PROJECTION);
-				glLoadIdentity();
-				gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
-				glBegin (GL_LINES);
-					glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
-					glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
-				glEnd();
+			glMatrixMode (GL_PROJECTION);
+			glLoadIdentity();
+			gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
+
+			// draw a spline between property centers
+			double to_x = static_cast<float> (m_current_mouse_x);
+			double to_y = h() - static_cast<float> (m_current_mouse_y);
+			double from_x = static_cast<float> (m_connection_start_x);
+			double from_y = h() - static_cast<float> (m_connection_start_y);
+
+			GLfloat ctrlpoints[6][3] = {
+				{ from_x+0.1,from_y,0.0}, {from_x+0.25,from_y,0.0},{from_x+1.0,from_y,0.0},
+				{ to_x-1.1,to_y,0.0}, {to_x-0.35,to_y,0.0}, {to_x-0.1,to_y,0.0}
+			};
+			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
+			glEnable(GL_MAP1_VERTEX_3);
+			glBegin(GL_LINE_STRIP);
+			
+			for (int i = 0; i <= 30; i ++) {
+				glEvalCoord1f((GLfloat) i/30.0);
+			}
+			glEnd();
+			glDisable(GL_MAP1_VERTEX_3);
 			glPopMatrix();
 			glDisable(GL_LINE_STIPPLE);
+			
+//			glBegin (GL_LINES);
+//				glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
+//				glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
+
 		}
 	}
 }
-
 
 void scene_view::update_projection() {
 
@@ -786,7 +826,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
-	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.0) * static_cast<double> (max_properties));
+	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.895) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;

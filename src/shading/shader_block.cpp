@@ -224,7 +224,7 @@ std::string property::value_as_sl_string() const {
 
 		case MATRIX:
 		{
-			// parse a 3x3 matrix
+			// parse a 4x4 matrix (VEX has both 3x3 and 4x4 matrices though)
 			std::string v = m_value;
 			replace_variable (v, " (", "");
 			replace_variable (v, "{", "");
@@ -237,23 +237,31 @@ std::string property::value_as_sl_string() const {
 			double v2 = 0;
 			double v3 = 0;
 			double v4 = 0;
-			double v5 = 1;
-			double v6 = 0;
+			double v5 = 0;
+			double v6 = 1;
 			double v7 = 0;
 			double v8 = 0;
-			double v9 = 1;
+			double v9 = 0;
+			double v10= 0;
+			double v11= 1;
+			double v12= 0;
+			double v13= 0;
+			double v14= 0;
+			double v15= 0;
+			double v16= 1;
 
 			// try parsing the matrix
-			if (! (str >> v1 >> v2 >> v3 >> v4 >> v5 >> v6 >> v7 >> v8 >> v9)) {
+			if (! (str >> v1 >> v2 >> v3 >> v4 >> v5 >> v6 >> v7 >> v8 >> v9 >> v10 >> v11 >> v12 >> v13 >> v14 >> v15 >> v16)) {
 				// the value couldn't be parsed, keep it as is
 				return m_value;
 			}
 
 			std::ostringstream buffer;
 			buffer << "matrix (";
-			buffer << v1 << ", " << v2 << ", " << v3 << ", ";
-			buffer << v4 << ", " << v5 << ", " << v6 << ", ";
-			buffer << v7 << ", " << v8 << ", " << v9 << ")";
+			buffer << v1 << ", " << v2 << ", " << v3 << ", " << v4 << ", ";
+			buffer << v5 << ", " << v6 << ", " << v7 << ", " << v8 << ", ";
+			buffer << v9 << ", " << v10 << ", " << v11 << ", " << v12 << ", ";
+			buffer << v13 <<", " << v14 << ", " << v15 << ", " << v16 << ")";
 			return buffer.str();
 		}
 
@@ -389,7 +397,7 @@ shader_block::shader_block (const std::string& Name, const std::string& Descript
 	m_root_block (RootBlock),
 	m_position_x (0),
 	m_position_y (0),
-	m_width (1),
+	m_width (1.25),
 	m_height (1),
 	m_rolled (false) {
 
