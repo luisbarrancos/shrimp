@@ -826,7 +826,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
-	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.895) * static_cast<double> (max_properties));
+	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;
@@ -972,7 +972,7 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
-	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 / 3.0) * static_cast<double> (max_properties));
+	const double height1 = m_scene->is_rolled (Block) ? width : (width * (1.0 /3.7) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;
@@ -989,7 +989,7 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 		glColor4f (0.0, 1.0, 0.0, alpha);
 	else
 		// other ones are blue
-		glColor4f (0.0, 0.0, 1.0, alpha);
+		glColor4f (0.2, 0.3, 1.0, alpha); // for rolled up blocks
 
 	glBegin (GL_QUADS);
 		glVertex3d ((2*X + width) / 2.0, Y, 0);
@@ -1018,7 +1018,7 @@ void scene_view::draw_rolled_block_body (const shader_block* Block, const double
 void scene_view::draw_block_name (const shader_block* Block, const double X, const double Y) {
 
 	// show block name
-	glsetfont (fltk::HELVETICA_BOLD, m_font_size); // gets a bit more readable if bold
+	glsetfont (fltk::HELVETICA_BOLD, (m_font_size+0.5) * m_size * 0.75); // gets a bit more readable if bold
 	fltk::gldrawtext (Block->name().c_str(), (float)X, (float) (Y + .05), (float)0);
 }
 
@@ -1051,7 +1051,7 @@ void scene_view::draw_block_properties (const shader_block* Block, const double 
 		std::string type = Block->input_type (input->m_name);
 		// FIXME: Name.c_str() is input name, not description
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.7); // scale with zoom level
+		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.75); // scale with zoom level
 		glColor4f (0.65, 0.77, 0.97, 1.0); // #a5c5f7 light blue
 		fltk::gldrawtext (input->m_name.c_str(), (float) (start_x + property_size * 1.25), (float) (start_y - 0.135), (float)0);
 
@@ -1107,7 +1107,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 		glEnd();
 
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.7); // scale with zoom level
+		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.75); // scale with zoom level
 		glColor4f (1.0, 0.55, 0.0, 1.0); // orange hover color
 		// FIXME: Name.c_str() is input name, not description
 		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.25), (float) (Y - 0.135), (float)0);
@@ -1303,7 +1303,7 @@ void scene_view::draw_groups() {
 
 		// show group name
 		glColor3f (1, 1, 1);
-		glsetfont (fltk::HELVETICA_BOLD, m_font_size);
+		glsetfont (fltk::HELVETICA_BOLD, (m_font_size+0.5) * m_size * 0.75);
 		std::string name = m_scene->get_group_name (group);
 		// position with hexagon/group radius taken into account
 		fltk::gldrawtext (name.c_str(), (float) (x-0.3f), (float) (y+0.4f), (float)0);
