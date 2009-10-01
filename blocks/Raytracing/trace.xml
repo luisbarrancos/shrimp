@@ -1,6 +1,6 @@
 <shrimp name="Trace" type="function" description="Returns light reaching point P from direction R" author="rconstruct">
-    <input name="inpoint" description="Surface point" storage="varying" type="point" default="P"/>
-	<input name="indir" description="Direction" storage="varying" type="vector" default="reflect(I, normalize(N))"/>
+    <input name="P" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="direction" description="Direction" storage="varying" type="vector" default="reflect(I, normalize(N))"/>
     <input name="bias" description="Ray bias" storage="uniform" type="float" default="-1"/>
     <input name="maxdist" description="Maximum distance" storage="uniform" type="float" default="1e38"/>
 	<input name="samples" description="Ray samples" type="float" default="1"/>
@@ -13,9 +13,9 @@
 	<input name="majoraxis" description="Anisotropy axis" type="vector" default="dPdu"/>
 	<input name="majorblur" description="Anisotropy blur" type="float" default="0.01"/>
 	<input name="weight" description="Weight for importance sampling" type="float" default="1"/>
-	<output name="val" description="Trace value" type="float color"/>
-	<output name="dist" description="Optional ray distance" storage="varying" type="float"/>
-	<output name="trans" description="Option transmission value" storage="varying" type="color"/>
+	<output name="value" description="Trace value" type="float color"/>
+	<output name="maxdist" description="Optional ray distance" storage="varying" type="float"/>
+	<output name="transmission" description="Option transmission value" storage="varying" type="color"/>
 	<output name="alpha" description="Unoccluded fraction of trace" type="float"/>
 	<rsl_code>
 	
@@ -26,18 +26,18 @@
 	#endif /* SHADEOP_ARGUMENTS */
 
 	/* initialize output */
-	$(dist) = 0; $(alpha) = 0; $(trans) = color(0);
+	$(maxdist) = 0; $(alpha) = 0; $(transmission) = color(0);
 
 	#if RENDERER == pixie
 	#define SHADEOP_ARGUMENTS	"bias", $(bias), "samples", \
 								$(samples), "samplecone", $(coneangle)			
 	#elif RENDERER == _3delight
-	#define SHADEOP_ARGUMENTS	$(dist), "label", $(label), \
+	#define SHADEOP_ARGUMENTS	$(maxdist), "label", $(label), \
 								"subset", $(subset), \
 								"bias", $(bias), "hitmode", $(hitmode), \
 								"maxdist", $(maxdist), \
 								"samplecone", $(coneangle), \
-								"samples", $(samples), "transmission", $(trans)
+								"samples", $(samples), "transmission", $(transmission)
 	#elif RENDERER == prman
 	#define SHADEOP_ARGUMENTS	"samplecone", $(coneangle), \
 								"bias", $(bias), "label", $(label), \
@@ -56,13 +56,13 @@
 	#define SHADEOP_ARGUMENTS	"bias", $(bias)
 	#endif /* RENDERER */
 	
-	#define $(blockname)_$(val:type)
+	#define $(blockname)_$(value:type)
 	#ifdef $(blockname)_float
-		$(val) = $(val:type) trace( $(inpoint), $(indir) );
+		$(value) = $(value:type) trace( $(P), $(direction) );
 	#else
-		$(val) = $(val:type) trace( $(inpoint), $(indir), SHADEOP_ARGUMENTS );
-	#endif /* $(blockname)_$(val:type) */
-	#undef $(blockname)_$(val:type)
+		$(value) = $(value:type) trace( $(P), $(direction), SHADEOP_ARGUMENTS );
+	#endif /* $(blockname)_$(value:type) */
+	#undef $(blockname)_$(value:type)
 
 	</rsl_code>
     <usage>Returns the incident light reaching a point &quot;P&quot; from a given direction &quot;R&quot;. If raytracing isn&apos;t supported, trace will return 0. Bias specifies the bias for the ray starting point, and defaults to -1. Maxdist specifies the distance after which no intersections are checked. If the float version is used, then the distance to the nearest ray intersection is returned instead. Note also that the parameters passed are dependent on the &quot;trace&quot; implementation, so check your renderer&apos;s documentation regarding the specifics of the &quot;trace&quot; function, which will surely vary considerably from renderer to renderer.</usage>

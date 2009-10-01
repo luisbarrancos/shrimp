@@ -1,11 +1,11 @@
 <shrimp type="function" name="Minverse" description="Invert matrix M." author="rconstruct">
-    <input name="minput" description="Matrix input" type="matrix" default="1"/>
-    <output name="mout" description="Inverted matrix" type="matrix"/>
+    <input name="matrix" description="Matrix input" type="matrix" default="1"/>
+    <output name="inverse" description="Inverted matrix" type="matrix"/>
 	<rsl_code>
 	#if RENDERER == _3delight
-		$(mout) = inverse( $(minput) );
+		$(inverse) = inverse( $(matrix) );
 	#else
-		$(mout) = 1 / $(minput) ;
+		$(inverse) = 1 / $(matrix) ;
 	#endif /* RENDERER */
 	</rsl_code>
 	<usage>Inverts the input matrix.</usage>

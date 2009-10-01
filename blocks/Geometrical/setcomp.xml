@@ -2,9 +2,9 @@
 	<input name="x" description="X component" type="float" default="0"/>
 	<input name="y" description="Y component" type="float" default="0"/>
 	<input name="z" description="Z component" type="float" default="0"/>
-	<output name="out" description="Point, vector, or normal with the specified components" type="point vector normal"/>
+	<output name="value" description="Point, vector, or normal with the specified components" type="point vector normal"/>
 	<rsl_code>
-		$(out) = $(out:type) ( $(x), $(y), $(z) ); 
+		$(value) = $(value:type) ( $(x), $(y), $(z) ); 
 	</rsl_code>
 	<usage>Sets the X, Y, and Z components of a point, vector, or normal.</usage>
 </shrimp>

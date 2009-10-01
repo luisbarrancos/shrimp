@@ -1,12 +1,12 @@
 <shrimp type="function" name="SlideProjLight" description="Slide projector light shader" author="rconstruct">
-	<input name="inten" description="Light intensity" type="float" default="1"/>
-	<input name="lcolor" description="Light color" type="color" default="color (1, 1, 1)"/>
+	<input name="intensity" description="Light intensity" type="float" default="1"/>
+	<input name="lightcolor" description="Light color" type="color" default="color (1, 1, 1)"/>
 	<input name="fov" description="Field of view" type="float" default="45"/>
 	<input name="from" description="Light source position" type="point" default="point &quot;shader&quot; ( -15, 10, 5 )"/>
 	<input name="to" description="Light source target" type="point" default="point &quot;shader&quot; ( 0, 0, 0 )"/>
 	<input name="up" description="Up position" type="point" default="point &quot;eye&quot; ( 0, 1, 0 )"/>
-	<input name="slidename" description="Slide map name" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="shadowname" description="Shadow map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="slidemap" description="Slide map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="shadowmap" description="Shadow map name" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="shadowfilter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<input name="shadowblur" description="Shadow map blur" type="float" default="0"/>
 	<input name="shadowsamples" description="Shadow map samples" type="float" default="1"/>
@@ -19,10 +19,10 @@
 	<rsl_code>
 		__nondiffuse = $(nondiff);
 		__nonspecular = $(nonspec);
-		$(Cl) = $(inten) * $(lcolor) * slideprojector( radians( $(fov)),
-							$(from), $(to), $(up), $(slidename),
-							$(shadowname), $(shadowfilter), $(shadowblur),
-							$(shadowsamples), $(shadowwidth), $(shadowbias) );
+		$(Cl) = $(intensity) * $(lightcolor) * slideprojector(
+						radians( $(fov)), $(from), $(to), $(up), $(slidemap),
+						$(shadowmap), $(shadowfilter), $(shadowblur),
+						$(shadowsamples), $(shadowwidth), $(shadowbias) );
 	</rsl_code>
 	<usage>Slide projector light shader, from The RenderMan Repository, www.renderman.org . Requires a texture map (slide map) to work. Shadow bias defaults to global default, -1, while shadow filter type defaults to &quot;gaussian&quot;, with &quot;triangle&quot; and &quot;box&quot; as optional.</usage>
 </shrimp>

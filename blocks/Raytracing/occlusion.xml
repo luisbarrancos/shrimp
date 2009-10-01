@@ -1,13 +1,13 @@
 <shrimp name="Occlusion" type="function" description="Ambient occlusion function" author="rconstruct" rolled="1">
-    <input name="inpoint" description="Surface point" storage="varying" type="point" default="P"/>
-	<input name="indir" description="Direction" storage="varying" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
-	<input name="adapt" description="Turns adaptive sampling on/off" storage="uniform" type="float" default="1"/>
-	<input name="minsamp" description="Minimum number of samples to use" storage="uniform" type="float" default="16"/>	
+    <input name="P" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="direction" description="Direction" storage="varying" type="vector normal" default="faceforward( normalize(N), normalize(I))"/>
+	<input name="adaptive" description="Turns adaptive sampling on/off" storage="uniform" type="float" default="1"/>
+	<input name="minsamples" description="Minimum number of samples to use" storage="uniform" type="float" default="16"/>	
     <input name="samples" description="Samples" type="float" default="32"/>
 	<input name="samplebase" description="Controls ray origin jittering" storage="uniform" type="float" default="1"/>
     <input name="maxdist" description="Maximum distance" storage="uniform" type="float" default="1e38"/>
 	<input name="maxpixeldist" description="Maximum samples distance" type="float" default="-1"/>
-	<input name="maxsangle" description="Maximum solid angle, in steradians" storage="uniform" type="float" default="0.05"/>
+	<input name="maxsolidangle" description="Maximum solid angle, in steradians" storage="uniform" type="float" default="0.05"/>
 	<input name="maxerror" description="Quality vs speed" type="float" default="-1"/>
 	<input name="bias" description="Bias to control self-intersection" type="float" default="0.01" />
 	<input name="coneangle" description="Cone angle" storage="uniform" type="float" default="1.570796327"/>
@@ -19,23 +19,23 @@
 	<input name="subset" description="Objects subset considered" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
-	<input name="occmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
+	<input name="occlusionmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
-	<input name="usept" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
-	<input name="pfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="useptc" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
+	<input name="ptcfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="coordsys" description="Point cloud coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="clamp" description="Clamp excessive occlusion" storage="uniform" type="float" default="0"/>
-	<input name="sbleeding" description="Sort bleeding" storage="uniform" type="float" default="0"/>
-	<input name="floffmode" description="Falloff mode, exponential or polynomial" storage="uniform" type="float" default="0"/>
+	<input name="sortbleeding" description="Sort bleeding" storage="uniform" type="float" default="0"/>
+	<input name="falloffmode" description="Falloff mode, exponential or polynomial" storage="uniform" type="float" default="0"/>
 	<input name="falloff" description="Falloff, 1 = linear" storage="uniform" type="float" default="0"/>
-	<output name="Occ" description="Occlusion value" storage="varying" type="float" />
+	<output name="Occlusion" description="Occlusion value" storage="varying" type="float" />
 	<output name="Envcolor" description="Environment color lookup result" storage="varying" type="color" />
-	<output name="Envdir" description="Average unoccluded direction" storage="varying" type="vector" />
-	<output name="Irrad" description="Irradiance" storage="varying" type="color" />
+	<output name="Envdirection" description="Average unoccluded direction" storage="varying" type="vector" />
+	<output name="Irradiance" description="Irradiance" storage="varying" type="color" />
 	<rsl_code>
 	
 	/* initialize */
-	$(Envcolor) = color(0); $(Envdir) = vector(0); $(Irrad) = color(0);
+	$(Envcolor) = color(0); $(Envdirection) = vector(0); $(Irradiance) = color(0);
 
 	/* make sure options are clear */
 	/* and set them according to shadeop and renderer */
@@ -53,15 +53,15 @@
 								"environmentspace", $(envspace), \
 								"distribution", $(distribution), \
 								"environmentcolor", $(Envcolor), \
-								"environmentdir", $(Envdir), \
-								"adaptive", $(adapt), \
-								"minsamples", $(minsamp), \
-								"falloffmode", $(floffmode), \
-								"falloff", $(falloff), "pointbased", $(usept), \
-								"filename", $(pfile), "hitsides", $(hitsides), \
-								"maxsolidangle", $(maxsangle), \
+								"environmentdir", $(Envdirection), \
+								"adaptive", $(adaptive), \
+								"minsamples", $(minsamples), \
+								"falloffmode", $(falloffmode), \
+								"falloff", $(falloff), "pointbased", $(useptc), \
+								"filename", $(ptcfile), "hitsides", $(hitsides), \
+								"maxsolidangle", $(maxsolidangle), \
 								"clamp", $(clamp), \
-								"sortbleeding", $(sbleeding), \
+								"sortbleeding", $(sortbleeding), \
 								"coordsystem", $(coordsys)
 	#elif RENDERER == pixie
 	#define SHADEOP_ARGUMENTS	"coordsystem", $(coordsys), \
@@ -70,15 +70,15 @@
 								"samplebase", $(samplebase), \
 								"label", $(label), "bias", $(bias), \
 								"maxerror", $(maxerror), \
-								"pointbased", $(usept), \
+								"pointbased", $(useptc), \
 								"environmentmap", $(envmap), \
-								"filename", $(pfile), \
+								"filename", $(ptcfile), \
 								"maxpixeldist", $(maxpixeldist), \
-								"maxsolidangle", $(maxsangle), \
+								"maxsolidangle", $(maxsolidangle), \
 								"environmentcolor", $(Envcolor)
 	#elif RENDERER == prman
-	#define SHADEOP_ARGUMENTS	"adaptive", $(adapt), \
-								"minsamples", $(minsamp), \
+	#define SHADEOP_ARGUMENTS	"adaptive", $(adaptive), \
+								"minsamples", $(minsamples), \
 								"coordsystem", $(coordsys), \
 								"distribution", $(distribution), \
 								"maxdist", $(maxdist), \
@@ -92,13 +92,13 @@
 								"bias", $(bias), \
 								"maxpixeldist", $(maxpixeldist), \
 								"maxerror", $(maxerror), \
-								"falloffmode", $(floffmode), \
-								"falloff", $(falloff), "pointbased", $(usept), \
-								"filename", $(pfile), \
-								"maxsolidangle", $(maxsangle), \
+								"falloffmode", $(falloffmode), \
+								"falloff", $(falloff), "pointbased", $(useptc), \
+								"filename", $(ptcfile), \
+								"maxsolidangle", $(maxsolidangle), \
 								"clamp", $(clamp), \
 								"environmentcolor", $(Envcolor), \
-								"environmentdir", $(Envdir)		
+								"environmentdir", $(Envdirection)		
 	#elif RENDERER == air
 	#define SHADEOP_ARGUMENTS	"bias", $(bias), "label", $(label), \
 								"maxdist", $(maxdist), \
@@ -112,19 +112,19 @@
 
 	/* different order of arguments */
 	#if RENDERER == _3delight || RENDERER == pixie || RENDERER == prman
-		aov_occlusion += occlusion(	$(inpoint), $(indir), $(samples),
+		aov_occlusion += occlusion(	$(P), $(direction), $(samples),
 									SHADEOP_ARGUMENTS );
-		$(Occ) = 1 - aov_occlusion;
+		$(Occlusion) = 1 - aov_occlusion;
 	#elif RENDERER == air /* shadow map based, unless map = "raytrace" */
-		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
+		aov_occlusion += occlusion(	$(occlusionmap), $(P), $(direction),
 									$(angle), SHADEOP_ARGUMENTS );
-		$(Occ) = 1 - aov_occlusion;
+		$(Occlusion) = 1 - aov_occlusion;
 	#elif RENDERER == aqsis /* shadow map based occlusion */
-		aov_occlusion += occlusion(	$(occmap), $(inpoint), $(indir),
+		aov_occlusion += occlusion(	$(occlusionmap), $(P), $(direction),
 									$(samples), SHADEOP_ARGUMENTS );
-		$(Occ) = 1 - aov_occlusion;
+		$(Occlusion) = 1 - aov_occlusion;
 	#else /* entropy, bmrt, renderdotc? */
-		$(Occ) = 0;		
+		$(Occlusion) = 0;		
 	#endif /* RENDERER */
 	
 	</rsl_code>
