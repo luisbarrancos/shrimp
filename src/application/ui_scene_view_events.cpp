@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -44,11 +44,8 @@ int scene_view::handle (int Event) {
 		{
 			int wheel_move = fltk::event_dy();
 			double change = - 0.3 * static_cast<double> (wheel_move);
-			if (m_size + change > 0) {
 
-				m_zoom_change += change;
-				m_size += change;
-			}
+			set_size (m_size + change);
 
 			redraw();
 		}

@@ -53,6 +53,7 @@ public:
 
 	// sets scene scale
 	void set_size (double Size);
+	double get_size() { return m_size; }
 
 	// set scene centre
 	void center_scene (const double X, const double Y);
@@ -74,9 +75,6 @@ public:
 
 	// move active group
 	void move_active_group (const double XOffset, const double YOffset);
-
-	double get_zoom_change() { return m_zoom_change; }
-	void reset_zoom_change() { m_zoom_change = 0; }
 
 	// options
 	void set_grid_state (const bool GridState);
@@ -175,9 +173,6 @@ private:
 	// save view width and height
 	int m_view_width;
 	int m_view_height;
-
-	// store zoom change value (for the application window to pick and reset)
-	double m_zoom_change;
 
 	// options
 	bool m_grid;

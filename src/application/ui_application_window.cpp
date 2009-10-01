@@ -497,7 +497,7 @@ application_window::application_window() :
 		m_zoom_slider.minimum (0);
 		m_zoom_slider.maximum (5);
 		m_zoom_slider.step (0.02);
-		m_zoom_slider.value (4);
+		m_zoom_slider.value (3);
 		m_zoom_slider.callback ((fltk::Callback*)cb_zoom_slider, this);
 		m_zoom_slider.align (fltk::ALIGN_LEFT);
 		m_zoom_slider.type (fltk::Slider::TICK_ABOVE);
@@ -672,14 +672,7 @@ void application_window::set_scene_chooser_value (const std::string Scene) {
 int application_window::handle (int event) {
 
 	// update the zoom slider if necessary
-	double new_zoom = m_scene_view->get_zoom_change();
-	if (new_zoom != 0) {
-
-		double current_value = m_zoom_slider.value();
-		m_zoom_slider.value (current_value + new_zoom);
-
-		m_scene_view->reset_zoom_change();
-	}
+	m_zoom_slider.value (m_scene_view->get_size());
 
 	// do overriden function's work
 	return fltk::Window::handle (event);

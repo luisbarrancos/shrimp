@@ -57,7 +57,7 @@ scene_view::scene_view (int x, int y, int w, int h, const char* l) :
 	GlWindow (x,y,w,h,l),
 	m_scene (0),
 	m_min_block_height (0.5),
-	m_size (5),
+	m_size (3),
 	m_last_mouse_x (0),
 	m_last_mouse_y (0),
 	m_mouse_click (0),
@@ -67,7 +67,6 @@ scene_view::scene_view (int x, int y, int w, int h, const char* l) :
 	m_projection_top (10),
 	m_projection_near (-1000),
 	m_projection_far (1000),
-	m_zoom_change (0),
 
 	m_grid (false),
 	m_snap_to_grid (false),
@@ -94,11 +93,15 @@ scene* scene_view::get_scene() {
 
 void scene_view::set_size (const double Size) {
 
-	if (Size > 0)
-		m_size = Size;
-	else
-		// set minimal size
+	m_size = Size;
+
+	// set min and max
+	if (m_size < 0.1) {
 		m_size = 0.1;
+	}
+	if (m_size > 5) {
+		m_size = 5;
+	}
 }
 
 
@@ -127,17 +130,11 @@ double scene_view::fit_scene() {
 	if (std::fabs (scene_ratio) > std::fabs (view_ratio)) {
 		// fit the width
 		const double width = m_projection_right - m_projection_left;
-		m_size = width / (1.2 * std::fabs (right - left));
+		set_size (width / (1.2 * std::fabs (right - left)));
 	} else {
 		// fit the height
 		const double height = m_projection_top - m_projection_bottom;
-		m_size = height / (1.2 * std::fabs (bottom - top));
-	}
-
-	// don't zoom too much
-	if (m_size > 4) {
-
-		m_size = 4;
+		set_size (height / (1.2 * std::fabs (bottom - top)));
 	}
 
 	// resize the bounding box position to the scene size
