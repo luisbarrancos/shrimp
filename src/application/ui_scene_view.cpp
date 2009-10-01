@@ -497,7 +497,7 @@ void scene_view::draw_shader() {
 			glMatrixMode (GL_PROJECTION);
 			glLoadIdentity();
 			gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
-
+			/* // Can't get splines drawn between pad>mouse active connection
 			// draw a spline between property centers
 			double to_x = static_cast<float> (m_current_mouse_x);
 			double to_y = h() - static_cast<float> (m_current_mouse_y);
@@ -519,11 +519,13 @@ void scene_view::draw_shader() {
 			glDisable(GL_MAP1_VERTEX_3);
 			glPopMatrix();
 			glDisable(GL_LINE_STIPPLE);
-			
-//			glBegin (GL_LINES);
-//				glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
-//				glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
-
+			*/
+			glBegin (GL_LINES);
+			glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
+			glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
+			glEnd();
+			glPopMatrix();
+			glDisable(GL_LINE_STIPPLE);
 		}
 	}
 }
