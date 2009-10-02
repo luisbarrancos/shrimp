@@ -1,9 +1,9 @@
 <shrimp type="function" name="Power" description="Power block" author="rconstruct">
-	<input name="A" description="Input value" type="float" default="1"/>
-	<input name="x" description="exponent" type="float" default="1"/>
-	<output name="val" description="val = A raised to the power x" type="float"/>
+	<input name="base" description="Input value" type="float" default="1"/>
+	<input name="exponent" description="exponent" type="float" default="1"/>
+	<output name="power" description="val = A raised to the power x" type="float"/>
 	<rsl_code>
-		$(val) = pow( $(A), $(x) );
+		$(power) = pow( $(base), $(exponent) );
 	</rsl_code>
-	<usage>Returns &quot;A&quot; raised to the power &quot;x&quot;.</usage>
+	<usage>Returns &quot;base&quot; raised to &quot;exponent&quot;.</usage>
 </shrimp>

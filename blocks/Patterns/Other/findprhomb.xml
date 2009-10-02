@@ -3,7 +3,7 @@
 	<input name="t" description="Y value to sample" storage="varying" type="float" default="t"/>
 	<output name="tiled_s" description="out tile X" type="float"/>
 	<output name="tiled_t" description="out tile Y" type="float"/>
-	<output name="ttype" description="Tile type" type="float"/>
+	<output name="tiletype" description="Tile type" type="float"/>
 	<rsl_include>rsl_shrimp_extrapatterns.h</rsl_include>
 	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>

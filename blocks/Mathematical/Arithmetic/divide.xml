@@ -1,9 +1,9 @@
 <shrimp type="function" name="Divide" description="Division block" author="rconstruct">
-	<input name="A" description="1st input" type="color point vector normal float" type_parent="val" default="1"/>
-	<input name="B" description="2nd input" type="color point vector normal float" type_parent="val" default="1"/>
-	<output name="val" description="val = A / B" type="color point vector normal float"/>
+	<input name="A" description="1st input" type="color point vector normal float" type_parent="value" default="1"/>
+	<input name="B" description="2nd input" type="color point vector normal float" type_parent="value" default="1"/>
+	<output name="value" description="val = A / B" type="color point vector normal float"/>
 	<rsl_code>
-		$(val) = $(A) / $(B);
+		$(value) = $(A) / $(B);
 	</rsl_code>
 	<usage>Divides input A by input B.</usage>
 </shrimp>

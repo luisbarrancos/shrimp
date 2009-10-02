@@ -1,14 +1,14 @@
 <shrimp type="function" name="CxSet" description="Create Complex number block" author="rconstruct">
 	<input name="A" description="1st input" type="float vector" default="vector(1,1,1)"/>
 	<input name="B" description="2nd input" type="float" default="0"/>
-	<output name="val" description="Complex result" type="vector"/>
+	<output name="value" description="Complex result" type="vector"/>
 	<rsl_include>rsl_odwikicomplex.h</rsl_include>
 	<rsl_code>
 	#define $(blockname)_$(A:type)
 	#ifdef $(blockname)_vector
-		$(val) = vector( xcomp( $(A) ), ycomp( $(A) ), 0 );
+		$(value) = vector( xcomp( $(A) ), ycomp( $(A) ), 0 );
 	#else
-		$(val) = vector( $(A), $(B), 0);
+		$(value) = vector( $(A), $(B), 0);
 	#endif
 	#undef $(blockname)_$(A:type)
 	</rsl_code>

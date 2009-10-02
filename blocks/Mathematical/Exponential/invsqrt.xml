@@ -1,8 +1,8 @@
 <shrimp type="function" name="InvSqrt" description="Inverse square root" author="rconstruct">
 	<input name="x" description="Input value" type="float" default="1"/>
-	<output name="val" description="val = the inverse sqare root of x" type="float"/>
+	<output name="value" description="val = the inverse sqare root of x" type="float"/>
 	<rsl_code>
-		$(val) = inversesqrt( $(x) );
+		$(value) = inversesqrt( $(x) );
 	</rsl_code>
 	<usage>Returns 1/sqrt(x).</usage>
 </shrimp>
