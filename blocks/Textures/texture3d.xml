@@ -1,14 +1,14 @@
 <shrimp type="function" name="Texture3d" description="Lookups on bake3d files" author="rconstruct">
 	<input name="bakefile" description="Baked map filename" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="PP" description="Surface point" storage="varying" type="point" default="P"/>
-	<input name="NN" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
+	<input name="P" description="Surface point" storage="varying" type="point" default="P"/>
+	<input name="N" description="Surface normal" storage="varying" type="normal" default="normalize(N)"/>
 	<input name="coordsys" description="Coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="filterradius" description="Filter radius" type="float" default="1"/>
 	<input name="filterscale" description="Filter scale" type="float" default="1"/>
 	<input name="interpolate" description="Toggle interpolation" type="float" default="1"/>
 	<input name="maxdepth" description="Maximum lookup depth" type="float" default="1"/>
-	<input name="datachannel" description="Data channel to query" storage="uniform" type="string" default="&quot;&quot;"/>
-	<output name="value" description="Value associated with data channel" type="color point vector normal matrix float"/>
+	<input name="channel" description="Data channel to query" storage="uniform" type="string" default="&quot;&quot;"/>
+	<output name="channeldata" description="Value associated with data channel" type="color point vector normal matrix float"/>
 	<output name="status" description="Status" type="float"/>
 	<rsl_code>
 	
@@ -23,24 +23,24 @@
 								"interpolate", $(interpolate), \
 								"radius", $(filterradius), \
 								"radiusscale", $(filterscale), \
-								$(datachannel), $(value)
+								$(channel), $(channeldata)
 	#elif RENDERER == _3delight
 	#define SHADEOP_ARGUMENTS	"coordsystem", $(coordsys), \
 								"filterradius", $(filterradius), \
 								"filterscale", $(filterscale), \
 								"maxdepth", $(maxdepth), \
-								$(datachannel), $(value)
+								$(channel), $(channeldata)
 	#elif RENDERER == prman
 	#define SHADEOP_ARGUMENTS	"coordsystem", $(coordsys), \
 								"filterradius", $(filterradius), \
 								"filterscale", $(filterscale), \
 								"maxdepth", $(maxdepth), \
 								"lerp", $(interpolate), \
-								$(datachannel), $(value)
+								$(channel), $(channeldata)
 	#elif RENDERER == air
 	#define SHADEOP_ARGUMENTS	"width", $(filterscale), \
 								"blur", $(filterradius), \
-								$(datachannel), $(value)
+								$(channel), $(channeldata)
 	#else /* Aqsis has no texture3d(), what about bmrt, entropy, renderdotc? */
 		#ifndef NOSHADEOP
 		#define NOSHADEOP
@@ -48,10 +48,10 @@
 	#endif /* RENDERER */
 
 	#ifdef NOSHADEOP
-		$(value) = 0;
+		$(channeldata) = 0;
 		$(status) = 0; /* failure */
 	#else
-		$(status) = texture3d( $(bakefile), $(PP), $(NN),
+		$(status) = texture3d( $(bakefile), $(P), $(N),
 							SHADEOP_ARGUMENTS );
 	#endif /* NOSHADEOP */
 

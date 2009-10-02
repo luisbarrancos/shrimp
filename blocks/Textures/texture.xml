@@ -1,7 +1,7 @@
 <shrimp type="function" name="Texture" description="Access a texture map" author="rconstruct">
-	<input name="texname" description="Texture map name" storage="uniform" type="string" default="&quot;&quot;"/>
-	<input name="xcoord" description="Horizontal texture coordinate" storage="varying" type="float" default="s"/>
-	<input name="ycoord" description="Vertical texture coordinate" storage="varying" type="float" default="t"/>
+	<input name="texmap" description="Texture map name" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="s" description="Horizontal texture coordinate" storage="varying" type="float" default="s"/>
+	<input name="t" description="Vertical texture coordinate" storage="varying" type="float" default="t"/>
     <input name="sblur" description="Blur along S" storage="varying" type="float" default="0"/>
     <input name="tblur" description="Blur along T" storage="varying" type="float" default="0"/>
     <input name="swidth" description="Blur filter width along S" storage="uniform" type="float" default="0"/>
@@ -10,7 +10,7 @@
     <input name="filter" description="Filter type" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<input name="samples" description="Filter samples, see info" storage="uniform" type="float" default="1"/>
     <input name="channel" description="Channel, in color textures" type="float" default="0"/>
-	<output name="val" description="Output color" type="float color"/>
+	<output name="value" description="Output color" type="float color"/>
 	<rsl_code>
 
 	/* make sure options are clear */
@@ -35,8 +35,8 @@
                                 "filter", $(filter), "fill", $(fill)
     #endif /* RENDERER */
 
-		$(val) = $(val:type) texture(	$(texname)[$(channel)],
-										$(xcoord), $(ycoord),
+		$(value) = $(value:type) texture(	$(texmap)[$(channel)],
+										$(s), $(t),
 										SHADEOP_ARGUMENTS );
 
 	#undef SHADEOP_ARGUMENTS
