@@ -494,16 +494,18 @@ void scene_view::draw_shader() {
 			glMatrixMode (GL_PROJECTION);
 			glLoadIdentity();
 			gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
-			/* // Can't get splines drawn between pad>mouse active connection
+
 			// draw a spline between property centers
 			double to_x = static_cast<float> (m_current_mouse_x);
 			double to_y = h() - static_cast<float> (m_current_mouse_y);
 			double from_x = static_cast<float> (m_connection_start_x);
 			double from_y = h() - static_cast<float> (m_connection_start_y);
 
+			//ratio 2D
+			float ratio = (w()/h())*100;
 			GLfloat ctrlpoints[6][3] = {
-				{ from_x+0.1,from_y,0.0}, {from_x+0.25,from_y,0.0},{from_x+1.0,from_y,0.0},
-				{ to_x-1.1,to_y,0.0}, {to_x-0.35,to_y,0.0}, {to_x-0.1,to_y,0.0}
+				{ from_x+0.1*ratio,from_y,0.0}, {from_x+0.25*ratio,from_y,0.0},{from_x+1.0*ratio,from_y,0.0},
+				{ to_x-1.1*ratio,to_y,0.0}, {to_x-0.35*ratio,to_y,0.0}, {to_x,to_y,0.0}
 			};
 			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
 			glEnable(GL_MAP1_VERTEX_3);
@@ -516,13 +518,8 @@ void scene_view::draw_shader() {
 			glDisable(GL_MAP1_VERTEX_3);
 			glPopMatrix();
 			glDisable(GL_LINE_STIPPLE);
-			*/
-			glBegin (GL_LINES);
-			glVertex2d (static_cast<float> (m_connection_start_x), h() - static_cast<float> (m_connection_start_y));
-			glVertex2d (static_cast<float> (m_current_mouse_x), h() - static_cast<float> (m_current_mouse_y));
-			glEnd();
-			glPopMatrix();
-			glDisable(GL_LINE_STIPPLE);
+
+
 		}
 	}
 }
