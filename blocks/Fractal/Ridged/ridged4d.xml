@@ -3,9 +3,9 @@
 	<input name="w" description="4th dimension value" storage="uniform" type="float" default="time"/>
 	<input name="filterwidth" description="Filter width for antialiasing" type="float" default="0"/>
 	<input name="octaves" description="Maximum octaves of noise" storage="uniform" type="float" default="5"/>
-	<input name="lacunarity" description="Gap between successive frequencies" storage="uniform" type="float" default="2.17"/>
-	<input name="gain" description="Controls the contrast of the fractal" storage="uniform" type="float" default="0.5"/>
-	<input name="offset" description="Controls the multifractality" storage="uniform" type="float" default="0.7"/>
+	<input name="lacunarity" description="Gap between successive frequencies" type="float" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the fractal" type="float" default="0.5"/>
+	<input name="offset" description="Controls the multifractality" type="float" default="0.7"/>
 	<input name="amplitude" description="Amplitude of fractal" type="float" default="1"/>
 	<output name="value" description="fractal value at (p,t)" type="color vector point float"/>
 	<rsl_include>rsl_shrimp_fractal.h</rsl_include>

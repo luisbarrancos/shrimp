@@ -57,7 +57,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 /* Having filteredsnoise leads easily to an antialiased version of fBm. */
 float fBm(	point p; float filtwidth;
-			uniform float maxoctaves, lacunarity, gain; )
+			uniform float maxoctaves;
+			float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, sum = 0, fw = filtwidth;
@@ -71,7 +72,8 @@ float fBm(	point p; float filtwidth;
 }
 
 float fBm(	float x, filtwidth;
-			uniform float maxoctaves, lacunarity, gain; )
+			uniform float maxoctaves;
+			float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, sum = 0, xx = x, fw = filtwidth;
@@ -84,7 +86,8 @@ float fBm(	float x, filtwidth;
 }
 
 float fBm(	float x, y, filtwidth;
-			uniform float maxoctaves, lacunarity, gain; )
+			uniform float maxoctaves;
+			float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, sum = 0, fw = filtwidth;
@@ -98,7 +101,8 @@ float fBm(	float x, y, filtwidth;
 }
 
 float fBm(	point p; float t, filtwidth;
-			uniform float maxoctaves, lacunarity, gain; )
+			uniform float maxoctaves;
+			float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, tt = t, sum = 0, fw = filtwidth;
@@ -113,7 +117,8 @@ float fBm(	point p; float t, filtwidth;
 }
 
 vector vfBm(	point p; float filtwidth;
-				uniform float maxoctaves, lacunarity, gain; )
+				uniform float maxoctaves;
+				float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, fw = filtwidth;
@@ -128,7 +133,8 @@ vector vfBm(	point p; float filtwidth;
 }
 
 vector vfBm(	float x, filtwidth;
-				uniform float maxoctaves, lacunarity, gain; )
+				uniform float maxoctaves;
+				float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, xx = x, fw = filtwidth;
@@ -142,7 +148,8 @@ vector vfBm(	float x, filtwidth;
 }
 
 vector vfBm(	float x, y, filtwidth;
-				uniform float maxoctaves, lacunarity, gain; )
+				uniform float maxoctaves;
+				float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, fw = filtwidth;
@@ -157,7 +164,8 @@ vector vfBm(	float x, y, filtwidth;
 }
 
 vector vfBm(	point p; float t, filtwidth;
-				uniform float maxoctaves, lacunarity, gain; )
+				uniform float maxoctaves;
+				float lacunarity, gain; )
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth;
@@ -193,7 +201,8 @@ vector vfBm(	point p; float t, filtwidth;
 ////////////////////////////////////////////////////////////////////////////////
 /* Variable Lacunarity fractional Brownian motion */
 float VLfBm(	point p; float filtwidth;
-				uniform float maxoctaves, lacunarity, gain, scale; )
+				uniform float maxoctaves;
+				float lacunarity, gain, scale; )
 {
     uniform float i;
     varying float amp = 1, sum = 0, fw = filtwidth;
@@ -207,7 +216,8 @@ float VLfBm(	point p; float filtwidth;
 }
 
 float VLfBm(	float x, filtwidth;
-				uniform float maxoctaves, lacunarity, gain, scale; )
+				uniform float maxoctaves;
+				float lacunarity, gain, scale; )
 {
     uniform float i;
     varying float amp = 1, xx = x, sum = 0, fw = filtwidth;
@@ -220,7 +230,8 @@ float VLfBm(	float x, filtwidth;
 }
 
 float VLfBm(	float x, y, filtwidth;
-				uniform float maxoctaves, lacunarity, gain, scale; )
+				uniform float maxoctaves;
+				float lacunarity, gain, scale; )
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, sum = 0, fw = filtwidth;
@@ -234,7 +245,8 @@ float VLfBm(	float x, y, filtwidth;
 }
 
 float VLfBm(	point p; float filtwidth;
-				uniform float t, maxoctaves,lacunarity,gain,scale;)
+				uniform float t, maxoctaves;
+				float lacunarity,gain,scale;)
 {
     uniform float i;
     varying float amp = 1, tt = t, sum = 0, fw = filtwidth;
@@ -251,7 +263,8 @@ float VLfBm(	point p; float filtwidth;
 ////////////////////////////////////////////////////////////////////////////////
 /* extra VLfBm's for color/vector types */
 vector VLvfBm(	point p; float filtwidth;
-				uniform float maxoctaves, lacunarity, gain, scale;)
+				uniform float maxoctaves;
+				float lacunarity, gain, scale;)
 {
     uniform float i;
     varying float amp = 1, fw = filtwidth;
@@ -266,8 +279,9 @@ vector VLvfBm(	point p; float filtwidth;
     return sum;
 }
 
-vector VLvfBm(	float x, filtwidth, maxoctaves;
-				uniform float lacunarity, gain, scale; )
+vector VLvfBm(	float x, filtwidth;
+				uniform float maxoctaves;
+				float lacunarity, gain, scale; )
 {
     uniform float i;
     varying float amp = 1, xx = x, fw = filtwidth;
@@ -281,8 +295,9 @@ vector VLvfBm(	float x, filtwidth, maxoctaves;
     return sum;
 }
 
-vector VLvfBm(	float x, y, filtwidth, maxoctaves;
-				uniform float lacunarity, gain, scale;)
+vector VLvfBm(	float x, y, filtwidth;
+				uniform float maxoctaves;
+				float lacunarity, gain, scale;)
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, fw = filtwidth;
@@ -298,7 +313,8 @@ vector VLvfBm(	float x, y, filtwidth, maxoctaves;
 }
 
 vector VLvfBm(	point p; float filtwidth;
-				uniform float t, maxoctaves,lacunarity,gain,scale;)
+				uniform float t, maxoctaves;
+				float lacunarity,gain,scale;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth;
@@ -324,7 +340,8 @@ vector VLvfBm(	point p; float filtwidth;
  */
 
 float turbulence(	point p; float filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, fw = filtwidth, sum = 0;
@@ -338,7 +355,8 @@ float turbulence(	point p; float filtwidth;
 }
 
 float turbulence(	float x, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, xx = x, fw = filtwidth, sum = 0;
@@ -351,7 +369,8 @@ float turbulence(	float x, filtwidth;
 }
 
 float turbulence(	float x, y, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, fw = filtwidth, sum = 0;
@@ -365,7 +384,8 @@ float turbulence(	float x, y, filtwidth;
 }
 
 float turbulence(	point p; float filtwidth;
-					uniform float t, maxoctaves, lacunarity, gain;)
+					uniform float t, maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth, sum = 0;
@@ -382,7 +402,8 @@ float turbulence(	point p; float filtwidth;
 /* vector version of turbulence */
 
 vector vturbulence( point p; float filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, fw = filtwidth;
@@ -399,7 +420,8 @@ vector vturbulence( point p; float filtwidth;
 }
 
 vector vturbulence(	float x, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, xx = x, fw = filtwidth;
@@ -415,7 +437,8 @@ vector vturbulence(	float x, filtwidth;
 }
 
 vector vturbulence(	float x, y, filtwidth;
-					uniform float maxoctaves, lacunarity, gain;)
+					uniform float maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, xx = x, yy = y, fw = filtwidth;
@@ -432,7 +455,8 @@ vector vturbulence(	float x, y, filtwidth;
 }
 
 vector vturbulence( point p; float filtwidth;
-					uniform float t, maxoctaves, lacunarity, gain;)
+					uniform float t, maxoctaves;
+					float lacunarity, gain;)
 {
     uniform float i;
     varying float amp = 1, tt = t, fw = filtwidth;
@@ -459,7 +483,8 @@ vector vturbulence( point p; float filtwidth;
  * */ 
 float Ridged( 	point p; 
 				float filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1.0, value = 0, signal = 0, fw = filtwidth, weight = 1;
@@ -481,7 +506,8 @@ float Ridged( 	point p;
 }
 
 float Ridged( 	float x, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, value = 0, signal = 0, xx = x, weight = 1;
@@ -503,7 +529,8 @@ float Ridged( 	float x, filtwidth;
 }
 
 float Ridged( 	float x, y, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, value = 0, signal = 0, xx = x, yy = y, weight = 1;
@@ -526,7 +553,8 @@ float Ridged( 	float x, y, filtwidth;
 }
 
 float Ridged( 	point p; float filtwidth;
-				uniform float t, maxoctaves, lacunarity, offset, gain; )
+				uniform float t, maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, value = 0, signal = 0, tt = t, weight = 1;
@@ -550,7 +578,8 @@ float Ridged( 	point p; float filtwidth;
 
 /* vector version of ridged */
 vector vRidged( point p; float filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, fw = filtwidth;
@@ -574,7 +603,8 @@ vector vRidged( point p; float filtwidth;
 }
 
 vector vRidged( float x, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, xx = x, fw = filtwidth;
@@ -597,7 +627,8 @@ vector vRidged( float x, filtwidth;
 }
 
 vector vRidged(	float x, y, filtwidth;
-				uniform float maxoctaves, lacunarity, offset, gain; )
+				uniform float maxoctaves;
+				float lacunarity, offset, gain; )
 {
 	uniform float i;
 	varying float amp = 1, xx = x, yy = y, fw = filtwidth;
@@ -620,7 +651,8 @@ vector vRidged(	float x, y, filtwidth;
 }
 
 vector vRidged( point p; float filtwidth;
-				uniform float t, maxoctaves, lacunarity, offset, gain )
+				uniform float t, maxoctaves;
+				float lacunarity, offset, gain )
 {
 	uniform float i;
 	varying float amp = 1, tt = t, fw = filtwidth;
