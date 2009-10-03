@@ -59,9 +59,22 @@ int scene_view::handle (int Event) {
 			m_current_mouse_x = fltk::event_x();
 			m_current_mouse_y = fltk::event_y();
 
+			m_active_block = select_object();
+
+			if (m_active_block.size()) {
+
+										if (m_scene) {
+											shader_block* block = m_scene->get_block (m_active_block);
+
+											set_current_block(block);
+
+										}
+			}
+			else {set_current_block(NULL);}
 			redraw();
 		}
 		return 1;
+
 
 		// mouse down
 		case fltk::PUSH:
