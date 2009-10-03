@@ -504,7 +504,7 @@ void scene_view::draw_shader() {
 			//ratio 2D
 			float ratio = (w()/h())*100;
 			GLfloat ctrlpoints[6][3] = {
-				{ from_x+0.1*ratio,from_y,0.0}, {from_x+0.25*ratio,from_y,0.0},{from_x+1.0*ratio,from_y,0.0},
+				{ from_x,from_y,0.0}, {from_x+0.25*ratio,from_y,0.0},{from_x+1.0*ratio,from_y,0.0},
 				{ to_x-1.1*ratio,to_y,0.0}, {to_x-0.35*ratio,to_y,0.0}, {to_x,to_y,0.0}
 			};
 			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
@@ -515,8 +515,9 @@ void scene_view::draw_shader() {
 				glEvalCoord1f((GLfloat) i/30.0);
 			}
 			glEnd();
-			glDisable(GL_MAP1_VERTEX_3);
+
 			glPopMatrix();
+			glDisable(GL_MAP1_VERTEX_3);
 			glDisable(GL_LINE_STIPPLE);
 
 
@@ -911,7 +912,12 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 	glEnd();
 
 	// block outline (and external block text)	
-	glColor3f (1.0, 1.0, 1.0);
+	if (is_current_block(Block)) {
+		glColor3f (1.0, 0.55, 0.0);
+	}
+	else {
+		glColor3f (1.0, 1.0, 1.0);
+	}
 	glBegin (GL_LINES);
 		// top rectangle contour
 		glVertex3d ( X + radius, Y, 0);
