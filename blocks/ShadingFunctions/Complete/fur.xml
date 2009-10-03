@@ -12,11 +12,11 @@
 	<input name="coneangle" description="Illumination cone angle" type="float" default="180"/>
 	<input name="fadestart" description="Fade start" type="float" default="0.005"/>
 	<input name="fadeend" description="Fade end" type="float" default="0.001"/>
-	<input name="clumpdarkening" description="Clump darkening strength"  type="float" default="0"/>
+	<input name="darkening" description="Clump darkening strength"  type="float" default="0"/>
 	<input name="rootcolor" description="Root color" type="color" default="color(.9714, .9714, .9714)"/>
 	<input name="tipcolor" description="Tip color" type="color" default="color( .519, .325, .125 )"/>
-	<input name="Cspec" description="Specular color" type="color" default="color( .7595, .6625, .5625 )"/>
-	<input name="Camb" description="Static ambient color" type="color" default="color( .057, .057, .057 )"/>
+	<input name="specularcolor" description="Specular color" type="color" default="color( .7595, .6625, .5625 )"/>
+	<input name="surfacecolor" description="Static ambient color" type="color" default="color( .057, .057, .057 )"/>
 	<input name="haircolvar" description="RIB hair color variable" storage="uniform" type="float" default="0"/>
 	<input name="hairlength" description="RIB hair length" storage="uniform" type="float" default="0"/>
 	<input name="hairid" description="RIB hair id" storage="uniform" type="float" default="0"/>
@@ -28,8 +28,8 @@
 		$(Ci) = SIG2k_srf_fur( $(Ka), $(Kd), $(Ks), $(roughness1),
 				$(roughness2), $(Ks1), $(Ks2), $(startspec), $(endspec),
 				$(specsizefade), $(coneangle), $(fadestart),
-				$(fadeend), $(clumpdarkening), $(rootcolor), $(tipcolor),
-				$(Cspec), $(Camb), $(haircolvar), $(hairlength),
+				$(fadeend), $(darkening), $(rootcolor), $(tipcolor),
+				$(specularcolor), $(surfacecolor), $(haircolvar), $(hairlength),
 				$(hairid), $(ribnormal), $(ribclump),
 				DECLARE_AOV_PARAMETERS );
 	</rsl_code>
