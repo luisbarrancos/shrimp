@@ -80,6 +80,9 @@ public:
 	void set_grid_state (const bool GridState);
 	void set_snap_to_grid_state (const bool SnapState);
 	void set_overview_state (const bool OverviewState);
+	void set_current_block  (const shader_block* Block){m_current_block = Block;}
+	bool is_current_block	(const shader_block* Block){return(Block ==m_current_block); }
+
 
 	// snap function (snaps given coordinates)
 	void snap_position (double& X, double& Y);
@@ -179,6 +182,7 @@ private:
 	bool m_snap_to_grid;
 	bool m_overview;
 	int m_font_size;
+	const shader_block* m_current_block;
 
 	// callbacks
 	void on_select_block (fltk::Widget* W, void* Data);
