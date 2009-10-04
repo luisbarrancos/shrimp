@@ -30,6 +30,7 @@
 #include <fltk/gl.h>
 #include <fltk/PopupMenu.h>
 
+
 #include <stdlib.h>
 
 class scene_view :
@@ -82,6 +83,8 @@ public:
 	void set_overview_state (const bool OverviewState);
 	void set_current_block  (const shader_block* Block){m_current_block = Block;}
 	bool is_current_block	(const shader_block* Block){return(Block ==m_current_block); }
+
+
 
 
 	// snap function (snaps given coordinates)
@@ -161,6 +164,8 @@ private:
 	int m_mouse_click_y;
 	int m_current_mouse_x;
 	int m_current_mouse_y;
+	int m_start_drag_x;
+	int m_start_drag_y;
 	// store connection start position
 	int m_connection_start_x;
 	int m_connection_start_y;

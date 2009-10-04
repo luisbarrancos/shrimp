@@ -32,10 +32,13 @@
 #include <fltk/PopupMenu.h>
 
 
+
 int scene_view::handle (int Event) {
 
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
+	const bool alt_key_down =  fltk::event_state (fltk::ALT);
+	bool dragging= false;
 
 	switch (Event) {
 
@@ -61,6 +64,7 @@ int scene_view::handle (int Event) {
 
 			m_active_block = select_object();
 
+			//Mouse move over a block, set block as current and draw the block border as selected
 			if (m_active_block.size()) {
 
 										if (m_scene) {
@@ -105,12 +109,25 @@ int scene_view::handle (int Event) {
 								m_scene->set_block_selection (block, !m_scene->is_selected (block));
 							}
 						}
-					} else if (m_active_property.first.size()) {
+					}
+					else if (m_active_property.first.size()) {
 
 						// save connection start
 						m_connection_start_x = m_mouse_click_x;
 						m_connection_start_y = m_mouse_click_y;
 					}
+					else if (m_active_block.size()) {
+							if (m_scene) {
+										shader_block* block = m_scene->get_block (m_active_block);
+										m_scene->clear_selection();
+										// toggle block selection
+										m_scene->set_block_selection (block, !m_scene->is_selected (block));
+							}
+						}
+					else {
+						m_scene->clear_selection();
+					}
+
 				}
 
 				if (fltk::event_button() == fltk::RightButton) {
@@ -242,6 +259,7 @@ int scene_view::handle (int Event) {
 
 							group_menu.popup();
 						}
+
 					}
 				}
 			}
@@ -251,6 +269,15 @@ int scene_view::handle (int Event) {
 		// mouse drag
 		case fltk::DRAG:
 		{
+			if (!dragging) {
+			      // record the place things started & clear any selection.
+					m_start_drag_x = fltk::event_x();
+					m_start_drag_y = fltk::event_y();
+			        dragging = true;
+//			    	m_scene->clear_selection();
+
+			    }
+
 			m_current_mouse_x = fltk::event_x();
 			m_current_mouse_y = fltk::event_y();
 
@@ -281,16 +308,20 @@ int scene_view::handle (int Event) {
 
 					move_active_group (move_x / m_size, move_y / m_size);
 				}
-				else {
-					// move scene
+				else if (alt_key_down ){
+					// move scene when ALT key press
 					move_scene (move_x, move_y);
+				}
+				else {
+				//Drawing of rectangle selection
 				}
 
 				m_last_mouse_x = m_current_mouse_x;
 				m_last_mouse_y = m_current_mouse_y;
 
 				redraw();
-			}
+				}
+
 		}
 		return 1;
 
