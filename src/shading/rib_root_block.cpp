@@ -903,25 +903,26 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// create the shader statements
 	std::string imager_shader ("");
-	std::string other_shaders ("");
+	std::string surface_shaders ("");
+	std::string displacement_shaders ("");
+	std::string volume_shaders ("");
+	std::string light_shaders ("");
 
 	// light
 	if (!LightName.empty()) {
-		other_shaders += "LightSource \"" + LightName + "\" 0\n";
+		light_shaders += "LightSource \"" + LightName + "\" 0\n";
 	} else {
 
-		other_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [ 1.0 ] \"lightcolor\" [1 1 1]\n";
-		other_shaders += "LightSource \"distantlight\" 1 \"intensity\" [ 1.0 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ -1 1 -1 ] \"to\" [ 0 0 0 ]\n";
-		other_shaders += "LightSource \"distantlight\" 2 \"intensity\" [ 0.8 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 1 1 ] \"to\" [ 0 0 0 ]\n";
-		other_shaders += "LightSource \"distantlight\" 3 \"intensity\" [ 0.65 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 -1 -1 ] \"to\" [ 0 0 0 ]\n";
+		light_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [ 1.0 ] \"lightcolor\" [1 1 1]\n";
+		light_shaders += "LightSource \"distantlight\" 1 \"intensity\" [ 1.0 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ -1 1 -1 ] \"to\" [ 0 0 0 ]\n";
+		light_shaders += "LightSource \"distantlight\" 2 \"intensity\" [ 0.8 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 1 1 ] \"to\" [ 0 0 0 ]\n";
+		light_shaders += "LightSource \"distantlight\" 3 \"intensity\" [ 0.65 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 -1 -1 ] \"to\" [ 0 0 0 ]\n";
 
 	}
 
 	// imager
 	m_imager_statement = trim (m_imager_statement);
 	if (!m_imager_statement.empty()) {
-
-		other_shaders += "\n";
 
 		const std::string beginning = m_imager_statement.substr (0, 6);
 		if (beginning == "Imager" || beginning == "imager") {
@@ -934,28 +935,34 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// atmosphere
 	if (!AtmosphereName.empty()) {
-		other_shaders += "Atmosphere \"" + AtmosphereName + "\"\n";
+		volume_shaders += "Atmosphere \"" + AtmosphereName + "\"\n";
 	}
 
 
 	// surface
 	if (SurfaceName.empty()) {
-		other_shaders += "Surface \"plastic\"\n";
+		surface_shaders += "Surface \"plastic\"\n";
 	} else {
-		other_shaders += "Surface \"" + SurfaceName + "\"\n";
+		surface_shaders += "Surface \"" + SurfaceName + "\"\n";
 	}
 
 	// displacement
 	if (!DisplacementName.empty()) {
-		other_shaders += "Displacement \"" + DisplacementName + "\"\n";
-		other_shaders += "Attribute \"displacementbound\" \"sphere\" 0.5\n";
-		//other_shaders += "Attribute \"render\" \"patch_multiplier\" 1.0\n";
+		displacement_shaders += "Displacement \"" + DisplacementName + "\"\n";
+		displacement_shaders += "Attribute \"displacementbound\" \"sphere\" 0.5\n";
+		//displacement_shaders += "Attribute \"render\" \"patch_multiplier\" 1.0\n";
 	}
 
 
 	// replace the shader values
 	replace_variable (scene_template, "$(imager_shader)", imager_shader);
-	replace_variable (scene_template, "$(shaders)", other_shaders);
+	replace_variable (scene_template, "$(surface_shaders)", surface_shaders);
+	replace_variable (scene_template, "$(displacement_shaders)", displacement_shaders);
+	replace_variable (scene_template, "$(volume_shaders)", volume_shaders);
+	replace_variable (scene_template, "$(light_shaders)", light_shaders);
+
+	std::string all_other_shaders = surface_shaders + "\n" + displacement_shaders + "\n" + volume_shaders + "\n" + light_shaders;
+	replace_variable (scene_template, "$(shaders)", all_other_shaders);
 
 	// prepare display (defaults to "framebuffer")
 	std::string display = prefs.m_renderer_display;
