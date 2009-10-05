@@ -118,10 +118,10 @@ int scene_view::handle (int Event) {
 					}
 					else if (m_active_block.size()) {
 							if (m_scene) {
-										shader_block* block = m_scene->get_block (m_active_block);
-										m_scene->clear_selection();
-										// toggle block selection
-										m_scene->set_block_selection (block, !m_scene->is_selected (block));
+//										shader_block* block = m_scene->get_block (m_active_block);
+//										m_scene->clear_selection();
+//										// toggle block selection
+//										m_scene->set_block_selection (block, !m_scene->is_selected (block));
 							}
 						}
 					else {
@@ -303,6 +303,7 @@ int scene_view::handle (int Event) {
 
 					// move selected block
 					move_active_block (move_x / m_size, move_y / m_size);
+
 				}
 				else if (m_active_group) {
 
@@ -357,6 +358,16 @@ int scene_view::handle (int Event) {
 
 							m_connection_start = std::make_pair ("", "");
 						}
+
+					}
+
+					else if (m_active_block.size() &&  !(shift_key_down || ctrl_key_down)) {
+												if (m_scene) {
+															shader_block* block = m_scene->get_block (m_active_block);
+															m_scene->clear_selection();
+															// toggle block selection
+															m_scene->set_block_selection (block, !m_scene->is_selected (block));
+												}
 					}
 				}
 
