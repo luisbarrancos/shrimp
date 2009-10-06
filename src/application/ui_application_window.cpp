@@ -210,6 +210,16 @@ void application_window::on_menu_view_toggle_overview (fltk::Widget*) {
 	m_scene_view->set_overview_state (overview_state);
 }
 
+void application_window::on_menu_view_toggle_console (fltk::Widget*) {
+
+	m_console_state = m_menu_show_console->state();
+	if (m_console_state) {
+		m_scene_view->set_console (m_console);
+	} else {
+		m_scene_view->set_console (0);
+	}
+}
+
 // Help menu : About
 #include "ui_about.h"
 #include <fltk/Monitor.h>
@@ -321,11 +331,16 @@ void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
 application_window::application_window() :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
 	m_zoom_slider (80, 575, 400, 19, "Zoom"),
-	m_block_menu (20, 22, 90, 24, "Add block")
+	m_block_menu (20, 22, 90, 24, "Add block"),
+	m_console (0)
 {
 	log() << aspect << "Application window constructor" << std::endl;
 
 	application_pointer = this;
+
+	// initialize console
+	m_console = new console();
+	m_console->print ("Console:");
 
 	// create material structure
 	log() << aspect << "Creating default material" << std::endl;
@@ -408,6 +423,10 @@ application_window::application_window() :
 				m_menu_overview->shortcut (fltk::CTRL + 'v');
 				m_menu_overview->callback ((fltk::Callback*)cb_menu_view_toggle_overview, this);
 */
+
+				m_menu_show_console = new fltk::ToggleItem ("Show console");
+				m_menu_show_console->shortcut (fltk::CTRL + 'c');
+				m_menu_show_console->callback ((fltk::Callback*)cb_menu_view_toggle_console, this);
 
 			menu_view->end();
 
@@ -560,6 +579,8 @@ void application_window::block_menu_action (fltk::Widget* w, void*) {
 		// add block and put it in the view center
 		shader_block* new_block = m_scene->add_predefined_block (item->label());
 		m_scene_view->move_block_to_view_center (new_block);
+
+		m_console->print ("Added block " + std::string(item->label()));
 
 		// refresh
 		m_scene_view->redraw();

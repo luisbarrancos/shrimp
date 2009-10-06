@@ -22,6 +22,7 @@
 #ifndef _ui_scene_view_h_
 #define _ui_scene_view_h_
 
+#include "../shading/console.h"
 #include "../shading/scene.h"
 
 #include <fltk/run.h>
@@ -84,15 +85,18 @@ public:
 	void set_current_block  (const shader_block* Block){m_current_block = Block;}
 	bool is_current_block	(const shader_block* Block){return(Block ==m_current_block); }
 
-
-
-
 	// snap function (snaps given coordinates)
 	void snap_position (double& X, double& Y);
+
+	// console
+	void set_console (console* console_instance);
 
 private:
 	// store the scene being drawn
 	scene* m_scene;
+
+	// store console instance
+	console* m_console;
 
 	// store active block
 	std::string m_active_block;
@@ -103,6 +107,9 @@ private:
 
 	// store current connection start
 	scene::io_t m_connection_start;
+
+	// draw console
+	void draw_console();
 
 	// draw grid
 	void draw_grid();

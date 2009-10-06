@@ -35,19 +35,19 @@ conf = Configure(env)
 if not conf.CheckCHeader('gl.h') or not conf.CheckCHeader('glu.h'):
 	print 'Shrimp requires OpenGL and GLU'
 	Exit(1)
-env = conf.Finish()
 
 # Check FLTK 2 headers
-conf = Configure(env)
 if not conf.CheckCXXHeader('fltk/run.h'):
 	print 'Shrimp requires FLTK 2'
 	Exit(1)
+
 env = conf.Finish()
 
 
 # Debug
 #env.Append(CXXFLAGS = '-O2')
 env.Append(CXXFLAGS = '-g -Wall')
+#env.Append(LINKFLAGS = '-static-libgcc')
 
 
 # TinyXML
@@ -72,6 +72,7 @@ shrimp_files = Split("""
 	src/miscellaneous/misc_system_functions.cpp
 	src/miscellaneous/misc_xml.cpp
 	src/miscellaneous/logging.cpp
+	src/shading/console.cpp
 	src/shading/preferences.cpp
 	src/shading/shader_block.cpp
 	src/shading/scene.cpp

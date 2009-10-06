@@ -56,6 +56,7 @@
 scene_view::scene_view (int x, int y, int w, int h, const char* l) :
 	GlWindow (x,y,w,h,l),
 	m_scene (0),
+	m_console (0),
 	m_min_block_height (0.5),
 	m_size (3),
 	m_last_mouse_x (0),
@@ -510,7 +511,7 @@ void scene_view::draw_shader() {
 			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
 			glEnable(GL_MAP1_VERTEX_3);
 			glBegin(GL_LINE_STRIP);
-			
+
 			for (int i = 0; i <= 30; i ++) {
 				glEvalCoord1f((GLfloat) i/30.0);
 			}
@@ -589,6 +590,9 @@ void scene_view::draw() {
 
 		draw_shader();
 	glPopMatrix();
+
+	// console (if any)
+	draw_console();
 }
 
 std::string scene_view::select_object() {
@@ -861,7 +865,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		glVertex3d ( X + width - radius, Y - height + radius, 0);
 		glVertex3d ( X + width - radius, Y - height, 0);
 		glVertex3d ( X + radius, Y - height, 0);
-		// left rectangle 
+		// left rectangle
 		glVertex3d ( X + radius, Y - radius, 0);
 		glVertex3d ( X, Y - radius, 0);
 		glVertex3d ( X, Y - height + radius, 0);
@@ -911,7 +915,7 @@ void scene_view::draw_block_body (const shader_block* Block, const double X, con
 		}
 	glEnd();
 
-	// block outline (and external block text)	
+	// block outline (and external block text)
 	if (is_current_block(Block)) {
 		glColor3f (1.0, 0.55, 0.0);
 	}
@@ -1124,7 +1128,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
-		
+
 		glBegin (GL_QUADS);
 			glColor3f (1.0, 0.0, 0.0);
 			glVertex3d (X + small , Y - small, 0);
@@ -1204,7 +1208,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 		glColor3f (0.14, 0.11, 0.04);
 		glBegin (GL_LINES);
-			
+
 			glVertex3d ( X + Size/2, Y - Size + small, 0);
 			glVertex3d ( X + Size/2, Y - small, 0 );
 
@@ -1216,7 +1220,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 			glVertex3d ( X + small, Y - Size + small, 0 );
 			glVertex3d ( X + Size - small, Y - Size + small, 0 );
-		
+
 		glEnd();
 	}
 	else if ("string" == Type) {
@@ -1607,6 +1611,25 @@ void scene_view::snap_position (double& X, double& Y) {
 
 		if (y_ceil - Y < snap_size)
 			Y = y_ceil;
+	}
+}
+
+
+void scene_view::set_console (console* console_instance) {
+
+	m_console = console_instance;
+}
+
+
+void scene_view::draw_console () {
+
+	if (m_console) {
+
+		// set constant size
+		glsetfont (fltk::HELVETICA, 10);
+
+		// draw lines at the bottom of the screen
+		fltk::drawtext (m_console->get_lines(3).c_str(), fltk::Rectangle (w(), h()), fltk::ALIGN_LEFT | fltk::ALIGN_BOTTOM | fltk::ALIGN_WRAP);
 	}
 }
 
