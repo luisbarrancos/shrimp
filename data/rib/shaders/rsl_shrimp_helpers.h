@@ -614,5 +614,55 @@ float vmin( color c; ) { return min( c[0], c[1], c[2] ); }
 #endif // Aqsis component selection workaround
 
 ////////////////////////////////////////////////////////////////////////////////
+// Hair occlusion, based in Luke Emrose's implementation of Ivan Neulander /////
+// and Michiel van de Panne paper. /////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* Calculate occlusion in the given direction for a hair system as per: 
+ * "Rendering Generalized Cylinders with Paintstrokes", Ivan Neulander and 
+ * Michiel van de Panne, Dynamic Graphics Project, University of Toronto in
+ * the gi98.pdf paper, pages 6 and 7, located at:
+ * http://www.rhythm.com/~ivan/pdfs/gi98.pdf 
+ * This implementation by Luke Emrose 15/06/2008 evolutionarytheory@gmail.com 
+ * */
+
+// slightly tweaked to fit Shrimp's structure
+// Note: root position, root normal, hair lenght, via primitive variables
+
+float
+calculateNeulanderVanDePanneOcclusion(
+		normal Ngl; float dgl;
+		uniform float materialdensity;
+		vector occdir;
+		uniform float samples, coneangle;
+		)
+{
+	float globalvisibility = 0, globalambient = 0;
+
+	float alpha = 1 - dgl;
+	float alpha2 = SQR(alpha);
+
+	// hemisphere sample for occlusion rays
+	extern point P;
+	vector Ldir = vector(0);
+
+	gather( "samplepattern", P, occdir, coneangle, samples,
+			"ray:direction", Ldir ) {
+		;
+	} else {
+		float beta = Ngl.normalize(Ldir);
+		float beta2 = SQR(beta);
+		float alphabeta = alpha * beta;
+
+		float shadowdistance = sqrt(1 - alpha2 + (alpha2*beta2)) - alphabeta;
+
+		float visibilityterm = exp(-materialdensity * shadowdistance);
+		globalvisibility = visibilityterm / samples;
+		globalambient += globalvisibility;
+	}
+	return globalambient;
+}
+
+////////////////////////////////////////////////////////////////////////////////
 #endif /* SHRIMP_HELPERS_H */
 
