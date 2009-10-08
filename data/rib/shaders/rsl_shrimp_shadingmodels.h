@@ -38,10 +38,47 @@ wrappeddiffuse(
 		extern color Cl;
 		
 		nondiff = 0;
+		// besides on/off switch, nondiff can be a scale factor
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			
 			Ln = normalize(L);
-			C += Cl * 1 - min(1, acos(Ln.Nn)/radians(90+wangle));
+			C += Cl * (1-nondiff) * 1 - min(1, acos(Ln.Nn)/radians(90+wangle));
+		}
+	}
+	return C;
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lambertian diffuse model with control over the falloff between lit and //////
+// unlit regions in the surface. From the SIGGRAPH 2002 course 16 //////////////
+// RenderMan in Production, chapter 3, "Light/Surface Interactions", by ////////
+// Matt Pharr. /////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+color
+diffusefalloff(
+				float falloff; // [0,1]
+				normal Nn;
+				vector In;
+		)
+{
+	normal Nf = faceforward( Nn, In );
+	vector Ln;
+	
+	extern point P;
+	color C = color(0);
+	uniform float nondiff;
+
+	illuminance( P, Nf, S_PI_2 )
+	{
+		extern vector L;
+		extern color Cl;
+
+		nondiff = 0;
+		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
+
+			Ln = normalize(L);
+			C += Cl * (1-nondiff) * gain( Nf.Ln, falloff);
 		}
 	}
 	return C;
@@ -78,7 +115,7 @@ LommelSeeliger(
 			Ln = normalize(L);
 			cospsi = Ln.Nf;
 
-			C += Cl * (1 / (cospsi + costheta)) *
+			C += Cl * (1-nondiff) * (1 / (cospsi + costheta)) *
 					(1 - exp( -tau * (1/cospsi + 1/costheta))) * cospsi;
 		}
 	}
@@ -132,7 +169,7 @@ Buratti(
 				2 - tanalpha / 2 / sden * (1 - exp(-sden/tanalpha)) *
 				(3 - exp(-sden/tanalpha)) : 1;
 
-			C += Cl * (k * (cospsi/(cospsi+costheta)) * sden
+			C += Cl * (1-nondiff) * (k * (cospsi/(cospsi+costheta)) * sden
 					+ (1-k) * cospsi) * R;
 		}
 	}
@@ -196,7 +233,7 @@ Minnaert(
 			
 	        Ln = normalize(L);
     	    ndotl = max( 0, Ln.Nf);
-        	Cminnaert += Cl * pow( ndotl, k);
+        	Cminnaert += Cl * (1-nondiff) * pow( ndotl, k);
 		}
     }
     Cminnaert *= thetak;
@@ -270,7 +307,7 @@ color Hapke(
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 
         	Ln = normalize(L);
-        	Ct += Cl * Eval( Ln, Vf, Nf, sden, fscat, refl) 
+        	Ct += Cl * (1-nondiff) * Eval( Ln, Vf, Nf, sden, fscat, refl) 
 					* Ln.Nf * S_PI;
 		}
     }
@@ -334,7 +371,7 @@ color Wolff(
 			/* first Fresnel term accounting for refraction of externally
 			 * incident light. */
 			F = 1 - nfresnel( cos_theta_i, ior );
-			C += Cl * F * cos_theta_i;
+			C += Cl * (1-nondiff) * F * cos_theta_i;
 		}
 	}
 	/* getting cosine of transmitted angle, for the second Fresnel term,
@@ -405,7 +442,7 @@ OrenNayar(
 			alpha = max( theta_i, theta_r );
 			beta = min( theta_i, theta_r );
 			
-			C += Cl * cos_theta_i * (A + B * max( 0,
+			C += Cl * (1-nondiff) * cos_theta_i * (A + B * max( 0,
 						cos_phi_diff ) * sin( alpha ) * tan( beta ) );
 		}
 	}
@@ -511,7 +548,7 @@ LG_OrenNayar(
 			L2 = SQR(Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2 + .13)
 					* (1 - cos_phi_diff * 4 * SQR(beta) / S_2PI ));
 			
-			C += Cl * (L1 + L2);
+			C += Cl * (1-nondiff) * (L1 + L2);
 		}
 	}
 	return C;
@@ -598,7 +635,7 @@ OrenNayarWolff(
 			L2 = (Cdiff * Cdiff) * (.17 * cos_theta_i * sigma2 / (sigma2
 						+ .13) * (1 - cos_phi_diff * 4 * SQR(beta) / S_2PI ));
 
-			C += (1 - nondiff) * Cl * (L1 + L2);
+			C += Cl * (1-nondiff) * (L1 + L2);
 		}
 	}
 	return C;
@@ -666,8 +703,8 @@ anisophongdiff(
 
        		ndotl = Nf.Ln;
 
-			C += Cl * (28 * Kd / (23*S_PI)) * (1-Ks) * (1-pow(1-ndotl/2,5))
-					* (1-pow(1-ndotv/2,5)) * ndotl;
+			C += Cl * (1-nondiff) * (28 * Kd / (23*S_PI)) *
+				(1-Ks) * (1-pow(1-ndotl/2,5)) * (1-pow(1-ndotv/2,5)) * ndotl;
 		}
     }
     return C;
@@ -699,13 +736,14 @@ color phong_blinn(
         extern color Cl;
 		
 		nonspec = 0;
+		// besides on/off switch, nonspec can be a scale factor
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
 			
 	        Ln = normalize(L);
     	    Hn = normalize(Ln + Vf);
 			
         	ndoth = Nf.Hn;
-        	C += Cl * pow( max( 0.0, ndoth), size) * (Nf.Ln);
+        	C += Cl * (1-nonspec) * pow( max( 0.0, ndoth), size) * (Nf.Ln);
 		}
     }
     return C;
@@ -751,7 +789,7 @@ LocIllumGlossy(
 			Ln = normalize(L);
 			Hn = normalize(Vf+Ln);
 
-			C += Cl * smoothstep( .72-w, .72+w,
+			C += Cl * (1-nonspec) * smoothstep( .72-w, .72+w,
 					pow( max( 0.0, Nf.Hn), 1/roughness ) );
 		}
 	}
@@ -797,7 +835,7 @@ Wardisotropy(
 
 			tandelta2 = SQR( sqrt( max(0, 1 - SQR(ndoth))) / ndoth );
 
-			C += Cl * ndotl * ( exp(-tandelta2/m2) /
+			C += Cl * (1-nonspec) * ndotl * ( exp(-tandelta2/m2) /
 							(4 * m2 * sqrt( ndotl * ndotv )) );
 		}
 	}
@@ -867,7 +905,7 @@ LocIllumWardAnisotropic(
 				rho = exp( -2 * ( SQR( X.Hn ) + SQR( Y.Hn )) /
 						(1 + Hn.Nf)) / sqrt( cos_theta_i * cos_theta_r );
 				
-				C += Cl * cos_theta_i * rho;
+				C += Cl * (1-nonspec) * cos_theta_i * rho;
 			}
 		}
 	}
@@ -909,7 +947,7 @@ color schlickspec(
         	rdotv = max( 0, Rn.Vf);
         	coeff = rdotv / (Nr - Nr * rdotv + rdotv);
 			
-        	C += Cl * coeff * (Nf.Ln);
+        	C += Cl * (1-nonspec) * coeff * (Nf.Ln);
 		}
     }
     return C;
@@ -927,7 +965,7 @@ float sgeoattenuation(
 						float costheta, roughness;
 		)
 {
-	float g1 = roughness - roughness * costheta + costheta; // FIXME?
+	float g1 = roughness - roughness * costheta + costheta;
 	return costheta / g1;
 }
 
@@ -951,7 +989,7 @@ float zenithdependence(
 	return roughness / SQR(zz) ;
 }
 
-// note: better check & plot it FIXME?
+// NOTE: better plot it
 color aschlick(
 				float roughness, isotropy, ior;
 				normal Nn;
@@ -992,7 +1030,7 @@ color aschlick(
 
 			D = Z * A * G / (4 * cospsi * costheta) * cospsi;
 
-			C += Cl * D;
+			C += Cl * (1-nonspec) * D;
 		}
 	}
 	float F = schlickfresnel( Nf, Vf, ior );
@@ -1060,37 +1098,37 @@ cooktorrance(
 			if (geomodel == 0) {
 				G = cook_torrance( costheta, cosalpha, cospsi, cospsi2 );
 			} else if (geomodel == 1) {
-				/* This would be the Schlick approximation of the Smith
-				 * shadowing & masking function */
+				// This would be the Schlick approximation of the Smith
+				// shadowing & masking function
 				G = smith( cospsi, costheta, roughness );
 			} else {
 				G = he_torrance( costheta, cospsi, roughness );
 			}
 
-			/* Using the full formula fresnel for unpolarized light, from 
-			 * the Odforce.net's Odwiki, by Mario Marengo and the Odforce
-			 * community. */
+			// Using the full formula fresnel for unpolarized light, from
+			// the Odforce.net's Odwiki, by Mario Marengo and the Odforce
+			// community.
 			F = fresnel_kr( Ln.Hn, cx_set( ior, k ) );
 
-			/* Aqsis produced some strange artifacs when getting the amount
-			 * of reflected light from the microfacets. Apparent solution
-			 * seems to clamp the value. */
+			// Aqsis produced some strange artifacs when getting the amount
+			// of reflected light from the microfacets. Apparent solution
+			// seems to clamp the value.
 #if RENDERER == aqsis
 			F = clamp( F, 0, 1 );
 #endif
 
-			/* FIXME: Re-read Heidrich & Seidel's paper, iirc, the anisotropic
-			 * specular term was meant to be coupled with an isotropic
-			 * specular term - confirm this - for the time being the
-			 * isotropic specular will be added via specularbrdf() shadeop */
+			// TODO: Re-read Heidrich & Seidel's paper, iirc, the anisotropic
+			// specular term was meant to be coupled with an isotropic
+			// specular term - confirm this - for the time being the
+			// isotropic specular will be added via specularbrdf() shadeop
 
 			// no specularbrdf() in Aqsis?
 #if RENDERER == aqsis
 			// Ccook += Cl * D * G * F / costheta ? URGENT */
-			Ccook += Cl * ((D*G*F / (costheta * cospsi)) *
+			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
 					cospsi);
 #else
-			Ccook += Cl * ((D*G*F / (costheta * cospsi)) *
+			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
 				cospsi + ( (distmodel == 3) ?
 					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0) ) );
 #endif
@@ -1174,7 +1212,7 @@ anisophongspec(
 			nh = pow( ndoth, nunv );
 			nhmax = ndoth * max( ndotl, ndotv);
 			
-			C += Cl * ndotl * (speccont * (nh / nhmax));
+			C += Cl * (1-nonspec) * ndotl * (speccont * (nh / nhmax));
 		}
     }
     return C * schlickfresnel( Nn, Vf, ior );
@@ -1257,7 +1295,7 @@ shw_brushed_metal(
         	aniso = max( cos_light*cos_eye + sin_light*sin_eye, 0.0 );
        		shad = costheta * max( Nf.Ln, 0.0 );
 			
-        	C += Cl * pow( aniso, 1.0/roughness ) * shad;
+        	C += Cl * (1-nonspec) * pow( aniso, 1.0/roughness ) * shad;
 		}
     }
     return C;
@@ -1354,7 +1392,7 @@ color LocIllumAshShir(
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			
 			rho_d = diffcont * (1 - pow( 1-ndotv/2, 5));
-			aov_diffuse += Cl * rho_d * maxndotl;
+			aov_diffuse += Cl * (1-nondiff) * rho_d * maxndotl;
         }
 
 		nonspec = 0;
@@ -1368,11 +1406,10 @@ color LocIllumAshShir(
 					(1 - SQR(ndoth));
 			rho_s = speccont * pow( ndoth, nunv2) / (ndoth * max( ndotv,
 						ndotl)) * fastFresnel( Hn, Vf, Ks );
+			
+			maxndotl = max( 0, ndotl);
+			aov_specular += Cl * (1-nonspec) * rho_s * maxndotl;
         }
-		
-		maxndotl = max( 0, ndotl);	
-		aov_specular += Cl * rho_s * maxndotl;
-		
     }
     return Cdiff * aov_diffuse + Cspec * aov_specular;
 }
@@ -1436,9 +1473,8 @@ color EnvIllumAshShir(
     for (i=0; i<samples; i+=1) {
         e1=random(); e2=random();
 
-    /* Split up the hemisphere into quarters and remap e1 to one quarter.
-	 * This helps to stratify the samples, hopefully decreasing variance...
-	 * */
+    // Split up the hemisphere into quarters and remap e1 to one quarter.
+	// This helps to stratify the samples, hopefully decreasing variance...
     // FIXME this can be done better...
         if (e1 >= 0 && e1 < 0.25)
             ph = calcPhi(nu, nv, 1 - 4*(0.25 - e1));
@@ -1455,9 +1491,8 @@ color EnvIllumAshShir(
 
         if (th <= S_PI_2) { // we don't want thetas below hemisphere
     
-            /* transform H (halfway vector) into space where frame is
-			 * <xdir, ydir, N>
-			 * */
+            // transform H (halfway vector) into space where frame is
+			// <xdir, ydir, N>
             ydir = Nf ^ xdir;
 			Hn = cosph * sin(th) * xdir + sinph * sin(th) * ydir
 						+ cos(th) * Nf;
@@ -1473,15 +1508,13 @@ color EnvIllumAshShir(
       
             C += rd * SampleEnvironment(P, Hn, envmap);
 
-			/* FIXME - instead of sampling over the hemisphere, get the
-			 * cos-weighted average value, which can be done with a
-			 * cos-weighted filtered call to environment. The problem is
-			 * that such a filter doesn't seem to exist :(
-			 * */
+			// FIXME - instead of sampling over the hemisphere, get the
+			// cos-weighted average value, which can be done with a
+			// cos-weighted filtered call to environment. The problem is
+			// that such a filter doesn't seem to exist :(
 
-			/* C += rd * color environment( envmap, xdir, ydir, -xdir, -ydir,
-			 * * "filter", "gaussian" );
-			 * */
+			// C += rd * color environment( envmap, xdir, ydir, -xdir, -ydir,
+			// * "filter", "gaussian" );
         }
     }
     if (samples > 0) C /= samples;
@@ -1562,7 +1595,7 @@ color velvet(
 								* pow( cosine, 1/roughness);
 			// Horizon scattering
 			sine = sqrt( 1.0 - SQR( ndotv ));
-			horizonscatter += Cl * sheen * Ln.Nf *
+			horizonscatter += Cl * (1-nonspec) * sheen * Ln.Nf *
 								pow( sine, edginess );
 		}
     }
@@ -1602,6 +1635,9 @@ color velvet(
  * back-scattering and positive values correspond to more forward scattering.
  * */
 
+// TODO: move phase function to helper headers, add the following phase
+// functions: Rayleigh-Gans, delta-Eddington, Reynolds, see:
+// http://www.nmr.mgh.harvard.edu/~adunn/papers/dissertation/node54.html
 float phase(vector v1, v2; float g) {
 	float costheta = -v1.v2;
 	return (1 - SQR(g)) / pow(1 + SQR(g) - 2 * g * costheta, 1.5);
@@ -1708,7 +1744,7 @@ color subsurfaceSkin(
 /* note: check "sandwiched/layered models" from Neumann's "Constructions on
  * BRDFs". */
 
-// Hyperbolic sine function
+// Hyperbolic sine and cosine function
 void sinhcosh( float t; output float sinh, cosh; )
 {
     float t2 = t;
@@ -1734,7 +1770,7 @@ void KMEstimateCoeffs( color Rinf; output color sigma_a, sigma_s; )
         sigma_s = color(0) ;
     }
     else {
-		/* someone mentioned lots of float/color type errors in prman 13,
+		/* someone mentioned lots of float/color type errors in prman,
 		 * - any reports on this would be apretiated - */
         a_over_s = (color(1) - Rinf) * (color(1) - Rinf)
 			/ (color(2) * Rinf);
@@ -1927,13 +1963,13 @@ LocIllumGranier(
 				setcomp(spec, i, specf);
 			}
 			// specular
-			Cspec += Cl * spec * maxndotl;
+			Cspec += Cl * (1-nonspec) * spec * maxndotl;
 		}
 
 		// diffuse term
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
-			Cdiff += Cl * diff * maxndotl;
+			Cdiff += Cl * (1-nondiff) * diff * maxndotl;
 		}
 	}
 
@@ -2011,9 +2047,9 @@ LocIllumGranier(
 // Number of wavelengths (wired in)
 #define N_WAVES 3
 // Number of lobes (wired in)
-#define Nlobes 3
+#define N_LOBES 3
 
-#define COEFFLEN (LOBESIZE*N_WAVES*Nlobes)
+#define COEFFLEN (LOBESIZE*N_WAVES*N_LOBES)
 
 // Default BRDF: flat blue paint
 // Use "Color  [ .3094 .39667 .70837 ]" for consistency with default
@@ -2025,12 +2061,14 @@ lafortunersl (
 				uniform float coeff[27];
 				uniform float colormatrix[9];
 				normal Nn;
-				vector V, dir;
+				vector In, dir;
 				DECLARE_AOV_OUTPUT_PARAMETERS
 				)
 {
 	
-	vector local_z, local_x, local_y, Ln;
+	vector local_z;
+	vector local_x, local_y; // unit vector in "u" and "v" directions
+	vector Ln;
 	float x, z, f; // subterms
 	float fr = 0, fg = 0, fb = 0; // RGB components of the non-Lambertian term
 	uniform float basepointer, j; // loop counters
@@ -2038,10 +2076,12 @@ lafortunersl (
 	// Get unit vector in "u" parameter direction
 	local_x = normalize(dir);
 	
-	local_z = faceforward( Nn, V );
+	// NOTE: In Atila Neumann's "Constructions on BRDFs" thesis, there's a
+	// scaling factor.
+	local_z = faceforward( Nn, In );
 	
 	// Get a local coordinate system.
-	local_y = local_z^local_x;
+	local_y = normalize(local_z^local_x);
   
 	/* The first term is the diffuse component. This should be the
 	 * diffuse component in the Lafortune model multiplied by pi. */
@@ -2060,7 +2100,7 @@ lafortunersl (
 
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
-			cdiff += Ln.local_z;
+			cdiff += Cl * (1-nondiff) * Ln.local_z;
 		}
 		
 		nonspec = 0;
@@ -2070,18 +2110,16 @@ lafortunersl (
 			 * x = x_in * x_view  +  y_in * y_view
 			 * z = z_in * z_view
 			 * */
-			
-			x = local_x.V * local_x.Ln + local_y.V * local_y.Ln;
-			z = - ( local_z.V * local_z.Ln );
+			x = local_x.In * local_x.Ln + local_y.In * local_y.Ln;
+			z = - ( local_z.In * local_z.Ln );
 
 			/* Coefficient structures:
-			 * for each lobe of Nlobes:
+			 * for each lobe of N_LOBES:
 			 * for each channel of N_WAVES:
 			 * cxy, cz, n
 			 * where cxy, cz, are the directional and scale components
 			 * and n is the exponent for the cosine
 			 * */
-			
 			for ( basepointer=0; basepointer < COEFFLEN ;
 					basepointer += LOBESIZE * N_WAVES )
 			{
@@ -2111,21 +2149,19 @@ lafortunersl (
 				}
 			}
 
-			cspec += Cl * color "rgb" (fr,fg,fb)
+			cspec += Cl * (1-nonspec) * color "rgb" (fr,fg,fb)
 						* (local_z.Ln);
 		}
 	}
 	
 	// Color correction from camera space
 	// use dot product with rows of matrix
-	
-	fr = colormatrix[0]*comp(cspec,0)
-		+ colormatrix[1]*comp(cspec,1) + colormatrix[2]*comp(cspec,2);
-	fg = colormatrix[3]*comp(cspec,0)
-		+ colormatrix[4]*comp(cspec,1) + colormatrix[5]*comp(cspec,2);
-	fb = colormatrix[6]*comp(cspec,0)
-		+ colormatrix[7]*comp(cspec,1) + colormatrix[8]*comp(cspec,2);
-	
+	fr = colormatrix[0] * comp(cspec,0) + 
+		 colormatrix[1] * comp(cspec,1) + colormatrix[2] * comp(cspec,2);
+	fg = colormatrix[3] * comp(cspec,0) +
+		 colormatrix[4] * comp(cspec,1) + colormatrix[5] * comp(cspec,2);
+	fb = colormatrix[6] * comp(cspec,0) +
+		 colormatrix[7] * comp(cspec,1) + colormatrix[8] * comp(cspec,2);
 	cspec = color "rgb" ( fr, fg, fb );
 
 	aov_surfacecolor += surfacecolor;
@@ -2217,17 +2253,15 @@ color tshair(
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			/* Scaled diffuse term. Note that in the paper they use
 			 * ambient occlusion to fake the hair shadowing. */
-			Cdd = clamp( mix( .25, 1.0, Nf.Ln), 0, 1);
+			Cdd += Cl * (1-nondiff) * clamp( mix( .25, 1.0, Nf.Ln), 0, 1);
 		}
 		
 		nonspec = 0;
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
-			// Primary specular
-    	    Css = Cspec *  strandspecular( t1, Vf, Ln, exponent);
-
-        	// Secondary specular
-        	Css += Cspec2 * specmask *
-				strandspecular( t2, Vf, Ln, exponent2);
+			// Primary specular + secondary specular
+			Css += Cl * (1-nonspec) * (Cspec * strandspecular(
+						t1, Vf, Ln, exponent) + Cspec2 * specmask *
+					strandspecular( t2, Vf, Ln, exponent2 ));
 		}
 	}
 
@@ -2285,7 +2319,7 @@ color kajiyakay(
 			
 			dottl = T.Ln;
 			sdottl = sqrt( max( 0, 1 - SQR(dottl) ));
-			Cdiff += Cl * sdottl;
+			Cdiff += Cl * (1-nondiff) * sdottl;
 		}
 		
 		// Specular term
@@ -2294,7 +2328,7 @@ color kajiyakay(
 			
 			dottl = T.Ln;
 			sdottl = sqrt( max( 0, 1 - SQR(dottl) ));
-			Cspec += Cl * pow( dottl * dottin + sdottl
+			Cspec += Cl * (1-nonspec) * pow( dottl * dottin + sdottl
 						* sqrt( max(0, 1 - SQR(dottin))), 1.0/rough );
 		}
 	}
@@ -2529,7 +2563,7 @@ woodreflectance(
 	
 	normalize(ssOutDir);
 
-	color axisTemp;
+	color axisTemp, Cdiff = color(0), Cspec = color(0);
 	highlight = fiberColor;
 
 	axis = comp( fiberAxis, 0 ) * local_x + comp( fiberAxis, 1 )
@@ -2575,26 +2609,26 @@ woodreflectance(
         // Add in diffuse term, attenuated by surface term.
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
-				aov_diffuse += Cl * Kd * ssFactor;
+			Cdiff += Cl * (1-nondiff) * ssFactor;
 		}
 		// Add in fiber highlight, also attenuated.
 		nonspec = 0;
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
 			
-			aov_specular += Cl * fiberFactor * highlight * ssFactor;
-		
 			// Second Fresnel call is for strength of surface highlight.
 			Hn = normalize( -In + Ln );
 			fresnel( In, Hn, 1.0/eta, Kr, Kt);
 			
-			// Blinn/Phong highlight with Fresnel attenuation.
-			aov_specular += Cl * Ks * Kr * pow( max( 0, Hn.local_z),
-					1/roughness);
+			Cspec += Cl * (1-nonspec) * (fiberFactor * highlight * ssFactor +
+					Kr * pow( max( 0, Hn.local_z), 1/roughness));
 		}
 	}
 	
 	aov_surfacecolor += diffuseColor;
 	aov_ambient += Ka * ambient();
+	aov_diffuse += Kd * Cdiff;
+	aov_specular += Ks * Cspec;
+	
 
 	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
@@ -2647,8 +2681,8 @@ locillumglassy(
 		
 			vector Ln = normalize(L);
 			vector Hn = normalize(Ln + Vf);
-			C += Cl * (smoothstep(.72-w, .72+w, pow( max( 0, Nf.Hn),
-							1/roughness)));
+			C += Cl * (1-nonspec) * (smoothstep(.72-w, .72+w,
+						pow( max( 0, Nf.Hn), 1/roughness)));
 		}
 	}
 	return C;
@@ -2910,7 +2944,7 @@ rtglass(
 #else
 	// set illumination terms if active
 	aov_ambient += (ka == 0) ? color(0) : ka * ambient();
-	aov_diffuse += (kd == 0) ? color(0) : kd*diffuse( faceforward(Nn, In));
+	aov_diffuse += (kd == 0) ? color(0) : kd * diffuse( faceforward(Nn, In));
 	aov_specular += (ks == 0) ? color(0) : ks * ( (spectype == "glossy") ?
 			locillumglassy( faceforward(Nn, In),-In,roughness,sharpness) :
 			specular( faceforward(Nn, In), -In, roughness) );
@@ -2959,7 +2993,7 @@ banksaniso(
 			
 			pd = sqrt( max(0, 1 - SQR(cospsi) ));
 			ldotn = Ln.Nf;
-			aov_diffuse += Cl * ldotn * Kd * pd;
+			aov_diffuse += Cl * (1-nondiff) * ldotn * Kd * pd;
 		}
 
 		nonspec = 0;
@@ -2967,7 +3001,7 @@ banksaniso(
 			
 			ps = sqrt( max(0, 1 - SQR(costheta) ));
 			ldotn = Ln.Nf;
-			aov_specular += Cl * ldotn * Ks *
+			aov_specular += Cl * (1-nonspec) * ldotn * Ks *
 							pow( pd*ps - cospsi*costheta, 1/roughness);
 		}
 	}
@@ -3059,7 +3093,7 @@ color strauss(
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			
-			Cdiff += Cl * d * rd * cosalpha;
+			Cdiff += Cl * (1-nondiff) * d * rd * cosalpha;
 		}
 		
 		// Specular contribution
@@ -3090,7 +3124,7 @@ color strauss(
 			// Specular color, approaching white at grazing angles
 			Csw = CWHITE + metalness * (1-F) * (Csurface - CWHITE);
 
-			Cspec += Cl * rs * Csw * cosalpha;
+			Cspec += Cl * (1-nonspec) * rs * Csw * cosalpha;
 		}
 	}
 
@@ -3132,9 +3166,7 @@ fnc_diffuselgt(
 
 	// diffuse calculation
 	Atten = max( 0, LN.NN );
-
 	Cout *= Atten;
-	
 	return (Cout);
 }
 
@@ -3215,7 +3247,8 @@ SIG2k_srf_fur(
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			
-			Cdiff += clump_darkening * fnc_diffuselgt( Cl, L, norm_hair);
+			Cdiff += (1-nondiff) * clump_darkening * fnc_diffuselgt(
+					Cl, L, norm_hair);
 		}
 
 		// Get light source parameters
@@ -3229,7 +3262,7 @@ SIG2k_srf_fur(
 			sinalpha = sqrt( max( 0, 1 - SQR(T_Dot_nL)));
 			Kajiya = T_Dot_nL * T_Dot_e + sinalpha * sinbeta;
 
-			Cspec += Cl * clump_darkening * (spec1 * pow(Kajiya,
+			Cspec += Cl * (1-nonspec) * clump_darkening * (spec1 * pow(Kajiya,
 						1/roughness1) + spec2 * pow(Kajiya, 1/roughness2))
 					* SpecularColor;
 		}
@@ -3334,6 +3367,7 @@ thinfilm(
 
 		cout[i] = ishift[i] / norm[i] * rygcbv[i];
 	}
+	// back to rgb
 	out_oi = spec6ToRgb( kr );
 	out_ci = spec6ToRgb( cout );
 }
