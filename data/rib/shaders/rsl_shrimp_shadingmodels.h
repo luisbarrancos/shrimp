@@ -20,7 +20,7 @@
 
 color
 wrappeddiffuse(
-				float wangle;
+				float wangle, atten;
 				normal Nn;
 				vector In;
 		)
@@ -31,6 +31,7 @@ wrappeddiffuse(
 	extern point P;
 	color C = color(0);
 	uniform float nondiff;
+	float gamma = 5;
 
 	illuminance( P, Nf, S_PI )
 	{
@@ -42,7 +43,8 @@ wrappeddiffuse(
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
 			
 			Ln = normalize(L);
-			C += Cl * (1-nondiff) * 1 - min(1, acos(Ln.Nn)/radians(90+wangle));
+			C += Cl * (1-nondiff) * pow( max( (1-acos(Ln.Nf) /
+							(S_PI * wangle)), 0), atten);
 		}
 	}
 	return C;
