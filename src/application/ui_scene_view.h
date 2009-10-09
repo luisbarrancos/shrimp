@@ -110,12 +110,16 @@ private:
 
 	// draw console
 	void draw_console();
-
+	
 	// draw grid
 	void draw_grid();
 
 	// draws active shader
 	void draw_shader();
+
+	//draw a rectangle of selection
+	void box_selection();
+
 	const double m_min_block_height;
 
 	std::string select_object();
@@ -173,6 +177,8 @@ private:
 	int m_current_mouse_y;
 	int m_start_drag_x;
 	int m_start_drag_y;
+	bool m_box_selection;
+
 	// store connection start position
 	int m_connection_start_x;
 	int m_connection_start_y;
