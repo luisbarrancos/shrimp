@@ -52,6 +52,30 @@
 #include <cmath>
 #include <limits>
 
+bool point_between (double a, double b, double c)
+							{
+								double lb = a <= b;
+								double ub = b <= c;
+					            double ans = lb && ub;
+//					            printf("a %f\n",a);
+//					            printf("b %f\n",b);
+//					            printf("c %f\n",c);
+//					        	printf("point_between %f\n", ans);
+								return ans;
+
+							}
+
+bool point_inside(double x,double y,double XX, double YY, double WW,double HH)
+							{
+								bool in_lr = point_between (XX, x, WW);
+							    bool in_tb = point_between (YY, y, HH);
+							    bool inside = in_lr && in_tb;
+//							    printf("point_inside %d\n",inside);
+							    return inside;
+							  }
+
+
+
 
 scene_view::scene_view (int x, int y, int w, int h, const char* l) :
 	GlWindow (x,y,w,h,l),
@@ -236,6 +260,94 @@ void scene_view::move_active_group (const double XOffset, const double YOffset) 
 	}
 }
 
+void scene_view::box_selection()
+{
+
+	//2D opengl drawing
+	glShadeModel (GL_FLAT);
+	glDisable (GL_LINE_SMOOTH);
+	glDisable (GL_BLEND);
+	glLineWidth (1.0);
+
+	glColor3f (0.8, 0.0, 0.0);
+	glLineStipple(3, 0xAAAA);
+	glEnable(GL_LINE_STIPPLE);
+	glPushMatrix();
+	glMatrixMode (GL_PROJECTION);
+	glLoadIdentity();
+	gluOrtho2D (0, static_cast<float> (w()), 0, static_cast<float> (h()));
+
+
+	//Mouse marquee position
+	double from_x = static_cast<float> (m_start_drag_x);
+	double from_y = h() - static_cast<float> (m_start_drag_y);
+	double to_x = static_cast<float> (m_current_mouse_x);
+	double to_y = h() - static_cast<float> (m_current_mouse_y);
+
+
+	//Rectangle selection stipple
+	glBegin(GL_LINE_LOOP);
+		glVertex3d(from_x, from_y,0);
+		glVertex3d(from_x,to_y,0);
+		glVertex3d(to_x,to_y,0);
+		glVertex3d(to_x,from_y,0);
+
+
+	glEnd();
+
+	glPopMatrix();
+	glDisable(GL_LINE_STIPPLE);
+
+
+	//Detection of block selected
+	std::map<unsigned long, const shader_block*> block_indices;
+			unsigned long index = 1;
+	for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin(); block_i != m_scene->m_blocks.end(); ++block_i) {
+
+				const shader_block* block = block_i->second;
+				shader_block* blockSel = block_i->second;
+
+
+				int group = m_scene->group (block);
+				if (!group) {
+					//Height of the block
+					const double width = blockSel->m_width;
+					const unsigned long max_properties = std::max (blockSel->input_count(), (unsigned long)blockSel->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
+
+					// set minimal block height
+					const double height1 = m_scene->is_rolled (blockSel) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
+					const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
+
+
+					//Project rectangle selection in "Block" space
+				    GLdouble Fx,Fy,Fz;
+				    GLdouble Tx,Ty,Tz;
+
+				    GLint viewport[4];
+				    GLdouble mvmatrix[16], projmatrix[16];
+				    glGetDoublev(GL_MODELVIEW_MATRIX,mvmatrix );
+				    glGetDoublev(GL_PROJECTION_MATRIX,projmatrix );
+				    glGetIntegerv(GL_VIEWPORT,viewport );
+				    gluUnProject(from_x,from_y,0, mvmatrix, projmatrix,viewport,&Fx,&Fy,&Fz );
+				    gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
+
+
+				    //Check if rectangle surround center of the block
+				    if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
+						{
+						//Make Block selected
+						m_scene->set_block_selection (blockSel, true);
+						}
+					glLoadName (index);
+
+					block_indices.insert (std::make_pair (index, block));
+
+					++index;
+				}
+			}
+
+
+}
 void scene_view::draw_grid() {
 
 	glShadeModel (GL_FLAT);
@@ -502,11 +614,10 @@ void scene_view::draw_shader() {
 			double from_x = static_cast<float> (m_connection_start_x);
 			double from_y = h() - static_cast<float> (m_connection_start_y);
 
-			//ratio 2D
-			float ratio = (w()/h())*100;
+
 			GLfloat ctrlpoints[6][3] = {
-				{ from_x,from_y,0.0}, {from_x+0.25*ratio,from_y,0.0},{from_x+1.0*ratio,from_y,0.0},
-				{ to_x-1.1*ratio,to_y,0.0}, {to_x-0.35*ratio,to_y,0.0}, {to_x,to_y,0.0}
+				{ from_x,from_y,0.0}, {from_x+25,from_y,0.0},{from_x+100,from_y,0.0},
+				{ to_x-110,to_y,0.0}, {to_x-35,to_y,0.0}, {to_x,to_y,0.0}
 			};
 			glMap1f(GL_MAP1_VERTEX_3, 0.0, 1.0, 3, 6, &ctrlpoints[0][0]);
 			glEnable(GL_MAP1_VERTEX_3);
@@ -515,6 +626,7 @@ void scene_view::draw_shader() {
 			for (int i = 0; i <= 30; i ++) {
 				glEvalCoord1f((GLfloat) i/30.0);
 			}
+
 			glEnd();
 
 			glPopMatrix();
@@ -589,6 +701,11 @@ void scene_view::draw() {
 		}
 
 		draw_shader();
+		if (m_box_selection)
+		{
+			box_selection();
+		}
+
 	glPopMatrix();
 
 	// console (if any)
@@ -1580,7 +1697,6 @@ void scene_view::set_overview_state (const bool OverviewState) {
 	m_overview = OverviewState;
 	redraw();
 }
-
 
 void scene_view::snap_position (double& X, double& Y) {
 

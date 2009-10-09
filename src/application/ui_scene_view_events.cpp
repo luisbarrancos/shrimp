@@ -33,12 +33,13 @@
 
 
 
+
 int scene_view::handle (int Event) {
 
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
 	const bool alt_key_down =  fltk::event_state (fltk::ALT);
-	bool dragging= false;
+	bool dragging = fltk::event_state (fltk::DRAG);
 
 	switch (Event) {
 
@@ -74,7 +75,10 @@ int scene_view::handle (int Event) {
 
 										}
 			}
-			else {set_current_block(NULL);}
+			else {
+				set_current_block(NULL);
+				m_box_selection=false;
+			}
 			redraw();
 		}
 		return 1;
@@ -110,7 +114,7 @@ int scene_view::handle (int Event) {
 							}
 						}
 					}
-					else if (m_active_property.first.size()) {
+					else if (m_active_property.first.size() && m_connection_start.first == "") {
 
 						// save connection start
 						m_connection_start_x = m_mouse_click_x;
@@ -118,6 +122,7 @@ int scene_view::handle (int Event) {
 					}
 					else if (m_active_block.size()) {
 							if (m_scene) {
+
 //										shader_block* block = m_scene->get_block (m_active_block);
 //										m_scene->clear_selection();
 //										// toggle block selection
@@ -126,6 +131,9 @@ int scene_view::handle (int Event) {
 						}
 					else {
 						m_scene->clear_selection();
+						dragging = false;
+						m_start_drag_x = fltk::event_x();
+						m_start_drag_y = fltk::event_y();
 					}
 
 				}
@@ -269,14 +277,7 @@ int scene_view::handle (int Event) {
 		// mouse drag
 		case fltk::DRAG:
 		{
-			if (!dragging) {
-			      // record the place things started & clear any selection.
-					m_start_drag_x = fltk::event_x();
-					m_start_drag_y = fltk::event_y();
-			        dragging = true;
-//			    	m_scene->clear_selection();
 
-			    }
 
 			m_current_mouse_x = fltk::event_x();
 			m_current_mouse_y = fltk::event_y();
@@ -314,7 +315,10 @@ int scene_view::handle (int Event) {
 					move_scene (move_x, move_y);
 				}
 				else {
-				//Drawing of rectangle selection
+
+					//Drawing of rectangle selection
+					m_box_selection=true;
+
 				}
 
 				m_last_mouse_x = m_current_mouse_x;
@@ -390,6 +394,7 @@ int scene_view::handle (int Event) {
 				}
 			}
 
+			m_box_selection=false;
 			return 1;
 		}
 
