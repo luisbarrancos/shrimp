@@ -664,5 +664,63 @@ calculateNeulanderVanDePanneOcclusion(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
+// Get brushed metal vector, from tooledsteel.sl, written 9/99 by Ivan DeWolf //
+// from The RenderMan Repository: http://www.renderman.org /////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+/* slightly tweaked to fit Shrimp's structure */
+vector
+getbrushedvec(	float mult, Nzscale, ss, tt;
+				vector xdir, ydir; )
+{
+	extern point P;
+	uniform vector udir = vector(1,0,0), vdir = vector(0,1,0);
+	uniform float a, b, c;
+	float dist, valu = 0, valv = 0;
+	float shortest = 10000;
+
+	point Po = point(ss * mult, tt * mult, 0);
+	point Pou = Po + (udir * 0.01);
+	point Pov = Po + (vdir * 0.01);
+
+	// true cell center, surrounding cell centers, noised cell center
+	point trucell, surrcell, nzcell;
+	vector offset, nzoff;
+	float chu, chv;
+
+	float ncells = floor(mult);
+	float cellsize = 1/ncells;
+
+#if RENDERER == aqsis // can access components via xyz/comp only
+	setxcomp( trucell, floor(xcomp(Po))+ 0.5);
+	setycomp( trucell, floor(ycomp(Po))+ 0.5);
+	setzcomp( trucell, 0);
+#else
+	trucell = point( floor(Po[0])+.5, floor(Po[1])+.5, 0);
+#endif
+	c = 0;
+
+	// what is the shortest distance to a noised cell center?
+	for (a = -1; a <= 1; a += 1) {
+		for (b = -1; b <= 1; b += 1) {
+			offset = vector(a,b,c);
+			surrcell = trucell + offset;
+			nzoff = Nzscale * (vector cellnoise(surrcell) - .5);
+			setzcomp( nzoff, 0);
+			nzcell = surrcell + nzoff;
+			dist = distance( Po, nzcell);
+			if (dist < shortest) {
+				shortest = dist;
+				valu = distance( Pou, nzcell );
+				valv = distance( Pov, nzcell );
+			}
+		}
+	}
+	chu = valu - shortest;
+	chv = valv - shortest;
+	return normalize( (udir * chu) + (vdir * chv) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
 #endif /* SHRIMP_HELPERS_H */
 
