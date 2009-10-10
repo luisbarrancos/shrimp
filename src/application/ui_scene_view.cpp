@@ -187,18 +187,46 @@ void scene_view::center_scene (const double X, const double Y) {
 
 void scene_view::move_active_block (const double XOffset, const double YOffset) {
 
-	shader_block* block = m_scene->get_block (m_active_block);
 
-	if (!block) {
+	int total = m_scene->selection_size();
 
-		log() << error << "active block '" << m_active_block << "' not found." << std::endl;
-		return;
+	//If multi selecion
+	if (total>1){
+			for (scene::selection_t::const_iterator block_i = m_scene->m_selection.begin(); block_i != m_scene->m_selection.end(); ++block_i) {
+
+						std::string current_selection = *block_i;
+
+						shader_block* block = m_scene->get_block(current_selection);
+
+						if (!block) {
+
+								log() << error << "active block '" << current_selection << "' not found." << std::endl;
+								return;
+							}
+
+						int group = m_scene->group (block);
+						if (!group) {
+
+							block->m_position_x += XOffset;
+							block->m_position_y += YOffset;
+
+						}
+
+			}
+
 	}
+	//If single selection no parsing grab m_active_block
+	shader_block* block = m_scene->get_block (m_active_block);
+	if (!block) {
+					log() << error << "active block '" << m_active_block << "' not found." << std::endl;
+					return;
+				}
 
-	block->m_position_x += XOffset;
-	block->m_position_y += YOffset;
+	else if (block && (total<2)){
+			block->m_position_x += XOffset;
+			block->m_position_y += YOffset;
+		   }
 }
-
 
 void scene_view::move_all_blocks (const double XOffset, const double YOffset) {
 
@@ -302,6 +330,7 @@ void scene_view::box_selection()
 	//Detection of block selected
 	std::map<unsigned long, const shader_block*> block_indices;
 			unsigned long index = 1;
+
 	for (scene::shader_blocks_t::const_iterator block_i = m_scene->m_blocks.begin(); block_i != m_scene->m_blocks.end(); ++block_i) {
 
 				const shader_block* block = block_i->second;
@@ -332,15 +361,53 @@ void scene_view::box_selection()
 				    gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
 
 
+				    //Mouse selection direction
+				    //Fx<Tx : Ty<Fy
+				    //Fx>Tx : Ty<Fy
+				    //Fx>Tx : Ty>Fy
+				    //Fx<Tx : Ty>Fy
+
+ 				    if (Fx<Tx && Ty<Fy){
 				    //Check if rectangle surround center of the block
-				    if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
-						{
-						//Make Block selected
-						m_scene->set_block_selection (blockSel, true);
+ 				    	if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
+							{
+ 				    		//Make Block selected
+ 				    		m_scene->set_block_selection (blockSel, true);
+							}
+ 				    	if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
+ 				    								{
+ 				    	 				    		//Make Block selected
+ 				    	 				    		m_scene->set_block_selection (blockSel, true);
+ 				    								}
 						}
+ 				    else if (Fx>Tx && Ty<Fy){
+ 				    	//Check if rectangle surround center of the block
+						if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Tx,Ty,Fx,Fy))
+							{
+							//Make Block selected
+							m_scene->set_block_selection (blockSel, true);
+							}
+ 				    	}
+ 				   else if (Fx>Tx && Ty>Fy){
+							//Check if rectangle surround center of the block
+						if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Tx,Fy,Fx,Ty))
+							{
+							//Make Block selected
+							m_scene->set_block_selection (blockSel, true);
+							}
+						}
+ 				  else if (Fx<Tx && Ty>Fy){
+							//Check if rectangle surround center of the block
+						if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Fy,Tx,Ty))
+							{
+							//Make Block selected
+							m_scene->set_block_selection (blockSel, true);
+							}
+						}
+
 					glLoadName (index);
 
-					block_indices.insert (std::make_pair (index, block));
+					block_indices.insert (std::make_pair (index, blockSel));
 
 					++index;
 				}

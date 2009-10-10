@@ -39,7 +39,8 @@ int scene_view::handle (int Event) {
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
 	const bool alt_key_down =  fltk::event_state (fltk::ALT);
-	bool dragging = fltk::event_state (fltk::DRAG);
+	const bool del_key_up =  fltk::event_key_state (fltk::DeleteKey);
+
 
 	switch (Event) {
 
@@ -131,7 +132,7 @@ int scene_view::handle (int Event) {
 						}
 					else {
 						m_scene->clear_selection();
-						dragging = false;
+
 						m_start_drag_x = fltk::event_x();
 						m_start_drag_y = fltk::event_y();
 					}
@@ -395,6 +396,24 @@ int scene_view::handle (int Event) {
 			}
 
 			m_box_selection=false;
+			return 1;
+		}
+
+		//Key press
+		case fltk::KEYUP:
+		{
+			printf("DEL \n");
+			if (del_key_up)
+			{
+				if (m_scene) {
+
+										shader_block* block = m_scene->get_block (m_active_block);
+
+										if (block) {
+											m_scene->delete_block(m_active_block);
+										}
+				}
+			}
 			return 1;
 		}
 
