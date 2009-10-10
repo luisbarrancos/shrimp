@@ -384,6 +384,9 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 
 			shader_code += surface_code;
 			shader_code += "\n";
+			// call getshadows macro to store __inShadowC into aov_shadows
+			shader_code += "getshadows(P);\n";
+			shader_code += "\n";
 		}
 		break;
 
