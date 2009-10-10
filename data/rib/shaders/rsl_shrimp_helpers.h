@@ -670,8 +670,10 @@ calculateNeulanderVanDePanneOcclusion(
 
 /* slightly tweaked to fit Shrimp's structure */
 vector
-getbrushedvec(	float mult, Nzscale, ss, tt;
-				vector xdir, ydir; )
+getbrushedvec(
+				float mult, Nzscale, twist, ss, tt;
+				normal Nn;
+				)
 {
 	extern point P;
 	uniform vector udir = vector(1,0,0), vdir = vector(0,1,0);
@@ -718,7 +720,10 @@ getbrushedvec(	float mult, Nzscale, ss, tt;
 	}
 	chu = valu - shortest;
 	chv = valv - shortest;
-	return normalize( (udir * chu) + (vdir * chv) );
+	
+	vector out = normalize( (udir * chu) + (vdir * chv) );
+	out = rotate( out, twist, 0, point(Nn) );
+	return out;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
