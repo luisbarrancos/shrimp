@@ -54,7 +54,7 @@
 								"fill", $(fill)
     #endif /* RENDERER */
 	
-	aov_reflection += $(Kr) * $(tint) * $(val:type) environment(
+	aov_reflection += $(Kr) * $(tint) * $(value:type) environment(
 						$(texmap)[$(channel)], $(direction),
 						SHADEOP_ARGUMENTS );
 	$(value) = aov_reflection;

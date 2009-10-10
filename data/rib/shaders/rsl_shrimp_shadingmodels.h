@@ -62,6 +62,7 @@ diffusefalloff(
 				float falloff; // [0,1]
 				normal Nn;
 				vector In;
+				output varying color inshadow;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -77,8 +78,8 @@ diffusefalloff(
 		extern color Cl;
 
 		nondiff = 0;
-		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
-
+		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {	
+	
 			Ln = normalize(L);
 			C += Cl * (1-nondiff) * gain( Nf.Ln, falloff);
 		}

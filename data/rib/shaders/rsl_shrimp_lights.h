@@ -30,14 +30,17 @@
 
 color
 sig2kshadowspot(
-				 float intensity; color lightcolor;
+				 float intensity;
+				 color lightcolor;
 				 point from, to;
 				 uniform float coneangle, conedeltaangle, beamdistribution;
 				 uniform float shadowsamples, shadowbias, shadowwidth;
 				 uniform string shadowname, shadowfilter;
 				 float shadowblur, atten;
+				 output varying color shad;
 		)
 {
+	shad = color(0);
 	float attenuation, cosangle;
 	vector A = (to - from) / length(to - from);
 	uniform float cosoutside = cos( coneangle ),
@@ -63,20 +66,11 @@ sig2kshadowspot(
 		attenuation *= smoothstep( cosoutside, cosinside, cosangle);
 		
 		if (shadowname != "") {
-			if ( shadowbias != -1) {
-				/* Have light override global shadow-bias settings */
-				attenuation *= 1 - shadow( shadowname, Ps, "samples",
-						shadowsamples, "blur", shadowblur,
-						"width", shadowwidth, "filter", shadowfilter,
-						"bias", shadowbias );
-			} else {
-				/* Use global shadow-bias settings */
-				attenuation *= 1 - shadow( shadowname, Ps, "samples",
-						shadowsamples, "blur", shadowblur,
-						"width", shadowwidth, "filter", shadowfilter );
-			}
+			shad = color shadow( shadowname, Ps, "samples", shadowsamples,
+						"blur", shadowblur, "width", shadowwidth,
+						"filter", shadowfilter, "bias", shadowbias);
 		}
-		Cl = attenuation * lightcolor;
+		Cl = attenuation * (1-shad) * lightcolor;
 		C = Cl;
 	}
 	return C;
@@ -97,15 +91,20 @@ sig2kshadowspot(
  * slideprojector(): Cast a texture map into a scene as a light source
  */
 
+// Tweaked to fit Shrimp's structure, added decay+intensity, shadows output
+
 color
 slideprojector(
-				uniform float fieldofview;
+				float intensity, shadowblur;
+				uniform float decay, fieldofview;
+				color lightcolor;
 				point from, to, up;
 				uniform string slidename, shadowname, shadowfilter;
-				float shadowblur;
 				uniform float shadowsamples, shadowwidth, shadowbias;
+				output varying color shad;
 		)
 {
+	shad = color(0);
 	varying vector reIT, /* normalized direction vector */
 				   reIU, /* "vertical" perspective of surface point */
 				   reIV; /* "horizontal perspective of surface point */
@@ -126,26 +125,48 @@ slideprojector(
 	reIU = reIV ^ reIT;
 
 	color C = color(0);
+	float atten = 0, dist = 0;
 	
 	illuminate( from, vector( reIT), atan( S_SQRT2 / spread)) /* sqrt(2) */
 	{
 		extern color Cl;
 		extern vector L;
 		extern point Ps;
+
 		L = Ps - from; /* direction of light source from surface point */
 		Pt = L.reIT;   /* direction of Ps along reIT, reIU, reIV */
 		Pu = L.reIU;
 		Pv = L.reIV;
+		dist = length(L);
+		
 		sloc = spread * Pu / Pt; /* perspective divide */
 		tloc = spread * Pv / Pt;
+		
 		sloc = sloc * .5 + .5; /* correction from [-1,1] to [0,1] */
 		tloc = tloc * .5 + .5;
-		Cl = color texture( slidename, sloc, tloc);
+		
+		if ( slidename != "") {
+			Cl = color texture( slidename, sloc, tloc);
+		} else {
+			Cl = lightcolor;
+		}
+
+		if (decay == 0) { /* no decay */
+			atten = intensity;
+		} else if (decay == 1) { /* linear decay */
+			atten = intensity / dist;
+		} else if (decay == 2) { /* squared decay */
+			atten = intensity / SQR(dist);
+		} else { /* cubic, etc... */
+			atten = intensity / pow( dist, decay);
+		}
+		
 		if (shadowname != "") {
-			Cl *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
+			shad = color shadow( shadowname, Ps, "samples", shadowsamples,
 							"blur", shadowblur, "width", shadowwidth,
 							"filter", shadowfilter, "bias", shadowbias );
 		}
+		Cl *= atten * (1-shad);
 		C = Cl;
 	}
 	return C;
@@ -160,61 +181,82 @@ sdistantlight(
 				point from, to;
 				uniform string shadowname, shadowfilter;
 				uniform float shadowsamples, shadowwidth;
-				uniform float shadowblur, shadowbias;
-				float intensity;
+				uniform float shadowbias, decay;
+				float intensity, shadowblur;
 				color lightcolor;
+				output varying color shad;
 		)
 {
-	extern point Ps;
-
 	color C = color(0);
+	float atten = 0;
+	shad = color(0);
 	
 	solar( to - from, 0) {
+		extern vector L;
+		extern point Ps;
 		extern color Cl;
-		Cl = intensity * lightcolor;
-		if (shadowname != "") {
-			Cl *= 1 - color shadow( shadowname, Ps, "samples", shadowsamples,
-							"blur", shadowblur, "width", shadowwidth,
-							"filter", shadowfilter,	"bias", shadowbias );
+
+		float dist = length(L);
+		if (decay == 0) { /* no decay */
+			atten = intensity;
+		} else if (decay == 1) { /* linear decay */
+			atten = intensity / dist;
+		} else if (decay == 2) { /* squared decay */
+			atten = intensity / SQR(dist);
+		} else {
+			atten = intensity / pow( dist, decay );
 		}
+		
+		if (shadowname != "") {
+			shad = color shadow( shadowname, Ps, "samples", shadowsamples,
+							"blur", shadowblur, "width", shadowwidth,
+							"filter", shadowfilter, "bias", shadowbias );
+		}
+		Cl = atten * (1-shad) * lightcolor;
 		C = Cl;
 	}
 	return C;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Point light shader, with shadows ////////////////////////////////////////////
+// Point light shader, with attenuation and shadows ////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 color
 spointlight(
 				point from;
-				float intensity, decay, blur;
-				uniform float width, samples, bias;
+				float intensity, blur;
+				uniform float width, samples, bias, decay;
 				uniform string shadowmap, filter;
 				color lightcolor;
+				output varying color shad;
 		)
 {
-
+	float atten;
 	color C = color(0);
+	shad = color(0);
 
 	illuminate( from ) {
 		extern vector L;
 		extern point Ps;
 		extern color Cl;
 		
-		float l2 = L.L;
-		if (decay == 1.0) {
-			Cl = intensity * ( lightcolor / l2 );
+		float dist = length(L);
+		if (decay == 0) { /* no decay */
+			atten = intensity;
+		} else if (decay == 1.0) { /* linear */
+			atten = intensity / dist;
+		} else if (decay == 2.0) { /* squared */
+			atten = intensity / SQR(dist);
 		} else {
-			Cl = intensity * ( lightcolor / pow( l2, .5 * decay));
+			atten = intensity / pow( dist, decay);
 		}
 
 		if (shadowmap != "") {
-			Cl *= 1 - color shadow( shadowmap, Ps, "samples", samples, "blur",
-									blur, "width", width, "bias", bias,
-									"filter", filter );
+			shad = color shadow( shadowmap, Ps, "samples", samples,
+									"blur", blur, "width", width,
+									"bias", bias, "filter", filter);
 		}
+		Cl = atten * (1-shad) * lightcolor;
 		C = Cl;
 	}
 	return C;

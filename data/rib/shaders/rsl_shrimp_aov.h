@@ -69,6 +69,12 @@
 	output varying color aov_caustics			= color(0);	\
 	output varying color aov_opacity			= color(0);
 
+#define getshadows(X) \
+	color cshad = color(0); \
+	illuminance(X) { \
+		if (1 == lightsource("__inShadowC", cshad)) { \
+			aov_shadows += (1 - cshad); } }
+
 ////////////////////////////////////////////////////////////////////////////////
 #endif /* SHRIMP_AOV_H */
 

@@ -7,8 +7,12 @@
 	<output name="Ci" description="The amount of diffuse light" type="color"/>
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
+		/* temp storage for shadow color */
+		color $(blockname)_cshad = color(0);
 		aov_surfacecolor += $(Cdiff);
-		aov_diffuse += $(Kd) * diffusefalloff( $(falloff), $(N), $(I) );
+		aov_diffuse += $(Kd) * diffusefalloff(	$(falloff), $(N), $(I),
+												$(blockname)_cshad );
+		aov_shadows += $(blockname)_cshad;
 		$(Ci) = aov_surfacecolor * aov_diffuse;
 	</rsl_code>
 <usage>Lambertian diffuse fall-off model, with control over the falloff between the lit and unlit regions on the surface via the &quot;falloff&quot; variable - this value should be in the [0,1] range. The diffuse color value is passed to &quot;aov_surfacecolor&quot;, and the diffuse value to the &quot;aov_diffuse&quot; AOV presets.</usage>

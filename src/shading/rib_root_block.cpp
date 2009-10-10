@@ -324,6 +324,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 				+ "(\n"
 				+ "output uniform float __nondiffuse = 0;\n"
 				+ "output uniform float __nonspecular = 0;\n"
+				+ "output varying color __inShadowC = color(0);\n"
 				+ "DEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
