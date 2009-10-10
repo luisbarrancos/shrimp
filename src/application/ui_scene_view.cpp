@@ -374,12 +374,8 @@ void scene_view::box_selection()
  				    		//Make Block selected
  				    		m_scene->set_block_selection (blockSel, true);
 							}
- 				    	if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
- 				    								{
- 				    	 				    		//Make Block selected
- 				    	 				    		m_scene->set_block_selection (blockSel, true);
- 				    								}
-						}
+ 				    	else m_scene->set_block_selection (blockSel, false);
+ 				    }
  				    else if (Fx>Tx && Ty<Fy){
  				    	//Check if rectangle surround center of the block
 						if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Tx,Ty,Fx,Fy))
@@ -387,6 +383,7 @@ void scene_view::box_selection()
 							//Make Block selected
 							m_scene->set_block_selection (blockSel, true);
 							}
+						else m_scene->set_block_selection (blockSel, false);
  				    	}
  				   else if (Fx>Tx && Ty>Fy){
 							//Check if rectangle surround center of the block
@@ -395,6 +392,7 @@ void scene_view::box_selection()
 							//Make Block selected
 							m_scene->set_block_selection (blockSel, true);
 							}
+						else m_scene->set_block_selection (blockSel, false);
 						}
  				  else if (Fx<Tx && Ty>Fy){
 							//Check if rectangle surround center of the block
@@ -403,7 +401,9 @@ void scene_view::box_selection()
 							//Make Block selected
 							m_scene->set_block_selection (blockSel, true);
 							}
+						else m_scene->set_block_selection (blockSel, false);
 						}
+
 
 					glLoadName (index);
 
