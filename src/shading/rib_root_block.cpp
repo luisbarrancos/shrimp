@@ -303,7 +303,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	for (std::set<std::string>::const_iterator i = includes.begin(); i != includes.end(); ++i)
 		shader_code += "#include \"" + *i + "\"\n";
 
-	shader_code += "\n\n";
+	shader_code += "\n//main\n";
 
 	// shader type
 	switch (ShaderType) {
@@ -311,26 +311,29 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		case SURFACE:
 			// Preset AOVs, shader arguments, so we initialize them
 			shader_code += "surface " + ShaderName
-				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\n\tDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case DISPLACEMENT:
 			shader_code += "displacement " + ShaderName
-				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\n\tDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case LIGHT:
+		/* NOTE: we could use light categories for nondiffuse and
+		 * nonspecular instead */
 			shader_code += "light " + ShaderName
 				+ "(\n"
-				+ "output uniform float __nondiffuse = 0;\n"
-				+ "output uniform float __nonspecular = 0;\n"
-				+ "output varying color __inShadowC = color(0);\n"
-				+ "DEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "\toutput uniform float __nondiffuse = 0;\n"
+				+ "\toutput uniform float __nonspecular = 0;\n"
+				+ "\toutput uniform string __category = \"\";\n"
+				+ "\toutput varying color __inShadowC = color(0);\n"
+				+ "\tDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		case VOLUME:
 			shader_code += "volume " + ShaderName
-				+ "(\nDEFAULT_AOV_OUTPUT_PARAMETERS\n";
+				+ "(\n\tDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
 		default:
@@ -340,11 +343,11 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	// add function's parameters
 	shader_code += parameters + "\n";
 	shader_code += shader_outputs;
-	shader_code += ")\n";
+	shader_code += "\t)\n";
 
 	// open function and write locals
 	shader_code += "{\n";
-	shader_code += "INIT_AOV_PARAMETERS\n";
+	shader_code += "\tINIT_AOV_PARAMETERS\n";
 	shader_code += locals;
 
 	shader_code += "\n\n";
@@ -361,7 +364,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Oi_parent = m_scene->get_parent (name(), "Oi", Oi_output_name);
 
 			// build code
-			std::string surface_code = "Ci = $(Ci);\nOi = $(Oi);";
+			std::string surface_code = "\tCi = $(Ci);\n\tOi = $(Oi);";
 
 			if (Ci_parent) {
 
@@ -383,9 +386,11 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			}
 
 			shader_code += surface_code;
-			shader_code += "\n";
+			shader_code += "\n";			
 			// call getshadows macro to store __inShadowC into aov_shadows
-			shader_code += "getshadows(P);\n";
+			// add a comment to the code
+			shader_code += "\t// call macro to accumulate __inShadowsC into aov_shadows\n";
+			shader_code += "\tgetshadows(P);\n";
 			shader_code += "\n";
 		}
 		break;
@@ -399,7 +404,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* P_parent = m_scene->get_parent (name(), "P", P_output_name);
 
 			// build code
-			std::string displacement_code = "N = $(N);\nP = $(P);";
+			std::string displacement_code = "\tN = $(N);\n\tP = $(P);";
 
 			if (N_parent) {
 
@@ -434,7 +439,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Ol_parent = m_scene->get_parent (name(), "Ol", Ol_output_name);
 
 			// build code
-			std::string light_code = "Cl = $(Cl);\nOl = $(Ol);";
+			std::string light_code = "\tCl = $(Cl);\n\tOl = $(Ol);";
 
 			if (Cl_parent) {
 
@@ -469,7 +474,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Ov_parent = m_scene->get_parent (name(), "Ov", Ov_output_name);
 
 			// build code
-			std::string atmosphere_code = "Ci = $(Cv);\nOi = $(Ov);";
+			std::string atmosphere_code = "\tCi = $(Cv);\n\tOi = $(Ov);";
 
 			if (Cv_parent) {
 

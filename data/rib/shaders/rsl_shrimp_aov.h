@@ -69,9 +69,9 @@
 	output varying color aov_caustics			= color(0);	\
 	output varying color aov_opacity			= color(0);
 
-#define getshadows(PARAMS) \
+#define getshadows(GETSHADOWS_PARAMS) \
 	color inshadowcolor = color(0); \
-	illuminance(PARAMS) { \
+	illuminance(GETSHADOWS_PARAMS) { \
 		if (1 == lightsource("__inShadowC", inshadowcolor)) { \
 			aov_shadows += (1 - inshadowcolor); } }
 

@@ -15,11 +15,13 @@
 	<input name="shadowbias" description="Shadow map bias" storage="uniform" type="float" default="0.01"/>
 	<input name="nondiffuse" description="Non-diffuse light" storage="uniform" type="float" default="0" />
 	<input name="nonspecular" description="Non-specular light" storage="uniform" type="float" default="0" />
+	<input name="category" description="Light category" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<rsl_include>rsl_shrimp_lights.h</rsl_include>
 	<rsl_code>
 		__nondiffuse = $(nondiffuse);
 		__nonspecular = $(nonspecular);
+		__category = $(category);
 		/* tmp storage for shadows */
 		color $(blockname)_inshadow = color(0);
 

@@ -8,6 +8,7 @@
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
     <input name="direction" description="Surface direction tangent" storage="varying" type="vector" default="dPdu"/>
     <input name="Cs" description="Surface color" type="color" default="color(.3094, .39667, .70837)"/>
+	<input name="category" description="Light categories accepted" storage="uniform" type="string" default="&quot;&quot;" />
 	<output name="Ci" description="Shaded color" type="color"/>
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
@@ -128,9 +129,9 @@
         $(Ci) = lafortunersl( $(Ka), $(Kd), $(Ks), $(Cs),
 								$(blockname)_coeff_$(model),
 								$(blockname)_colormatrix_$(colormatrix),
-								$(N), $(I), $(direction),
+								$(N), $(I), $(direction), $(category),
 								DECLARE_AOV_PARAMETERS );
 
 	</rsl_code>
-	<usage>Based on Stephen H. Westin&apos;s implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. The variable &quot;model&quot; selects the coefficients used, in the range [1,8] being: 1 = spray painted latex blue paint; 2 = matte finished steel; 3 = primer grey; 4 = caucasian male skin; 5 = asian male skin; 6 = clay; 7 = skin; 8 = flat blue paint. The variable &quot;colormatrix&quot; can take the value 1 or 2, being 1 the matrix used for blue paint, matte finished steel; and the value 2 for primer grey, clay, and the skin coefficients. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot; and &quot;aov_specular&quot; AOV presets.</usage>
+	<usage>Based on Stephen H. Westin&apos;s implementation of the Lafortune model, extended with lobe data from a version by Ryan Heniser. The variable &quot;model&quot; selects the coefficients used, in the range [1,8] being: 1 = spray painted latex blue paint; 2 = matte finished steel; 3 = primer grey; 4 = caucasian male skin; 5 = asian male skin; 6 = clay; 7 = skin; 8 = flat blue paint. The variable &quot;colormatrix&quot; can take the value 1 or 2, being 1 the matrix used for blue paint, matte finished steel; and the value 2 for primer grey, clay, and the skin coefficients. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot; and &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.</usage>
 </shrimp>

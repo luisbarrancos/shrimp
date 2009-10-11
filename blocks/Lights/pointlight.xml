@@ -11,11 +11,13 @@
 	<input name="filter" description="Shadow map filter" storage="uniform" type="string" default="&quot;gaussian&quot;"/>
 	<input name="nondiffuse" description="Non-diffuse light" storage="uniform" type="float" default="0" />
 	<input name="nonspecular" description="Non-specular light" storage="uniform" type="float" default="0" />
+	<input name="category" description="Light category" storage="uniform" type="string" default="&quot;&quot;"/>
 	<output name="Cl" description="Light ray color" type="color"/>
 	<rsl_include>rsl_shrimp_lights.h</rsl_include>
 	<rsl_code>
 		/* standards declared at beginning of (preview) light shader */
 		__nondiffuse = $(nondiffuse);
+		__category = $(category);
 		/* temp storage for shadow color */
 		varying color $(blockname)_inshadow = color(0);
 		

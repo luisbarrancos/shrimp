@@ -4,6 +4,7 @@
 #endif /* filteredpulse */
 
 #include "rsl_shrimp_aov.h"
+////////////////////////////////////////////////////////////////////////////////
 
 surface grid(
 				float hfreq = 1;
@@ -19,7 +20,13 @@ surface grid(
 	
 	color cvert = filteredpulse( .05, .95, ss, hblur );
 	color chori = filteredpulse( .05, .95, tt, vblur );
+
+	aov_surfacecolor += (cvert * chori);
+	aov_diffuse += diffuse( faceforward( normalize(N), I));
+
+	/* get shadows pass */
+	getshadows(P);
 	
-	Ci = cvert * chori * diffuse( faceforward( normalize(N), I));
+	Ci = aov_surfacecolor * aov_diffuse;
 }
 

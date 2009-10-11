@@ -23,6 +23,7 @@ wrappeddiffuse(
 				float wangle, atten;
 				normal Nn;
 				vector In;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -33,7 +34,7 @@ wrappeddiffuse(
 	uniform float nondiff;
 	float gamma = 5;
 
-	illuminance( P, Nf, S_PI )
+	illuminance( category, P, Nf, S_PI )
 	{
 		extern vector L;
 		extern color Cl;
@@ -62,7 +63,7 @@ diffusefalloff(
 				float falloff; // [0,1]
 				normal Nn;
 				vector In;
-				output varying color inshadow;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -72,7 +73,7 @@ diffusefalloff(
 	color C = color(0);
 	uniform float nondiff;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -96,6 +97,7 @@ LommelSeeliger(
 				normal Nn;
 				vector In;
 				float tau; // thickness of layer, for non spherical surface
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -107,7 +109,7 @@ LommelSeeliger(
 	color C = color(0);
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
@@ -141,6 +143,7 @@ Buratti(
 			normal Nn;
 			vector In;
 			float k, sden;
+			uniform string category;
 	   )
 {
 	normal Nf = faceforward( Nn, In );
@@ -153,7 +156,7 @@ Buratti(
 	color C = color(0);
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
@@ -214,6 +217,7 @@ Minnaert(
             float k;
             normal Nn;
             vector In;
+			uniform string category;
         )
 {
     normal Nf = faceforward(Nn, In);
@@ -226,7 +230,7 @@ Minnaert(
     extern point P;
 	color Cminnaert = color(0);
 	
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -290,6 +294,7 @@ color Hapke(
                 float sden, fscat, refl;
                 normal Nn;
                 vector In;
+				uniform string category;
         )
 {
     normal Nf = faceforward( Nn, In);
@@ -301,7 +306,7 @@ color Hapke(
     extern point P;
 	color Ct = color(0);
 	
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
@@ -350,6 +355,7 @@ color Wolff(
 				normal Nn;
 				vector In;
 				float ior;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -362,7 +368,7 @@ color Wolff(
 	extern point P;
 	color C = color(0);
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
@@ -408,6 +414,7 @@ OrenNayar(
             float roughness;
             normal Nn;
             vector In;
+			uniform string category;
         )
 {
 	vector Nf = faceforward (Nn, In);
@@ -430,7 +437,7 @@ OrenNayar(
 	color C = color(0);
 	extern point P;
 	
-	illuminance (P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
         extern color Cl;
@@ -504,6 +511,7 @@ LG_OrenNayar(
 				float sigma;
 				normal Nn;
 				vector In;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -520,7 +528,7 @@ LG_OrenNayar(
 	color C = color(0), L1, L2;
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
@@ -579,6 +587,7 @@ OrenNayarWolff(
 				color Cdiff;
 				normal Nn;
 				vector In;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -595,7 +604,7 @@ OrenNayarWolff(
 	color C = color(0), L1, L2;
 	extern point P;
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
@@ -683,6 +692,7 @@ anisophongdiff(
 				normal Nn;
 				vector In;
 				float Kd, Ks;
+				uniform string category;
 				)
 {
 	normal Nf = faceforward( Nn, In );
@@ -694,7 +704,7 @@ anisophongdiff(
     color C = color(0);
 	extern point P;
 
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -723,6 +733,7 @@ color phong_blinn(
 					normal Nn;
 					vector In;
 					float size;
+					uniform string category;
 					)
 {
 	normal Nf = faceforward(Nn, In);
@@ -733,7 +744,7 @@ color phong_blinn(
 	color C = color(0);
 	extern point P;
 	
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -770,6 +781,7 @@ LocIllumGlossy(
 				normal Nn;
 				vector In;
 				float roughness, sharpness;
+				uniform string category;
 				)
 {
 	normal Nf = faceforward( Nn, In);
@@ -811,6 +823,7 @@ Wardisotropy(
 				normal Nn;
 				vector In;
 				float roughness;
+				uniform string category;
 		)
 {
     normal Nf = faceforward( Nn, In);
@@ -822,7 +835,7 @@ Wardisotropy(
 	color C = color(0);
 	extern point P;
 	
-	illuminance (P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -877,6 +890,7 @@ LocIllumWardAnisotropic(
 							normal Nn;
 							vector In, xdir;
 							float xroughness, yroughness;
+							uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -890,7 +904,7 @@ LocIllumWardAnisotropic(
 	extern point P;
 	color C = color(0);
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -925,6 +939,7 @@ color schlickspec(
                     normal Nn;
                     vector In;
                     float roughness;
+					uniform string category;
         )
 {
 	normal Nf = faceforward( Nn, In);
@@ -936,7 +951,7 @@ color schlickspec(
     extern point P;
 	color C = color(0);
     
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -997,6 +1012,7 @@ color aschlick(
 				float roughness, isotropy, ior;
 				normal Nn;
 				vector In, dir;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -1010,7 +1026,7 @@ color aschlick(
 	color C = color(0);
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nonspec = 0;
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
@@ -1055,6 +1071,7 @@ cooktorrance(
 				vector In, anisodir;
 				float ior, k, roughness;
 				uniform float distmodel, geomodel;
+				uniform string category;
 		)
 {
 	normal Nf = faceforward( Nn, In );
@@ -1067,7 +1084,7 @@ cooktorrance(
 	color Ccook = color(0);
 	extern point P;
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nonspec = 0;
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
@@ -1178,6 +1195,7 @@ anisophongspec(
 				normal Nn;
 				vector In;
 				float nu, nv, ior;
+				uniform string category;
 				)
 {
 	normal Nf = faceforward( Nn, In);
@@ -1194,7 +1212,7 @@ anisophongspec(
 	color C = color(0);
 	extern point P;
 
-    illuminance( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -1262,6 +1280,7 @@ shw_brushed_metal(
 					float roughness;
 					normal Nn;
 					vector In, vdir;
+					uniform string category;
 					)
 {
     float aniso;                   // Anisotropic scale factor
@@ -1282,7 +1301,7 @@ shw_brushed_metal(
 	color C = color(0);
 	extern point P;
     
-    illuminance ( P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
     {
         extern vector L;
         extern color Cl;
@@ -1361,6 +1380,7 @@ color LocIllumAshShir(
                         vector In, xdir;
 						color Cdiff, Cspec;
 		                float Kd, Ks, nu, nv;
+						uniform string category;
 						DECLARE_AOV_OUTPUT_PARAMETERS
                         )
 {
@@ -1382,7 +1402,7 @@ color LocIllumAshShir(
 	float rho_d = 0, rho_s = 0;
     extern point P;
     
-    illuminance(P, Nf, S_PI_2 )
+    illuminance( category, P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
@@ -1569,6 +1589,7 @@ color velvet(
                 color sheen;
                 normal Nn;
                 vector In;
+				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
         )
 
@@ -1583,7 +1604,7 @@ color velvet(
 	color rlobe = color(0), horizonscatter = color(0);
 	extern point P;
 	
-    illuminance( P, Nf, S_PI_2)
+    illuminance( category, P, Nf, S_PI_2)
 	{
         extern vector L;
         extern color Cl;
@@ -1639,7 +1660,7 @@ color velvet(
  * */
 
 // TODO: move phase function to helper headers, add the following phase
-// functions: Rayleigh-Gans, delta-Eddington, Reynolds, see:
+// functions: Rayleigh-Gans, delta-Eddington, Reynolds (?), see:
 // http://www.nmr.mgh.harvard.edu/~adunn/papers/dissertation/node54.html
 float phase(vector v1, v2; float g) {
 	float costheta = -v1.v2;
@@ -1683,6 +1704,7 @@ color subsurfaceSkin(
 						normal Nn;
 						color skinColor, sheenColor;
                      	float eta, thickness;
+						uniform string category;
 						)
 {
 	normal Nf = faceforward( Nn, Vf );
@@ -1696,7 +1718,7 @@ color subsurfaceSkin(
 	color C = color(0);
 	extern point P;
 	    
-	illuminance(P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
         extern vector L;
         extern color Cl;
@@ -1907,6 +1929,7 @@ LocIllumGranier(
 					float ior[3]; float lambda[3];
 					color SurfaceColor;
 					float Kd, Ks;
+					uniform string category;
 					DECLARE_AOV_OUTPUT_PARAMETERS
 					)
 {
@@ -1932,7 +1955,7 @@ LocIllumGranier(
 	// specular
 	extern point P;
 
-	illuminance(P, Nn, S_PI_2 )
+	illuminance( category, P, Nn, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2065,6 +2088,7 @@ lafortunersl (
 				uniform float colormatrix[9];
 				normal Nn;
 				vector In, dir;
+				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
 				)
 {
@@ -2094,7 +2118,7 @@ lafortunersl (
 	color cdiff = color(0), cspec = color(0);
 	extern point P;
 	
-	illuminance ( P, local_z, S_PI_2 )
+	illuminance( category, P, local_z, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2220,8 +2244,9 @@ color tshair(
 					color Ctip; // hair tip color
 					color Cspec; // primary specular color
                     color Cspec2; // secondary specular color
-					normal Nn; // normal vector
-					vector Vf; // viewer vector
+					normal Nn;
+					vector Vf;
+					uniform string category;
 					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -2246,7 +2271,7 @@ color tshair(
 	color Css = color(0);
 	extern point P;
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2289,8 +2314,9 @@ color kajiyakay(
 					color Cbase; // hair base color
 					color Ctip; // hair tip color
 					color Css; // specular color
-					normal Nn; // normal vector
-					vector Vf; // viewer vector
+					normal Nn;
+					vector Vf;
+					uniform string category;
 					DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -2310,7 +2336,7 @@ color kajiyakay(
 	color Cspec = color(0);
 	extern point P;
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2384,6 +2410,7 @@ color MKgooch(
                 vector In;
                 float Ka, Kd, Ks, calpha, cbeta, roughness, b, y;
                 color SurfaceColor, SpecularColor;
+				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
                 )
 {
@@ -2401,7 +2428,7 @@ color MKgooch(
     kwarm = yellow + (SurfaceColor * cbeta);
     extern point P;
 	
-    illuminance( P, Nf, S_PI)
+    illuminance( category, P, Nf, S_PI)
 	{
         extern vector L;
         Ln = normalize(L);
@@ -2513,6 +2540,7 @@ woodreflectance(
                     vector fiberAxis, In;
                     normal Nn;
                     color diffuseColor, fiberColor;
+					uniform string category;
 					DECLARE_AOV_OUTPUT_PARAMETERS
         )
 {
@@ -2579,7 +2607,7 @@ woodreflectance(
 	extern point P;
 	
     // Calculate anisotropic highlight for each light
-	illuminance( P, Nf, S_PI_2 ) {
+	illuminance( category, P, Nf, S_PI_2 ) {
 		
 		extern vector L;
 		extern color Cl;
@@ -2666,6 +2694,7 @@ locillumglassy(
 				normal Nf;
 				vector Vf;
 				float roughness, sharpness;
+				uniform string category;
 		)
 {
 	float w = .18 * (1 - sharpness);
@@ -2674,7 +2703,7 @@ locillumglassy(
 	extern point P;
 	color C = color(0);
 	
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -2702,6 +2731,7 @@ glasssample(
 				uniform float rmaxdist, tmaxdist, optics;
 				uniform string envmap, rtype;
 				color cabs, attencolor;
+				uniform string category;
 				output varying color crefl, crefr, ctran;				
 		)
 {
@@ -2798,6 +2828,7 @@ rtglass(
 			vector In; normal Nn;
 			uniform string envmap;
 			output varying color ci, oi;
+			uniform string category;
 			DECLARE_AOV_OUTPUT_PARAMETERS
 	   )
 {
@@ -2879,7 +2910,7 @@ rtglass(
 					Kr, Kt, aexp, aamp, krblur, ktblur,
 					entering, raydepth, rbounces, rsamples, bias,
 					rmaxdist, tmaxdist, optics, envmap, rtype,
-					cabs, attencolor, crefl, crefr, ctran );
+					cabs, attencolor, category, crefl, crefr, ctran );
 
 			// convert crefl, crefr, ctran to spec6
 			rgbToSpec6( crefl, srefl );
@@ -2919,7 +2950,7 @@ rtglass(
 				Kr, Kt, aexp, aamp, krblur, ktblur,
 				entering, raydepth, rbounces, rsamples, bias,
 				rmaxdist, tmaxdist, optics, envmap, rtype,
-				cabs, attencolor, crefl, crefr, ctran );
+				cabs, attencolor, category, crefl, crefr, ctran );
 	}
 
 	// no ambient, diffuse at higher ray levels, specular max bounces
@@ -2941,7 +2972,7 @@ rtglass(
 	if (Ks > 0) {
 		if (spectype == "glossy")
 			aov_specular += locillumglassy( faceforward(Nn, In), -In,
-					roughness, sharpness);
+					roughness, sharpness, category );
 		else aov_specular += specular(faceforward(Nn, In), -In, roughness);
 	}
 #else
@@ -2949,8 +2980,9 @@ rtglass(
 	aov_ambient += (ka == 0) ? color(0) : ka * ambient();
 	aov_diffuse += (kd == 0) ? color(0) : kd * diffuse( faceforward(Nn, In));
 	aov_specular += (ks == 0) ? color(0) : ks * ( (spectype == "glossy") ?
-			locillumglassy( faceforward(Nn, In),-In,roughness,sharpness) :
-			specular( faceforward(Nn, In), -In, roughness) );
+			locillumglassy( faceforward(Nn, In), -In, roughness,
+				sharpness, category ) : specular( faceforward(Nn, In),
+					-In, roughness) );
 #endif
 	aov_reflection += crefl;
 	aov_refraction += crefr;
@@ -2971,6 +3003,7 @@ banksaniso(
 			float Kd, Ks, roughness;
 			normal Nn;
 			vector In, adir;
+			uniform string category;
 			DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -2982,7 +3015,7 @@ banksaniso(
 	uniform float nondiff, nonspec;
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -3053,7 +3086,8 @@ color strauss(
 				 * color, 1 = metal, highlight = based on object color */
 				float smoothness, metalness;
 				float transparency;
-				normal Nn; vector In; // normalized normal/viewer
+				normal Nn; vector In;
+				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -3082,7 +3116,7 @@ color strauss(
 	color Cdiff = color(0), Cspec = color(0);
 	extern point P;
 
-	illuminance( P, Nf, S_PI_2 )
+	illuminance( category, P, Nf, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
@@ -3187,6 +3221,7 @@ SIG2k_srf_fur(
 				uniform float hair_col_var, hair_length, hair_id;
 				uniform normal surface_normal;
 				varying vector clump_vect;
+				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
 		)
 {
@@ -3233,7 +3268,7 @@ SIG2k_srf_fur(
 	extern point P;
 	color C = color(0), Cdiff = color(0), Cspec = color(0);
 	
-	illuminance( P, norm_hair, radians( illum_width ) )
+	illuminance( category, P, norm_hair, radians( illum_width ) )
 	{
 		extern vector L;
 		extern color Cl;

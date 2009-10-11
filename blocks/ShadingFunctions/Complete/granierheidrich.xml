@@ -15,6 +15,7 @@
 	<input name="t" description="noise Y coordinates" storage="varying" type="float" default="t"/>
 	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
+	<input name="category" description="Light categories accepted" storage="uniform" type="string" default="&quot;&quot;" />
 	<output name="Ci" description="Shaded color" type="color" />
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
@@ -48,9 +49,9 @@
 							$(blockname)_Vf, $(blockname)_spec[0],
 							$(blockname)_spec[1], $(blockname)_d,
 							$(blockname)_iorrgb, $(blockname)_lambda,
-							$(Cdiff), $(Kd), $(Ks),
+							$(Cdiff), $(Kd), $(Ks), $(category),
 							DECLARE_AOV_PARAMETERS );
 
 	</rsl_code>
-    <usage>Peter Stuart&apos;s implementation of the Granier-Heidrich thin-film interference BRDF, as described in &quot;A Simple Layered RGB BRDF Model&quot;, by Xavier Granier and Wolfgang Heidrich. The parameter &quot;densitymin&quot; and &quot;densitymax&quot; control both the minimum and maximum substrate thickness respectivly, with &quot;ior&quot;, the index of refraction for the R, G, and B wavelengths encoded in a vector. The parameter &quot;specmin&quot; and &quot;specmax&quot; control the minimum and maximum specular exponent of the rays reflected on the substrate, with &quot;freqmin&quot; and &quot;freqmax&quot; as the minimum and maximum frequency of the perlin noise, and &quot;deviation&quot;, the deviation of the normals in the range [0,1]. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_diffuse&quot; and &quot;aov_specular&quot; AOV presets.</usage>
+    <usage>Peter Stuart&apos;s implementation of the Granier-Heidrich thin-film interference BRDF, as described in &quot;A Simple Layered RGB BRDF Model&quot;, by Xavier Granier and Wolfgang Heidrich. The parameter &quot;densitymin&quot; and &quot;densitymax&quot; control both the minimum and maximum substrate thickness respectivly, with &quot;ior&quot;, the index of refraction for the R, G, and B wavelengths encoded in a vector. The parameter &quot;specmin&quot; and &quot;specmax&quot; control the minimum and maximum specular exponent of the rays reflected on the substrate, with &quot;freqmin&quot; and &quot;freqmax&quot; as the minimum and maximum frequency of the perlin noise, and &quot;deviation&quot;, the deviation of the normals in the range [0,1]. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_diffuse&quot; and &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.</usage>
 </shrimp>
