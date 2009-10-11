@@ -72,7 +72,7 @@
 #define getshadows(GETSHADOWS_PARAMS) \
 	color inshadowcolor = color(0); \
 	illuminance(GETSHADOWS_PARAMS) { \
-		if (1 == lightsource("__inShadowC", inshadowcolor)) { \
+		if (1 == lightsource("__shadow", inshadowcolor)) { \
 			aov_shadows += (1 - inshadowcolor); } }
 
 ////////////////////////////////////////////////////////////////////////////////

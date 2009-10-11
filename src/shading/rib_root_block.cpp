@@ -327,7 +327,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 				+ "\toutput uniform float __nondiffuse = 0;\n"
 				+ "\toutput uniform float __nonspecular = 0;\n"
 				+ "\toutput uniform string __category = \"\";\n"
-				+ "\toutput varying color __inShadowC = color(0);\n"
+				+ "\toutput varying color __shadow = color(0);\n"
 				+ "\tDEFAULT_AOV_OUTPUT_PARAMETERS\n";
 		break;
 
@@ -387,9 +387,9 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 
 			shader_code += surface_code;
 			shader_code += "\n";			
-			// call getshadows macro to store __inShadowC into aov_shadows
+			// call getshadows macro to store __shadow into aov_shadows
 			// add a comment to the code
-			shader_code += "\t// call macro to accumulate __inShadowsC into aov_shadows\n";
+			shader_code += "\t// call macro to accumulate __shadow into aov_shadows\n";
 			shader_code += "\tgetshadows(P);\n";
 			shader_code += "\n";
 		}
