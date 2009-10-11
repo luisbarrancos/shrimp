@@ -11,7 +11,7 @@ distantlight(
 				uniform string __category = "";
 				uniform float __nondiffuse = 0;
 				uniform float __nonspecular = 0;
-				output varying color __inShadowC = color(0);
+				output varying color __shadow = color(0);
 				)
 {
 	float atten = 0;
@@ -29,7 +29,7 @@ distantlight(
 		}
 
 		if (shadowname != "") {
-			__inShadowC = color shadow( shadowname, Ps,
+			__shadow = color shadow( shadowname, Ps,
 										"samples", shadowsamples,
 										"blur", shadowblur,
 										"width", shadowwidth,
@@ -37,7 +37,7 @@ distantlight(
 										"bias", shadowbias );
 		}
 
-		Cl = atten * (1-__inShadowC) * lightcolor;
+		Cl = atten * (1-__shadow) * lightcolor;
 	}
 }
 
