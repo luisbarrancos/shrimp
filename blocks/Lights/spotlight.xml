@@ -32,7 +32,7 @@
 									$(blur), $(attenuation),
 									$(blockname)_inshadow );
 
-		__inShadowC = $(blockname)_inshadow;
+		__shadow = $(blockname)_inshadow;
 
 	</rsl_code>
 	<usage>Modified shadow spotlight shader, by Tal Lancaster, from The RenderMan repository ( www.renderman.org ). Modified to better handle atenuation. Bias overrides the global shadow bias value, with -1 being the global default, and blur, the amount to soften the shadow edges. Shadow map filter type defaults to &quot;gaussian&quot;, with &quot;triangle&quot; and &quot;box&quot; as optional.</usage>

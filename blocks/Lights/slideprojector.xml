@@ -31,7 +31,7 @@
 								$(samples), $(shadowwidth), $(shadowbias),
 								$(blockname)_inshadow );
 
-		__inShadowC = $(blockname)_inshadow;
+		__shadow = $(blockname)_inshadow;
 	</rsl_code>
 	<usage>Slide projector light shader, from The RenderMan Repository, www.renderman.org . Requires a texture map (slide map) to work. Shadow bias defaults to global default, -1, while shadow filter type defaults to &quot;gaussian&quot;, with &quot;triangle&quot; and &quot;box&quot; as optional. The variable &quot;decay&quot; defaults to 0 (no decay), with 1 being linear decay, 2 being squared decay, 3 being cubic decay and so on.</usage>
 </shrimp>

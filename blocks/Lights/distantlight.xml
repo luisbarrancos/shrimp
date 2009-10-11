@@ -27,7 +27,7 @@
 						$(intensity), $(blur), $(lightcolor),
 						$(blockname)_inshadow );
 
-		__inShadowC = $(blockname)_inshadow;
+		__shadow = $(blockname)_inshadow;
 	</rsl_code>
 	<usage>Distant light shader. Filter type defaults to &quot;gaussian&quot;, with &quot;box&quot; and &quot;triangle&quot; as optional. Bias defaults to global default, -1. The &quot;variable&quot; decay defaults to 0 - no decay, with 1 being linear decay, 2 being squared, 3 being cubic, and so on.</usage>
 </shrimp>
