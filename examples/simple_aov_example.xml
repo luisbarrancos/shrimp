@@ -72,7 +72,7 @@
 					$(width), $(samples), $(bias), $(decay), $(shadowmap),
 					$(filter), $(lightcolor), $(blockname)_inshadow );
 
-		__inshadow = $(blockname)_inshadow;
+		__shadow = $(blockname)_inshadow;
 													</rsl_code>
 			<rsl_include>rsl_shrimp_lights.h												</rsl_include>
 			<usage>Point light shader. The &quot;decay&quot; variable defaults to 0 - no decay, with 1 being linear decay, 2 being squared decay, 3 being cubic decay and so on.												</usage>
