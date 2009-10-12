@@ -189,6 +189,7 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 
 
 	int total = m_scene->selection_size();
+	shader_block* block = m_scene->get_block (m_active_block);
 
 	//If multi selecion
 	if (total>1){
@@ -216,8 +217,8 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 
 	}
 	//If single selection no parsing grab m_active_block
-	shader_block* block = m_scene->get_block (m_active_block);
-	if (!block) {
+
+	else if (!block) {
 					log() << error << "active block '" << m_active_block << "' not found." << std::endl;
 					return;
 				}

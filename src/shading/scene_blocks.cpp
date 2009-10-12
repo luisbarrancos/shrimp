@@ -71,24 +71,74 @@ shader_block* scene::add_custom_block (const std::string& Name, const bool RootB
 
 void scene::delete_block (const std::string& BlockName) {
 
-	// disconnect all pads
-	shader_block* block = get_block (BlockName);
-	for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
-		input != block->m_inputs.end(); ++input) {
+	int total = selection_size();
+	//If multi selecion
+		if (total>1){
+				for (scene::selection_t::const_iterator block_i = m_selection.begin(); block_i != m_selection.end(); ++block_i) {
 
-		disconnect (io_t (BlockName, input->m_name));
+							std::string current_selection = *block_i;
+
+							shader_block* block = get_block(current_selection);
+
+							if (!block) {
+
+									log() << error << "active block '" << current_selection << "' not found." << std::endl;
+									return;
+								}
+
+							int Group = group (block);
+							if (!Group) {
+
+								const std::string  BlockNameSelect = block->name();
+								//Avoid to delete Root block
+								if (BlockNameSelect != "Root block"){
+									// disconnect all pads
+									for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
+											input != block->m_inputs.end(); ++input) {
+
+											disconnect (io_t (BlockNameSelect, input->m_name));
+										}
+									for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
+											output != block->m_outputs.end(); ++output) {
+
+											disconnect (io_t (BlockNameSelect, output->m_name));
+										}
+									// safely remove it from the network
+										m_blocks.erase (BlockNameSelect);
+
+									// finally delete it
+										delete block;
+								}
+							}
+
+				}
+
+		}
+
+	else {
+		//Avoid to delete Root block
+		if (BlockName != "Root block"){
+			// disconnect all pads
+			shader_block* block = get_block (BlockName);
+			for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
+				input != block->m_inputs.end(); ++input) {
+
+				disconnect (io_t (BlockName, input->m_name));
+			}
+			for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
+				output != block->m_outputs.end(); ++output) {
+
+				disconnect (io_t (BlockName, output->m_name));
+			}
+
+			// safely remove it from the network
+			m_blocks.erase (BlockName);
+
+			// finally delete it
+			delete block;
+		}
 	}
-	for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
-		output != block->m_outputs.end(); ++output) {
 
-		disconnect (io_t (BlockName, output->m_name));
-	}
-
-	// safely remove it from the network
-	m_blocks.erase (BlockName);
-
-	// finally delete it
-	delete block;
 }
 
 

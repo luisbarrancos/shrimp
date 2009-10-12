@@ -496,19 +496,7 @@ application_window::application_window() :
 		preview_button->callback ((fltk::Callback*)cb_preview, this);
 		preview_button->tooltip ("Click to preview the shader using selected renderer and display");
 
-		// OpenGL view
-		fltk::Group* main_view = new fltk::Group (2, 48, 796, 520);
-		main_view->begin();
 
-			fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 796, 520);
-			frame->box (fltk::DOWN_BOX);
-			frame->color ((fltk::Color) (56));
-			frame->selection_color ((fltk::Color) (69));
-
-			m_scene_view = new scene_view (2, 2, 792, 518);
-
-		main_view->end();
-		resizable (main_view);
 
 		// zoom slider
 		m_zoom_slider.labelfont (fltk::HELVETICA_BOLD);
@@ -526,6 +514,20 @@ application_window::application_window() :
 		fltk::Button* fit_button = new fltk::Button (490, 570, 100, 24, "Fit scene");
 		fit_button->callback ((fltk::Callback*)cb_button_fit_scene, this);
 		fit_button->tooltip ("Click to fit the block scene to the current view");
+
+		// OpenGL view
+				fltk::Group* main_view = new fltk::Group (2, 48, 796, 520);
+				main_view->begin();
+
+					fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 796, 520);
+					frame->box (fltk::DOWN_BOX);
+					frame->color ((fltk::Color) (56));
+					frame->selection_color ((fltk::Color) (69));
+
+					m_scene_view = new scene_view (2, 2, 792, 518);
+
+				main_view->end();
+				resizable (main_view);
 
 	end();
 

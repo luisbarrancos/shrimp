@@ -39,8 +39,6 @@ int scene_view::handle (int Event) {
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
 	const bool alt_key_down =  fltk::event_state (fltk::ALT);
-	const bool del_key_up =  fltk::event_key_state (fltk::DeleteKey);
-
 
 	switch (Event) {
 
@@ -122,12 +120,17 @@ int scene_view::handle (int Event) {
 						m_connection_start_y = m_mouse_click_y;
 					}
 					else if (m_active_block.size()) {
+						if (fltk::event_clicks() == 1){
 							if (m_scene) {
 
-//										shader_block* block = m_scene->get_block (m_active_block);
-//										m_scene->clear_selection();
-//										// toggle block selection
-//										m_scene->set_block_selection (block, !m_scene->is_selected (block));
+										shader_block* block = m_scene->get_block (m_active_block);
+										fltk::Widget* W;
+										void* Data;
+										on_edit_code(W, Data);
+										// toggle block selection
+										m_scene->set_block_selection (block, !m_scene->is_selected (block));
+
+								}
 							}
 						}
 					else {
@@ -402,20 +405,38 @@ int scene_view::handle (int Event) {
 		//Key press
 		case fltk::KEYUP:
 		{
-			printf("DEL \n");
-			if (del_key_up)
-			{
-				if (m_scene) {
 
-										shader_block* block = m_scene->get_block (m_active_block);
+			int key = fltk::event_key();
+			switch (key) {
+			//
+			case fltk::DeleteKey:
 
-										if (block) {
-											m_scene->delete_block(m_active_block);
-										}
+				{
+
+					if (m_scene) {
+						if ((m_scene->selection_size() >=1) && (m_active_block.size() != 1)){
+										m_scene->delete_block(m_active_block);
+										m_scene->clear_selection();
+								}
+						}
 				}
+
+				redraw();
+				return 1;
 			}
+		}
+
+		case fltk::FOCUS:
+		{
+		    redraw();
 			return 1;
 		}
+
+		case fltk::UNFOCUS:
+				{
+				    redraw();
+					return 1;
+				}
 
 		default:
 			// Let the base class handle all other events:
