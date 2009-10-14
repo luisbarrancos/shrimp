@@ -39,6 +39,7 @@ int scene_view::handle (int Event) {
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
 	const bool alt_key_down =  fltk::event_state (fltk::ALT);
+	int key = fltk::event_key();
 
 	switch (Event) {
 
@@ -120,18 +121,7 @@ int scene_view::handle (int Event) {
 						m_connection_start_y = m_mouse_click_y;
 					}
 					else if (m_active_block.size()) {
-						if (fltk::event_clicks() == 1){
-							if (m_scene) {
 
-										shader_block* block = m_scene->get_block (m_active_block);
-										fltk::Widget* W;
-										void* Data;
-										on_edit_code(W, Data);
-										// toggle block selection
-										m_scene->set_block_selection (block, !m_scene->is_selected (block));
-
-								}
-							}
 						}
 					else {
 						m_scene->clear_selection();
@@ -402,40 +392,85 @@ int scene_view::handle (int Event) {
 			return 1;
 		}
 
-		//Key press
-		case fltk::KEYUP:
-		{
-
-			int key = fltk::event_key();
-			switch (key) {
-			//
-			case fltk::DeleteKey:
-
-				{
-
-					if (m_scene) {
-						if ((m_scene->selection_size() >=1) && (m_active_block.size() != 1)){
-										m_scene->delete_block(m_active_block);
-										m_scene->clear_selection();
-								}
-						}
-				}
-
-				redraw();
-				return 1;
-			}
-		}
-
 		case fltk::FOCUS:
-		{
-		    redraw();
-			return 1;
-		}
+				{
+					return 1;
+				}
 
 		case fltk::UNFOCUS:
 				{
-				    redraw();
 					return 1;
+				}
+
+
+
+		//Key press
+		case fltk::KEY:
+		{
+
+			int found =0;
+			//Show grid
+			if (key == 'g' && ctrl_key_down){
+						if (m_scene) {
+							set_grid_state(!m_grid);
+							redraw();
+							}
+						found=1;
+						}
+			//Show console
+
+			//Snap to grid
+			else if (key == 'a' && ctrl_key_down){
+						if (m_scene) {
+							set_snap_to_grid_state(!m_snap_to_grid);
+							redraw();
+							}
+						found=1;
+						}
+			//Group blocks
+			else if (key == 'g'){
+						if (m_scene) {
+							if (m_scene->selection_size()>=1){
+								m_scene->group_selection();
+								redraw();
+								}
+							}
+						found=1;
+						}
+			//Open dialog Edit block
+			else if (key == 'e'){
+					if (m_scene) {
+								shader_block* block = m_scene->get_block (m_active_block);
+								if (block){
+									fltk::Widget* W;
+									void* Data;
+									on_edit_code(W, Data);
+									// toggle block selection
+									m_scene->clear_selection();
+									m_scene->set_block_selection (block, !m_scene->is_selected (block));
+									}
+								}
+					found=1;
+					}
+			return found;
+		}
+
+		case fltk::KEYUP:
+				{
+					int found =0;
+					//Delete block and roll block
+					if (key == fltk::DeleteKey){
+
+										if (m_scene) {
+											if ((m_scene->selection_size() >=1) && (m_active_block.size() != 1)){
+													m_scene->delete_block(m_active_block);
+													m_scene->clear_selection();
+													}
+											}
+										redraw();
+										found=1;
+								}
+					return found;
 				}
 
 		default:
