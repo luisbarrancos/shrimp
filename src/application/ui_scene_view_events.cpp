@@ -427,7 +427,7 @@ int scene_view::handle (int Event) {
 							}
 						found=1;
 						}
-			//Group blocks
+			//Group blocks together
 			else if (key == 'g'){
 						if (m_scene) {
 							if (m_scene->selection_size()>=1){
