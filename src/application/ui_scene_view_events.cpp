@@ -64,21 +64,26 @@ int scene_view::handle (int Event) {
 			m_current_mouse_y = fltk::event_y();
 
 			m_active_block = select_object();
+			m_active_group = select_group();
 
 			//Mouse move over a block, set block as current and draw the block border as selected
 			if (m_active_block.size()) {
 
 										if (m_scene) {
 											shader_block* block = m_scene->get_block (m_active_block);
-
 											set_current_block(block);
+											}
+			}
+			else if (m_active_group){set_current_group(m_active_group);
 
-										}
 			}
 			else {
+
 				set_current_block(NULL);
+				set_current_group(0);
 				m_box_selection=false;
 			}
+
 			redraw();
 		}
 		return 1;
@@ -100,6 +105,7 @@ int scene_view::handle (int Event) {
 				m_active_block = select_object();
 				m_active_group = select_group();
 
+
 				if (fltk::event_button() == fltk::LeftButton) {
 
 					if (shift_key_down || ctrl_key_down) {
@@ -113,6 +119,12 @@ int scene_view::handle (int Event) {
 								m_scene->set_block_selection (block, !m_scene->is_selected (block));
 							}
 						}
+
+						if (m_active_group){
+							printf("group \n");
+							m_scene->set_group_selection(m_active_group,!m_scene->is_selected(m_active_group));
+						}
+
 					}
 					else if (m_active_property.first.size() && m_connection_start.first == "") {
 
@@ -327,6 +339,7 @@ int scene_view::handle (int Event) {
 		// mouse up
 		case fltk::RELEASE:
 		{
+//			m_active_group = select_group();
 			if (fltk::event_button() == fltk::LeftButton) {
 
 				if (m_mouse_click <= 1) {
@@ -359,12 +372,18 @@ int scene_view::handle (int Event) {
 
 					}
 
-					else if (m_active_block.size() &&  !(shift_key_down || ctrl_key_down)) {
+					else if ((m_active_block.size() || m_active_group) &&  !(shift_key_down || ctrl_key_down)) {
 												if (m_scene) {
 															shader_block* block = m_scene->get_block (m_active_block);
 															m_scene->clear_selection();
+															if (m_active_block.size()){
 															// toggle block selection
 															m_scene->set_block_selection (block, !m_scene->is_selected (block));
+															}
+															else if (m_active_group){
+
+															m_scene->set_group_selection(m_active_group,!m_scene->is_selected(m_active_group));
+															}
 												}
 					}
 				}
@@ -392,72 +411,10 @@ int scene_view::handle (int Event) {
 			return 1;
 		}
 
-		case fltk::FOCUS:
-				{
-					return 1;
-				}
-
-		case fltk::UNFOCUS:
-				{
-					return 1;
-				}
-
-
-
-		//Key press
-		case fltk::KEY:
-		{
-
-			int found =0;
-			//Show grid
-			if (key == 'g' && ctrl_key_down){
-						if (m_scene) {
-							set_grid_state(!m_grid);
-							redraw();
-							}
-						found=1;
-						}
-			//Show console
-
-			//Snap to grid
-			else if (key == 'a' && ctrl_key_down){
-						if (m_scene) {
-							set_snap_to_grid_state(!m_snap_to_grid);
-							redraw();
-							}
-						found=1;
-						}
-			//Group blocks together
-			else if (key == 'g'){
-						if (m_scene) {
-							if (m_scene->selection_size()>=1){
-								m_scene->group_selection();
-								redraw();
-								}
-							}
-						found=1;
-						}
-			//Open dialog Edit block
-			else if (key == 'e'){
-					if (m_scene) {
-								shader_block* block = m_scene->get_block (m_active_block);
-								if (block){
-									fltk::Widget* W;
-									void* Data;
-									on_edit_code(W, Data);
-									// toggle block selection
-									m_scene->clear_selection();
-									m_scene->set_block_selection (block, !m_scene->is_selected (block));
-									}
-								}
-					found=1;
-					}
-			return found;
-		}
-
 		case fltk::KEYUP:
 				{
 					int found =0;
+
 					//Delete block and roll block
 					if (key == fltk::DeleteKey){
 
@@ -470,8 +427,56 @@ int scene_view::handle (int Event) {
 										redraw();
 										found=1;
 								}
+					//Group selection of blocks
+					else if (key == 'g'){
+											if (m_scene) {
+												if (m_scene->selection_size()>=1){
+													m_scene->group_selection();
+													redraw();
+													}
+												}
+											found=1;
+											}
+					//Ungroup selection single group
+					else if (key == 'u'){
+												if (m_scene) {
+													if (m_active_group){
+														m_scene->ungroup(m_active_group);
+														redraw();
+														}
+													}
+												found=1;
+												}
+					//Open dialog Edit block
+					else if (key == 'e'){
+							if (m_scene) {
+										shader_block* block = m_scene->get_block (m_active_block);
+										if (block){
+											fltk::Widget* W;
+											void* Data;
+											on_edit_code(W, Data);
+											// toggle block selection
+											m_scene->clear_selection();
+											m_scene->set_block_selection (block, !m_scene->is_selected (block));
+											}
+										}
+							found=1;
+							}
 					return found;
 				}
+
+		case fltk::FOCUS:
+				{
+					redraw();
+					return 1;
+				}
+
+		case fltk::UNFOCUS:
+				{
+					redraw();
+					return 1;
+				}
+
 
 		default:
 			// Let the base class handle all other events:

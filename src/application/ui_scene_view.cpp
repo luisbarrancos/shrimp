@@ -1479,6 +1479,7 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 void scene_view::draw_groups() {
 
+	const double alpha = 0.5;
 	if (!m_scene) {
 
 		return;
@@ -1490,10 +1491,18 @@ void scene_view::draw_groups() {
 		const double x = p->second.position_x;
 		const double y = p->second.position_y;
 
-		draw_group_body (x, y);
 
+		draw_group_body (x, y,group);
+
+		// check whether the group's selected
+			scene* s = get_scene();
+			const bool is_selected = s->is_selected (group);
 		// show group name
-		glColor3f (1, 1, 1);
+		if (group == m_current_group)
+					// selected group are "hover orange"
+					{glColor4f (1.0, 0.55, 0.0, alpha);}
+				else {glColor3f (1, 1, 1);}
+
 		glsetfont (fltk::HELVETICA_BOLD, (m_font_size+0.5) * m_size * 0.75);
 		std::string name = m_scene->get_group_name (group);
 		// position with hexagon/group radius taken into account
@@ -1509,16 +1518,27 @@ void scene_view::draw_group_body (int Group)
 		return;
 	}
 
-	draw_group_body (g->second.position_x, g->second.position_y);
+	draw_group_body (g->second.position_x, g->second.position_y,Group);
 }
 
-void scene_view::draw_group_body (const double X, const double Y)
+void scene_view::draw_group_body (const double X, const double Y,const int current_group)
 {
 	const int sections = 6;
 	const double radius = 0.4;
+	const double alpha = 0.5;
 
-	// draw a filled hexagon, "hover blue"
-	glColor3f (0.23, 0.37, 0.80);
+	// check whether the group's selected
+	scene* s = get_scene();
+	const bool is_selected = s->is_selected (current_group);
+	// block color
+	if (is_selected){
+		// selected blocks are "hover orange"
+		glColor4f (1.0, 0.55, 0.0, alpha);
+	}
+	else {
+		// draw a filled hexagon, "hover blue"
+		glColor3f (0.23, 0.37, 0.80);
+	}
 	glBegin (GL_TRIANGLE_FAN);
 		for (int i = 0; i <= sections; ++i) {
 			const double angle = static_cast<double> (i) * 2 * M_PI / static_cast<double> (sections);
@@ -1527,7 +1547,11 @@ void scene_view::draw_group_body (const double X, const double Y)
 	glEnd();
 
 	// draw a white hexagon around
-	glColor3f (1, 1, 1);
+		if (m_active_group)
+			// selected group are "hover orange"
+			{glColor4f (1.0, 0.55, 0.0, alpha);}
+		else {glColor3f (1, 1, 1);}
+
 	glBegin (GL_LINES);
 		double prev_x = X + radius * cos (0);
 		double prev_y = Y + radius * sin (0);

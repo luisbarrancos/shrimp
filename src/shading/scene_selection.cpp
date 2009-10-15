@@ -45,6 +45,7 @@ int scene::selection_size() {
 void scene::clear_selection() {
 
 	m_selection.clear();
+	m_groups_selection.clear();
 }
 
 

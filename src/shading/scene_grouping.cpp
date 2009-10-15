@@ -111,3 +111,25 @@ void scene::set_group_name(const int Group, const std::string& Name) {
 }
 
 
+void scene::set_group_selection (const int Group , const bool selection) {
+
+
+	if (selection) {
+		m_groups_selection.insert (Group);
+
+	} else {
+		m_groups_selection.erase (Group);
+	}
+}
+
+bool scene::is_selected (const int Group) {
+
+
+	groups_selection_t::const_iterator i = m_groups_selection.find (Group);
+	if (i == m_groups_selection.end()) {
+		return false;
+	}
+
+	return true;
+}
+

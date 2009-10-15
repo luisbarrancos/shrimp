@@ -83,6 +83,7 @@ public:
 	void set_snap_to_grid_state (const bool SnapState);
 	void set_overview_state (const bool OverviewState);
 	void set_current_block  (const shader_block* Block){m_current_block = Block;}
+	void set_current_group  (int group){m_current_group = group;}
 	bool is_current_block	(const shader_block* Block){return(Block ==m_current_block); }
 
 	// snap function (snaps given coordinates)
@@ -104,6 +105,7 @@ private:
 
 	// store active group
 	int m_active_group;
+	int is_selected_group;
 
 	// store current connection start
 	scene::io_t m_connection_start;
@@ -155,7 +157,7 @@ private:
 	// draws block groups
 	void draw_groups();
 	void draw_group_body (int Group);
-	void draw_group_body (const double X, const double Y);
+	void draw_group_body (const double X, const double Y,const int current_group);
 
 	int select_group();
 
@@ -201,6 +203,7 @@ private:
 	bool m_overview;
 	int m_font_size;
 	const shader_block* m_current_block;
+	int m_current_group;
 
 	// callbacks
 	void on_select_block (fltk::Widget* W, void* Data);

@@ -76,6 +76,9 @@ public:
 	typedef std::map<std::string, int> groups_t;;
 	groups_t m_groups;
 
+	typedef std::set<int> groups_selection_t;;
+	groups_selection_t m_groups_selection;
+
 	typedef std::map<int, std::string> group_names_t;
 	group_names_t m_group_names;
 
@@ -155,6 +158,8 @@ public:
 	void set_block_selection (shader_block* Block, const bool Selection);
 
 
+
+
 	//////////// Rolled blocks
 
 	// returns whether a block is rolled
@@ -197,6 +202,12 @@ public:
 
 	// save current scene's RIB and shader files to a directory
 	void export_scene (const std::string& Directory);
+
+	// toggle group selection state
+	void set_group_selection (const int Group , const bool Selection);
+
+	// returns whether a group is selected
+	bool is_selected (const int Group);
 
 	//////////// Misc
 
