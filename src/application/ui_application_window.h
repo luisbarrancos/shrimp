@@ -93,6 +93,11 @@ private:
 	void on_menu_code_preview (fltk::Widget*);
 	void on_menu_preferences (fltk::Widget*);
 
+	void on_menu_edit_group (fltk::Widget*);
+	void on_menu_edit_ungroup (fltk::Widget*);
+	void on_menu_edit_delete (fltk::Widget*);
+	void on_menu_edit_edit (fltk::Widget*);
+
 	void on_menu_view_toggle_grid (fltk::Widget*);
 	void on_menu_view_toggle_grid_snap (fltk::Widget*);
 	void on_menu_view_toggle_overview (fltk::Widget*);
@@ -134,6 +139,11 @@ private:
 	static void cb_menu_shader_properties (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_shader_properties (W); }
 	static void cb_menu_code_preview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_code_preview (W); }
 	static void cb_menu_preferences (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_preferences (W); }
+
+	static void cb_menu_edit_group (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_group (W); }
+	static void cb_menu_edit_ungroup (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_ungroup (W); }
+	static void cb_menu_edit_delete (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_delete (W); }
+	static void cb_menu_edit_edit (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_edit (W); }
 
 	static void cb_menu_view_toggle_grid (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid (W); }
 	static void cb_menu_view_toggle_grid_snap (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid_snap (W); }

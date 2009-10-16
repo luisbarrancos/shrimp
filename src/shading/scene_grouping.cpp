@@ -129,7 +129,6 @@ bool scene::is_selected (const int Group) {
 	if (i == m_groups_selection.end()) {
 		return false;
 	}
-
-	return true;
+	else return true;
 }
 

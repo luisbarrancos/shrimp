@@ -82,9 +82,12 @@ public:
 	void set_grid_state (const bool GridState);
 	void set_snap_to_grid_state (const bool SnapState);
 	void set_overview_state (const bool OverviewState);
-	void set_current_block  (const shader_block* Block){m_current_block = Block;}
+	void set_current_block  (shader_block* Block){m_current_block = Block;}
 	void set_current_group  (int group){m_current_group = group;}
 	bool is_current_block	(const shader_block* Block){return(Block ==m_current_block); }
+	int get_selected_group() {return  is_selected_group;}
+	std::string get_selected_blocks() {return(select_object());}
+	shader_block * get_active_block() {return m_current_selection_block;}
 
 	// snap function (snaps given coordinates)
 	void snap_position (double& X, double& Y);
@@ -202,7 +205,8 @@ private:
 	bool m_snap_to_grid;
 	bool m_overview;
 	int m_font_size;
-	const shader_block* m_current_block;
+	shader_block* m_current_block;
+	shader_block* m_current_selection_block;
 	int m_current_group;
 
 	// callbacks

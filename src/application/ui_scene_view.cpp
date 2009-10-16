@@ -1495,8 +1495,6 @@ void scene_view::draw_groups() {
 		draw_group_body (x, y,group);
 
 		// check whether the group's selected
-			scene* s = get_scene();
-			const bool is_selected = s->is_selected (group);
 		// show group name
 		if (group == m_current_group)
 					// selected group are "hover orange"

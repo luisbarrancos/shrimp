@@ -23,6 +23,7 @@
 #include "ui_code_preview.h"
 #include "ui_shader_properties.h"
 #include "ui_preferences.h"
+#include "ui_edit_code.h"
 
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
@@ -190,6 +191,61 @@ void application_window::on_menu_file_export_scene (fltk::Widget*) {
 void application_window::on_menu_file_quit (fltk::Widget*, void*) {
 
 	exit (0);
+}
+
+void application_window::on_menu_edit_group (fltk::Widget*) {
+	if (m_scene) {
+				if (m_scene->selection_size()>=1){
+					m_scene->group_selection();
+					// refresh
+					redraw();
+				}
+	}
+}
+
+void application_window::on_menu_edit_ungroup (fltk::Widget*) {
+
+	const int m_select_group = m_scene_view->get_selected_group();
+
+	if (m_select_group){
+
+				m_scene->ungroup(m_select_group);
+				// refresh
+				redraw();
+	}
+
+}
+
+void application_window::on_menu_edit_delete (fltk::Widget*) {
+	std::string m_select_block = m_scene_view->get_selected_blocks();
+	if (m_scene) {
+				if ((m_scene->selection_size() >=1) && (m_select_block.size() != 1)){
+						m_scene->delete_block(m_select_block);
+						m_scene->clear_selection();
+						// refresh
+						redraw();
+						}
+				}
+
+}
+
+void application_window::on_menu_edit_edit (fltk::Widget*) {
+
+
+		if (m_scene) {
+				if (m_scene->selection_size()==1){
+					shader_block* block = m_scene_view->get_active_block();
+
+					if (block){
+						edit_code::dialog d;
+						d.open_dialog (block);
+						// toggle block selection
+						m_scene->clear_selection();
+						m_scene->set_block_selection (block, !m_scene->is_selected (block));
+						}
+				}
+			}
+
 }
 
 void application_window::on_menu_view_toggle_grid (fltk::Widget*) {
@@ -405,6 +461,30 @@ application_window::application_window() :
 				menu_file_quit->callback ((fltk::Callback*)on_menu_file_quit);
 
 			menu_file->end();
+
+			// view edit
+			fltk::ItemGroup* menu_edit = new fltk::ItemGroup ("&Edit");
+			menu_edit->begin();
+
+				fltk::Item* menu_edit_group = new fltk::Item ("Group");
+				menu_edit_group->shortcut ('g');
+				menu_edit_group->callback ((fltk::Callback*)cb_menu_edit_group, this);
+
+				fltk::Item* menu_edit_ungroup = new fltk::Item ("Ungroup");
+				menu_edit_ungroup->shortcut ('u');
+				menu_edit_ungroup->callback ((fltk::Callback*)cb_menu_edit_ungroup, this);
+
+				fltk::Item* menu_edit_edit = new fltk::Item ("Edit block");
+				menu_edit_edit->shortcut ('e');
+				menu_edit_edit->callback ((fltk::Callback*)cb_menu_edit_edit, this);
+
+				fltk::Item* menu_edit_delete = new fltk::Item ("Delete blocks");
+				menu_edit_delete->shortcut (fltk::DeleteKey);
+				menu_edit_delete->callback ((fltk::Callback*)cb_menu_edit_delete, this);
+
+
+
+			menu_edit->end();
 
 			// view menu
 			fltk::ItemGroup* menu_view = new fltk::ItemGroup ("&View");
