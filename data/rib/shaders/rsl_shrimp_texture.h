@@ -113,7 +113,7 @@ clamped_texture(
 	dt_v = clamp( dt_v, -maxwidth, maxwidth);
 	// find lower edge of filter region
 	float ss2 = ss - (.5 * ds_u + .5 * ds_v);
-	float tt2 = tt - (.5 * dt_u + .5 * dt-v);
+	float tt2 = tt - (.5 * dt_u + .5 * dt_v);
 	// four point texture call
 	return color texture(	texturename[channelbase], ss2, tt,
 							ss2 + ds_u, tt2 + dt_u,
@@ -145,7 +145,7 @@ clamped_texture(
 	dt_v = clamp( dt_v, -maxwidth, maxwidth);
 	// find lower edge of filter region
 	float ss2 = ss - (.5 * ds_u + .5 * ds_v);
-	float tt2 = tt - (.5 * dt_u + .5 * dt-v);
+	float tt2 = tt - (.5 * dt_u + .5 * dt_v);
 	// four point texture call
 	return float texture(	texturename[channelbase], ss2, tt,
 							ss2 + ds_u, tt2 + dt_u,
@@ -221,6 +221,7 @@ project2d(
 			float xpatoffsetw, xpatoffseth; // x offset width/height
 			float ypatoffsetw, ypatoffseth; // y offset width/height
 			float zpatoffsetw, zpatoffseth; // z offset width/height
+			uniform float xplanessinv, yplanessinv, zplanessinv; // invert S
 			output varying float ss, tt, ds, dt;
 		)
 {
@@ -234,9 +235,9 @@ project2d(
 		extern float s, t;
 		Pproj = point(s, t, 0);
 	} else {
-		Pproj = transform( whichspace, PP);
+		Pproj = transform( "camera", whichspace, PP);
 	}
-	Pproj = (projection != "box") ? transform( xform, Pproj) : Pproj;
+	Pproj = (projection != "box") ? transform( "camera", xform, Pproj) : Pproj;
 	
 	if (projection == "planar" || projection == "st") {
 #if RENDERER == aqsis // component access via xyz/comp only
@@ -265,7 +266,7 @@ project2d(
 		float xn = Nproj[0], yn = Nproj[1], zn = Nproj[2];
 		float xp = Pproj[0], yp = Pproj[1], zp = Pproj[2];
 #endif // Aqsis component access
-		if (zz < 0.577 && zz >-0.577 && xx < 0.577 && xx >-0.577) {
+		if (zn < 0.577 && zn >-0.577 && xn < 0.577 && xn >-0.577) {
 			ss = mod( xp * w_repeat/4, 4) - ypatoffsetw/2;
 			tt = mod( zp * h_repeat/4, 4) - ypatoffseth/2;
 			if (yplanessinv == 1) {
@@ -279,7 +280,7 @@ project2d(
 			if (dt > 0.5) {
 				dt = max( 1 - dt, MINFILTWIDTH);
 			}
-		} else if (xx < 0.577 && xx >-0.577 && yy < 1 && yy >-1) {
+		} else if (xn < 0.577 && xn >-0.577 && yn < 1 && yn >-1) {
 			ss = mod( xp * w_repeat/4, 4) - zpatoffsetw/2;
 			tt = mod( yp * h_repeat/4, 4) - zpatoffseth/2;
 			if (zplanessinv == 1) {
@@ -293,7 +294,7 @@ project2d(
 			if (dt > 0.5) {
 				dt = max(1 - dt, MINFILTWIDTH);
 			}
-		} else if (yy < 0.577 && yy >-0.577) {
+		} else if (yn < 0.577 && yn >-0.577) {
 			ss = mod( yp * w_repeat/4, 4) - xpatoffsetw/2;
 			tt = mod( zp * h_repeat/4, 4) - xpatoffseth/2;
 			if (xplanessinv == 1) {
@@ -341,8 +342,8 @@ project2d(
  * texmap		= texture map
  * projection	= projection type: st, box, planar, perspective, spherical
  * 				  cylindrical
- * whichspace	= projection space transformation coordsys
- * xform		= matrix for projection space transformation
+ * whichspace	= which space to use for projection
+ * xform		= matrix for projection
  * graymode		= if converting to grayscale, what method to use:
  * 				  available channel specified in "channel", minimum, maximum,
  * 				  average or luminance of components, or 'grayscale' if img
@@ -352,9 +353,9 @@ project2d(
  * */
 void
 getcolorandalpha(
-					uniform string texmap, projection, whichspace;
+					uniform string texmap, projection, whichspace, graymode;
 					uniform matrix xform;
-					uniform float graymode, channel;
+					uniform float channel;
 					float blur; // blur for texture
 					uniform float samples; // for the reconstruction filter
 					uniform string filter; // gaussian, triangle, box
@@ -365,6 +366,7 @@ getcolorandalpha(
 					float xpatoffsetw, xpatoffseth; // x offset for box proj
 					float ypatoffsetw, ypatoffseth; // y offset for box proj
 					float zpatoffsetw, zpatoffseth; // z offset for box proj
+					uniform float xinverts, yinverts, zinverts; // invert S
 					uniform float clamptexture; // fix texture seams
 					output varying color mapcolor, mapopacity;
 		)
@@ -373,7 +375,8 @@ getcolorandalpha(
 	// get projection coords
 	project2d(	projection, whichspace, xform, PP, NN, w_repeat, h_repeat,
 				xpatoffsetw, xpatoffseth, ypatoffsetw, ypatoffseth,
-				zpatoffsetw, zpatoffseth, ss, tt, ds, dt);
+				zpatoffsetw, zpatoffseth, xinverts, yinverts, zinverts,
+				ss, tt, ds, dt);
 	ds *= 0.5; dt *= 0.5;
 	// get number of channels from texmap, if exists, else 0 channels
 	uniform float numchannels = (texmap != "") ? numtexchannels(texmap) : 0;
@@ -385,7 +388,7 @@ getcolorandalpha(
 						samples, "filter", filter
 #endif
 	// texture access, if there's 1 or 2 channels available
-	if (channels > 0 && channels < 3) {
+	if (numchannels > 0 && numchannels < 3) {
 		// read texture starting at channel 0
 		Ct = (clamptexture == 1) ? float clamped_texture( texmap, 0, ss, tt,
 				width, maxwidth) : float texture( texmap[0], TEXMAP_PARAMS);
@@ -401,31 +404,29 @@ getcolorandalpha(
 				Ct = float texture( texmap[0], TEXMAP_PARAMS);
 				Ot = float texture( texmap[1], TEXMAP_PARAMS);
 			}
-		} else { // we have at least 3 channels
-			// read color texture starting at channel 0
-			Ct = (clamptexture == 1) ? color clamped_texture( texmap, 0,
-					ss, tt, width, maxwidth) :
-				color texture( texmap[0], TEXMAP_PARAMS);
-			// RGB, if graymode is empty, alpha = opaque, else creates alpha
-			// via method set in graymode
-			if (numchannels == 3) {
-			Ot = (graymode == "") ? color(1) : tograyscale( Ct,
-					graymode, channel);
-			} else if (numchannels == 4) { // alpha = [3]
-			// 0 = basechannel for clamped_texture for rgb, 3 for alpha
-			Ot = (clamptexture == 1) ? clamped_texture( texmap, 3, ss, tt,
+		}
+	} else if (numchannels > 0 && numchannels >= 3) { // at least 3 channels
+		// read color texture starting at channel 0
+		Ct = (clamptexture == 1) ? color clamped_texture( texmap, 0, ss, tt,
+					width, maxwidth) : color texture( texmap[0], TEXMAP_PARAMS);
+		// RGB, if graymode is empty, alpha = opaque, else creates alpha
+		// via method set in graymode
+		if (numchannels == 3) {
+		Ot = (graymode == "") ? color(1) : tograyscale( Ct, graymode, channel);
+		} else if (numchannels == 4) { // alpha = [3]
+		// 0 = basechannel for clamped_texture for rgb, 3 for alpha
+		Ot = (clamptexture == 1) ? clamped_texture( texmap, 3, ss, tt,
 					width,maxwidth) : color texture( texmap[3], TEXMAP_PARAMS);
-			} else if (numchannels > 5) { // transparency = color, from
-			// channels 3,4,5 for RGB
-			Ot = (clamptexture ==1) ? 
-				color(	float clamped_texture( texmap,3,ss,tt, width,maxwidth),
-						float clamped_texture( texmap,4,ss,tt, width,maxwidth),
-						float clamped_texture( texmap,5,ss,tt, width,maxwidth))
-				:		
-				color(	float texture( texmap[3], TEXMAP_PARAMS),
-						float texture( texmap[4], TEXMAP_PARAMS),
-						float texture( texmap[5], TEXMAP_PARAMS) );
-			}
+		} else if (numchannels > 5) { // transparency = color, from
+		// channels 3,4,5 for RGB
+		Ot = (clamptexture ==1) ? 
+			color(	float clamped_texture( texmap,3,ss,tt, width,maxwidth),
+					float clamped_texture( texmap,4,ss,tt, width,maxwidth),
+					float clamped_texture( texmap,5,ss,tt, width,maxwidth))
+			:		
+			color(	float texture( texmap[3], TEXMAP_PARAMS),
+					float texture( texmap[4], TEXMAP_PARAMS),
+					float texture( texmap[5], TEXMAP_PARAMS) );
 		}
 		mapcolor = Ct; mapopacity = Ot;
 	} else {
