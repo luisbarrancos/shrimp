@@ -16,10 +16,6 @@
 #define SQR(X)	( (X) * (X) )
 #endif
 
-#ifndef luminance
-#define luminance(c)	comp(c,0)*0.299 + comp(c,1)*0.587 + comp(c,2)*.114
-#endif
-
 #define S_E			2.718281828459045	/* Euler's number */
 #define S_PI		3.141592653589793	/* PI */
 #define S_PI_2		1.570796326794896	/* PI/2 */
@@ -546,21 +542,65 @@ void mpcurvature(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Bias, Gain, Gamma functions, by Rudy Cortes /////////////////////////////////
-// from rendermanacademy.com Function Of the Week section //////////////////////
+// Bias, Gain, Gamma functions, Luminance functions, float and color versions //
 ////////////////////////////////////////////////////////////////////////////////
-
-/* behaves like a brigthness filter */
-/* the block operates on a per component basis for color types */
-float bias( float x, val )
-{
-	return (val > 0) ? pow(x, log(val) / log(0.5)) : 0;
+// Bias behaves like a brigthness control
+float bias(	float x, bias; ) {
+	return (bias > 0) ? pow(x, log(bias) / log(0.5)) : 0;
 }
-
-/* behaves like a contrast filter */
-float gain( float x, val)
-{
-	return 0.5 * ((x < 0.5) ? bias (2*x, 1-val): (2-bias(2-2*x, 1-val)));
+// Gain behaves like a contrast control
+float gain(	float x, gain; ) {
+	return 0.5 * ((x < 0.5) ? bias(2 * x, 1 - gain) : (2-bias(2-2*x, 1-gain)));
+}
+// Gamma control
+float gamma(float x, gamma; ) {
+	return pow( x, 1/gamma);
+}
+// color versions of bias, gain, gamma
+color bias(	color x; float bias; ) {
+#if RENDERER == aqsis // component access via xyz/comp only
+	return color(	float bias( getcomp(x, 0), bias),
+		   			float bias( getcomp(x, 1), bias),
+					float bias( getcomp(x, 2), bias));
+#else
+	return color(	float bias( x[0], bias),
+					float bias( x[1], bias),
+					float bias( x[2], bias) );
+#endif // Aqsis component access
+}
+// color gain
+color gain( color x; float gain; ) {
+#if RENDERER == aqsis // component access via xyz/comp only
+	return color(	float gain( getcomp(x, 0), gain),
+					float gain( getcomp(x, 1), gain),
+					float gain( getcomp(x, 2), gain) );
+#else
+	return color(	float gain( x[0], gain),
+					float gain( x[1], gain),
+					float gain( x[2], gain) );
+#endif // Aqsis component access
+}
+// color gamma
+color gamma(color x; float gamma; ) {
+#if RENDERER == aqsis // component access via xyz/comp only
+	return color(	float gamma( getcomp(x, 0), gamma),
+					float gamma( getcomp(x, 1), gamma),
+					float gamma( getcomp(x, 2), gamma) );
+#else
+	return color(	float gamma( x[0], gamma),
+					float gamma( x[1], gamma),
+					float gamma( x[2], gamma) );
+#endif // Aqsis component access
+}
+////////////////////////////////////////////////////////////////////////////////
+// CIE Luminance function
+float luminance(	color C; ) {
+#if RENDERER == aqsis // component access via xyz/comp only
+	return getcomp(C, 0) * 0.212671 + getcomp(C, 1) * 0.715160 +
+			getcomp(C, 2) * 0.072169;
+#else
+	return C[0] * 0.212671 + C[1] * 0.715160 + C[2] * 0.072169;
+#endif // Aqsis component access
 }
 
 ////////////////////////////////////////////////////////////////////////////////
