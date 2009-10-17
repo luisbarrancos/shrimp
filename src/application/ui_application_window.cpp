@@ -217,15 +217,27 @@ void application_window::on_menu_edit_ungroup (fltk::Widget*) {
 }
 
 void application_window::on_menu_edit_delete (fltk::Widget*) {
-	std::string m_select_block = m_scene_view->get_selected_blocks();
+
+
 	if (m_scene) {
-				if ((m_scene->selection_size() >=1) && (m_select_block.size() != 1)){
+		std::string m_select_block = m_scene_view->get_selected_blocks();
+
+				if ((m_scene->selection_size() >1)){
 						m_scene->delete_block(m_select_block);
 						m_scene->clear_selection();
 						// refresh
 						redraw();
 						}
+				else if (m_scene->selection_size()==1){
+
+						m_scene->delete_block((m_scene_view->get_active_block())->name());
+						m_scene->clear_selection();
+						// refresh
+						redraw();
+
 				}
+
+			}
 
 }
 
