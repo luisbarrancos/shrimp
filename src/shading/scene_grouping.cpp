@@ -132,3 +132,8 @@ bool scene::is_selected (const int Group) {
 	else return true;
 }
 
+int scene::group_selection_size() {
+
+	return m_groups_selection.size();
+}
+

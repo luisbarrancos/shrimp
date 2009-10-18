@@ -74,9 +74,11 @@ int scene_view::handle (int Event) {
 											set_current_block(block);
 											}
 			}
+			//Mouse move over a group, set group as current and draw the group border as selected
 			else if (m_active_group){set_current_group(m_active_group);
 
 			}
+			//Muose over nothing
 			else {
 
 				set_current_block(NULL);
@@ -108,7 +110,7 @@ int scene_view::handle (int Event) {
 
 				if (fltk::event_button() == fltk::LeftButton) {
 
-					if (shift_key_down || ctrl_key_down) {
+					if (ctrl_key_down) {
 
 						if (m_active_block.size()) {
 
@@ -120,23 +122,55 @@ int scene_view::handle (int Event) {
 								if (m_scene->is_selected (block)) {m_current_selection_block= block;}
 								}
 						}
+						if (m_active_group) {
+							if (m_scene) {
+												m_scene->set_group_selection(m_active_group,!m_scene->is_selected(m_active_group));
+												is_selected_group = m_active_group;
+												}
+						}
 
 					}
+
+					else if (shift_key_down) {
+
+											if (m_active_block.size()) {
+
+												if (m_scene) {
+													shader_block* block = m_scene->get_block (m_active_block);
+
+													// toggle block selection
+													m_scene->set_block_selection (block, 1);
+													if (m_scene->is_selected (block)) {m_current_selection_block= block;}
+													}
+											}
+											if (m_active_group) {
+																	m_scene->set_group_selection(m_active_group,1);
+																	is_selected_group = m_active_group;
+																	}
+
+										}
+
 					else if (m_active_property.first.size() && m_connection_start.first == "") {
 
 						// save connection start
 						m_connection_start_x = m_mouse_click_x;
 						m_connection_start_y = m_mouse_click_y;
 					}
+					//Save selected group number
 					else if (m_active_group) {
-						m_scene->set_group_selection(m_active_group,!m_scene->is_selected(m_active_group));
 						is_selected_group = m_active_group;
-						}
+						set_current_group(m_active_group);
+					}
+
 					else {
+						if (!m_active_block.size() && (!m_active_group) ) {
 						m_scene->clear_selection();
 						is_selected_group =0;
+						}
+
 						m_start_drag_x = fltk::event_x();
 						m_start_drag_y = fltk::event_y();
+
 					}
 
 				}
@@ -310,9 +344,10 @@ int scene_view::handle (int Event) {
 
 				}
 				else if (m_active_group) {
-
+					set_current_group(m_active_group);
 					move_active_group (move_x / m_size, move_y / m_size);
 				}
+
 				else if (alt_key_down ){
 					// move scene when ALT key press
 					move_scene (move_x, move_y);
@@ -368,7 +403,7 @@ int scene_view::handle (int Event) {
 						}
 
 					}
-
+					//select block
 					else if ((m_active_block.size() || m_active_group) &&  !(shift_key_down || ctrl_key_down)) {
 												if (m_scene) {
 															shader_block* block = m_scene->get_block (m_active_block);

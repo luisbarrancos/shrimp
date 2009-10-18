@@ -209,6 +209,8 @@ public:
 	// returns whether a group is selected
 	bool is_selected (const int Group);
 
+	int group_selection_size();
+
 	//////////// Misc
 
 	void bounding_box (double& Left, double& Right, double& Bottom, double& Top);

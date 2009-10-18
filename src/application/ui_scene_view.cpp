@@ -189,10 +189,13 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 
 
 	int total = m_scene->selection_size();
+	int group_total =m_scene->group_selection_size();
 	shader_block* block = m_scene->get_block (m_active_block);
+
 
 	//If multi selecion
 	if (total>1){
+
 			for (scene::selection_t::const_iterator block_i = m_scene->m_selection.begin(); block_i != m_scene->m_selection.end(); ++block_i) {
 
 						std::string current_selection = *block_i;
@@ -206,18 +209,15 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 							}
 
 						int group = m_scene->group (block);
-						if (!group) {
-
+						if (!group){
 							block->m_position_x += XOffset;
 							block->m_position_y += YOffset;
+							}
 
 						}
-
-			}
-
 	}
-	//If single selection no parsing grab m_active_block
 
+	//If single selection no parsing grab m_active_block
 	else if (!block) {
 					log() << error << "active block '" << m_active_block << "' not found." << std::endl;
 					return;
@@ -227,6 +227,10 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 			block->m_position_x += XOffset;
 			block->m_position_y += YOffset;
 		   }
+	//Move group as well
+	if (group_total){
+	move_active_group(XOffset,YOffset);
+	}
 }
 
 void scene_view::move_all_blocks (const double XOffset, const double YOffset) {
@@ -265,8 +269,9 @@ void scene_view::move_scene (const double XOffset, const double YOffset) {
 
 
 void scene_view::move_active_group (const double XOffset, const double YOffset) {
+	int total = m_scene->group_selection_size();
 
-	if (!m_active_group) {
+	if (!total && (m_active_group==0)) {
 
 		log() << error << "there's no group to move!" << std::endl;
 		return;
@@ -278,14 +283,24 @@ void scene_view::move_active_group (const double XOffset, const double YOffset) 
 		return;
 	}
 
+
 	// move all the group's shaders
 	for (scene::groups_t::const_iterator g = m_scene->m_groups.begin(); g != m_scene->m_groups.end(); ++g) {
+
+		shader_block* block = m_scene->get_block (g->first);
+		//Only one group
 		if (g->second == m_active_group) {
 
-			shader_block* block = m_scene->get_block (g->first);
 			block->m_position_x += XOffset;
 			block->m_position_y += YOffset;
 		}
+		//All selected group
+		else if (m_scene->is_selected(g->second)){
+
+			block->m_position_x += XOffset;
+			block->m_position_y += YOffset;
+		}
+
 	}
 }
 
@@ -338,36 +353,37 @@ void scene_view::box_selection()
 				shader_block* blockSel = block_i->second;
 
 
-				int group = m_scene->group (block);
+				const int group = m_scene->group (block);
+				//Project rectangle selection in "Block" space
+				GLdouble Fx,Fy,Fz;
+				GLdouble Tx,Ty,Tz;
+
+				GLint viewport[4];
+				GLdouble mvmatrix[16], projmatrix[16];
+				glGetDoublev(GL_MODELVIEW_MATRIX,mvmatrix );
+				glGetDoublev(GL_PROJECTION_MATRIX,projmatrix );
+				glGetIntegerv(GL_VIEWPORT,viewport );
+
+			    //Mouse selection direction
+			    //Fx<Tx : Ty<Fy
+			    //Fx>Tx : Ty<Fy
+			    //Fx>Tx : Ty>Fy
+			    //Fx<Tx : Ty>Fy
+
+				gluUnProject(from_x,from_y,0, mvmatrix, projmatrix,viewport,&Fx,&Fy,&Fz );
+				gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
+
 				if (!group) {
 					//Height of the block
 					const double width = blockSel->m_width;
+
 					const unsigned long max_properties = std::max (blockSel->input_count(), (unsigned long)blockSel->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 					// set minimal block height
 					const double height1 = m_scene->is_rolled (blockSel) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
 					const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
-
-					//Project rectangle selection in "Block" space
-				    GLdouble Fx,Fy,Fz;
-				    GLdouble Tx,Ty,Tz;
-
-				    GLint viewport[4];
-				    GLdouble mvmatrix[16], projmatrix[16];
-				    glGetDoublev(GL_MODELVIEW_MATRIX,mvmatrix );
-				    glGetDoublev(GL_PROJECTION_MATRIX,projmatrix );
-				    glGetIntegerv(GL_VIEWPORT,viewport );
-				    gluUnProject(from_x,from_y,0, mvmatrix, projmatrix,viewport,&Fx,&Fy,&Fz );
-				    gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
-
-
-				    //Mouse selection direction
-				    //Fx<Tx : Ty<Fy
-				    //Fx>Tx : Ty<Fy
-				    //Fx>Tx : Ty>Fy
-				    //Fx<Tx : Ty>Fy
-
+					//Above block
  				    if (Fx<Tx && Ty<Fy){
 				    //Check if rectangle surround center of the block
  				    	if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
@@ -412,8 +428,65 @@ void scene_view::box_selection()
 
 					++index;
 				}
-			}
 
+				if (group) {
+
+
+					group_position_t::const_iterator p = m_group_positions.find(group);
+
+						//Get group position
+						const double x = p->second.position_x;
+						const double y = p->second.position_y;
+
+						 //Above group
+						   //Check if rectangle surround center of the block
+						   if (Fx<Tx && Ty<Fy){
+							//Check if rectangle surround center of the block
+								if (point_inside (x ,y ,Fx,Ty,Tx,Fy))
+									{
+									//Make Block selected
+									m_scene->set_group_selection (group, true);
+									m_current_group = p->first;
+									}
+								else m_scene->set_group_selection (group, false);
+							}
+							else if (Fx>Tx && Ty<Fy){
+								//Check if rectangle surround center of the block
+								if (point_inside (x,y ,Tx,Ty,Fx,Fy))
+									{
+									//Make Block selected
+									m_scene->set_group_selection (group, true);
+									m_current_group = p->first;
+									}
+								else m_scene->set_group_selection (group, false);
+								}
+						   else if (Fx>Tx && Ty>Fy){
+									//Check if rectangle surround center of the block
+								if (point_inside (x ,y ,Tx,Fy,Fx,Ty))
+									{
+									//Make Block selected
+									m_scene->set_group_selection (group, true);
+									m_current_group = p->first;
+									}
+								else m_scene->set_group_selection (group, false);
+								}
+						  else if (Fx<Tx && Ty>Fy){
+									//Check if rectangle surround center of the block
+								if (point_inside (x ,y ,Fx,Fy,Tx,Ty))
+									{
+									//Make Block selected
+									m_scene->set_group_selection (group, true);
+									}
+								else m_scene->set_group_selection (group, false);
+								}
+
+							glLoadName (index);
+
+							block_indices.insert (std::make_pair (index, blockSel));
+
+							++index;
+				}
+	}
 
 }
 void scene_view::draw_grid() {
@@ -1523,7 +1596,7 @@ void scene_view::draw_group_body (const double X, const double Y,const int curre
 {
 	const int sections = 6;
 	const double radius = 0.4;
-	const double alpha = 0.5;
+	const double alpha = 1;
 
 	// check whether the group's selected
 	scene* s = get_scene();
