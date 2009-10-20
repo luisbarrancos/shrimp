@@ -7,7 +7,7 @@
 	<input name="samplebase" description="Controls ray origin jittering" storage="uniform" type="float" default="1"/>
     <input name="maxdist" description="Maximum distance" storage="uniform" type="float" default="1e38"/>
 	<input name="maxpixeldist" description="Maximum samples distance" type="float" default="-1"/>
-	<input name="maxsolidangle" description="Maximum solid angle, in steradians" storage="uniform" type="float" default="0.05"/>
+	<input name="maxsolidang" description="Maximum solid angle, in steradians" storage="uniform" type="float" default="0.05"/>
 	<input name="maxerror" description="Quality vs speed" type="float" default="-1"/>
 	<input name="bias" description="Bias to control self-intersection" type="float" default="0.01" />
 	<input name="coneangle" description="Cone angle" storage="uniform" type="float" default="1.570796327"/>
@@ -19,7 +19,7 @@
 	<input name="subset" description="Objects subset considered" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
-	<input name="occlusionmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
+	<input name="occlmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
 	<input name="useptc" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
 	<input name="ptcfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
@@ -59,7 +59,7 @@
 								"falloffmode", $(falloffmode), \
 								"falloff", $(falloff), "pointbased", $(useptc), \
 								"filename", $(ptcfile), "hitsides", $(hitsides), \
-								"maxsolidangle", $(maxsolidangle), \
+								"maxsolidangle", $(maxsolidang), \
 								"clamp", $(clamp), \
 								"sortbleeding", $(sortbleeding), \
 								"coordsystem", $(coordsys)
@@ -74,7 +74,7 @@
 								"environmentmap", $(envmap), \
 								"filename", $(ptcfile), \
 								"maxpixeldist", $(maxpixeldist), \
-								"maxsolidangle", $(maxsolidangle), \
+								"maxsolidangle", $(maxsolidang), \
 								"environmentcolor", $(Envcolor)
 	#elif RENDERER == prman
 	#define SHADEOP_ARGUMENTS	"adaptive", $(adaptive), \
@@ -95,7 +95,7 @@
 								"falloffmode", $(falloffmode), \
 								"falloff", $(falloff), "pointbased", $(useptc), \
 								"filename", $(ptcfile), \
-								"maxsolidangle", $(maxsolidangle), \
+								"maxsolidangle", $(maxsolidang), \
 								"clamp", $(clamp), \
 								"environmentcolor", $(Envcolor), \
 								"environmentdir", $(Envdirection)		
@@ -116,11 +116,11 @@
 									SHADEOP_ARGUMENTS );
 		$(Occlusion) = 1 - aov_occlusion;
 	#elif RENDERER == air /* shadow map based, unless map = "raytrace" */
-		aov_occlusion += occlusion(	$(occlusionmap), $(P), $(direction),
+		aov_occlusion += occlusion(	$(occlmap), $(P), $(direction),
 									$(angle), SHADEOP_ARGUMENTS );
 		$(Occlusion) = 1 - aov_occlusion;
 	#elif RENDERER == aqsis /* shadow map based occlusion */
-		aov_occlusion += occlusion(	$(occlusionmap), $(P), $(direction),
+		aov_occlusion += occlusion(	$(occlmap), $(P), $(direction),
 									$(samples), SHADEOP_ARGUMENTS );
 		$(Occlusion) = 1 - aov_occlusion;
 	#else /* entropy, bmrt, renderdotc? */
