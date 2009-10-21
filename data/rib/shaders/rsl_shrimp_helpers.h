@@ -297,7 +297,7 @@ color scurvature(
  * Hinges on the realization that the indefinite integral of abs(x) is 
  * sign(x) * 1/2 x*x;
  * */
-float filteredabs (float x, dx)
+float filteredabs(	float x, dx; )
 {
     float integral (float t) {
 	return sign(t) * 0.5 * SQR(t);
@@ -317,7 +317,7 @@ float filteredabs (float x, dx)
  * analytically integrating smoothstep, which is -2t^3+3t^2.  Region 3
  * is trivially 1.
  * */
-float filteredsmoothstep (float e0, e1, x, dx)
+float filteredsmoothstep(	float e0, e1, x, dx; )
 {
     float integral (float t) {
 	return -0.5 * SQR(t) * ( SQR(t) - 2 * t);
@@ -347,7 +347,7 @@ float filteredsmoothstep (float e0, e1, x, dx)
 /* A pulse train: a signal that repeats with a given period, and is
  * 0 when 0 <= mod(x,period) < edge, and 1 when mod(x,period) > edge.
  * */
-float pulsetrain (float edge, period, x)
+float pulsetrain(	float edge, period, x; )
 {
     return pulse (edge, period, mod(x,period));
 }
@@ -361,7 +361,7 @@ float pulsetrain (float edge, period, x)
  * train from 0 to x. Just subtract!
  * */
 
-float filteredpulsetrain (float edge, period, x, dx)
+float filteredpulsetrain(	float edge, period, x, dx; )
 {
     /* First, normalize so period == 1 and our domain of interest is > 0 */
     float w = dx/period;
@@ -382,7 +382,7 @@ float filteredpulsetrain (float edge, period, x, dx)
 ////////////////////////////////////////////////////////////////////////////////
 
 float
-smoothpulse (float e0, e1, e2, e3, x)
+smoothpulse(	float e0, e1, e2, e3, x; )
 {
     return smoothstep(e0,e1,x) - smoothstep(e2,e3,x);
 }
@@ -390,7 +390,7 @@ smoothpulse (float e0, e1, e2, e3, x)
 ////////////////////////////////////////////////////////////////////////////////
 
 float
-filteredsmoothpulse (float e0, e1, e2, e3, x, dx)
+filteredsmoothpulse(	float e0, e1, e2, e3, x, dx; )
 {
     return filteredsmoothstep(e0,e1,x,dx) - filteredsmoothstep(e2,e3,x,dx);
 }
@@ -402,7 +402,7 @@ filteredsmoothpulse (float e0, e1, e2, e3, x, dx)
  * mod(x/period,1) > edge.  
  * */
 
-float smoothpulsetrain (float e0, e1, e2, e3, period, x)
+float smoothpulsetrain(	float e0, e1, e2, e3, period, x; )
 {
     return smoothpulse (e0, e1, e2, e3, mod(x,period));
 }
@@ -415,7 +415,7 @@ float smoothpulsetrain (float e0, e1, e2, e3, period, x)
  * lightness multiply.
  * */
 
-color varyEach (color Cin; float index, varyhue, varysat, varylum;)
+color varyEach(	color Cin; float index, varyhue, varysat, varylum; )
 {
     /* Convert to "hsl" space, it's more convenient, assumes "rgb" input */
     color Chsl = ctransform ("hsl", Cin);
@@ -445,10 +445,10 @@ tilepattern(
             float ss, tt, ds, dt;
 	        float groovewidth, grooveheight;
 	        output float swhichtile, twhichtile;
-	        output float stile, ttile;)
+	        output float stile, ttile; )
 {
-    swhichtile = floor (ss);
-    twhichtile = floor (tt);
+    swhichtile = floor( ss );
+    twhichtile = floor( tt );
     stile = ss - swhichtile;
     ttile = tt - twhichtile;
 
@@ -559,9 +559,9 @@ float gamma(float x, gamma; ) {
 // color versions of bias, gain, gamma
 color bias(	color x; float bias; ) {
 #if RENDERER == aqsis // component access via xyz/comp only
-	return color(	float bias( getcomp(x, 0), bias),
-		   			float bias( getcomp(x, 1), bias),
-					float bias( getcomp(x, 2), bias));
+	return color(	float bias( xcomp(x), bias),
+		   			float bias( ycomp(x), bias),
+					float bias( zcomp(x), bias));
 #else
 	return color(	float bias( x[0], bias),
 					float bias( x[1], bias),
@@ -571,9 +571,9 @@ color bias(	color x; float bias; ) {
 // color gain
 color gain( color x; float gain; ) {
 #if RENDERER == aqsis // component access via xyz/comp only
-	return color(	float gain( getcomp(x, 0), gain),
-					float gain( getcomp(x, 1), gain),
-					float gain( getcomp(x, 2), gain) );
+	return color(	float gain( xcomp(x), gain),
+					float gain( ycomp(x), gain),
+					float gain( zcomp(x), gain) );
 #else
 	return color(	float gain( x[0], gain),
 					float gain( x[1], gain),
@@ -583,9 +583,9 @@ color gain( color x; float gain; ) {
 // color gamma
 color gamma(color x; float gamma; ) {
 #if RENDERER == aqsis // component access via xyz/comp only
-	return color(	float gamma( getcomp(x, 0), gamma),
-					float gamma( getcomp(x, 1), gamma),
-					float gamma( getcomp(x, 2), gamma) );
+	return color(	float gamma( xcomp(x), gamma),
+					float gamma( ycomp(x), gamma),
+					float gamma( zcomp(x), gamma) );
 #else
 	return color(	float gamma( x[0], gamma),
 					float gamma( x[1], gamma),
@@ -596,8 +596,8 @@ color gamma(color x; float gamma; ) {
 // CIE Luminance function
 float luminance(	color C; ) {
 #if RENDERER == aqsis // component access via xyz/comp only
-	return getcomp(C, 0) * 0.212671 + getcomp(C, 1) * 0.715160 +
-			getcomp(C, 2) * 0.072169;
+	return comp(C, 0) * 0.212671 + comp(C, 1) * 0.715160 + 
+			comp(C, 2) * 0.072169;
 #else
 	return C[0] * 0.212671 + C[1] * 0.715160 + C[2] * 0.072169;
 #endif // Aqsis component access
@@ -641,16 +641,16 @@ float mm_erfc( float x; ) {
 ////////////////////////////////////////////////////////////////////////////////
 // Vector exponent, maximum, minimum
 #if RENDERER == aqsis // can only access components with (xyz)comp
-color expc( color c; ) {
-	return color( exp( comp(c, 0)), exp( comp(c, 1)), exp(comp(c, 2)));
+color expc( color C; ) {
+	return color( exp( comp(C, 0)), exp( comp(C, 1)), exp(comp(C, 2)));
 }
 
-float vmax( color c; ) { return max( comp(c, 0), comp(c, 1), comp(c, 2)); }
-float vmin( color c; ) { return min( comp(c, 0), comp(c, 1), comp(c, 2)); }
+float vmax( color C; ) { return max( comp(C, 0), comp(C, 1), comp(C, 2)); }
+float vmin( color C; ) { return min( comp(C, 0), comp(C, 1), comp(C, 2)); }
 #else
-color expc( color c; ) { return color( exp(c[0]), exp(c[1]), exp(c[2]) ); }
-float vmax( color c; ) { return max( c[0], c[1], c[2] ); }
-float vmin( color c; ) { return min( c[0], c[1], c[2] ); }
+color expc( color C; ) { return color( exp(C[0]), exp(C[1]), exp(C[2]) ); }
+float vmax( color C; ) { return max( C[0], C[1], C[2] ); }
+float vmin( color C; ) { return min( C[0], C[1], C[2] ); }
 #endif // Aqsis component selection workaround
 
 ////////////////////////////////////////////////////////////////////////////////
