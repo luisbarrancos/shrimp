@@ -133,6 +133,9 @@ public:
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
 	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
 
+	//Copy block
+	void copy_block(const std::string& Name);
+
 	//////////// Serialization
 
 	// load and save a scene (a network of blocks with additional information, in an XML file)

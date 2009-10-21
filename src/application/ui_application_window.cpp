@@ -192,6 +192,29 @@ void application_window::on_menu_file_quit (fltk::Widget*, void*) {
 
 	exit (0);
 }
+
+//Edit menu : Copy selection
+void application_window::on_menu_edit_copy (fltk::Widget*) {
+	if (m_scene) {
+				if (m_scene->selection_size()>=1){
+					m_scene_view->copy_selected_blocks();
+					// refresh
+					redraw();
+				}
+	}
+}
+
+//Edit menu : Copy selection
+void application_window::on_menu_edit_paste (fltk::Widget*) {
+//	if (m_scene) {
+//				if (m_scene->selection_size()>=1){
+//					m_scene->group_selection();
+//					// refresh
+//					redraw();
+//				}
+//	}
+}
+
 //Edit menu : Group selection
 void application_window::on_menu_edit_group (fltk::Widget*) {
 	if (m_scene) {
@@ -481,6 +504,14 @@ application_window::application_window() :
 			// view edit
 			fltk::ItemGroup* menu_edit = new fltk::ItemGroup ("&Edit");
 			menu_edit->begin();
+
+				fltk::Item* menu_edit_copy = new fltk::Item ("Copy");
+				menu_edit_copy->shortcut (fltk::CTRL + 'c');
+				menu_edit_copy->callback ((fltk::Callback*)cb_menu_edit_copy, this);
+
+				fltk::Item* menu_edit_paste = new fltk::Item ("Paste");
+				menu_edit_paste->shortcut (fltk::CTRL + 'v');
+				menu_edit_paste->callback ((fltk::Callback*)cb_menu_edit_paste, this);
 
 				fltk::Item* menu_edit_group = new fltk::Item ("Group");
 				menu_edit_group->shortcut ('g');

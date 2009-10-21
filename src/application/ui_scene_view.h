@@ -78,6 +78,12 @@ public:
 	// move active group
 	void move_active_group (const double XOffset, const double YOffset);
 
+	//copy blocks
+	void copy_selected_blocks();
+
+	//copy groups
+	void copy_selected_groups();
+
 	// options
 	void set_grid_state (const bool GridState);
 	void set_snap_to_grid_state (const bool SnapState);
