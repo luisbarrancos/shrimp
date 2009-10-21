@@ -19,7 +19,7 @@
 	<input name="subset" description="Objects subset considered" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;world&quot;"/>
-	<input name="occlmap" description="Occlusion map" storage="uniform" type="string" default="&quot;raytrace;&quot;"/>
+	<input name="occlmap" description="Occlusion map" storage="uniform" type="string" default="&quot;&quot;"/>
 	<input name="blur" description="Shadow map blur" type="float" default="0"/>
 	<input name="useptc" description="Toggle point based occlusion" storage="uniform" type="float" default="0"/>
 	<input name="ptcfile" description="Point cloud filename" storage="uniform" type="string" default="&quot;&quot;"/>
