@@ -133,8 +133,15 @@ public:
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
 	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
 
-	//Copy block
-	void copy_block(const std::string& Name);
+	//copy paste block list
+	typedef std::set<shader_block*>  copy_selection_t;
+		copy_selection_t m_copy_selection;
+
+	//copy block
+	shader_block* copy_blocks(const std::string& Name);
+
+	//paste block
+	void paste_blocks();
 
 	//////////// Serialization
 

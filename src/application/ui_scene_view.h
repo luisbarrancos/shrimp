@@ -81,6 +81,9 @@ public:
 	//copy blocks
 	void copy_selected_blocks();
 
+	//paste blocks
+	void paste_buffered_blocks();
+
 	//copy groups
 	void copy_selected_groups();
 
@@ -214,6 +217,9 @@ private:
 	shader_block* m_current_block;
 	shader_block* m_current_selection_block;
 	int m_current_group;
+
+
+
 
 	// callbacks
 	void on_select_block (fltk::Widget* W, void* Data);

@@ -364,6 +364,76 @@ void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
 	}
 }
 
+// copy block
+shader_block* scene::copy_blocks(const std::string& Name)
+{
+	shader_block* BlockToCopy = this->get_block(Name);
+
+	// temp name
+			const std::string Temp = "Copy";
+			std::string NewName;
+	// create block
+		shader_block* new_block = new shader_block (Temp, "",0);
+
+	// set new name
+		NewName = new_block->get_unique_input_name(Name);
+		new_block->set_name(NewName);
+
+	// copy description
+		new_block->m_description = BlockToCopy->m_description;
+
+	// copy author
+		new_block->m_author = BlockToCopy->m_author;
+	// copy usage
+		new_block->set_usage(BlockToCopy->m_usage);
+
+	// copy properties
+	// input and output properties
+
+		// input and output properties
+		typedef std::vector<property> properties_t;
+
+		if (BlockToCopy->m_inputs.size()){
+			for (properties_t::const_iterator input = BlockToCopy->m_inputs.begin(); input != BlockToCopy->m_inputs.end(); ++input) {
+
+					new_block->add_input (input->m_name, input->get_type(), input->get_storage(), input->m_description, input->get_value(), input->m_multi_operator, input->m_shader_parameter);
+
+			}
+		}
+
+		if (BlockToCopy->m_outputs.size()){
+			for (properties_t::iterator output = BlockToCopy->m_outputs.begin(); output != BlockToCopy->m_outputs.end(); ++output) {
+
+				new_block->add_output (output->m_name, output->get_type(), output->get_storage(), output->m_description, output->m_shader_output);
+
+			}
+		}
+
+
+	// copy block position, size and rolled state in scene
+		new_block->m_position_x = BlockToCopy->m_position_x;
+		new_block->m_position_y = BlockToCopy->m_position_y;
+		new_block->m_width = BlockToCopy->m_width ;
+		new_block->m_height = BlockToCopy->m_height ;
+		new_block->m_rolled = BlockToCopy->m_rolled ;
+
+	// copy shader code
+		new_block->m_includes = BlockToCopy->m_includes;
+		new_block->m_code = BlockToCopy->m_code;
+		new_block->m_code_written = BlockToCopy->m_code_written;
+
+
+		return new_block;
+}
+
+void scene::paste_blocks()
+{
+	for (copy_selection_t::iterator new_block = m_copy_selection.begin(); new_block != m_copy_selection.end(); ++new_block){
+		shader_block* paste =*new_block;
+		const std::string paste_name = paste->name();
+		add_block (paste_name,"",paste);
+	}
+}
 
 bool scene::is_rolled (const shader_block* Block) const {
 

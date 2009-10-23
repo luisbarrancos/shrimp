@@ -206,13 +206,13 @@ void application_window::on_menu_edit_copy (fltk::Widget*) {
 
 //Edit menu : Copy selection
 void application_window::on_menu_edit_paste (fltk::Widget*) {
-//	if (m_scene) {
-//				if (m_scene->selection_size()>=1){
-//					m_scene->group_selection();
-//					// refresh
-//					redraw();
-//				}
-//	}
+	if (m_scene) {
+					if (m_scene->selection_size()>=1){
+						m_scene_view->paste_buffered_blocks();
+						// refresh
+						redraw();
+					}
+		}
 }
 
 //Edit menu : Group selection
