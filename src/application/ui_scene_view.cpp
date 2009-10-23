@@ -311,6 +311,7 @@ void scene_view::copy_selected_blocks()
 	int total = m_scene->selection_size();
 	int group_total =m_scene->group_selection_size();
 	shader_block* block = m_current_selection_block;
+
 	if (!block){
 		log() << error << "active block '" << m_current_selection_block << "' not found." << std::endl;
 		return;
@@ -320,7 +321,7 @@ void scene_view::copy_selected_blocks()
 	//copy block
 	//If multi seletcion
 		if (total>1){
-
+				m_scene->clear_buffer_selection();
 				for (scene::selection_t::const_iterator block_i = m_scene->m_selection.begin(); block_i != m_scene->m_selection.end(); ++block_i) {
 
 							std::string current_selection = *block_i;
@@ -350,7 +351,7 @@ void scene_view::copy_selected_blocks()
 					}
 
 		else if (block && (total<2)){
-
+			m_scene->clear_buffer_selection();
 			m_scene->m_copy_selection.insert(m_scene->copy_blocks(block_name));
 			   }
 		//copy group as well
@@ -372,6 +373,11 @@ void scene_view::paste_buffered_blocks()
 {
 	if (m_scene->m_copy_selection.size()){
 	m_scene->paste_blocks();
+	m_scene->clear_selection();
+	for (scene::copy_selection_t::iterator new_block = m_scene->m_copy_selection.begin(); new_block != m_scene->m_copy_selection.end(); ++new_block){
+			shader_block* paste =*new_block;
+			m_scene->set_block_selection(paste,1);
+		}
 	}
 }
 

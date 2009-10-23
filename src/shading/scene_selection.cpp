@@ -48,6 +48,9 @@ void scene::clear_selection() {
 	m_groups_selection.clear();
 }
 
+void scene::clear_buffer_selection(){
+	m_copy_selection.clear();
+}
 
 void scene::set_block_selection (shader_block* Block, const bool Selection) {
 

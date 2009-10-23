@@ -164,6 +164,9 @@ public:
 	// clear current selection
 	void clear_selection();
 
+	// clear copy paste buffer
+	void clear_buffer_selection();
+
 	// toggle block selection state
 	void set_block_selection (shader_block* Block, const bool Selection);
 
