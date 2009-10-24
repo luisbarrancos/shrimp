@@ -51,6 +51,19 @@
 #include <iostream>
 
 
+// Main window's callback, prevents closing the application when hitting the Escape key
+void application_window::on_window_callback (fltk::Widget*) {
+
+	if (fltk::event() == fltk::KEY && fltk::event_key() == fltk::EscapeKey) {
+		// Don't do anything
+	} else {
+		// Exit
+		//TODO: check whether there's something to save
+		exit(0);
+	}
+}
+
+
 // File menu : New
 void application_window::on_menu_file_new (fltk::Widget*) {
 
@@ -432,6 +445,9 @@ application_window::application_window() :
 	log() << aspect << "Application window constructor" << std::endl;
 
 	application_pointer = this;
+
+	// set main window's callback
+	callback(cb_window);
 
 	// initialize console
 	m_console = new console();

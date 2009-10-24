@@ -82,6 +82,8 @@ private:
 	fltk::ToggleItem* m_menu_overview;
 	fltk::ToggleItem* m_menu_show_console;
 
+	void on_window_callback (fltk::Widget*);
+
 	void on_menu_file_new (fltk::Widget*);
 	void on_menu_file_open (fltk::Widget*);
 	void on_menu_file_save (fltk::Widget*);
@@ -132,6 +134,8 @@ private:
 	int handle (int event);
 
 	// callback functions
+	static void cb_window (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_window_callback (W); }
+
 	static void cb_menu_file_new (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_new (W); }
 	static void cb_menu_file_open (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_open (W); }
 	static void cb_menu_file_save (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_file_save (W); }
