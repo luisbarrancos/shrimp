@@ -43,7 +43,8 @@ public:
 		NORMAL,
 		POINT,
 		STRING,
-		VECTOR
+		VECTOR,
+		ARRAY
 	} variable_t;
 
 	typedef enum {

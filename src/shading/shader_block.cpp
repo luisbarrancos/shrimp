@@ -290,6 +290,8 @@ property::variable_t property::convert_type (const std::string& Type) {
 		return STRING;
 	if ("vector" == type_l)
 		return VECTOR;
+	if ("array" == type_l)
+		return ARRAY;
 
 	log() << warning << "unknown type (convert_type) : '" << Type << "' for property '" << m_name << "'" << std::endl;
 
@@ -309,6 +311,7 @@ std::string property::convert_type (variable_t Type) const {
 		case POINT: return "point";
 		case STRING: return "string";
 		case VECTOR: return "vector";
+		case ARRAY: return "array";
 
 		default:
 			log() << warning << "unhandled type (convert_type) for property '" << m_name << "'" << std::endl;
@@ -374,6 +377,7 @@ types_t get_property_types() {
 	list.push_back ("vector");
 	list.push_back ("normal");
 	list.push_back ("matrix");
+	list.push_back ("array");
 
 	return list;
 }

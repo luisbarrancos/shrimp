@@ -463,7 +463,7 @@ void scene_view::box_selection()
 					//Above block
  				    if (Fx<Tx && Ty<Fy){
 				    //Check if rectangle surround center of the block
- 				    	if (point_inside (blockSel->m_position_x+width/2 ,blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
+ 				    	if (point_inside (blockSel->m_position_x+width/2, blockSel->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
 							{
  				    		//Make Block selected
  				    		m_scene->set_block_selection (blockSel, true);
@@ -1600,6 +1600,40 @@ void scene_view::draw_property (const std::string& Name, const std::string& Type
 
 			glVertex3d (X + Size - small, Y - third, 0);
 			glVertex3d (X + Size - small, Y - 2*third, 0);
+		glEnd();
+	}
+	else if ("array" == Type) {
+
+		// Grey square
+		glColor3f (0.8, 0.8, 0.8);
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glBegin (GL_QUADS);
+			glColor3f (0.00, 0.00, 0.00);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size/2 - small, Y - small, 0);
+			glVertex3d (X + Size/2 - small, Y - Size/2 + small, 0);
+			glVertex3d (X + small, Y - Size/2 + small, 0);
+
+			glVertex3d (X + Size/2 + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size/2 + small, 0);
+			glVertex3d (X + Size/2 + small, Y - Size/2 + small, 0);
+
+			glVertex3d (X + small, Y - Size/2 - small, 0);
+			glVertex3d (X + Size/2 - small, Y - Size/2 - small, 0);
+			glVertex3d (X + Size/2 - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+
+			glVertex3d (X + Size/2 + small, Y - Size/2 - small, 0);
+			glVertex3d (X + Size - small, Y - Size/2 - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + Size/2 + small, Y - Size + small, 0);
 		glEnd();
 	}
 	else { // float
