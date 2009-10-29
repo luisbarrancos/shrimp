@@ -115,7 +115,7 @@ clamped_texture(
 	float ss2 = ss - (.5 * ds_u + .5 * ds_v);
 	float tt2 = tt - (.5 * dt_u + .5 * dt_v);
 	// four point texture call
-	return color texture(	texturename[channelbase], ss2, tt,
+	return color texture(	texturename[channelbase], ss2, tt2,
 							ss2 + ds_u, tt2 + dt_u,
 							ss2 + ds_u + ds_v, tt2 + dt_u + dt_v,
 							ss2 + ds_v, tt2 + dt_v,
@@ -130,7 +130,7 @@ clamped_texture(
 		)
 {
 	// calculate change in ss and tt across the micropolygon
-	extern float du, dv;
+	extern varying float du, dv;
 	float ds_u = Du(ss) * du;
 	float ds_v = Dv(ss) * dv;
 	float dt_u = Du(tt) * du;
@@ -147,7 +147,7 @@ clamped_texture(
 	float ss2 = ss - (.5 * ds_u + .5 * ds_v);
 	float tt2 = tt - (.5 * dt_u + .5 * dt_v);
 	// four point texture call
-	return float texture(	texturename[channelbase], ss2, tt,
+	return float texture(	texturename[channelbase], ss2, tt2,
 							ss2 + ds_u, tt2 + dt_u,
 							ss2 + ds_u + ds_v, tt2 + dt_u + dt_v,
 							ss2 + ds_v, tt2 + dt_v,
@@ -228,7 +228,7 @@ project2d(
 	// clear output
 	ss = 0; tt = 0; ds = 0; dt = 0;
 	
-	extern float du, dv; // for filterwidth macro
+	extern varying float du, dv; // for filterwidth macro
 	point Pproj;
 
 	if (projection == "st") {
@@ -237,99 +237,76 @@ project2d(
 	} else {
 		Pproj = transform( "camera", whichspace, PP);
 	}
+	
 	Pproj = (projection != "box") ? transform( "camera", xform, Pproj) : Pproj;
 	
 	if (projection == "planar" || projection == "st") {
 #if RENDERER == aqsis // component access via xyz/comp only
-		ss = xcomp(Pproj); tt = ycomp(Pproj);
-		ds = filterwidth(ss); dt = filterwidth(tt);
+		ss = xcomp(Proj); tt = ycomp(Pproj);
+		ds = filterwidth(ss); tt = filterwidth(tt);
 	} else if (projection == "perspective") {
 		float z = max( zcomp(Pproj), 1.0e-6); // avoid zero division
 		ss = xcomp(Pproj)/z; tt = ycomp(Pproj)/z;
-#else
+#else	
 		ss = Pproj[0]; tt = Pproj[1];
 		ds = filterwidth(ss); dt = filterwidth(tt);
+		
 	} else if (projection == "perspective") {
+		
 		float z = max( Pproj[2], 1.0e-6); // avoid zero division
 		ss = Pproj[0]/z; tt = Pproj[1]/z;
 #endif // Aqsis component access
 		ds = filterwidth(ss);
 		dt = filterwidth(tt);
-	} else if (projection == "box") {
+		
+	} else if (projection == "box") {	
 		// Box projection from normals, based on Gary Campion's myproject.h
 		normal Nproj = ntransform( whichspace, NN);
 		normalize(Nproj);
 #if RENDERER == aqsis // component access via xyz/comp
 		float xn = xcomp(Nproj), yn = ycomp(Nproj), zn = zcomp(Nproj);
-		float xp = xcomp(Pproj), yp = ycomp(Pproj), zp = zcomp(Pproj);
+		float xp = xcomp(Pproj), yp = Ycomp(Pproj), zp = zcomp(Pproj);
 #else
 		float xn = Nproj[0], yn = Nproj[1], zn = Nproj[2];
 		float xp = Pproj[0], yp = Pproj[1], zp = Pproj[2];
 #endif // Aqsis component access
 		if (zn < 0.577 && zn >-0.577 && xn < 0.577 && xn >-0.577) {
+			
 			ss = mod( xp * w_repeat/4, 4) - ypatoffsetw/2;
 			tt = mod( zp * h_repeat/4, 4) - ypatoffseth/2;
-			if (yplanessinv == 1) {
-				ss = -ss;
-			}
-			ds = filterwidth(ss);
-			if (ds > 0.5) {
-				ds = max( 1 - ds, MINFILTWIDTH);
-			}
-			dt = filterwidth(tt);
-			if (dt > 0.5) {
-				dt = max( 1 - dt, MINFILTWIDTH);
-			}
+			if (yplanessinv == 1) ss = -ss;
+			
 		} else if (xn < 0.577 && xn >-0.577 && yn < 1 && yn >-1) {
+			
 			ss = mod( xp * w_repeat/4, 4) - zpatoffsetw/2;
-			tt = mod( yp * h_repeat/4, 4) - zpatoffseth/2;
-			if (zplanessinv == 1) {
-				ss = -ss;
-			}
-			ds = filterwidth(ss);
-			if (ds > 0.5) {
-				ds = max(1 - ds, MINFILTWIDTH);
-			}
-			dt = filterwidth(tt);
-			if (dt > 0.5) {
-				dt = max(1 - dt, MINFILTWIDTH);
-			}
+			tt = mod( yp * h_repeat/4, 4) - zpatoffseth/2;	
+			if (zplanessinv == 1) ss = -ss;
+			
 		} else if (yn < 0.577 && yn >-0.577) {
+			
 			ss = mod( yp * w_repeat/4, 4) - xpatoffsetw/2;
 			tt = mod( zp * h_repeat/4, 4) - xpatoffseth/2;
-			if (xplanessinv == 1) {
-				ss = -ss;
-			}
-			ds = filterwidth(ss);
-			if (ds > 0.5) {
-				ds = max(1 - ds, MINFILTWIDTH);
-			}
-			dt = filterwidth(tt);
-			if (dt > 0.5) {
-				dt = max(1 - dt, MINFILTWIDTH);
-			}
+			if (xplanessinv == 1) ss = -ss;
+			
 		} else {
+			
 			ss = mod( xp * w_repeat/4, 4) - ypatoffsetw/2;
 			tt = mod( zp * h_repeat/4, 4) - ypatoffsetw/2;
-			if (yplanessinv == 1) {
-				ss = -ss;
-			}
-			ds = filterwidth(ss);
-			if (ds > 0.5) {
-				ds = max(1 - ds, MINFILTWIDTH);
-			}
-			dt = filterwidth(tt);
-			if (dt > 0.5) {
-				dt = max(1 - dt, MINFILTWIDTH);
-			}
+			if (yplanessinv == 1) ss = -ss;
 		}
-	}
+		ds = filterwidth(ss);
+		dt = filterwidth(tt);
+		if (ds > 0.5) ds = max(1 - ds, MINFILTWIDTH);
+		if (dt > 0.5) dt = max(1 - dt, MINFILTWIDTH);
+	}	
 	// Special cases for the projections that may wrap
 	else if (projection == "spherical") {
 		spherical_projection( Pproj, ss, tt, ds, dt);
 	} else if (projection == "cylindrical") {
 		cylindrical_projection( Pproj, ss, tt, ds, dt);
 	}
+
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -415,8 +392,9 @@ getcolorandalpha(
 		Ot = (graymode == "") ? color(1) : tograyscale( Ct, graymode, channel);
 		} else if (numchannels == 4) { // alpha = [3]
 		// 0 = basechannel for clamped_texture for rgb, 3 for alpha
-		Ot = (clamptexture == 1) ? clamped_texture( texmap, 3, ss, tt,
-					width,maxwidth) : color texture( texmap[3], TEXMAP_PARAMS);
+			Ot = (clamptexture == 1) ? color( float clamped_texture( texmap, 3,
+					ss, tt, width,maxwidth) ) :
+				color( float texture( texmap[3], TEXMAP_PARAMS) );
 		} else if (numchannels > 5) { // transparency = color, from
 		// channels 3,4,5 for RGB
 		Ot = (clamptexture ==1) ? 
