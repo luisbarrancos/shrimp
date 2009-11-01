@@ -6,14 +6,14 @@
 				<connection parent="Add_9" output="val"/>
 			</input>
 			<input name="B" type="color" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="val">
-				<connection parent="Environment_2" output="val"/>
+				<connection parent="Environment" output="value"/>
 			</input>
 			<output name="val" type="color" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_11" position_x="-5" position_y="2" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -25,9 +25,9 @@
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_12" position_x="-5" position_y="1" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
@@ -39,9 +39,9 @@
 			<output name="val" type="point" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_13" position_x="-5" position_y="-0" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
@@ -53,9 +53,9 @@
 			<output name="val" type="point" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_14" position_x="-5" position_y="-1" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -67,9 +67,9 @@
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_8" position_x="-10" position_y="0" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -79,9 +79,9 @@
 			<output name="val" type="float" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Add_9" position_x="8" position_y="10" author="rconstruct">
 			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="val">
@@ -93,9 +93,9 @@
 			<output name="val" type="color" storage="varying" description="val = A + B"/>
 			<rsl_code>
 		$(val) = $(A) + $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																		</usage>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.																					</usage>
 		</block>
 		<block id="Bump_2" position_x="3" position_y="3" author="rconstruct">
 			<input name="P" type="point" storage="varying" value="P" description="The surface point to be bumped"/>
@@ -106,9 +106,9 @@
 			<output name="NN" type="normal" storage="varying" description="The new surface normal"/>
 			<rsl_code>
 		$(NN) = normalize( calculatenormal( $(P) + $(Dir) * $(Scale)));
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>This is exactly like the displace function except that the new surface position is not computed. Calculates the normal of a position &quot;P&quot; displaced by amount &quot;Scale&quot; in direction &quot;Dir&quot;.																		</usage>
+			<usage>This is exactly like the displace function except that the new surface position is not computed. Calculates the normal of a position &quot;P&quot; displaced by amount &quot;Scale&quot; in direction &quot;Dir&quot;.																					</usage>
 		</block>
 		<block id="CellContour_2" position_x="-2" position_y="2" author="rconstruct">
 			<input name="p1" type="point" storage="varying" value="point(0)" description="First point position">
@@ -131,45 +131,45 @@
 					distance( $(p1), $(p2) ) / (
 					distance( $(p1), $(P) ) + distance( $(P), $(p2) ) ) ) ,
 					$(f2) - $(f1) );
-																			</rsl_code>
-			<rsl_include>rsl_shrimp_helpers.h																		</rsl_include>
-			<usage>This function generates contour lines on shaded cells.																		</usage>
+																						</rsl_code>
+			<rsl_include>rsl_shrimp_helpers.h																					</rsl_include>
+			<usage>This function generates contour lines on shaded cells.																					</usage>
 		</block>
 		<block id="Constant_5" position_x="-8" position_y="9" author="rconstruct">
 			<input name="in" type="color" storage="varying" value="color( .7, .33, .23 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<rsl_code>
 		$(out) = $(in);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Useful for supplying multiple inputs with the same value.																		</usage>
+			<usage>Useful for supplying multiple inputs with the same value.																					</usage>
 		</block>
 		<block id="Constant_6" position_x="-8" position_y="8" author="rconstruct">
 			<input name="in" type="color" storage="varying" value="color( .73, .42, .27 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<rsl_code>
 		$(out) = $(in);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Useful for supplying multiple inputs with the same value.																		</usage>
+			<usage>Useful for supplying multiple inputs with the same value.																					</usage>
 		</block>
 		<block id="Constant_7" position_x="-8" position_y="7" author="rconstruct">
 			<input name="in" type="color" storage="varying" value="color( .73, .51, .34 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<rsl_code>
 		$(out) = $(in);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Useful for supplying multiple inputs with the same value.																		</usage>
+			<usage>Useful for supplying multiple inputs with the same value.																					</usage>
 		</block>
 		<block id="Constant_8" position_x="-8" position_y="6" author="rconstruct">
 			<input name="in" type="color" storage="varying" value="color( .73, .50, .39 )" description="Input" type_parent="out"/>
 			<output name="out" type="color" storage="varying" description="Output = Input"/>
 			<rsl_code>
 		$(out) = $(in);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Useful for supplying multiple inputs with the same value.																		</usage>
+			<usage>Useful for supplying multiple inputs with the same value.																					</usage>
 		</block>
 		<block id="Divide_4" position_x="2" position_y="11" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -181,9 +181,9 @@
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
 			<rsl_code>
 		$(val) = $(A) / $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Divides input A by input B.																		</usage>
+			<usage>Divides input A by input B.																					</usage>
 		</block>
 		<block id="Divide_5" position_x="-5" position_y="3" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -193,9 +193,9 @@
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
 			<rsl_code>
 		$(val) = $(A) / $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Divides input A by input B.																		</usage>
+			<usage>Divides input A by input B.																					</usage>
 		</block>
 		<block id="Divide_6" position_x="-5" position_y="-2" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -205,38 +205,42 @@
 			<output name="val" type="float" storage="varying" description="val = A / B"/>
 			<rsl_code>
 		$(val) = $(A) / $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Divides input A by input B.																		</usage>
+			<usage>Divides input A by input B.																					</usage>
 		</block>
-		<block id="Environment_2" position_x="9" position_y="6" author="rconstruct">
-			<input name="texname" type="string" storage="uniform" value="&quot;raytrace&quot;" description="Texture map name"/>
+		<block id="Environment" position_x="9" position_y="7" author="rconstruct">
+			<input name="texmap" type="string" storage="uniform" value="&quot;raytrace&quot;" description="Texture map name"/>
 			<input name="Kr" type="float" storage="varying" value="1" description="Environment intensity">
 				<connection parent="Multiply_7" output="val"/>
 			</input>
-			<input name="dir" type="vector" storage="varying" value="reflect( I, normalize(N))" description="Direction vector">
+			<input name="direction" type="vector" storage="varying" value="reflect( I, normalize(N))" description="Direction vector">
 				<connection parent="Fresnel_2" output="R"/>
 			</input>
 			<input name="sblur" type="float" storage="varying" value="0" description="Blur along S"/>
 			<input name="tblur" type="float" storage="varying" value="0" description="Blur along T"/>
 			<input name="swidth" type="float" storage="uniform" value="1" description="Blur filter width along S"/>
 			<input name="twidth" type="float" storage="uniform" value="1" description="Blur filter width along T"/>
-			<input name="samples" type="float" storage="uniform" value="1" description="Sampling rate"/>
+			<input name="samples" type="float" storage="uniform" value="4" description="Sampling rate"/>
 			<input name="fill" type="float" storage="uniform" value="0" description="Fill value on empty channel"/>
 			<input name="filter" type="string" storage="uniform" value="&quot;gaussian&quot;" description="Filter type"/>
 			<input name="channel" type="float" storage="varying" value="0" description="Channel, in color textures"/>
-			<input name="tint" type="color" storage="varying" value="color(1)" description="Color tint for the environment"/>
+			<input name="tint" type="color" storage="varying" value="1" description="Color tint for the environment" type_parent="value"/>
 			<input name="label" type="string" storage="uniform" value="&quot;&quot;" description="Ray label"/>
 			<input name="subset" type="string" storage="uniform" value="&quot;&quot;" description="Ray subset"/>
 			<input name="bias" type="float" storage="uniform" value="-1" description="Ray bias"/>
 			<input name="hitmode" type="string" storage="uniform" value="&quot;default&quot;" description="Override hitmode"/>
 			<input name="maxdist" type="float" storage="varying" value="15" description="Maximum ray distance"/>
 			<input name="coneangle" type="float" storage="varying" value="radians(5)" description="Cone angle"/>
-			<output name="val" type="color" storage="varying" description="Output color"/>
+			<input name="expandLDR" type="float" storage="uniform" value="0" description="Expand range of LDR image"/>
+			<input name="dynrange" type="float" storage="varying" value="1" description="Maximum value to expand range to"/>
+			<input name="startlum" type="float" storage="varying" value="0.5" description="Starting luminance for expansion"/>
+			<input name="exponent" type="float" storage="varying" value="2.0" description="Range exponent for falloff"/>
+			<output name="value" type="color" storage="varying" description="Output color"/>
 			<rsl_code>
 
-	/* make sure options are clear */
-	/* and set them according to shadeop and renderer */
+	/* make sure options are clear and set them according to shadeop
+	 * and renderer */
 	#ifdef SHADEOP_ARGUMENTS
 	#undef SHADEOP_ARGUMENTS
 	#endif
@@ -269,15 +273,31 @@
 								&quot;fill&quot;, $(fill)
     #endif /* RENDERER */
 	
-	aov_reflection += $(Kr) * $(tint) * $(val:type) environment(
-						$(texname)[$(channel)], $(dir),
+	// LDR expansion, from SIGGRAPH 2002 Course 16,
+	// &quot;Production Ready GI&quot;, by Hayden Landis
+	#define $(blockname)_expandLDR $(expandLDR)
+	#if $(blockname)_expandLDR == 1
+		varying $(value:type) $(blockname)_ctmp = $(Kr) * $(tint) *
+				$(value:type) environment(	$(texmap)[$(channel)],
+											$(direction),
+											SHADEOP_ARGUMENTS );
+		$(value) = envexpand(	$(blockname)_ctmp, $(dynrange),
+								$(startlum), $(exponent) );
+	#else // no expansion
+	// tint is of float type if output variable is of float type
+		$(value) = $(Kr) * $(tint) * $(value:type) environment(
+						$(texmap)[$(channel)],
+						$(direction),
 						SHADEOP_ARGUMENTS );
-	$(val) = aov_reflection;
+	#endif // expandLDR
+	aov_reflection += $(value);
+
+	#undef $(blockname)_expandLDR
 	#undef SHADEOP_ARGUMENTS
 	
-																			</rsl_code>
-			<rsl_include/>
-			<usage>This block returns the texture value from an environment map, for the specified direction vector. If the filename specified is &quot;raytrace&quot; then raytracing is used instead of a texture map. The variables &quot;sblur&quot; and &quot;tblur&quot; specify the blur along the &quot;S&quot; and &quot;T&quot; directions respectively, while &quot;swidth&quot; and &quot;twidth&quot; specify the filter width along the &quot;S&quot; and &quot;T&quot; directions respectively. The filter type can be &quot;box&quot;, &quot;triangle&quot;, or &quot;gaussian&quot;, with &quot;samples&quot; controling the number of samples to use. The starting channel is specified with the &quot;channel&quot; parameter. The type returned can be float, or color, and it is passed to the preset &quot;aov_reflection&quot; AOV. When raytracing is used, extra parameters available to raytracing functions are available, such as &quot;label&quot;, &quot;subset&quot;, &quot;bias&quot; and &quot;hitmode&quot;. Note that this function might vary considerably with each renderer, so please check your renderer&apos;s documentation.																		</usage>
+				</rsl_code>
+			<rsl_include>rsl_shrimp_texture.h			</rsl_include>
+			<usage>This block returns the texture value from an environment map, for the specified direction vector. If the filename specified is &quot;raytrace&quot; then raytracing is used instead of a texture map. The variables &quot;sblur&quot; and &quot;tblur&quot; specify the blur along the &quot;S&quot; and &quot;T&quot; directions respectively, while &quot;swidth&quot; and &quot;twidth&quot; specify the filter width along the &quot;S&quot; and &quot;T&quot; directions respectively. The filter type can be &quot;box&quot;, &quot;triangle&quot;, or &quot;gaussian&quot;, with &quot;samples&quot; controling the number of samples to use. The starting channel is specified with the &quot;channel&quot; parameter. The type returned can be float, or color, and it is passed to the preset &quot;aov_reflection&quot; AOV. When raytracing is used, extra parameters available to raytracing functions are available, such as &quot;label&quot;, &quot;subset&quot;, &quot;bias&quot; and &quot;hitmode&quot;. Note that this function might vary considerably with each renderer, so please check your renderer&apos;s documentation. This block also implements the LDR expansion from SIGGRAPH 2002 Course 16, &quot;Production Ready GI&quot;, by Hayden Landis, to avoid washed out reflection highlights when using Low Dynamic Range images for reflection maps. When toggling &quot;expandLDR&quot; on/off, the following variables apply to control the expansion: &quot;dynrange&quot;, defines the maximum value to expand the specified region of the map to; &quot;startlum&quot;, defines the starting luminance for the expansion to begin with; &quot;exponent&quot;, defines the exponent for the falloff.			</usage>
 		</block>
 		<block id="Fresnel_2" position_x="5" position_y="3" author="rconstruct">
 			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Incident vector">
@@ -295,9 +315,9 @@
 		/* initialize */
 		$(Kr) = 0; $(Kt) = 0; $(R) = vector(0); $(T) = vector(0);
         fresnel( $(I), $(N), $(eta), $(Kr), $(Kt), $(R), $(T) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient &quot;Kt&quot;, given an incident direction &quot;I&quot;, the surface normal &quot;N&quot;, and the relative index of refraction &quot;eta&quot;. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the Fresnel formula. This function also returns the reflected &quot;R&quot; and transmitted &quot;T&quot; vectors.																		</usage>
+			<usage>Return the reflection coefficient Kr and the refraction (or transmission) coefficient &quot;Kt&quot;, given an incident direction &quot;I&quot;, the surface normal &quot;N&quot;, and the relative index of refraction &quot;eta&quot;. Eta is the ratio of the index of refraction in the volume containing the incident vector, to that of the volume being entered. These coefficients are computed using the Fresnel formula. This function also returns the reflected &quot;R&quot; and transmitted &quot;T&quot; vectors.																					</usage>
 		</block>
 		<block id="GetCol_2" position_x="0" position_y="9" author="rconstruct">
 			<input name="col" type="color" storage="varying" value="color(0)" description="Color to split into components">
@@ -310,17 +330,17 @@
 		$(x) = comp( $(col), 0 );
 		$(y) = comp( $(col), 1 );
 		$(z) = comp( $(col), 2 );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Gets the components of a color type variable.																		</usage>
+			<usage>Gets the components of a color type variable.																					</usage>
 		</block>
 		<block id="I_2" position_x="3" position_y="-0" author="rconstruct">
 			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
 			<rsl_code>
 	$(I) = I;
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Incident ray direction. The availability of this global variable for the different shading contexts is renderer specific.																		</usage>
+			<usage>Incident ray direction. The availability of this global variable for the different shading contexts is renderer specific.																					</usage>
 		</block>
 		<block id="Mix_10" position_x="0" position_y="7" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
@@ -335,9 +355,9 @@
 			<output name="val" type="color" storage="varying" description="The resulting mix between A and B"/>
 			<rsl_code>
 		$(val) = mix( $(A), $(B), $(alpha) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																		</usage>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																					</usage>
 		</block>
 		<block id="Mix_6" position_x="-4" position_y="8" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
@@ -352,9 +372,9 @@
 			<output name="val" type="color" storage="varying" description="The resulting mix between A and B"/>
 			<rsl_code>
 		$(val) = mix( $(A), $(B), $(alpha) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																		</usage>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																					</usage>
 		</block>
 		<block id="Mix_7" position_x="-4" position_y="6" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
@@ -369,9 +389,9 @@
 			<output name="val" type="color" storage="varying" description="The resulting mix between A and B"/>
 			<rsl_code>
 		$(val) = mix( $(A), $(B), $(alpha) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																		</usage>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																					</usage>
 		</block>
 		<block id="Mix_8" position_x="-2" position_y="8" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
@@ -386,9 +406,9 @@
 			<output name="val" type="color" storage="varying" description="The resulting mix between A and B"/>
 			<rsl_code>
 		$(val) = mix( $(A), $(B), $(alpha) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																		</usage>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																					</usage>
 		</block>
 		<block id="Mix_9" position_x="-2" position_y="6" author="rconstruct">
 			<input name="alpha" type="float" storage="varying" value="0.5" description="The mixing factor">
@@ -403,9 +423,9 @@
 			<output name="val" type="color" storage="varying" description="The resulting mix between A and B"/>
 			<rsl_code>
 		$(val) = mix( $(A), $(B), $(alpha) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																		</usage>
+			<usage>Mix returns x*(1-a)+y*a, that is, it performs a linear blend between values x and y. The types of x and y must be identical, but may be any of float, point, vector, normal, or color. The variants that operate on colors or point-like objects operate on a component by component basis (e.g: separately for x, y, and z).																					</usage>
 		</block>
 		<block id="Multiply_10" position_x="1" position_y="1" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -415,9 +435,9 @@
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
 			<rsl_code>
 		$(val) = $(A) * $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Multiply_2" position_x="-10" position_y="3" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
@@ -427,9 +447,9 @@
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
 			<rsl_code>
 		$(val) = $(A) * $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Multiply_3" position_x="-10" position_y="2" author="rconstruct">
 			<input name="A" type="point" storage="varying" value="1" description="1st input" type_parent="val">
@@ -439,9 +459,9 @@
 			<output name="val" type="point" storage="varying" description="val = A * B"/>
 			<rsl_code>
 		$(val) = $(A) * $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Multiply_7" position_x="7" position_y="2" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -453,9 +473,9 @@
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
 			<rsl_code>
 		$(val) = $(A) * $(B);
-							</rsl_code>
+										</rsl_code>
 			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.						</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.									</usage>
 		</block>
 		<block id="Multiply_9" position_x="4" position_y="9.63232165175573" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val">
@@ -465,9 +485,9 @@
 			<output name="val" type="float" storage="varying" description="val = A * B"/>
 			<rsl_code>
 		$(val) = $(A) * $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Normalize_4" position_x="3" position_y="4" author="rconstruct">
 			<input name="A" type="normal" storage="varying" value="N" description="Input vector" type_parent="val">
@@ -476,9 +496,9 @@
 			<output name="val" type="normal" storage="varying" description="Output unit length vector"/>
 			<rsl_code>
 		$(val) = normalize( $(A) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																		</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																					</usage>
 		</block>
 		<block id="Normalize_5" position_x="3" position_y="1" author="rconstruct">
 			<input name="A" type="vector" storage="varying" value="N" description="Input vector" type_parent="val">
@@ -487,9 +507,9 @@
 			<output name="val" type="vector" storage="varying" description="Output unit length vector"/>
 			<rsl_code>
 		$(val) = normalize( $(A) );
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																		</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).																					</usage>
 		</block>
 		<block id="OrenNayar_2" position_x="6" position_y="8" author="rconstruct">
 			<input name="Cdiff" type="color" storage="varying" value="color(.5)" description="Diffuse color">
@@ -527,9 +547,9 @@
 	#endif /* use_qualitative_$(qualitative) */
 	#undef use_qualitative_$(qualitative)
 	
-				</rsl_code>
-			<rsl_include>rsl_shrimp_shadingmodels.h			</rsl_include>
-			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables). The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.			</usage>
+							</rsl_code>
+			<rsl_include>rsl_shrimp_shadingmodels.h						</rsl_include>
+			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables). The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.						</usage>
 		</block>
 		<block id="PhongBlinn" position_x="6" position_y="11.5880829015544" author="rconstruct">
 			<input name="Cspec" type="color" storage="varying" value="color(1)" description="Specular color"/>
@@ -549,9 +569,9 @@
 		aov_specularcolor += $(Cspec);
 		aov_specular += $(Ks) * phong_blinn( $(N), $(I), $(size), $(category));
         $(Ci) = aov_specularcolor * aov_specular;
-				</rsl_code>
-			<rsl_include>rsl_shrimp_shadingmodels.h			</rsl_include>
-			<usage>Phong-Blinn specular term. The specular color value is passed to &quot;aov_specularcolor&quot;, while the specular value, to the &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.			</usage>
+							</rsl_code>
+			<rsl_include>rsl_shrimp_shadingmodels.h						</rsl_include>
+			<usage>Phong-Blinn specular term. The specular color value is passed to &quot;aov_specularcolor&quot;, while the specular value, to the &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.						</usage>
 		</block>
 		<block id="Ridged3D_2" position_x="-12" position_y="0" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="point to sample fractal at">
@@ -574,9 +594,9 @@
 					$(octaves), $(lacunarity), $(offset), $(gain) ) );
 	#endif
 	#undef $(blockname)_$(val:type)
-																			</rsl_code>
-			<rsl_include>rsl_shrimp_fractal.h																		</rsl_include>
-			<usage>Ken Musgrave&apos;s 3 dimensional Ridged Multifractal function. Note that offset can change the scale of the output drastically.																		</usage>
+																						</rsl_code>
+			<rsl_include>rsl_shrimp_fractal.h																					</rsl_include>
+			<usage>Ken Musgrave&apos;s 3 dimensional Ridged Multifractal function. Note that offset can change the scale of the output drastically.																					</usage>
 		</block>
 		<block id="Root block" position_x="13" position_y="7" author="" root="RIB" AOV_preview="1">
 			<rib_statements>Attribute &quot;visibility&quot; &quot;integer diffuse&quot; [ 1 ]
@@ -611,9 +631,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
 			<rsl_code>
 		$(val) = $(A) - $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Subtract_5" position_x="0" position_y="10" author="rconstruct">
 			<input name="A" type="float" storage="varying" value=".8" description="1st input" type_parent="val"/>
@@ -623,9 +643,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
 			<rsl_code>
 		$(val) = $(A) - $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Subtract_6" position_x="-0" position_y="11" author="rconstruct">
 			<input name="A" type="float" storage="varying" value=".42" description="1st input" type_parent="val">
@@ -635,9 +655,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
 			<rsl_code>
 		$(val) = $(A) - $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Subtract_7" position_x="2" position_y="10" author="rconstruct">
 			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="val"/>
@@ -647,9 +667,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 			<output name="val" type="float" storage="varying" description="val = A - B"/>
 			<rsl_code>
 		$(val) = $(A) - $(B);
-																			</rsl_code>
+																						</rsl_code>
 			<rsl_include/>
-			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																		</usage>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.																					</usage>
 		</block>
 		<block id="Transform" position_x="-12" position_y="2" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point, vector or normal to transform" type_parent="pp">
@@ -683,9 +703,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 	
 	#undef mmat_$(mmat)
 	#undef TRANSFORM_ARGUMENTS
-																			</rsl_code>
-			<rsl_include>rsl_shrimp_helpers.h																		</rsl_include>
-			<usage>A block for the &quot;transform&quot;, &quot;vtransform&quot; and &quot;ntransform&quot; functions, to transform the supplied point &quot;P&quot;, vector &quot;V&quot; or normal &quot;N&quot; respectively, from the coordinate system &quot;fromspace&quot; to the coordinate system &quot;tospace&quot;, with &quot;fromspace&quot; defaulting to &quot;current&quot;. Note that &quot;current&quot; is implementation specific. Predefined coordinate systems are: &quot;current&quot;, &quot;object&quot;, &quot;shader&quot;, &quot;world&quot;, &quot;camera&quot;, &quot;screen&quot;, &quot;raster&quot; and &quot;NDC&quot;. A transformation matrix might be given instead of a &quot;tospace&quot; coordinate system. User defined coordinate systems can also be refered to.																		</usage>
+																						</rsl_code>
+			<rsl_include>rsl_shrimp_helpers.h																					</rsl_include>
+			<usage>A block for the &quot;transform&quot;, &quot;vtransform&quot; and &quot;ntransform&quot; functions, to transform the supplied point &quot;P&quot;, vector &quot;V&quot; or normal &quot;N&quot; respectively, from the coordinate system &quot;fromspace&quot; to the coordinate system &quot;tospace&quot;, with &quot;fromspace&quot; defaulting to &quot;current&quot;. Note that &quot;current&quot; is implementation specific. Predefined coordinate systems are: &quot;current&quot;, &quot;object&quot;, &quot;shader&quot;, &quot;world&quot;, &quot;camera&quot;, &quot;screen&quot;, &quot;raster&quot; and &quot;NDC&quot;. A transformation matrix might be given instead of a &quot;tospace&quot; coordinate system. User defined coordinate systems can also be refered to.																					</usage>
 		</block>
 		<block id="Voronoi3D2F_2" position_x="-8" position_y="3" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point to sample Voronoi at">
@@ -704,9 +724,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 		$(f1) = 0; $(pos1) = point(0); $(f2) = 0; $(pos2) = point(0);
 		voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(f2),
 						$(pos1), $(pos2) );
-																			</rsl_code>
-			<rsl_include>rsl_shrimp_fractal.h																		</rsl_include>
-			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.																		</usage>
+																						</rsl_code>
+			<rsl_include>rsl_shrimp_fractal.h																					</rsl_include>
+			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.																					</usage>
 		</block>
 		<block id="Voronoi3D2F_4" position_x="-8" position_y="1" author="rconstruct">
 			<input name="p" type="point" storage="varying" value="P" description="Point to sample Voronoi at">
@@ -725,17 +745,17 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
 		$(f1) = 0; $(pos1) = point(0); $(f2) = 0; $(pos2) = point(0);
 		voronoi_f1f2_3d( $(p), $(jitter), $(dtype), $(f1), $(f2),
 						$(pos1), $(pos2) );
-																			</rsl_code>
-			<rsl_include>rsl_shrimp_fractal.h																		</rsl_include>
-			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.																		</usage>
+																						</rsl_code>
+			<rsl_include>rsl_shrimp_fractal.h																					</rsl_include>
+			<usage>3D Voronoi cell noise, 2 features version. When dtype = 0, distance metric is Tchebychev, when not 0, distance metric = Minkowski, being dtype, Minkowski&apos;s P parameter, with P = 1 as the Manhattan metric, P = 2, the Euclidian metric, and allowing higher orders of P. Note that as P increases, it tends towards the Tchebychev result.																					</usage>
 		</block>
 		<block id="p_2" position_x="-12" position_y="3" author="rconstruct">
 			<output name="P" type="point" storage="varying" description="Surface position"/>
 			<rsl_code>
     $(P) = P;
-    																		</rsl_code>
+    																					</rsl_code>
 			<rsl_include/>
-			<usage>Note that in all shading contexts, &quot;P&quot; is the surface position, the only exception being volume shaders, in which &quot;P&quot; is the light ray origin. Also note that in imager shaders, &quot;P&quot; is the position of the pixel center in raster space, with the z coordinate being 0.																		</usage>
+			<usage>Note that in all shading contexts, &quot;P&quot; is the surface position, the only exception being volume shaders, in which &quot;P&quot; is the light ray origin. Also note that in imager shaders, &quot;P&quot; is the position of the pixel center in raster space, with the z coordinate being 0.																					</usage>
 		</block>
 	</network>
 </shrimp>
