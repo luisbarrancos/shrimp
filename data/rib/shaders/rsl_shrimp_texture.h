@@ -9,21 +9,34 @@
 ////////////////////////////////////////////////////////////////////////////////
 color
 envexpand(
-			color cenv;
-			float expandDynRange, dynRanteStartLum, dynRangeExponent;
+			color Cenv;
+			float expandDynRange, dynRangeStartLum, dynRangeExponent;
 		)
 {
-	color C = cenv;
+	color C = Cenv;
 	if (expandDynRange > 1) {
 		float lum = luminance(Cenv);
 		if (lum > dynRangeStartLum) {
 			// remap lum values 0-1
 			lum = (lum - dynRangeStartLum) / (1 - dynRangeStartLum);
 			float dynMix = pow( lum, dynRangeExponent);
-			C = mix( cenv, cenv * expandDynRange, dynMix);
+			C = mix( Cenv, Cenv * expandDynRange, dynMix);
 		}
 	}
 	return C;
+}
+// float version
+float envexpand( float env, expandDynRange, dynRangeStartLum, dynRangeExponent;)
+{
+	float fenv = env;
+	if (expandDynRange > 1) {
+		if (fenv > dynRangeStartLum) {
+			float lum = (fenv - dynRangeStartLum) / (1 - dynRangeStartLum);
+			float dynMix = pow( lum, dynRangeExponent);
+			fenv = mix( fenv, fenv * expandDynRange, dynMix);
+		}
+	}
+	return fenv;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,7 +58,7 @@ spherical_projection(
 		)
 {
 	extern float du, dv; // used by the filterwidth macro
-	vector V = normalize( vector(PP));
+	vector V = normalize( vector(PP) );
 #if RENDERER == aqsis // component access via xyz(comp
 	ss = (-atan( ycomp(V), xcomp(V)) + S_PI) / S_2PI;
 	tt = 0.5 - acos(zcomp(V)) / S_PI;
@@ -221,7 +234,7 @@ project2d(
 			float xpatoffsetw, xpatoffseth; // x offset width/height
 			float ypatoffsetw, ypatoffseth; // y offset width/height
 			float zpatoffsetw, zpatoffseth; // z offset width/height
-			uniform float xplanessinv, yplanessinv, zplanessinv; // invert S
+			uniform float xplanessinv, yplanessinv, zplanessinv; // invert 
 			output varying float ss, tt, ds, dt;
 		)
 {
@@ -237,12 +250,16 @@ project2d(
 	} else {
 		Pproj = transform( "camera", whichspace, PP);
 	}
-	
+
+#if RENDERER == aqsis // can't transform from set space to supplied matrix
+	Pproj = (projection != "box") ? transform( xform, Pproj) : Pproj;
+#else
 	Pproj = (projection != "box") ? transform( "camera", xform, Pproj) : Pproj;
+#endif // transform("from", xform_matrix, foo) isn't valid
 	
 	if (projection == "planar" || projection == "st") {
 #if RENDERER == aqsis // component access via xyz/comp only
-		ss = xcomp(Proj); tt = ycomp(Pproj);
+		ss = xcomp(Pproj); tt = ycomp(Pproj);
 		ds = filterwidth(ss); tt = filterwidth(tt);
 	} else if (projection == "perspective") {
 		float z = max( zcomp(Pproj), 1.0e-6); // avoid zero division
@@ -265,7 +282,7 @@ project2d(
 		normalize(Nproj);
 #if RENDERER == aqsis // component access via xyz/comp
 		float xn = xcomp(Nproj), yn = ycomp(Nproj), zn = zcomp(Nproj);
-		float xp = xcomp(Pproj), yp = Ycomp(Pproj), zp = zcomp(Pproj);
+		float xp = xcomp(Pproj), yp = ycomp(Pproj), zp = zcomp(Pproj);
 #else
 		float xn = Nproj[0], yn = Nproj[1], zn = Nproj[2];
 		float xp = Pproj[0], yp = Pproj[1], zp = Pproj[2];
@@ -304,9 +321,21 @@ project2d(
 		spherical_projection( Pproj, ss, tt, ds, dt);
 	} else if (projection == "cylindrical") {
 		cylindrical_projection( Pproj, ss, tt, ds, dt);
+	} else { // NDC
+		extern point P;
+		point NP = transform("camera", "NDC", P);
+#if RENDERER == aqsis // component access via xyz/comp only
+		ss = xcomp(NP);
+		tt = ycomp(NP);
+#else
+		ss = NP[0];
+		tt = NP[1];
+#endif // Aqsis component access
+		ds = filterwidth(ss);
+		dt = filterwidth(tt);
+		if (ds > 0.5) ds = max(1 - ds, MINFILTWIDTH);
+		if (dt > 0.5) dt = max(1 - dt, MINFILTWIDTH);
 	}
-
-
 }
 
 ////////////////////////////////////////////////////////////////////////////////

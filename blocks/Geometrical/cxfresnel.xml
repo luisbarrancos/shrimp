@@ -1,6 +1,6 @@
 <shrimp type="function" name="CxFresnel" description="Complex Fresnel block" author="rconstruct">
 	<input name="I" description="Incident vector" type="vector" default="normalize(I)"/>
-	<input name="N" description="Surface normal" type="normal vector" default="normalize(N)"/>
+	<input name="N" description="Surface normal" type="vector normal" default="normalize(N)"/>
 	<input name="ior" description="Index of refraction" type="float" default="1.5"/>
 	<input name="extinction" description="Extinction coefficient" type="float" default="0.5"/>
 	<output name="Kr" description="The reflected coefficient" type="float"/>

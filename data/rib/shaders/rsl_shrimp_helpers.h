@@ -147,8 +147,6 @@ rotate2d( float x, y, theta, ox, oy;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-
-////////////////////////////////////////////////////////////////////////////////
 // Schlick's fresnel approximation /////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -309,7 +307,6 @@ float filteredabs(	float x, dx; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* Antialiased smoothstep(e0,e1,x).  
  * Compute the box filter of smoothstep(e0,e1,t) from x-dx/2 to x+dx/2.
  * Strategy: divide domain into 3 regions: t < e0, e0 <= t <= e1,
@@ -343,7 +340,6 @@ float filteredsmoothstep(	float e0, e1, x, dx; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* A pulse train: a signal that repeats with a given period, and is
  * 0 when 0 <= mod(x,period) < edge, and 1 when mod(x,period) > edge.
  * */
@@ -353,7 +349,6 @@ float pulsetrain(	float edge, period, x; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* Filtered pulse train: it's not as simple as just returning the mod
  * of filteredpulse -- you have to take into account that the filter may
  * cover multiple pulses in the train.
@@ -380,7 +375,6 @@ float filteredpulsetrain(	float edge, period, x, dx; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 float
 smoothpulse(	float e0, e1, e2, e3, x; )
 {
@@ -388,7 +382,6 @@ smoothpulse(	float e0, e1, e2, e3, x; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 float
 filteredsmoothpulse(	float e0, e1, e2, e3, x, dx; )
 {
@@ -396,7 +389,6 @@ filteredsmoothpulse(	float e0, e1, e2, e3, x, dx; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* A pulse train of smoothsteps: a signal that repeats with a given
  * period, and is 0 when 0 <= mod(x/period,1) < edge, and 1 when
  * mod(x/period,1) > edge.  
@@ -408,7 +400,6 @@ float smoothpulsetrain(	float e0, e1, e2, e3, period, x; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* varyEach takes a (rgb) computed color, then tweaks each indexed item
  * separately to add some variation.  Hue, saturation, and lightness
  * are all independently controlled.  Hue adds, but saturation and
@@ -432,7 +423,6 @@ color varyEach(	color Cin; float index, varyhue, varysat, varylum; )
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* Given 2-D texture coordinates ss,tt and their filter widths ds, dt,
  * and the width and height of the grooves between tiles (assuming that
  * tile spacing is 1.0), figure out which (integer indexed) tile we are
@@ -457,7 +447,6 @@ tilepattern(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-
 /* basic brick tiling pattern --
  *   inputs:
  *      x, y                    positions on a 2-D surface
