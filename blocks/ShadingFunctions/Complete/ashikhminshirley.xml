@@ -10,6 +10,7 @@
     <input name="nv" description="Specularity along V direction" type="float" default="10"/>
 	<input name="samples" description="Environment samples" storage="uniform" type="float" default="0"/>
     <input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
+	<input name="envspace" description="Environment coordinate system" storage="uniform" type="string" default="&quot;world&quot;"/>
 	<input name="N" description="Surface normal" storage="varying" type="normal vector" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
 	<input name="direction" description="Direction vector" storage="varying" type="vector" default="normalize(dPdu)"/>
@@ -33,7 +34,7 @@
 		aov_reflection += $(Crefl) * EnvIllumAshShir(
 								faceforward( $(N), $(I) ), -$(I),
 								$(direction), $(Kd), $(Ks), $(nu), $(nv),
-								$(samples), $(envmap) );
+								$(samples), $(envmap), $(envspace) );
 		$(Ci) += aov_reflection;
 	#endif /* $(blockname)_$(samples) */
 	#undef $(blockname)_$(samples)

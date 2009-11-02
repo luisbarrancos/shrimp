@@ -1447,13 +1447,13 @@ color LocIllumAshShir(
 color SampleEnvironment(
                             point Pp;
                             vector Rn;
-                            uniform string envname;
+                            uniform string envname, envspace;
                             )
 {
     color C = color(0);
     if (envname != "") {
         vector Rnn;
-        Rnn = vtransform("camera", "object", Rn);
+        Rnn = vtransform("camera", envspace, Rn);
         C = color environment (envname, Rnn );
     } else {
         C = trace(Pp, Rn);
@@ -1483,7 +1483,7 @@ color EnvIllumAshShir(
                         vector Vf, xdir;
 		                float rd, rs, nu, nv;
 		                uniform float samples;
-		                uniform string envmap;)
+		                uniform string envmap, envspace;)
 {
     uniform float i;
     color C = color(0);
@@ -1520,7 +1520,7 @@ color EnvIllumAshShir(
 			Hn = cosph * sin(th) * xdir + sinph * sin(th) * ydir
 						+ cos(th) * Nf;
 			
-            C += rs * SampleEnvironment(P, 2 * Hn - Vf, envmap)
+            C += rs * SampleEnvironment(P, 2 * Hn - Vf, envmap, envspace)
                     * fastFresnel(Hn,Vf,rs);
 
             // now generate the diffuse part using cos-weighted distribution
@@ -1529,7 +1529,7 @@ color EnvIllumAshShir(
 			Hn = cos(S_2PI * e1) * sqrt(1-e2) * xdir + sin(S_2PI * e1)
 					* sqrt(1-e2) * ydir + sqrt(e2) * Nf;
       
-            C += rd * SampleEnvironment(P, Hn, envmap);
+            C += rd * SampleEnvironment(P, Hn, envmap, envspace);
 
 			// FIXME - instead of sampling over the hemisphere, get the
 			// cos-weighted average value, which can be done with a
@@ -1537,7 +1537,7 @@ color EnvIllumAshShir(
 			// that such a filter doesn't seem to exist :(
 
 			// C += rd * color environment( envmap, xdir, ydir, -xdir, -ydir,
-			// * "filter", "gaussian" );
+			// "filter", "gaussian" );
         }
     }
     if (samples > 0) C /= samples;
