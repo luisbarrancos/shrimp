@@ -217,15 +217,55 @@ void application_window::on_menu_edit_copy (fltk::Widget*) {
 	}
 }
 
-//Edit menu : Copy selection
+//Edit menu : Paste selection
 void application_window::on_menu_edit_paste (fltk::Widget*) {
 	if (m_scene) {
-					if (m_scene->selection_size()>=1){
+					if (m_scene->m_copy_selection.size()){
+						m_scene_view->paste_buffered_blocks();
+						// refresh
+						redraw();
+					}
+					// paste buffer if no new copy selection
+					else if (m_scene->m_copy_buffer.size()){
+						m_scene->clear_selection();
+						for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
+								m_scene->m_selection.insert(new_block->first.first);
+						}
+						m_scene_view->copy_selected_blocks();
 						m_scene_view->paste_buffered_blocks();
 						// refresh
 						redraw();
 					}
 		}
+}
+
+//Edit menu : Cut selection
+void application_window::on_menu_edit_cut (fltk::Widget*) {
+	if (m_scene) {
+		if (m_scene->selection_size()>=1){
+				// copy blocks
+				m_scene_view->copy_selected_blocks();
+				m_scene->copy_connections();
+				// delete blocks
+				if (m_scene->selection_size()>1){
+					std::string m_select_block = m_scene_view->get_selected_blocks();
+					//Multi selection
+					m_scene->delete_block(m_select_block);
+					m_scene->m_copy_buffer.clear();
+					m_scene->clear_selection();
+					m_scene->clear_copy_selection();
+				}
+				else if (m_scene->selection_size()==1){
+					m_scene->delete_block((m_scene_view->get_active_block())->name());
+					m_scene->m_copy_buffer.clear();
+					m_scene->clear_selection();
+					m_scene->clear_copy_selection();
+				}
+
+				// refresh
+				redraw();
+		}
+	}
 }
 
 //Edit menu : Group selection
@@ -260,9 +300,10 @@ void application_window::on_menu_edit_delete (fltk::Widget*) {
 	if (m_scene) {
 		std::string m_select_block = m_scene_view->get_selected_blocks();
 				//Multi selection
-				if ((m_scene->selection_size() >1)){
+				if ((m_scene->selection_size() >1) || m_scene->m_groups_selection.size()){
 						m_scene->delete_block(m_select_block);
 						m_scene->clear_selection();
+
 						// refresh
 						redraw();
 						}
@@ -271,6 +312,7 @@ void application_window::on_menu_edit_delete (fltk::Widget*) {
 
 						m_scene->delete_block((m_scene_view->get_active_block())->name());
 						m_scene->clear_selection();
+
 						// refresh
 						redraw();
 
@@ -528,6 +570,10 @@ application_window::application_window() :
 				fltk::Item* menu_edit_paste = new fltk::Item ("Paste");
 				menu_edit_paste->shortcut (fltk::CTRL + 'v');
 				menu_edit_paste->callback ((fltk::Callback*)cb_menu_edit_paste, this);
+
+				fltk::Item* menu_edit_cut = new fltk::Item ("Cut");
+				menu_edit_cut->shortcut (fltk::CTRL + 'x');
+				menu_edit_cut->callback ((fltk::Callback*)cb_menu_edit_cut, this);
 
 				fltk::Item* menu_edit_group = new fltk::Item ("Group");
 				menu_edit_group->shortcut ('g');

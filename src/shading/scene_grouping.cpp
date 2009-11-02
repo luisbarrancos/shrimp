@@ -51,7 +51,7 @@ void scene::group_selection()
 		m_groups.insert(std::make_pair(*s, max));
 	}
 
-	m_selection.clear();
+	clear_selection();
 }
 
 

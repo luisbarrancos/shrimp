@@ -188,8 +188,8 @@ void scene_view::center_scene (const double X, const double Y) {
 void scene_view::move_active_block (const double XOffset, const double YOffset) {
 
 
-	int total = m_scene->selection_size();
 	int group_total =m_scene->group_selection_size();
+	int total = m_scene->selection_size() + group_total;
 	shader_block* block = m_scene->get_block (m_active_block);
 
 
@@ -201,36 +201,35 @@ void scene_view::move_active_block (const double XOffset, const double YOffset) 
 						std::string current_selection = *block_i;
 
 						shader_block* block = m_scene->get_block(current_selection);
+						int group = m_scene->group (block);
 
-						if (!block) {
+						if (!block && !group) {
 
-								log() << error << "active block '" << current_selection << "' not found." << std::endl;
+								log() << error << "active block or group'" << current_selection << "' not found." << std::endl;
 								return;
 							}
 
-						int group = m_scene->group (block);
 						if (!group){
 							block->m_position_x += XOffset;
 							block->m_position_y += YOffset;
 							}
-
+						else move_active_group(XOffset,YOffset);
 						}
 	}
 
 	//If single selection no parsing grab m_active_block
-	else if (!block) {
-					log() << error << "active block '" << m_active_block << "' not found." << std::endl;
-					return;
-				}
-
 	else if (block && (total<2)){
 			block->m_position_x += XOffset;
 			block->m_position_y += YOffset;
 		   }
 	//Move group as well
-	if (group_total){
+	if (group_total || m_active_group){
 	move_active_group(XOffset,YOffset);
 	}
+	else if (!block) {
+						log() << error << "active block FFFF'" << m_active_block << "' not found." << std::endl;
+						return;
+					}
 }
 
 void scene_view::move_all_blocks (const double XOffset, const double YOffset) {
@@ -311,34 +310,36 @@ void scene_view::copy_selected_blocks()
 	int total = m_scene->selection_size();
 	int group_total =m_scene->group_selection_size();
 	shader_block* block = m_current_selection_block;
+	m_scene->clear_copy_selection();
+	m_scene->m_copy_buffer.clear();
 
 	if (!block){
 		log() << error << "active block '" << m_current_selection_block << "' not found." << std::endl;
 		return;
 	}
-	std::string block_name = block->name();
+
+	std::string block_name;
 
 	//copy block
 	//If multi seletcion
 		if (total>1){
-				m_scene->clear_buffer_selection();
+
 				for (scene::selection_t::const_iterator block_i = m_scene->m_selection.begin(); block_i != m_scene->m_selection.end(); ++block_i) {
 
 							std::string current_selection = *block_i;
 
-							shader_block* block = m_scene->get_block(current_selection);
-							block_name = block->name();
+							shader_block* block_copy = m_scene->get_block(current_selection);
+							block_name = block_copy->name();
 
-							if (!block) {
+							if (!block_copy) {
 
 									log() << error << "active block '" << current_selection << "' not found." << std::endl;
 									return;
 								}
 
-							int group = m_scene->group (block);
+							int group = m_scene->group (block_copy);
 							if (!group){
-								 m_scene->m_copy_selection.insert(m_scene->copy_blocks(block_name));
-
+								m_scene->copy_blocks(block_name,0);
 								}
 
 							}
@@ -351,34 +352,62 @@ void scene_view::copy_selected_blocks()
 					}
 
 		else if (block && (total<2)){
-			m_scene->clear_buffer_selection();
-			m_scene->m_copy_selection.insert(m_scene->copy_blocks(block_name));
+			block_name = block->name();
+			m_scene->copy_blocks(block_name,0);
+
 			   }
 		//copy group as well
-			if (group_total){
 
+		if (group_total>=1){
+			copy_selected_groups();
 			}
+
 }
 
 //copy groups
 void scene_view::copy_selected_groups()
 {
+	for (scene::groups_selection_t::const_iterator g = m_scene->m_groups_selection.begin(); g != m_scene->m_groups_selection.end(); ++g)
+		{
+			for (scene::shader_blocks_t::iterator block = m_scene->m_blocks.begin(); block != m_scene->m_blocks.end(); ++block)
+				{
+					const int group_org = *g;
+					if (group_org==m_scene->group(block->second) )
+					{
 
-//	int total = m_scene->selection_size();
-//	int group_total =m_scene->group_selection_size();
-//	shader_block* block = m_scene->get_block (m_active_block);
+						m_scene->copy_blocks(block->first,group_org);
+					}
+				}
+
+		}
+
 }
 
 void scene_view::paste_buffered_blocks()
 {
-	if (m_scene->m_copy_selection.size()){
-	m_scene->paste_blocks();
+//paste blocks
 	m_scene->clear_selection();
-	for (scene::copy_selection_t::iterator new_block = m_scene->m_copy_selection.begin(); new_block != m_scene->m_copy_selection.end(); ++new_block){
-			shader_block* paste =*new_block;
-			m_scene->set_block_selection(paste,1);
+
+	if (m_scene->m_copy_selection.size()){
+	m_scene->copy_connections();
+	m_scene->paste_blocks();
+
+	// make block copy current selection
+	for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
+
+			// Don't select block part of a group
+			if (!m_scene->group(new_block->second.second))
+					{
+					m_scene->set_block_selection(new_block->second.second,1);
+					}
 		}
+	// make group copy current selection
+	for (scene::groups_t::const_iterator g = m_scene->m_groups_buffer.begin(); g != m_scene->m_groups_buffer.end(); ++g) {
+			m_scene->set_group_selection(g->second,1);
+		}
+
 	}
+	m_scene->clear_copy_selection();
 }
 
 void scene_view::box_selection()
@@ -520,43 +549,44 @@ void scene_view::box_selection()
 						const double y = p->second.position_y;
 
 						 //Above group
-						   //Check if rectangle surround center of the block
+						   //Check if rectangle surround center of the group
 						   if (Fx<Tx && Ty<Fy){
-							//Check if rectangle surround center of the block
+							//Check if rectangle surround center of the group
 								if (point_inside (x ,y ,Fx,Ty,Tx,Fy))
 									{
-									//Make Block selected
+									//Make group selected
 									m_scene->set_group_selection (group, true);
 									m_current_group = p->first;
 									}
 								else m_scene->set_group_selection (group, false);
 							}
 							else if (Fx>Tx && Ty<Fy){
-								//Check if rectangle surround center of the block
+								//Check if rectangle surround center of the group
 								if (point_inside (x,y ,Tx,Ty,Fx,Fy))
 									{
-									//Make Block selected
+									//Make group selected
 									m_scene->set_group_selection (group, true);
 									m_current_group = p->first;
 									}
 								else m_scene->set_group_selection (group, false);
 								}
 						   else if (Fx>Tx && Ty>Fy){
-									//Check if rectangle surround center of the block
+									//Check if rectangle surround center of the group
 								if (point_inside (x ,y ,Tx,Fy,Fx,Ty))
 									{
-									//Make Block selected
+									//Make group selected
 									m_scene->set_group_selection (group, true);
 									m_current_group = p->first;
 									}
 								else m_scene->set_group_selection (group, false);
 								}
 						  else if (Fx<Tx && Ty>Fy){
-									//Check if rectangle surround center of the block
+									//Check if rectangle surround center of the group
 								if (point_inside (x ,y ,Fx,Fy,Tx,Ty))
 									{
-									//Make Block selected
+									//Make group selected
 									m_scene->set_group_selection (group, true);
+									m_current_group = p->first;
 									}
 								else m_scene->set_group_selection (group, false);
 								}
@@ -1733,7 +1763,7 @@ void scene_view::draw_group_body (const double X, const double Y,const int curre
 	glEnd();
 
 	// draw a white hexagon around
-		if (m_active_group)
+		if (current_group == m_active_group)
 			// selected group are "hover orange"
 			{glColor4f (1.0, 0.55, 0.0, alpha);}
 		else {glColor3f (1, 1, 1);}

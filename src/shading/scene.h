@@ -83,6 +83,17 @@ public:
 	group_names_t m_group_names;
 
 
+	//////////// Copy,paste data structures
+	dag_t m_dag_copy;
+
+	typedef std::pair <std::string, shader_block* > copy_block_t;
+
+	// first copy_block:block original , second copy_block:new block
+	typedef std::map<copy_block_t,copy_block_t> shader_blocks_copy_t;
+	shader_blocks_copy_t m_copy_buffer;
+	shader_blocks_copy_t m_copy_selection;
+	groups_t m_groups_buffer;
+
 	//////////// Functions
 
 	scene();
@@ -133,15 +144,14 @@ public:
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
 	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
 
-	//copy paste block list
-	typedef std::set<shader_block*>  copy_selection_t;
-		copy_selection_t m_copy_selection;
+	// copy block
+	void copy_blocks(const std::string& Name, const int Group);
 
-	//copy block
-	shader_block* copy_blocks(const std::string& Name);
-
-	//paste block
+	// paste block
 	void paste_blocks();
+
+	// copy connections of copy/paste operation
+	void copy_connections();
 
 	//////////// Serialization
 
@@ -165,7 +175,7 @@ public:
 	void clear_selection();
 
 	// clear copy paste buffer
-	void clear_buffer_selection();
+	void clear_copy_selection();
 
 	// toggle block selection state
 	void set_block_selection (shader_block* Block, const bool Selection);

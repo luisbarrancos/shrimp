@@ -21,6 +21,7 @@
 
 #include "scene.h"
 #include "rib_root_block.h"
+#include <iostream>
 
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
@@ -71,9 +72,34 @@ shader_block* scene::add_custom_block (const std::string& Name, const bool RootB
 
 void scene::delete_block (const std::string& BlockName) {
 
-	int total = selection_size();
-	//If multi selecion
-		if (total>1){
+	// one block and not a group
+	if (selection_size()==1 && m_groups_selection.size()==0) {
+		//Avoid to delete Root block
+		if (BlockName != "Root block"){
+			// disconnect all pads
+
+			shader_block* block = get_block (BlockName);
+			for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
+				input != block->m_inputs.end(); ++input) {
+
+				if (block->m_inputs.size())disconnect (io_t (BlockName, input->m_name));
+			}
+			for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
+				output != block->m_outputs.end(); ++output) {
+
+				if (block->m_outputs.size())disconnect (io_t (BlockName, output->m_name));
+			}
+
+			// safely remove it from the network
+			m_blocks.erase (BlockName);
+
+			// finally delete it
+			delete block;
+		}
+	}
+
+	// multi selecion
+	else if (selection_size()>=1){
 				for (scene::selection_t::const_iterator block_i = m_selection.begin(); block_i != m_selection.end(); ++block_i) {
 
 							std::string current_selection = *block_i;
@@ -96,49 +122,70 @@ void scene::delete_block (const std::string& BlockName) {
 									for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
 											input != block->m_inputs.end(); ++input) {
 
-											disconnect (io_t (BlockNameSelect, input->m_name));
+										if (block->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
 										}
 									for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
 											output != block->m_outputs.end(); ++output) {
 
-											disconnect (io_t (BlockNameSelect, output->m_name));
+										if (block->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
 										}
 									// safely remove it from the network
 										m_blocks.erase (BlockNameSelect);
 
 									// finally delete it
 										delete block;
+
 								}
 							}
 
 				}
 
 		}
+		// groups selected
+		if (m_groups_selection.size())
+		{
 
-	else {
-		//Avoid to delete Root block
-		if (BlockName != "Root block"){
-			// disconnect all pads
-			shader_block* block = get_block (BlockName);
-			for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
-				input != block->m_inputs.end(); ++input) {
+			int Group = 0;
+			for (scene::groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
+			{
 
-				disconnect (io_t (BlockName, input->m_name));
+				for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i) {
+				const shader_block* blockSel = block_i->second;
+				int groupSel = group(blockSel);
+				Group = *g;
+
+
+				if (groupSel==Group)
+					{
+					const std::string  BlockNameSelect = blockSel->name();
+					if (BlockNameSelect != "Root block"){
+						for (shader_block::properties_t::const_iterator input = blockSel->m_inputs.begin();
+								input != blockSel->m_inputs.end(); ++input) {
+
+
+							if (blockSel->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
+							}
+						for (shader_block::properties_t::const_iterator output = blockSel->m_outputs.begin();
+								output != blockSel->m_outputs.end(); ++output) {
+
+							if (blockSel->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
+							}
+						// safely remove it from the network
+							m_blocks.erase (BlockNameSelect);
+
+						// delete the block itself
+						delete blockSel;
+						}
+					}
+				}
+			// safely remove from group
+			if (Group!=0){
+				ungroup(Group);
+				m_group_names.erase(Group);
+				}
+
 			}
-			for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
-				output != block->m_outputs.end(); ++output) {
-
-				disconnect (io_t (BlockName, output->m_name));
-			}
-
-			// safely remove it from the network
-			m_blocks.erase (BlockName);
-
-			// finally delete it
-			delete block;
 		}
-	}
-
 }
 
 
@@ -233,7 +280,7 @@ void scene::connect (const io_t& Input, const io_t& Output) {
 	shader_block* input_block = get_block (Input.first);
 	shader_block* output_block = get_block (Output.first);
 
-	if (input_block && output_block) {
+	if ((input_block && output_block) ||(m_dag == m_dag_copy)) {
 
 		if ((input_block->is_input (Input.second) && output_block->is_output (Output.second))) {
 
@@ -302,6 +349,7 @@ void scene::disconnect (const io_t& IO) {
 
 		// remove the connection
 		m_dag.erase (IO);
+
 		return;
 	}
 
@@ -365,9 +413,10 @@ void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
 }
 
 // copy block
-shader_block* scene::copy_blocks(const std::string& Name)
+void scene::copy_blocks(const std::string& Name,const int Group)
 {
-	shader_block* BlockToCopy = this->get_block(Name);
+
+	shader_block* BlockToCopy = get_block(Name);
 
 	// temp name
 			const std::string Temp = "Copy";
@@ -376,7 +425,7 @@ shader_block* scene::copy_blocks(const std::string& Name)
 		shader_block* new_block = new shader_block (Temp, "",0);
 
 	// set new name
-		NewName = new_block->get_unique_input_name(Name);
+		NewName = get_unique_block_name(Name);
 		new_block->set_name(NewName);
 
 	// copy description
@@ -411,8 +460,8 @@ shader_block* scene::copy_blocks(const std::string& Name)
 
 
 	// copy block position, size and rolled state in scene
-		new_block->m_position_x = BlockToCopy->m_position_x;
-		new_block->m_position_y = BlockToCopy->m_position_y;
+		new_block->m_position_x = BlockToCopy->m_position_x+0.5;
+		new_block->m_position_y = BlockToCopy->m_position_y+0.5;
 		new_block->m_width = BlockToCopy->m_width ;
 		new_block->m_height = BlockToCopy->m_height ;
 		new_block->m_rolled = BlockToCopy->m_rolled ;
@@ -422,17 +471,94 @@ shader_block* scene::copy_blocks(const std::string& Name)
 		new_block->m_code = BlockToCopy->m_code;
 		new_block->m_code_written = BlockToCopy->m_code_written;
 
+		const scene::copy_block_t New (NewName, new_block);
+		const scene::copy_block_t Org (Name,BlockToCopy);
 
-		return new_block;
+	// 	copy new block to buffer and selection
+		m_copy_buffer.insert (std::make_pair (Org,New));
+		m_copy_selection.insert (std::make_pair (Org,New));
+
+	if (Group){
+		int num_groups =0;
+
+			for (groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+					if(g->second > num_groups)
+						num_groups = g->second;
+					}
+
+	// add group if block part of a group
+		m_groups_buffer.insert(std::make_pair(NewName,(Group+num_groups)));
+	}
+}
+
+void scene::copy_connections()
+{
+	// copy connections
+
+			for (dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
+
+
+						const scene::copy_block_t to = (std::make_pair (connection->first.first,get_block(connection->first.first)));
+						const scene::copy_block_t from = (std::make_pair (connection->second.first,get_block(connection->second.first)));
+
+
+						// found connections to copy
+						shader_blocks_copy_t::const_iterator i = m_copy_selection.find(to);
+							shader_block* check_block = i->first.second;
+							shader_block* check_block_end = m_copy_selection.end()->first.second;
+
+
+							if (!(check_block == check_block_end)) {
+
+
+								const scene::io_t to_copy = (std::make_pair (i->second.first,connection->first.second));
+
+								shader_blocks_copy_t::const_iterator j = m_copy_selection.find(from);
+
+								shader_block* check_block2 = j->first.second;
+								shader_block* check_block_end2 = m_copy_selection.end()->first.second;
+								if (!(check_block2 == check_block_end2)) {
+
+
+									const scene::io_t from_copy = (std::make_pair (j->second.first,connection->second.second));
+
+									// add connection to the m_dag_copy structure
+									m_dag_copy.insert (std::make_pair (to_copy,from_copy));
+
+									}
+
+								}
+						}
+
 }
 
 void scene::paste_blocks()
 {
-	for (copy_selection_t::iterator new_block = m_copy_selection.begin(); new_block != m_copy_selection.end(); ++new_block){
-		shader_block* paste =*new_block;
+	// pasted blocks
+	for (shader_blocks_copy_t::iterator new_block = m_copy_buffer.begin(); new_block != m_copy_buffer.end(); ++new_block){
+		shader_block* paste =new_block->second.second;
+
 		const std::string paste_name = paste->name();
 		add_block (paste_name,"",paste);
+
+		// create new_groups (pasted groups)
+			groups_t::const_iterator g = m_groups_buffer.find(paste_name);
+			if(!(g == m_groups_buffer.end()))
+			{
+					const int Group = g->second;
+			 		m_groups.insert (std::make_pair(paste_name, Group));
+			}
 	}
+
+	// pasted connection of pasted blocks
+	for (dag_t::const_iterator connection = m_dag_copy.begin(); connection != m_dag_copy.end(); ++connection) {
+		const scene::io_t to = connection->first;
+		const scene::io_t from = connection->second;
+		connect (to, from);
+	}
+
+
+
 }
 
 bool scene::is_rolled (const shader_block* Block) const {

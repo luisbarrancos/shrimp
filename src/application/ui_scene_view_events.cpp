@@ -345,7 +345,8 @@ int scene_view::handle (int Event) {
 				}
 				else if (m_active_group) {
 					set_current_group(m_active_group);
-					move_active_group (move_x / m_size, move_y / m_size);
+					move_active_block (move_x / m_size, move_y / m_size);
+//					move_active_group (move_x / m_size, move_y / m_size);
 				}
 
 				else if (alt_key_down ){

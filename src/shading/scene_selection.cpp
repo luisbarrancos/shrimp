@@ -48,7 +48,7 @@ void scene::clear_selection() {
 	m_groups_selection.clear();
 }
 
-void scene::clear_buffer_selection(){
+void scene::clear_copy_selection(){
 	m_copy_selection.clear();
 }
 

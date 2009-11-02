@@ -98,6 +98,7 @@ public:
 	std::string get_selected_blocks() {return(select_object());}
 	shader_block * get_active_block() {return m_current_selection_block;}
 
+
 	// snap function (snaps given coordinates)
 	void snap_position (double& X, double& Y);
 

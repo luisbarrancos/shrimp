@@ -97,6 +97,7 @@ private:
 
 	void on_menu_edit_copy (fltk::Widget*);
 	void on_menu_edit_paste (fltk::Widget*);
+	void on_menu_edit_cut (fltk::Widget*);
 	void on_menu_edit_group (fltk::Widget*);
 	void on_menu_edit_ungroup (fltk::Widget*);
 	void on_menu_edit_delete (fltk::Widget*);
@@ -149,6 +150,8 @@ private:
 
 	static void cb_menu_edit_copy (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_copy (W); }
 	static void cb_menu_edit_paste (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_paste (W); }
+	static void cb_menu_edit_cut (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_cut (W); }
+
 	static void cb_menu_edit_group (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_group (W); }
 	static void cb_menu_edit_ungroup (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_ungroup (W); }
 	static void cb_menu_edit_delete (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_edit_delete (W); }
