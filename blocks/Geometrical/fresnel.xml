@@ -1,7 +1,7 @@
 <shrimp type="function" name="Fresnel" description="Fresnel function" author="rconstruct">
 	<input name="I" description="Incident vector" storage="varying" type="vector" default="normalize(I)"/>
 	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
-	<input name="eta" description="The relative index of refraction" type="float" default="1.5"/>
+	<input name="eta" description="The relative index of refraction" type="float" default="0.75"/>
 	<output name="R" description="The reflected vector" type="vector"/>
 	<output name="T" description="The refracted vector" type="vector"/>
 	<output name="Kr" description="The reflected coefficient" type="float"/>
