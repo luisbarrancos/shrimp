@@ -418,7 +418,8 @@ getcolorandalpha(
 		// RGB, if graymode is empty, alpha = opaque, else creates alpha
 		// via method set in graymode
 		if (numchannels == 3) {
-		Ot = (graymode == "") ? color(1) : tograyscale( Ct, graymode, channel);
+		Ot = (graymode == "") ? color(1) : color( tograyscale( Ct,
+				graymode, channel));
 		} else if (numchannels == 4) { // alpha = [3]
 		// 0 = basechannel for clamped_texture for rgb, 3 for alpha
 			Ot = (clamptexture == 1) ? color( float clamped_texture( texmap, 3,

@@ -751,7 +751,7 @@ getbrushedvec(
 	chv = valv - shortest;
 	
 	vector out = normalize( (udir * chu) + (vdir * chv) );
-	out = rotate( out, twist, 0, point(Nn) );
+	out = vector rotate( point(out), twist, point(0), point(Nn) );
 	return out;
 }
 

@@ -3,7 +3,7 @@
 		<shader_compiler>shaderdl -DRENDERER=%r -w2 -O3 -I%i -d $HOME/.shrimp/temp %s</shader_compiler>
 		<compiled_shader_extension>sdl</compiled_shader_extension>
 		<renderer_command>renderdl -p 2 -id %s</renderer_command>
-		<displays>bmp cineon dsm eps exr framebuffer ghost idisplay iff maya_render_view null pic png psd radiance shadowmap tiff zfile</displays>
+		<displays>framebuffer bmp cineon dsm eps exr ghost idisplay iff maya_render_view null pic png psd radiance shadowmap tiff zfile</displays>
 		<texture command="tdlmake" default="%s %i %o" extension="tdl">
 			<formats>tiff jpeg gif iff sgi pic psd tga bake hdr exr zfile</formats>
 			<texture_switches>
@@ -39,7 +39,7 @@
 		<shader_compiler>aqsl -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>slx</compiled_shader_extension>
 		<renderer_command>aqsis %s -shaders=%i</renderer_command>
-		<displays>file zfile legacyframebuffer framebuffer zframebuffer shadow tiff xpm exr bmp debugdd</displays>
+		<displays>legacyframebuffer file zfile framebuffer zframebuffer shadow tiff xpm exr bmp debugdd</displays>
 		<texture command="teqser" default="%s %i %o" extension="tex">
 			<formats>tiff jpg png exr bake zfile</formats>
 			<texture_switches>
@@ -69,7 +69,7 @@
 		<shader_compiler>sle -DRENDERER=%r -v -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sle</compiled_shader_extension>
 		<renderer_command>entropy -d %s</renderer_command>
-		<displays>file tiff shadow zfile iv framebuffer</displays>
+		<displays>framebuffer file tiff shadow zfile iv</displays>
 		<texture command="mkmip" default="%s %i %o" extension="tex">
 			<formats>tiff zfile</formats>
 			<texture_switches>
@@ -96,7 +96,7 @@
 		<shader_compiler>sdrc -DRENDERER=%r -I%i %s -o %o</shader_compiler>
 		<compiled_shader_extension>sdr</compiled_shader_extension>
 		<renderer_command>rndr -d %s</renderer_command>
-		<displays>file tiff shadow rgbe tsm OpenEXR framebuffer</displays>
+		<displays>framebuffer file tiff shadow rgbe tsm OpenEXR</displays>
 		<texture command="teqser" default="%s %i %o" extension="tex">
 			<formats>tiff bake zfile ptc</formats>
 			<texture_switches>
@@ -123,10 +123,10 @@
 		</texture>
 	</pixie>
 	<prman name="Photorealistic RenderMan">
-		<shader_compiler>shader -DRENDERER=%r -O2 -lintlt -I%i %s</shader_compiler>
+		<shader_compiler>shader -DRENDERER=%r -O2 -nolint -I%i %s</shader_compiler>
 		<compiled_shader_extension>slo</compiled_shader_extension>
 		<renderer_command>prman %s</renderer_command>
-		<displays>x11 windows tiff sgif alias targa cineon softimage mayaiff shadow zfile deepshad openexr texture pointcloud rib wavefrontobj</displays>
+		<displays>x11 framebuffer windows tiff sgif alias targa cineon softimage mayaiff shadow zfile deepshad openexr texture pointcloud rib wavefrontobj</displays>
 		<texture command="txmake" default="%s %i %o" extension="tx">
 			<formats>tiff iff zfile</formats>
 			<texture_switches>

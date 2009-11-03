@@ -1142,16 +1142,19 @@ cooktorrance(
 			// specular term - confirm this - for the time being the
 			// isotropic specular will be added via specularbrdf() shadeop
 
-			// no specularbrdf() in Aqsis?
-#if RENDERER == aqsis
-			// Ccook += Cl * D * G * F / costheta ? URGENT */
-			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
-					cospsi);
+#if RENDERER == aqsis // cannot find a suitable cast for the expression
+			if (distmodel == 3) {
+				Ccook += Cl * (1-nonspec) * (((D*G*F / (costheta * cospsi)) *
+						cospsi) + specularbrdf( Ln, Nf, Vf, roughness*.5));
+			} else {
+				Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
+							cospsi);
+			}
 #else
-			Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
-				cospsi + ( (distmodel == 3) ?
-					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0) ) );
-#endif
+			Ccook += Cl * (1-nonspec) * (((D*G*F / (costheta * cospsi)) *
+				cospsi) + (distmodel == 3) ?
+					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0));
+#endif // Aqsis doesn't likes ternary operator?
 		}
 	}
 	// NOTE: the values at high grazing angles seem to go up a lot

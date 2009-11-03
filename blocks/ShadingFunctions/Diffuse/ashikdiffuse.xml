@@ -1,8 +1,8 @@
 <shrimp name="AshikminDiff" type="function" description="Ashikmin-Shirley diffuse term" author="rconstruct">
-	<input name="Cdiff" description="Diffuse color" type="color" default="color(.5)"/>
-    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.3"/>
-    <input name="Ks" description="Specular light coefficient" type="float" default="0.9"/>
-	<input name="ior" description="Index of Refraction" type="float" default="2.0"/>
+	<input name="Cdiff" description="Diffuse color" type="color" default="color(1)"/>
+    <input name="Kd" description="Diffuse light coefficient" type="float" default="0.9"/>
+    <input name="Ks" description="Specular light coefficient" type="float" default="0.1"/>
+	<input name="ior" description="Index of Refraction" type="float" default="3.0"/>
 	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
 	<input name="category" description="Light categories accepted" storage="uniform" type="string" default="&quot;&quot;" />
