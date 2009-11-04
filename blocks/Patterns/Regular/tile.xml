@@ -1,8 +1,8 @@
 <shrimp type="function" name="Tile" description="Simple tiling function" author="rconstruct">
 	<input name="s" description="X coordinate" storage="varying" type="float" default="s"/>
 	<input name="t" description="Y coordinate" storage="varying" type="float" default="t"/>
-	<input name="xfrequency" description="The frequency of the tiling in the x direction" type="float" default="1"/>
-	<input name="yfrequency" description="The frequency of the tiling in the y direction" type="float" default="1"/>
+	<input name="xfrequency" description="The frequency of the tiling in the x direction" storage="uniform" type="float" default="1"/>
+	<input name="yfrequency" description="The frequency of the tiling in the y direction" storage="uniform" type="float" default="1"/>
 	<output name="xtile" description="The x coordinate inside the tile" type="float"/>
 	<output name="ytile" description="The y coordinate inside the tile" type="float"/>
 	<output name="column" description="The column number of the current tile" type="float"/>

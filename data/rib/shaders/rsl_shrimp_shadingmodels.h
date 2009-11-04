@@ -1152,8 +1152,8 @@ cooktorrance(
 			}
 #else
 			Ccook += Cl * (1-nonspec) * (((D*G*F / (costheta * cospsi)) *
-				cospsi) + (distmodel == 3) ?
-					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0));
+				cospsi) + ((distmodel == 3) ?
+					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0)));
 #endif // Aqsis doesn't likes ternary operator?
 		}
 	}

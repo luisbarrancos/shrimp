@@ -2,15 +2,15 @@
 	<about/>
 	<network>
 		<block id="Bake3d" position_x="4" position_y="1" author="rconstruct">
-			<input name="bakefile" type="string" storage="uniform" value="&quot;/usr/tmp/bakeocc.ptc&quot;" description="Baked map filename"/>
+			<input name="bakefile" type="string" storage="uniform" value="&quot;/home/cgwork/bakeocc.ptc&quot;" description="Baked map filename"/>
 			<input name="PP" type="point" storage="varying" value="P" description="Surface point"/>
 			<input name="NN" type="normal" storage="varying" value="normalize(N)" description="Surface normal"/>
 			<input name="coordsys" type="string" storage="uniform" value="&quot;world&quot;" description="Coordinate system"/>
 			<input name="filterradius" type="float" storage="varying" value="1" description="Filter radius"/>
 			<input name="filterscale" type="float" storage="varying" value="1" description="Filter scale"/>
 			<input name="interpolate" type="float" storage="varying" value="1" description="Toggle interpolation"/>
-			<input name="channel" type="string" storage="uniform" value="&quot;&quot;" description="Data channel to bake"/>
-			<input name="value" type="color" storage="varying" value="color(0)" description="Value associated with data channel" type_parent="bdataval">
+			<input name="channel" type="string" storage="uniform" value="&quot;occlusion&quot;" description="Data channel to bake"/>
+			<input name="value" type="float" storage="varying" value="color(0)" description="Value associated with data channel" type_parent="bdataval">
 				<connection parent="Occlusion" output="Occ"/>
 			</input>
 			<output name="bdataval" type="color" storage="varying" description="Baked data value"/>
@@ -57,11 +57,11 @@
 		$(status) = 0;
 	#endif /* RENDERER */
 			
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>This function bakes the supplied data channel into a bakefile. Note that this varies considerably with each renderer&apos;s implementation, please check your renderer&apos;s documentation for details. Returns 1 if sucessful, 0 if failed.			</usage>
+			<usage>This function bakes the supplied data channel into a bakefile. Note that this varies considerably with each renderer&apos;s implementation, please check your renderer&apos;s documentation for details. Returns 1 if sucessful, 0 if failed.						</usage>
 		</block>
-		<block id="FaceForward_2" position_x="-3" position_y="1" author="rconstruct">
+		<block id="FaceForward_2" position_x="-2" position_y="1" author="rconstruct">
 			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Vector or Normal to flip" type_parent="NN">
 				<connection parent="Normalize_3" output="val"/>
 			</input>
@@ -72,25 +72,25 @@
 			<output name="NN" type="normal" storage="varying" description="A vector pointing in the direction oposite to I"/>
 			<rsl_code>
 		$(NN) = faceforward( $(N), $(I), $(Nref) );
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.			</usage>
+			<usage>This function will flip the direction of N so that it faces a direction oposite to that of I, with respect to Nref.						</usage>
 		</block>
 		<block id="I_2" position_x="-5" position_y="-1" author="rconstruct">
 			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
 			<rsl_code>
 	$(I) = I;
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>Incident ray direction. The availability of this global variable for the different shading contexts is renderer specific.			</usage>
+			<usage>Incident ray direction. The availability of this global variable for the different shading contexts is renderer specific.						</usage>
 		</block>
 		<block id="N_2" position_x="-5" position_y="2" author="rconstruct">
 			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
 			<rsl_code>
     $(N) = N;
-    			</rsl_code>
+    						</rsl_code>
 			<rsl_include/>
-			<usage>Surface shading normal. The availability of this global variable in the different shading contexts is renderer specific. It&apos;s not available in imager shaders.			</usage>
+			<usage>Surface shading normal. The availability of this global variable in the different shading contexts is renderer specific. It&apos;s not available in imager shaders.						</usage>
 		</block>
 		<block id="Normalize_3" position_x="-5" position_y="1" author="rconstruct">
 			<input name="A" type="normal" storage="varying" value="N" description="Input vector" type_parent="val">
@@ -99,9 +99,9 @@
 			<output name="val" type="normal" storage="varying" description="Output unit length vector"/>
 			<rsl_code>
 		$(val) = normalize( $(A) );
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).						</usage>
 		</block>
 		<block id="Normalize_4" position_x="-5" position_y="-0" author="rconstruct">
 			<input name="A" type="vector" storage="varying" value="N" description="Input vector" type_parent="val">
@@ -110,11 +110,11 @@
 			<output name="val" type="vector" storage="varying" description="Output unit length vector"/>
 			<rsl_code>
 		$(val) = normalize( $(A) );
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>Returns a unit vector in the direction of input vector (V/length(V)).			</usage>
+			<usage>Returns a unit vector in the direction of input vector (V/length(V)).						</usage>
 		</block>
-		<block id="Occlusion" position_x="0" position_y="3" author="rconstruct">
+		<block id="Occlusion" position_x="1" position_y="3" author="rconstruct">
 			<input name="inpoint" type="point" storage="varying" value="P" description="Surface point">
 				<connection parent="p_2" output="P"/>
 			</input>
@@ -247,16 +247,18 @@
 		$(Occ) = 0;		
 	#endif /* RENDERER */
 	
-				</rsl_code>
+							</rsl_code>
 			<rsl_include/>
-			<usage>This function returns the ambient occlusion, and optionally environment color, environment direction and indirect lighting. This function&apos;s arguments vary with each renderer&apos;s implementation, so make sure to consult your renderer&apos;s documentation. This block provided the following arguments: &quot;coneangle&quot;, defaults to PI/2; &quot;distribution&quot;, can be &quot;cosine&quot; or &quot;uniform&quot;, defaults to &quot;cosine&quot;. This function can use an optional environment map to use when rays don&apos;t hit the geometry, and can also return the environment direction vector, the average of the unoccluded direction. Note that you can use either the surface normal, or the reflection vector, for the &quot;indir&quot; variable, in which case the function will output ambient occlusion or reflection occlusion respectively. You can also use point-based occlusion, or Aqsis&apos;s implementation which uses multiple shadow maps. Note that this function varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details. The occlusion value is passed to aov_occlusion AOV preset, as occlusion, not 1 - occlusion.			</usage>
+			<usage>This function returns the ambient occlusion, and optionally environment color, environment direction and indirect lighting. This function&apos;s arguments vary with each renderer&apos;s implementation, so make sure to consult your renderer&apos;s documentation. This block provided the following arguments: &quot;coneangle&quot;, defaults to PI/2; &quot;distribution&quot;, can be &quot;cosine&quot; or &quot;uniform&quot;, defaults to &quot;cosine&quot;. This function can use an optional environment map to use when rays don&apos;t hit the geometry, and can also return the environment direction vector, the average of the unoccluded direction. Note that you can use either the surface normal, or the reflection vector, for the &quot;indir&quot; variable, in which case the function will output ambient occlusion or reflection occlusion respectively. You can also use point-based occlusion, or Aqsis&apos;s implementation which uses multiple shadow maps. Note that this function varies considerably from implementation to implementation, so please consult your renderer&apos;s documentation for details. The occlusion value is passed to aov_occlusion AOV preset, as occlusion, not 1 - occlusion.						</usage>
 		</block>
-		<block id="Root block" position_x="6" position_y="1" author="" root="RIB" AOV_preview="1">
-			<rib_statements>Attribute &quot;visibility&quot; &quot;integer diffuse&quot; 1
-Attribute &quot;visibility&quot; &quot;integer specular&quot; 1
-Attribute &quot;visibility&quot; &quot;integer transmission&quot; 1
-Attribute &quot;cull&quot; &quot;integer hidden&quot; 0
-Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
+		<block id="Root block" position_x="6" position_y="1" author="" root="RIB">
+			<rib_statements>DisplayChannel &quot;float occlusion&quot;
+Attribute &quot;visibility&quot; &quot;integer diffuse&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer specular&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer transmission&quot; [1]
+Attribute &quot;cull&quot; &quot;integer hidden&quot; [0]
+Attribute &quot;cull&quot; &quot;integer backfacing&quot; [0]
+Attribute &quot;dice&quot; &quot;integer rasterorient&quot; [0]
 			</rib_statements>
 			<imager_statement/>
 			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
@@ -266,7 +268,6 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
 			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
 			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
 			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
-			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
 			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
 			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
 			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
@@ -280,9 +281,9 @@ Attribute &quot;cull&quot; &quot;integer backfacing&quot; 0
 			<output name="P" type="point" storage="varying" description="Surface position"/>
 			<rsl_code>
     $(P) = P;
-    			</rsl_code>
+    						</rsl_code>
 			<rsl_include/>
-			<usage>Note that in all shading contexts, &quot;P&quot; is the surface position, the only exception being volume shaders, in which &quot;P&quot; is the light ray origin. Also note that in imager shaders, &quot;P&quot; is the position of the pixel center in raster space, with the z coordinate being 0.			</usage>
+			<usage>Note that in all shading contexts, &quot;P&quot; is the surface position, the only exception being volume shaders, in which &quot;P&quot; is the light ray origin. Also note that in imager shaders, &quot;P&quot; is the position of the pixel center in raster space, with the z coordinate being 0.						</usage>
 		</block>
 	</network>
 </shrimp>
