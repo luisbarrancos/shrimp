@@ -43,6 +43,8 @@ rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
 	add_input ("P", "point", "varying", "Displaced surface position", "P", "");
 	add_input ("N", "normal", "varying", "Displaced surface shading normal", "N", "");
 	add_input ("Cl", "color", "varying", "Outgoing light ray colour", "0", "");
+	// we have problems with Ol, PRMan (and not only PRMan) protest about Ol)
+	// still, doesn't makes much sense having light opacity (?!)
 	add_input ("Ol", "color", "varying", "Outgoing light ray opacity", "1", "");
 	add_input ("Cv", "color", "varying", "Attenuated ray colour", "0", "");
 	add_input ("Ov", "color", "varying", "Attenuated ray opacity", "1", "");
@@ -248,7 +250,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		shader_code += " #define " + r_i->first + " " + string_cast (renderer_number) + "\n";
 		//shader_code += "#endif\n";
 	}
-	shader_code += "\n\n";
+	shader_code += "/* Shrimp headers */\n";
 
 	/* all blocks should be aware of the AOV macros, so instead of including
 	 * shrimp_aov.h in all blocks, we might as well make it a part of the
@@ -324,6 +326,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		 * nonspecular instead */
 			shader_code += "light " + ShaderName
 				+ "(\n"
+				+ "\t/* predefined light outputs */\n"
 				+ "\toutput uniform float __nondiffuse = 0;\n"
 				+ "\toutput uniform float __nonspecular = 0;\n"
 				+ "\toutput uniform string __category = \"\";\n"
@@ -341,16 +344,17 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	}
 
 	// add function's parameters
-	shader_code += parameters + "\n";
+	shader_code += parameters + "/* User set parameters */\n";
 	shader_code += shader_outputs;
 	shader_code += "\t)\n";
 
 	// open function and write locals
 	shader_code += "{\n";
 	shader_code += "\tINIT_AOV_PARAMETERS\n";
+	shader_code += "\t/* Local variables */\n";
 	shader_code += locals;
 
-	shader_code += "\n\n";
+	shader_code += "/* Blocks follow */\n";
 
 	// actual function code
 	switch (ShaderType) {
@@ -919,13 +923,13 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// light
 	if (!LightName.empty()) {
-		light_shaders += "LightSource \"" + LightName + "\" 0\n";
+		light_shaders += "\tLightSource \"" + LightName + "\" 0\n";
 	} else {
 
-		light_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [ 1.0 ] \"lightcolor\" [1 1 1]\n";
-		light_shaders += "LightSource \"distantlight\" 1 \"intensity\" [ 1.0 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ -1 1 -1 ] \"to\" [ 0 0 0 ]\n";
-		light_shaders += "LightSource \"distantlight\" 2 \"intensity\" [ 0.8 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 1 1 ] \"to\" [ 0 0 0 ]\n";
-		light_shaders += "LightSource \"distantlight\" 3 \"intensity\" [ 0.65 ] \"lightcolor\" [ 1 1 1 ] \"from\" [ 1 -1 -1 ] \"to\" [ 0 0 0 ]\n";
+		light_shaders += "LightSource \"ambientlight\" 0 \"intensity\" [1.0] \"lightcolor\" [1 1 1]\n";
+		light_shaders += "\tLightSource \"distantlight\" 1 \"intensity\" [1.0] \"lightcolor\" [1 1 1] \"from\" [-1 1 -1] \"to\" [0 0 0]\n";
+		light_shaders += "\tLightSource \"distantlight\" 2 \"intensity\" [0.8] \"lightcolor\" [1 1 1] \"from\" [1 1 1] \"to\" [0 0 0]\n";
+		light_shaders += "\tLightSource \"distantlight\" 3 \"intensity\" [0.65] \"lightcolor\" [1 1 1] \"from\" [1 -1 -1] \"to\" [0 0 0]\n";
 
 	}
 
@@ -944,13 +948,13 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// atmosphere
 	if (!AtmosphereName.empty()) {
-		volume_shaders += "Atmosphere \"" + AtmosphereName + "\"\n";
+		volume_shaders += "\tAtmosphere \"" + AtmosphereName + "\"\n";
 	}
 
 
 	// surface
 	if (SurfaceName.empty()) {
-		surface_shaders += "Surface \"plastic\"\n";
+		surface_shaders += "Surface \"matte\"\n";
 	} else {
 		surface_shaders += "Surface \"" + SurfaceName + "\"\n";
 	}
@@ -958,7 +962,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	// displacement
 	if (!DisplacementName.empty()) {
 		displacement_shaders += "Displacement \"" + DisplacementName + "\"\n";
-		displacement_shaders += "Attribute \"displacementbound\" \"sphere\" 0.5\n";
+		displacement_shaders += "\t\tAttribute \"displacementbound\" \"float sphere\" [0.5] \"string coordinatesystem\" [\"shader\"]\n";
 		//displacement_shaders += "Attribute \"render\" \"patch_multiplier\" 1.0\n";
 	}
 
@@ -986,7 +990,9 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	// write the RIB file
 	file << "# Shrimp preview scene\n";
 	file << "\n";
-	file << "Display \"outputimage\" \"" << display << "\" \"rgb\"\n";
+	file << "Option \"searchpath\" \"string resource\" [\"@:./:./data/rib/scenes:$HOME/.shrimp/temp:&\"]\n";
+	file << "\n";
+	file << "Display \"outputimage.tif\" \"" << display << "\" \"rgb\"\n";
 	if (AOV) {
 		// standard/predefined AOVs ( from shrimp_aov.h )
 		// the user can create AOV blocks later, but that means updating the
@@ -995,8 +1001,9 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 		// note that the string should be
 		// "+/whatever/path/aov_name.tif" "file" "type aov_name"
 		// displays descriptions in renderer .xml file needs to be updated to
-		// include these preset AOVs
+		// include these preset AOVs, but for a secondaries display option
 		// AOV presets
+		file << "# AOVs here\n";
 		file << "Display \"+" + TempDir + "/" + "aov_surfacecolor"
 			 + ".tif" + "\" \"file\" \"varying color aov_surfacecolor\" "
 			 + "\"quantize\" [0 255 0 255]\n";
@@ -1038,12 +1045,15 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 			+ "\"quantize\" [0 255 0 255]\n";
 	}
 	
-	file << "\n";
+	file << "# User set root block RIB statements\n";
 	file << m_general_statements << "\n";
-	file << "\n";
+	file << "# Preview scene\n";
 	file << "Format " << prefs.m_output_width << " " << prefs.m_output_height << " 1\n";
 	file << "PixelSamples " << prefs.m_samples_x << " " << prefs.m_samples_y << "\n";
 	file << "ShadingRate " << prefs.m_shading_rate << "\n";
+	file << "Exposure 1 1\n";
+	file << "Quantize \"rgb\" 255 0 255 0.5\n";
+	file << "ShadingInterpolation \"smooth\"\n";
 	file << "\n";
 	file << scene_template << std::endl;
 
