@@ -992,7 +992,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	file << "\n";
 	file << "Option \"searchpath\" \"string resource\" [\"@:./:./data/rib/scenes:$HOME/.shrimp/temp:&\"]\n";
 	file << "\n";
-	file << "Display \"outputimage.tif\" \"" << display << "\" \"rgb\"\n";
+	file << "Display \"outputimage.tif\" \"" << display << "\" \"rgba\"\n";
 	if (AOV) {
 		// standard/predefined AOVs ( from shrimp_aov.h )
 		// the user can create AOV blocks later, but that means updating the
@@ -1052,8 +1052,9 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	file << "PixelSamples " << prefs.m_samples_x << " " << prefs.m_samples_y << "\n";
 	file << "ShadingRate " << prefs.m_shading_rate << "\n";
 	file << "Exposure 1 1\n";
-	file << "Quantize \"rgb\" 255 0 255 0.5\n";
+	file << "Quantize \"rgba\" 255 0 255 0.5\n";
 	file << "ShadingInterpolation \"smooth\"\n";
+	file << "Clipping 0.01 100\n";
 	file << "\n";
 	file << scene_template << std::endl;
 
