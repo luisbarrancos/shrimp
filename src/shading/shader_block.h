@@ -104,6 +104,8 @@ typedef std::vector<std::string> types_t;
 types_t get_property_types();
 typedef std::vector<std::string> storages_t;
 storages_t get_property_storage_types();
+typedef std::vector<std::string> array_types_t;
+types_t get_array_types();
 
 
 // basic block class

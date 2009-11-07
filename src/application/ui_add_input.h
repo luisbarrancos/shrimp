@@ -22,6 +22,7 @@
 #ifndef _ui_add_input_h_
 #define _ui_add_input_h_
 
+#include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_xml.h"
 #include "../miscellaneous/misc_string_functions.h"
 
@@ -29,6 +30,7 @@
 #include <fltk/Choice.h>
 #include <fltk/Input.h>
 #include <fltk/Item.h>
+#include <fltk/ValueInput.h>
 #include <fltk/ReturnButton.h>
 #include <fltk/TextEditor.h>
 #include <fltk/Window.h>
@@ -41,8 +43,10 @@ namespace add_input
 {
 
 static fltk::Input* s_name = 0;
-static fltk::Choice* s_type = 0;
 static fltk::Choice* s_storage = 0;
+static fltk::Choice* s_type = 0;
+static fltk::Choice* s_array_type = 0;
+static fltk::ValueInput* s_array_size = 0;
 static fltk::Input* s_default_value = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
 static fltk::TextEditor* s_description = 0;
@@ -57,9 +61,10 @@ private:
 	fltk::Window* w;
 	shader_block* m_block;
 
-	// make sure the list isn't destroyed before the dialog closes
+	// make sure the lists aren't destroyed before the dialog closes
 	types_t m_types;
 	types_t m_storage_types;
+	types_t m_array_types;
 
 public:
 	dialog() {
@@ -89,7 +94,7 @@ public:
 			s_storage->tooltip ("Input variable storage type");
 
 			// type
-			s_type = new fltk::Choice (180,40, 120,23, "");
+			s_type = new fltk::Choice (180,40, 100,23, "");
 			s_type->begin();
 				m_types = get_property_types();
 				for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i) {
@@ -99,7 +104,32 @@ public:
 			s_type->end();
 			w->add (s_type);
 			s_type->tooltip ("Input type");
+			s_type->callback(cb_type_change, (void*)this);
+			s_type->when(fltk::WHEN_CHANGED);
 
+			// array type
+			s_array_type = new fltk::Choice (290,40, 100,23, "");
+			s_array_type->begin();
+				m_array_types = get_array_types();
+				for (types_t::const_iterator t_i = m_array_types.begin(); t_i != m_array_types.end(); ++t_i) {
+
+					new fltk::Item (t_i->c_str());
+				}
+			s_array_type->end();
+			w->add (s_array_type);
+			s_array_type->tooltip ("Array type");
+			s_array_type->deactivate();
+
+			// array size
+			s_array_size = new fltk::ValueInput (290,65, 50,23, "");
+			s_array_size->minimum (1);
+			s_array_size->maximum (1E6);
+			s_array_size->step (1);
+			s_array_size->value (1);
+			s_array_size->tooltip ("Array size");
+			s_array_size->deactivate();
+
+			// default value
 			s_default_value = new fltk::Input (90,70, 100,23, "Default value");
 			w->add (s_default_value);
 			s_default_value->tooltip ("Input's default value");
@@ -146,6 +176,18 @@ public:
 		w->exec();
 	}
 
+	void on_type_change(fltk::Widget* W) {
+
+		const std::string type = m_types[s_type->value()];
+		if (type == "array") {
+			s_array_type->activate();
+			s_array_size->activate();
+		} else {
+			s_array_type->deactivate();
+			s_array_size->deactivate();
+		}
+	}
+
 	void on_ok (fltk::Widget* W) {
 
 		// get user values
@@ -189,6 +231,7 @@ public:
 		W->window()->make_exec_return(false);
 	}
 
+	static void cb_type_change(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_type_change(W); }
 	static void cb_ok(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
 	static void cb_cancel(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
 };

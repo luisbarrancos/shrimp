@@ -393,6 +393,21 @@ types_t get_property_storage_types() {
 }
 
 
+types_t get_array_types() {
+
+	types_t list;
+	list.push_back ("float");
+	list.push_back ("color");
+	list.push_back ("string");
+	list.push_back ("point");
+	list.push_back ("vector");
+	list.push_back ("normal");
+	//list.push_back ("matrix");
+
+	return list;
+}
+
+
 shader_block::shader_block (const std::string& Name, const std::string& Description, const bool RootBlock) :
 
 	m_name (Name),
