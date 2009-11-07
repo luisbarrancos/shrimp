@@ -125,15 +125,25 @@ private:
 
 	// draw console
 	void draw_console();
-	
+
 	// draw grid
 	void draw_grid();
 
 	// draws active shader
 	void draw_shader();
 
-	//draw a rectangle of selection
+	// draw a rectangle of selection
 	void box_selection();
+
+	// event functions
+	void mouse_wheel_update(double move);
+	void mouse_move();
+	void mouse_any_button_down();
+	void mouse_left_button_down();
+	void mouse_right_button_down();
+	void mouse_any_button_drag();
+	void mouse_left_button_drag();
+	void mouse_left_button_release();
 
 	const double m_min_block_height;
 
