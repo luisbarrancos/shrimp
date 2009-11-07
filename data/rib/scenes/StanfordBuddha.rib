@@ -30,7 +30,7 @@ WorldBegin
 
 	# Background Box
 	AttributeBegin
-		Attribute "identififer" "string name" ["BackgroundBox"]
+		Attribute "identifier" "string name" ["BackgroundBox"]
 		Surface "grid" "float hfreq" [ 3 ] "float vfreq" [ 3 ] "float hblur" [ 0.01 ] "float vblur" [ 0.01 ]
 		ReadArchive "archives/Box.rib.gz"
 	AttributeEnd
