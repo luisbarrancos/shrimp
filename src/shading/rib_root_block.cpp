@@ -443,7 +443,13 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Ol_parent = m_scene->get_parent (name(), "Ol", Ol_output_name);
 
 			// build code
-			std::string light_code = "\tCl = $(Cl);\n\tOl = $(Ol);";
+			// seems Ol is not accepted by PRMan, add workaround
+			// haven't checked this with BMRT, Entropy, RenderDotC...
+			std::string light_code = "\tCl = $(Cl);\n";
+			light_code += "/* PRMan doesn't accepts Ol */\n";
+			light_code += "#if RENDERER != prman\n";
+			light_code += "\tOl = $(Ol);\n";
+			light_code += "#endif";
 
 			if (Cl_parent) {
 
