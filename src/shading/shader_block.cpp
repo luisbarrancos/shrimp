@@ -154,8 +154,6 @@ bool property::set_type_extension (const std::string& TypeExtension) {
 
 		m_current_type_extension = new_type;
 
-	} else {
-		log() << warning << "unprocessed type extension: " << TypeExtension << std::endl;
 	}
 
 	return false;
@@ -163,6 +161,10 @@ bool property::set_type_extension (const std::string& TypeExtension) {
 
 
 std::string property::get_type_extension() const {
+
+	if (m_current_type != ARRAY) {
+		return "";
+	}
 
 	return convert_type (m_current_type_extension);
 }
@@ -1251,6 +1253,9 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 				}
 				else if (name == "type") {
 					input_type = a->Value();
+				}
+				else if (name == "type_extension") {
+					input_type_extension = a->Value();
 				}
 				else if (name == "storage") {
 					input_storage = a->Value();

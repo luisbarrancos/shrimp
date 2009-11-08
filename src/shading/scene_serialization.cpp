@@ -346,6 +346,9 @@ xml::element scene::xml_network() {
 			xml::element xml_input ("input");
 			xml_input.push_attribute ("name", name);
 			xml_input.push_attribute ("type", input->get_type());
+			if (input->get_type() == "array") {
+				xml_input.push_attribute ("type_extension", input->get_type_extension() + ":" + string_cast(input->get_type_extension_size()));
+			}
 			xml_input.push_attribute ("storage", input->get_storage());
 			if (input->is_multi_operator()) {
 				xml_input.push_attribute ("multi", input->m_multi_operator);
