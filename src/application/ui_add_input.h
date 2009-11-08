@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -30,9 +30,9 @@
 #include <fltk/Choice.h>
 #include <fltk/Input.h>
 #include <fltk/Item.h>
-#include <fltk/ValueInput.h>
 #include <fltk/ReturnButton.h>
 #include <fltk/TextEditor.h>
+#include <fltk/ValueInput.h>
 #include <fltk/Window.h>
 
 #include <fltk/ask.h>
@@ -62,8 +62,8 @@ private:
 	shader_block* m_block;
 
 	// make sure the lists aren't destroyed before the dialog closes
-	types_t m_types;
 	types_t m_storage_types;
+	types_t m_types;
 	types_t m_array_types;
 
 public:
@@ -122,7 +122,7 @@ public:
 
 			// array size
 			s_array_size = new fltk::ValueInput (290,65, 50,23, "");
-			s_array_size->minimum (1);
+			s_array_size->minimum (0);
 			s_array_size->maximum (1E6);
 			s_array_size->step (1);
 			s_array_size->value (1);
@@ -148,11 +148,11 @@ public:
 
 
 			// OK / Cancel
-			fltk::ReturnButton* rb = new fltk::ReturnButton(150, 250, 70, 25, "OK");
+			fltk::ReturnButton* rb = new fltk::ReturnButton(180, 250, 70, 25, "OK");
 			rb->label("Ok");
 			rb->callback(cb_ok, (void*)this);
 
-			fltk::Button* cb = new fltk::Button(250, 250, 70, 25, "Cancel");
+			fltk::Button* cb = new fltk::Button(280, 250, 70, 25, "Cancel");
 			cb->label("Cancel");
 			cb->callback(cb_cancel, (void*)this);
 
@@ -193,6 +193,7 @@ public:
 		// get user values
 		const std::string name = s_name->value();
 		const std::string type = m_types[s_type->value()];
+		const std::string type_extension = m_array_types[s_array_type->value()] + ":" + string_cast(s_array_size->value());
 		const std::string storage = m_storage_types[s_storage->value()];
 		const std::string default_value = s_default_value->value();
 		const std::string description = s_description->text();
@@ -218,7 +219,7 @@ public:
 
 		} else {
 			// create the input
-			m_block->add_input (name, type, storage, description, default_value, "", shader_parameter);
+			m_block->add_input (name, type, type_extension, storage, description, default_value, "", shader_parameter);
 
 			// close the dialog
 			W->window()->make_exec_return(false);

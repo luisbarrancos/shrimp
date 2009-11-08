@@ -38,19 +38,19 @@ rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
 {
 
 	// add inputs
-	add_input ("Ci", "color", "varying", "Incident ray colour", "0", "");
-	add_input ("Oi", "color", "varying", "Incident ray opacity", "1", "");
-	add_input ("P", "point", "varying", "Displaced surface position", "P", "");
-	add_input ("N", "normal", "varying", "Displaced surface shading normal", "N", "");
-	add_input ("Cl", "color", "varying", "Outgoing light ray colour", "0", "");
+	add_input ("Ci", "color", "", "varying", "Incident ray colour", "0", "");
+	add_input ("Oi", "color", "", "varying", "Incident ray opacity", "1", "");
+	add_input ("P", "point", "", "varying", "Displaced surface position", "P", "");
+	add_input ("N", "normal", "", "varying", "Displaced surface shading normal", "N", "");
+	add_input ("Cl", "color", "", "varying", "Outgoing light ray colour", "0", "");
 	// we have problems with Ol, PRMan (and not only PRMan) protest about Ol)
 	// still, doesn't makes much sense having light opacity (?!)
-	add_input ("Ol", "color", "varying", "Outgoing light ray opacity", "1", "");
-	add_input ("Cv", "color", "varying", "Attenuated ray colour", "0", "");
-	add_input ("Ov", "color", "varying", "Attenuated ray opacity", "1", "");
-	add_input ("Cm", "color", "varying", "Output pixel colour", "0", "");
-	add_input ("Om", "color", "varying", "Output pixel opacity", "1", "");
-	add_input ("AOV", "color", "varying", "AOV preview output", "1", "");
+	add_input ("Ol", "color", "", "varying", "Outgoing light ray opacity", "1", "");
+	add_input ("Cv", "color", "", "varying", "Attenuated ray colour", "0", "");
+	add_input ("Ov", "color", "", "varying", "Attenuated ray opacity", "1", "");
+	add_input ("Cm", "color", "", "varying", "Output pixel colour", "0", "");
+	add_input ("Om", "color", "", "varying", "Output pixel opacity", "1", "");
+	add_input ("AOV", "color", "", "varying", "AOV preview output", "1", "");
 }
 
 

@@ -119,6 +119,61 @@ std::string property::get_type() const {
 }
 
 
+bool property::set_type_extension (const std::string& TypeExtension) {
+
+	m_current_type_extension = UNKNOWN;
+	if (TypeExtension == "" && get_type() != "array") {
+		return true;
+	}
+
+	if (get_type() == "array") {
+		// Type extension can be "vector", "vector:5"
+		// (where 'vector' is the array type, 5 its size)
+		std::string extension_name = TypeExtension;
+		m_current_type_extension_size = 0;
+
+		int colon = TypeExtension.find (':', 0);
+		if (colon > 0) {
+
+			extension_name = TypeExtension.substr (0, colon);
+
+			int colon2 = TypeExtension.find (':', colon + 1);
+			if (colon2 < 0) {
+				std::string size_value = TypeExtension.substr (colon + 1);
+				m_current_type_extension_size = from_string (size_value, 0);
+			} else {
+				m_current_type_extension_size = 0;
+			}
+		}
+
+		variable_t new_type = convert_type (extension_name);
+		if (new_type == UNKNOWN) {
+			log() << error << "unknown type extension '" << m_current_type_extension << "'" << std::endl;
+			return false;
+		}
+
+		m_current_type_extension = new_type;
+
+	} else {
+		log() << warning << "unprocessed type extension: " << TypeExtension << std::endl;
+	}
+
+	return false;
+}
+
+
+std::string property::get_type_extension() const {
+
+	return convert_type (m_current_type_extension);
+}
+
+
+int property::get_type_extension_size() const {
+
+	return m_current_type_extension_size;
+}
+
+
 bool property::set_storage (const std::string& Storage) {
 
 	m_current_storage = convert_storage (Storage);
@@ -314,7 +369,7 @@ std::string property::convert_type (variable_t Type) const {
 		case ARRAY: return "array";
 
 		default:
-			log() << warning << "unhandled type (convert_type) for property '" << m_name << "'" << std::endl;
+			log() << warning << "unknown type (convert_type) for property '" << m_name << "'" << std::endl;
 			return "unknown";
 	}
 }
@@ -423,7 +478,7 @@ shader_block::shader_block (const std::string& Name, const std::string& Descript
 }
 
 
-void shader_block::add_input (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const std::string& DefaultValue, const std::string& Multi, const bool ShaderParameter) {
+void shader_block::add_input (const std::string& Name, const std::string& Type, const std::string& TypeExtension, const std::string& Storage, const std::string& Description, const std::string& DefaultValue, const std::string& Multi, const bool ShaderParameter) {
 
 	bool ok = true;
 
@@ -432,6 +487,7 @@ void shader_block::add_input (const std::string& Name, const std::string& Type, 
 	if (!p.set_type (Type)) {
 		ok = false;
 	}
+	p.set_type_extension (TypeExtension);
 	p.set_storage (Storage);
 	p.set_value (DefaultValue);
 	p.m_multi_operator = Multi;
@@ -456,7 +512,7 @@ std::string shader_block::add_multi_input (const std::string& ParentName) {
 
 	// create a new one (with a parent)
 	const std::string new_name = get_unique_input_name (ParentName);
-	add_input (new_name, input_type (ParentName), "", "", "", "", false);
+	add_input (new_name, input_type (ParentName), "", "", "", "", "", false);
 	set_input_parent (new_name, ParentName);
 
 	// return the new input name
@@ -701,6 +757,38 @@ std::string shader_block::get_input_type (const std::string& Name) const {
 	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
 
 	return "";
+}
+
+
+std::string shader_block::get_input_type_extension (const std::string& Name) const {
+
+	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->get_type_extension();
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+
+	return "";
+}
+
+
+int shader_block::get_input_type_extension_size (const std::string& Name) const {
+
+	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->get_type_extension_size();
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+
+	return 0;
 }
 
 
@@ -1146,6 +1234,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 
 			std::string input_name ("");
 			std::string input_type ("");
+			std::string input_type_extension ("");
 			std::string input_storage ("");
 			std::string input_description ("");
 			std::string input_value ("");
@@ -1189,7 +1278,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					log() << error << "unhandled input attribute : '" << name << "'" << std::endl;
 			}
 
-			add_input (input_name, input_type, input_storage, input_description, input_value, input_multi_operator, shader_parameter_input);
+			add_input (input_name, input_type, input_type_extension, input_storage, input_description, input_value, input_multi_operator, shader_parameter_input);
 			if (!input_multi_operator_parent.empty()) {
 				set_input_multi_operator_parent (input_name, input_multi_operator_parent);
 			}

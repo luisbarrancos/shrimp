@@ -445,7 +445,7 @@ void scene::copy_blocks(const std::string& Name,const int Group)
 		if (BlockToCopy->m_inputs.size()){
 			for (properties_t::const_iterator input = BlockToCopy->m_inputs.begin(); input != BlockToCopy->m_inputs.end(); ++input) {
 
-					new_block->add_input (input->m_name, input->get_type(), input->get_storage(), input->m_description, input->get_value(), input->m_multi_operator, input->m_shader_parameter);
+					new_block->add_input (input->m_name, input->get_type(), input->get_type_extension(), input->get_storage(), input->m_description, input->get_value(), input->m_multi_operator, input->m_shader_parameter);
 
 			}
 		}
