@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -34,6 +34,7 @@ namespace shader_properties
 
 static fltk::Input* name = 0;
 static fltk::TextEditor* description = 0;
+static fltk::Input* authors = 0;
 
 static int sp_answer;
 static void set_sp_answer(fltk::Widget* w, long a)
@@ -42,34 +43,41 @@ static void set_sp_answer(fltk::Widget* w, long a)
 	w->window()->make_exec_return(false);
 }
 
-static int sp_dialog(const std::string& Name, const std::string& Description)
+static int sp_dialog(const std::string& Name, const std::string& Description, const std::string& Authors)
 {
 	// build dialog window
-	fltk::Window window(400, 200, "Shader properties");
+	fltk::Window window(500, 340, "Shader properties");
 	window.begin();
 
 		if(!name)
-			name = new fltk::Input(70,10, 300,23,"Normal");
+			name = new fltk::Input(70,10, 400,23, "Name");
 		else
 			window.add(name);
 		name->tooltip("Shader name");
 
 		if(!description)
-			description = new fltk::TextEditor(70,37,300,100,"Description");
+			description = new fltk::TextEditor(70,40, 400,223, "Description");
 		else
 			window.add(description);
 		description->tooltip("Shader description");
 		description->wrap_mode(true);
 		window.resizable(description);
 
+		if(!authors)
+			authors = new fltk::Input(70,270, 400,23, "Authors");
+		else
+			window.add(authors);
+		authors->tooltip("Author(s)");
+
 		name->text(Name.c_str());
 		description->text(Description.c_str());
+		authors->text(Authors.c_str());
 
-		fltk::ReturnButton* rb = new fltk::ReturnButton(150, 170, 70, 25, "OK");
+		fltk::ReturnButton* rb = new fltk::ReturnButton(300, 310, 70, 25, "OK");
 		rb->label("Ok");
 		rb->callback(set_sp_answer, 1);
 
-		fltk::Button* cb = new fltk::Button(250, 170, 70, 25, "Cancel");
+		fltk::Button* cb = new fltk::Button(400, 310, 70, 25, "Cancel");
 		cb->label("Cancel");
 		cb->callback(set_sp_answer, 0);
 
@@ -81,6 +89,7 @@ static int sp_dialog(const std::string& Name, const std::string& Description)
 	// don't delete the dialogs with the window
 	window.remove(name);
 	window.remove(description);
+	window.remove(authors);
 
 	return sp_answer;
 }

@@ -70,6 +70,16 @@ void scene::set_description (const std::string& Description) {
 	m_description = Description;
 }
 
+const std::string scene::authors() const {
+
+	return m_authors;
+}
+
+void scene::set_authors (const std::string& Authors) {
+
+	m_authors = Authors;
+}
+
 void scene::empty_scene() {
 
 	log() << aspect << "Emptying current scene." << std::endl;
@@ -77,6 +87,7 @@ void scene::empty_scene() {
 	// delete scene information
 	m_name = "";
 	m_description = "";
+	m_authors = "";
 	m_file_name = "";
 
 	// delete scene structure
@@ -104,6 +115,7 @@ void scene::new_scene() {
 
 	// create default shader and add output block
 	m_name = "new_scene";
+	m_authors = "";
 
 	// create RIB root block
 	const std::string unique_name = get_unique_block_name ("Root block");

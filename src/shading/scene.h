@@ -104,6 +104,8 @@ public:
 	void set_name (const std::string& Name);
 	const std::string description() const;
 	void set_description (const std::string& Description);
+	const std::string authors() const;
+	void set_authors (const std::string& Authors);
 
 	// reset scene
 	void empty_scene();
@@ -248,6 +250,8 @@ private:
 	std::string m_name;
 	// scene description
 	std::string m_description;
+	// scene author(s)
+	std::string m_authors;
 
 	// the current scene file name (when saving)
 	std::string m_file_name;

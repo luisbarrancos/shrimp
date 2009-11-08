@@ -140,10 +140,13 @@ void application_window::on_menu_shader_properties (fltk::Widget*) {
 
 	std::string name (m_scene->name());
 	std::string description (m_scene->description());
-	if (shader_properties::sp_dialog (name, description)) {
+	std::string authors (m_scene->authors());
+
+	if (shader_properties::sp_dialog (name, description, authors)) {
 
 		m_scene->set_name (shader_properties::name->value());
 		m_scene->set_description (shader_properties::description->text());
+		m_scene->set_authors (shader_properties::authors->value());
 
 		// Set scene name as window's title
 		label (m_scene->name().c_str());

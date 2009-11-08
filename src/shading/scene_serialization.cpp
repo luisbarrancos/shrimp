@@ -44,8 +44,9 @@ bool scene::load (const std::string& Scene) {
 	}
 
 	// start parsing basic shader information
-	std::string scene_name = "scene";
+	std::string scene_name ("");
 	std::string scene_description ("");
+	std::string scene_authors ("");
 	TiXmlNode* network_xml_node = 0;
 
 	for (TiXmlAttribute* a = xml_shader.FirstChild()->ToElement()->FirstAttribute(); a; a = a->Next()) {
@@ -54,6 +55,9 @@ bool scene::load (const std::string& Scene) {
 		const std::string name (a->Name());
 		if (name == "name") {
 			scene_name = a->Value();
+		}
+		else if (name == "authors") {
+			scene_authors = a->Value();
 		}
 		else {
 			log() << error << "unhandled shader attribute : '" << name << "'" << std::endl;
@@ -92,6 +96,7 @@ bool scene::load (const std::string& Scene) {
 	// start loading content
 	m_name = scene_name;
 	set_description (scene_description);
+	m_authors = scene_authors;
 	log() << aspect << "loading shader '" << m_name << "'" << std::endl;
 
 	// load blocks
@@ -282,6 +287,7 @@ bool scene::save_as (const std::string& ShaderFile) {
 	// serialize the shader into an XML file
 	xml::element shader ("shrimp");
 	shader.push_attribute ("name", m_name);
+	shader.push_attribute ("authors", m_authors);
 
 	xml::element about ("about");
 	about.set_text (m_description);
