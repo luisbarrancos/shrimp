@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -31,6 +31,7 @@
 #include <fltk/Item.h>
 #include <fltk/ReturnButton.h>
 #include <fltk/TextEditor.h>
+#include <fltk/ValueInput.h>
 #include <fltk/Window.h>
 
 #include <string>
@@ -39,8 +40,10 @@ namespace add_output
 {
 
 static fltk::Input* s_name;
-static fltk::Choice* s_type;
 static fltk::Choice* s_storage = 0;
+static fltk::Choice* s_type;
+static fltk::Choice* s_array_type = 0;
+static fltk::ValueInput* s_array_size = 0;
 static fltk::CheckButton* s_shader_output;
 static fltk::TextEditor* s_description;
 
@@ -55,8 +58,9 @@ private:
 	shader_block* m_block;
 
 	// make sure the list isn't destroyed before the dialog closes
-	types_t m_types;
 	types_t m_storage_types;
+	types_t m_types;
+	types_t m_array_types;
 
 public:
 	dialog() {
@@ -95,6 +99,30 @@ public:
 			s_type->end();
 			w->add (s_type);
 			s_type->tooltip ("Output type");
+			s_type->callback(cb_type_change, (void*)this);
+			s_type->when(fltk::WHEN_CHANGED);
+
+			// array type
+			s_array_type = new fltk::Choice (290,40, 100,23, "");
+			s_array_type->begin();
+				m_array_types = get_array_types();
+				for (types_t::const_iterator t_i = m_array_types.begin(); t_i != m_array_types.end(); ++t_i) {
+
+					new fltk::Item (t_i->c_str());
+				}
+			s_array_type->end();
+			w->add (s_array_type);
+			s_array_type->tooltip ("Array type");
+			s_array_type->deactivate();
+
+			// array size
+			s_array_size = new fltk::ValueInput (290,65, 50,23, "");
+			s_array_size->minimum (0);
+			s_array_size->maximum (1E6);
+			s_array_size->step (1);
+			s_array_size->value (1);
+			s_array_size->tooltip ("Array size");
+			s_array_size->deactivate();
 
 			// shader output checkbox
 			s_shader_output = new fltk::CheckButton (90,70, 100,23, "Shader output");
@@ -137,11 +165,24 @@ public:
 		w->exec();
 	}
 
+	void on_type_change(fltk::Widget* W) {
+
+		const std::string type = m_types[s_type->value()];
+		if (type == "array") {
+			s_array_type->activate();
+			s_array_size->activate();
+		} else {
+			s_array_type->deactivate();
+			s_array_size->deactivate();
+		}
+	}
+
 	void on_ok (fltk::Widget* W) {
 
 		// get user values
 		const std::string name = s_name->value();
 		const std::string type = m_types[s_type->value()];
+		const std::string type_extension = m_array_types[s_array_type->value()] + ":" + string_cast(s_array_size->value());
 		const std::string storage = m_storage_types[s_storage->value()];
 		const bool shader_output = s_shader_output->value();
 		const std::string description = s_description->text();
@@ -163,7 +204,7 @@ public:
 
 		} else {
 			// create the output
-			m_block->add_output (name, type, storage, description, shader_output);
+			m_block->add_output (name, type, type_extension, storage, description, shader_output);
 
 			// close the dialog
 			W->window()->make_exec_return (false);
@@ -176,6 +217,7 @@ public:
 		W->window()->make_exec_return(false);
 	}
 
+	static void cb_type_change(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_type_change(W); }
 	static void cb_ok (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
 	static void cb_cancel (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
 };

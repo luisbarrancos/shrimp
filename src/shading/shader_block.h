@@ -157,7 +157,7 @@ public:
 
 	void add_input (const std::string& Name, const std::string& Type, const std::string& TypeExtension, const std::string& Storage, const std::string& Description, const std::string& Default, const std::string& Multi, const bool ShaderParameter = true);
 	std::string add_multi_input (const std::string& ParentName);
-	void add_output (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const bool ShaderOutput = false);
+	void add_output (const std::string& Name, const std::string& Type, const std::string& TypeExtension, const std::string& Storage, const std::string& Description, const bool ShaderOutput = false);
 
 	std::string input_type (const std::string& Name) const;
 	std::string input_storage (const std::string& Name) const;
@@ -174,6 +174,7 @@ public:
 	bool set_input_type (const std::string& Name, const std::string& Type);
 	std::string get_input_type (const std::string& Name) const;
 
+	bool set_input_type_extension (const std::string& Name, const std::string& TypeExtension);
 	std::string get_input_type_extension (const std::string& Name) const;
 	int get_input_type_extension_size (const std::string& Name) const;
 
@@ -188,6 +189,10 @@ public:
 
 	bool set_output_type (const std::string& Name, const std::string& Type);
 	std::string get_output_type (const std::string& Name) const;
+
+	bool set_output_type_extension (const std::string& Name, const std::string& TypeExtension);
+	std::string get_output_type_extension (const std::string& Name) const;
+	int get_output_type_extension_size (const std::string& Name) const;
 
 	bool set_output_storage (const std::string& Name, const std::string& Type);
 	std::string get_output_storage (const std::string& Name) const;

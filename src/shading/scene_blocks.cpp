@@ -453,7 +453,7 @@ void scene::copy_blocks(const std::string& Name,const int Group)
 		if (BlockToCopy->m_outputs.size()){
 			for (properties_t::iterator output = BlockToCopy->m_outputs.begin(); output != BlockToCopy->m_outputs.end(); ++output) {
 
-				new_block->add_output (output->m_name, output->get_type(), output->get_storage(), output->m_description, output->m_shader_output);
+				new_block->add_output (output->m_name, output->get_type(), output->get_type_extension(), output->get_storage(), output->m_description, output->m_shader_output);
 
 			}
 		}

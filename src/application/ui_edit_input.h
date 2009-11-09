@@ -237,7 +237,7 @@ public:
 		const std::string new_value = s_value->value();
 		m_shader_block->set_input_value (m_edited_input, new_value);
 
-		// save types
+		// save storage
 		types_t storage_list = get_property_storage_types();
 		const unsigned int storage_type_number = s_storage->value();
 		if (storage_type_number >= 0 && storage_type_number < storage_list.size()) {
@@ -245,12 +245,17 @@ public:
 			m_shader_block->set_input_storage (m_edited_input, storage_list[storage_type_number]);
 		}
 
+		// save type
 		types_t list = get_property_types();
 		const unsigned int type_number = s_type->value();
 		if (type_number >= 0 && type_number < list.size()) {
 
 			m_shader_block->set_input_type (m_edited_input, list[type_number]);
 		}
+
+		// save type extension
+		const std::string type_extension = m_array_types[s_array_type->value()] + ":" + string_cast(s_array_size->value());
+		m_shader_block->set_input_type_extension (m_edited_input, type_extension);
 
 		// save parameter state
 		const bool shader_parameter = s_shader_parameter->value();

@@ -491,6 +491,9 @@ void shader_block::add_input (const std::string& Name, const std::string& Type, 
 	}
 	p.set_type_extension (TypeExtension);
 	p.set_storage (Storage);
+	if (!p.set_storage (Storage)) {
+		ok = false;
+	}
 	p.set_value (DefaultValue);
 	p.m_multi_operator = Multi;
 	p.m_shader_parameter = ShaderParameter;
@@ -522,7 +525,7 @@ std::string shader_block::add_multi_input (const std::string& ParentName) {
 }
 
 
-void shader_block::add_output (const std::string& Name, const std::string& Type, const std::string& Storage, const std::string& Description, const bool ShaderOutput) {
+void shader_block::add_output (const std::string& Name, const std::string& Type, const std::string& TypeExtension, const std::string& Storage, const std::string& Description, const bool ShaderOutput) {
 
 	bool ok = true;
 
@@ -531,6 +534,7 @@ void shader_block::add_output (const std::string& Name, const std::string& Type,
 	if (!p.set_type (Type)) {
 		ok = false;
 	}
+	p.set_type_extension (TypeExtension);
 	if (!p.set_storage (Storage)) {
 		ok = false;
 	}
@@ -762,6 +766,21 @@ std::string shader_block::get_input_type (const std::string& Name) const {
 }
 
 
+bool shader_block::set_input_type_extension (const std::string& Name, const std::string& TypeExtension) {
+
+	for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
+
+		if (i->m_name == Name) {
+
+			return i->set_type_extension (TypeExtension);
+		}
+	}
+
+	log() << error << "unmatched shader block input '" << Name << "' in " << name() << std::endl;
+	return false;
+}
+
+
 std::string shader_block::get_input_type_extension (const std::string& Name) const {
 
 	for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i) {
@@ -924,6 +943,53 @@ std::string shader_block::get_output_type (const std::string& Name) const {
 	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
 
 	return "";
+}
+
+
+bool shader_block::set_output_type_extension (const std::string& Name, const std::string& TypeExtension) {
+
+	for (properties_t::iterator o = m_outputs.begin(); o != m_outputs.end(); ++o) {
+
+		if (o->m_name == Name) {
+
+			return o->set_type_extension (TypeExtension);
+		}
+	}
+
+	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
+	return false;
+}
+
+
+std::string shader_block::get_output_type_extension (const std::string& Name) const {
+
+	for (properties_t::const_iterator o = m_outputs.begin(); o != m_outputs.end(); ++o) {
+
+		if (o->m_name == Name) {
+
+			return o->get_type_extension();
+		}
+	}
+
+	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
+
+	return "";
+}
+
+
+int shader_block::get_output_type_extension_size (const std::string& Name) const {
+
+	for (properties_t::const_iterator o = m_outputs.begin(); o != m_outputs.end(); ++o) {
+
+		if (o->m_name == Name) {
+
+			return o->get_type_extension_size();
+		}
+	}
+
+	log() << error << "unmatched shader block output '" << Name << "' in " << name() << std::endl;
+
+	return 0;
 }
 
 
@@ -1293,6 +1359,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 
 			std::string output_name = "";
 			std::string output_type = "";
+			std::string output_type_extension ("");
 			std::string output_storage = "";
 			std::string output_description = "";
 			bool shader_output = false;
@@ -1304,6 +1371,9 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					output_name = a->Value();
 				else if (name == "type") {
 					output_type = a->Value();
+				}
+				else if (name == "type_extension") {
+					output_type_extension = a->Value();
 				}
 				else if (name == "description") {
 					output_description = a->Value();
@@ -1322,7 +1392,7 @@ bool shader_block::load_from_xml (TiXmlNode& XML) {
 					log() << error << "unhandled output attribute : '" << name << "'" << std::endl;
 			}
 
-			add_output (output_name, output_type, output_storage, output_description, shader_output);
+			add_output (output_name, output_type, output_type_extension, output_storage, output_description, shader_output);
 		}
 		else if (element == "rsl_include") {
 
