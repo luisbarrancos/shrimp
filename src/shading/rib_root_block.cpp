@@ -297,9 +297,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			} else {
 				shader_outputs += "\t\toutput ";
 				const std::string storage = sb->output_storage (output->m_name);
-				if (storage != "varying") {
-					shader_outputs += storage + " ";
-				}
+				shader_outputs += storage + " ";
 				shader_outputs += sb->output_type (output->m_name) + " " + output->m_name;
 				shader_outputs += " = 0;\n";
 			}
