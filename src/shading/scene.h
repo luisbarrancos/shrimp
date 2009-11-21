@@ -61,11 +61,20 @@ public:
 		std::string name;
 		std::string path;
 	};
-	typedef std::vector <default_block_t> default_block_list_t;
-	typedef std::map <std::string, std::vector <default_block_t> > block_classification_t;
-	typedef std::map <std::string, std::string> block_tree_t;
-	block_classification_t m_block_classification;
-	block_tree_t m_block_tree;
+	typedef std::vector<default_block_t> default_block_list_t;
+
+	struct block_tree_node_t;
+	typedef std::vector<block_tree_node_t> block_tree_node_list_t;
+
+	struct block_tree_node_t {
+		std::string node_name;
+		std::string node_path;
+		block_tree_node_list_t child_nodes;
+
+		default_block_list_t blocks;
+	};
+	// root block
+	block_tree_node_t m_block_classification;
 
 
 	//////////// Selection, rolled blocks and group data structures
@@ -113,7 +122,7 @@ public:
 	void new_scene();
 
 	// load predefined Shrimp blocks
-	void load_default_blocks (const std::string& BlockPath, const std::string& DirName, unsigned long& BlockCount, const std::string& Parent);
+	void load_default_blocks (block_tree_node_t& RootPath, unsigned long& BlockCount);
 
 
 	//////////// Blocks

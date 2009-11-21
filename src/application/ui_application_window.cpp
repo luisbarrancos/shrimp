@@ -643,16 +643,11 @@ application_window::application_window() :
 		m_block_menu.callback ((fltk::Callback*)block_menu_callback);
 		m_block_menu.begin();
 
-			for (scene::block_classification_t::iterator d = m_scene->m_block_classification.begin(); d != m_scene->m_block_classification.end(); ++d) {
+			scene::block_tree_node_t root = m_scene->m_block_classification;
+			for (scene::block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
+				tree_node != root.child_nodes.end(); ++tree_node) {
 
-				// check whether the directory has a parent
-				scene::block_tree_t::const_iterator tree_parent = m_scene->m_block_tree.find (d->first);
-				if (tree_parent != m_scene->m_block_tree.end())
-					// it has a parent, thus is not at the root : skip it
-					continue;
-
-				log() << aspect << "building shader menu" << std::endl;
-				build_menu (d->first, d->second);
+				build_menu (*tree_node);
 			}
 
 			// add custom block entry
@@ -734,30 +729,20 @@ application_window::~application_window() {
 	delete m_scene;
 }
 
-void application_window::build_menu (const std::string& name, scene::default_block_list_t& list) {
+void application_window::build_menu (const scene::block_tree_node_t& tree_node) {
 
-	log() << aspect << "building block menu..." << name << std::endl;
-	fltk::ItemGroup* current_group = new fltk::ItemGroup (name.c_str());
+	fltk::ItemGroup* current_group = new fltk::ItemGroup (tree_node.node_name.c_str());
 	current_group->begin();
 
 	// check whether the directory has children
-	for (scene::block_tree_t::const_iterator tree_node = m_scene->m_block_tree.begin();
-		tree_node != m_scene->m_block_tree.end(); ++tree_node)
-	{
-		if (tree_node->second == name) {
+	for (scene::block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
+		sub_node != tree_node.child_nodes.end(); ++sub_node) {
 
-			// create child tree
-			scene::block_classification_t::iterator d = m_scene->m_block_classification.find (tree_node->first);
-			if (d == m_scene->m_block_classification.end())
-				log() << error << "menu's child node not found!" << std::endl;
-			else
-				build_menu (d->first, d->second);
-		}
+		build_menu (*sub_node);
 	}
 
-	for (scene::default_block_list_t::iterator b = list.begin(); b != list.end(); ++b) {
-
-		new fltk::Item ((*b).name.c_str());
+	for (scene::default_block_list_t::const_iterator block = tree_node.blocks.begin(); block != tree_node.blocks.end(); ++block) {
+		new fltk::Item (block->name.c_str());
 	}
 
 	current_group->end();

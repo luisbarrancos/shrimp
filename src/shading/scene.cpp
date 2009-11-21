@@ -38,7 +38,14 @@ scene::scene() :
 	m_file_name(std::string(""))
 {
 	unsigned long successful_blocks = 0;
-	load_default_blocks ("./blocks", "blocks", successful_blocks, "");
+
+	block_tree_node_t root_node;
+	root_node.node_name = "blocks";
+	root_node.node_path = "./blocks";
+	m_block_classification = root_node;
+
+	log() << aspect << "Loading default Shrimp blocks." << std::endl;
+	load_default_blocks (m_block_classification, successful_blocks);
 	log() << aspect << "Successfully loaded " << successful_blocks << " blocks." << std::endl;
 
 	new_scene();
@@ -124,15 +131,15 @@ void scene::new_scene() {
 }
 
 
-void scene::load_default_blocks (const std::string& BlockPath, const std::string& DirName, unsigned long& BlockCount, const std::string& Parent) {
+void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& BlockCount) {
 
 	// read directory content
 	dirent** block_files;
-	const int file_count = fltk::filename_list (BlockPath.c_str(), &block_files);
+	const int file_count = fltk::filename_list (RootNode.node_path.c_str(), &block_files);
 
 	// skip empty directories
 	if (file_count < 0) {
-		log() << error << "tried to load blocks from empty directory '" << BlockPath << "'." << std::endl;
+		log() << error << "tried to load blocks from empty directory '" << RootNode.node_path << "'." << std::endl;
 		return;
 	}
 
@@ -147,7 +154,7 @@ void scene::load_default_blocks (const std::string& BlockPath, const std::string
 	for (int f = 0; f < file_count; ++f) {
 
 		const std::string file = std::string (block_files[f]->d_name);
-		const std::string file_path = BlockPath + "/" + file;
+		const std::string file_path = RootNode.node_path + "/" + file;
 		if (fltk::filename_isdir (file_path.c_str())) {
 
 			if (file[0] == '.') {
@@ -178,19 +185,13 @@ void scene::load_default_blocks (const std::string& BlockPath, const std::string
 	names_t::iterator file_i = files.begin();
 	for (; path_i != file_paths.end(); ++path_i, ++file_i) {
 
-		// when this is not the root directory...
-		if (!Parent.empty()) {
-
-			// save the fact the this subdirectory has current directory as a father
-			m_block_tree.insert (std::make_pair (*file_i, DirName));
-
-			// make sure directories without blocks but with subdirectories will be processed
-			default_block_list_t v;
-			m_block_classification.insert (std::make_pair (DirName, v));
-		}
+		block_tree_node_t sub_node;
+		sub_node.node_name = *file_i;
+		sub_node.node_path = RootNode.node_path + "/" + *file_i;
+		RootNode.child_nodes.push_back (sub_node);
 
 		// load blocks from the subdirectory
-		load_default_blocks (*path_i, *file_i, BlockCount, DirName);
+		load_default_blocks (RootNode.child_nodes.back(), BlockCount);
 	}
 
 	// process blocks
@@ -210,23 +211,13 @@ void scene::load_default_blocks (const std::string& BlockPath, const std::string
 			else {
 
 				default_block_t block_info;
-				block_info.name = new_block->name();;
+				block_info.name = new_block->name();
 				block_info.path = *path_i;
 				m_default_blocks.insert (std::make_pair (new_block->name(), block_info));
 				++BlockCount;
 
-				// classify it
-				block_classification_t::iterator pair = m_block_classification.find (DirName);
-				if (pair == m_block_classification.end()) {
-
-					default_block_list_t v;
-					v.push_back (block_info);
-					m_block_classification.insert (std::make_pair (DirName, v));
-				}
-				else {
-
-					pair->second.push_back (block_info);
-				}
+				// save block
+				RootNode.blocks.push_back (block_info);
 			}
 		}
 		else {
@@ -234,8 +225,7 @@ void scene::load_default_blocks (const std::string& BlockPath, const std::string
 		}
 	}
 
-	log() << aspect << "loading blocks from " << BlockPath << std::endl;
-	log() << aspect << " loaded " << successful_block_count << " blocks." << std::endl;
+	log() << aspect << " loaded " << RootNode.blocks.size() << " blocks from " << RootNode.node_path << std::endl;
 }
 
 

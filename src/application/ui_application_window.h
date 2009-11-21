@@ -124,7 +124,7 @@ private:
 	void block_menu_action (fltk::Widget* w, void*);
 
 
-	void build_menu (const std::string& name, scene::default_block_list_t& list);
+	void build_menu (const scene::block_tree_node_t& tree);
 
 	// update renderer, display and scene choosers
 	void set_renderer_chooser_value (const std::string RendererCode);
