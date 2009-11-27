@@ -51,10 +51,6 @@ static fltk::Input* s_default_value = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
 static fltk::TextEditor* s_description = 0;
 
-// trick for FLTK's callback
-class dialog;
-dialog* dialog_instance;
-
 class dialog {
 
 private:
@@ -168,9 +164,6 @@ public:
 	{
 		// save processed block
 		m_block = Block;
-
-		// save instance for callback
-		dialog_instance = this;
 
 		// show it
 		w->exec();

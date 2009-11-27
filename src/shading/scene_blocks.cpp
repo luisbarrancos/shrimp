@@ -73,7 +73,7 @@ shader_block* scene::add_custom_block (const std::string& Name, const bool RootB
 void scene::delete_block (const std::string& BlockName) {
 
 	// one block and not a group
-	if (selection_size()==1 && m_groups_selection.size()==0) {
+	/*if (selection_size()==1 && m_groups_selection.size()==0) {
 		//Avoid to delete Root block
 		if (BlockName != "Root block"){
 			// disconnect all pads
@@ -96,96 +96,95 @@ void scene::delete_block (const std::string& BlockName) {
 			// finally delete it
 			delete block;
 		}
-	}
+	}*/
 
 	// multi selecion
-	else if (selection_size()>=1){
-				for (scene::selection_t::const_iterator block_i = m_selection.begin(); block_i != m_selection.end(); ++block_i) {
+	/*else if (selection_size() >= 1) {
+		for (scene::selection_t::const_iterator block_i = m_selection.begin(); block_i != m_selection.end(); ++block_i) {
 
-							std::string current_selection = *block_i;
+			std::string current_selection = *block_i;
 
-							shader_block* block = get_block(current_selection);
+			shader_block* block = get_block(current_selection);
 
-							if (!block) {
+			if (!block) {
 
-									log() << error << "active block '" << current_selection << "' not found." << std::endl;
-									return;
-								}
+				log() << error << "active block '" << current_selection << "' not found." << std::endl;
+				return;
+			}
 
-							int Group = group (block);
-							if (!Group) {
+			int Group = group (block);
+			if (!Group) {
 
-								const std::string  BlockNameSelect = block->name();
-								//Avoid to delete Root block
-								if (BlockNameSelect != "Root block"){
-									// disconnect all pads
-									for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
-											input != block->m_inputs.end(); ++input) {
+				const std::string  BlockNameSelect = block->name();
+				//Avoid to delete Root block
+				if (BlockNameSelect != "Root block"){
+					// disconnect all pads
+					for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
+							input != block->m_inputs.end(); ++input) {
 
-										if (block->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
-										}
-									for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
-											output != block->m_outputs.end(); ++output) {
+						if (block->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
+						}
+					for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
+							output != block->m_outputs.end(); ++output) {
 
-										if (block->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
-										}
-									// safely remove it from the network
-										m_blocks.erase (BlockNameSelect);
+						if (block->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
+						}
+					// safely remove it from the network
+						m_blocks.erase (BlockNameSelect);
 
-									// finally delete it
-										delete block;
-
-								}
-							}
+					// finally delete it
+						delete block;
 
 				}
+			}
 
 		}
-		// groups selected
-		if (m_groups_selection.size())
+
+	}*/
+	// groups selected
+	/*if (m_groups_selection.size()) {
+
+		int Group = 0;
+		for (scene::groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
 		{
 
-			int Group = 0;
-			for (scene::groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
-			{
-
-				for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i) {
-				const shader_block* blockSel = block_i->second;
-				int groupSel = group(blockSel);
-				Group = *g;
+			for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i) {
+			const shader_block* blockSel = block_i->second;
+			int groupSel = group(blockSel);
+			Group = *g;
 
 
-				if (groupSel==Group)
-					{
-					const std::string  BlockNameSelect = blockSel->name();
-					if (BlockNameSelect != "Root block"){
-						for (shader_block::properties_t::const_iterator input = blockSel->m_inputs.begin();
-								input != blockSel->m_inputs.end(); ++input) {
+			if (groupSel==Group)
+				{
+				const std::string  BlockNameSelect = blockSel->name();
+				if (BlockNameSelect != "Root block"){
+					for (shader_block::properties_t::const_iterator input = blockSel->m_inputs.begin();
+							input != blockSel->m_inputs.end(); ++input) {
 
 
-							if (blockSel->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
-							}
-						for (shader_block::properties_t::const_iterator output = blockSel->m_outputs.begin();
-								output != blockSel->m_outputs.end(); ++output) {
-
-							if (blockSel->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
-							}
-						// safely remove it from the network
-							m_blocks.erase (BlockNameSelect);
-
-						// delete the block itself
-						delete blockSel;
+						if (blockSel->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
 						}
+					for (shader_block::properties_t::const_iterator output = blockSel->m_outputs.begin();
+							output != blockSel->m_outputs.end(); ++output) {
+
+						if (blockSel->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
+						}
+					// safely remove it from the network
+						m_blocks.erase (BlockNameSelect);
+
+					// delete the block itself
+					delete blockSel;
 					}
 				}
-			// safely remove from group
-			if (Group!=0){
-				ungroup(Group);
-				m_group_names.erase(Group);
-				}
-
 			}
+		// safely remove from group
+		if (Group!=0){
+			ungroup(Group);
+			m_group_names.erase(Group);
+			}
+
 		}
+	}*/
 }
 
 
@@ -236,21 +235,21 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 	const std::string new_name = get_unique_block_name (NewName);
 
 	// update DAG
-	dag_t new_dag;
-	for (dag_t::iterator d = m_dag.begin(); d != m_dag.end(); ++d) {
+	shrimp::dag_t new_dag;
+	for (shrimp::dag_t::iterator d = m_dag.begin(); d != m_dag.end(); ++d) {
 
 		if (d->first.first == old_name) {
 
 			// block was the input
-			io_t input (new_name, d->first.second);
-			io_t output = d->second;
+			shrimp::io_t input (new_name, d->first.second);
+			shrimp::io_t output = d->second;
 			new_dag.insert (std::make_pair (input, output));
 
 		} else if (d->second.first == old_name) {
 
 			// block was the output
-			io_t input (d->first);
-			io_t output (new_name, d->second.second);
+			shrimp::io_t input (d->first);
+			shrimp::io_t output (new_name, d->second.second);
 			new_dag.insert (std::make_pair (input, output));
 
 		} else {
@@ -267,7 +266,8 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 	m_blocks.insert (std::make_pair(new_name, Block));
 
 	// update selection and groups
-	m_selection.erase (old_name);
+	//TODO:
+	//m_selection.erase (old_name);
 	m_groups.erase (old_name);
 
 	// we can now safely rename the block
@@ -275,7 +275,7 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 }
 
 
-void scene::connect (const io_t& Input, const io_t& Output) {
+void scene::connect (const shrimp::io_t& Input, const shrimp::io_t& Output) {
 
 	shader_block* input_block = get_block (Input.first);
 	shader_block* output_block = get_block (Output.first);
@@ -301,7 +301,7 @@ void scene::connect (const io_t& Input, const io_t& Output) {
 					// add a 'child' input
 					const std::string new_input = input_block->add_multi_input (Input.second);
 					// connect to that new input
-					m_dag.insert (std::make_pair (io_t (Input.first, new_input), Output));
+					m_dag.insert (std::make_pair (shrimp::io_t (Input.first, new_input), Output));
 				}
 
 				return;
@@ -341,10 +341,10 @@ void scene::connect (const io_t& Input, const io_t& Output) {
 }
 
 
-void scene::disconnect (const io_t& IO) {
+void scene::disconnect (const shrimp::io_t& IO) {
 
 	// check whether IO is an input
-	dag_t::const_iterator connection = m_dag.find (IO);
+	shrimp::dag_t::const_iterator connection = m_dag.find (IO);
 	if (connection != m_dag.end()) {
 
 		// remove the connection
@@ -354,8 +354,8 @@ void scene::disconnect (const io_t& IO) {
 	}
 
 	// remove all connections containing IO as output
-	dag_t new_dag;
-	for (dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
+	shrimp::dag_t new_dag;
+	for (shrimp::dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
 
 		if (connection->second != IO) {
 
@@ -373,7 +373,7 @@ void scene::disconnect (const io_t& IO) {
 }
 
 
-bool scene::is_connected (const io_t& Input) {
+bool scene::is_connected (const shrimp::io_t& Input) {
 
 	if (m_dag.find (Input) != m_dag.end()) {
 		return true;
@@ -481,7 +481,7 @@ void scene::copy_blocks(const std::string& Name,const int Group)
 	if (Group){
 		int num_groups =0;
 
-			for (groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+			for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
 					if(g->second > num_groups)
 						num_groups = g->second;
 					}
@@ -495,7 +495,7 @@ void scene::copy_connections()
 {
 	// copy connections
 
-			for (dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
+			for (shrimp::dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
 
 
 						const scene::copy_block_t to = (std::make_pair (connection->first.first,get_block(connection->first.first)));
@@ -511,7 +511,7 @@ void scene::copy_connections()
 							if (!(check_block == check_block_end)) {
 
 
-								const scene::io_t to_copy = (std::make_pair (i->second.first,connection->first.second));
+								const shrimp::io_t to_copy = (std::make_pair (i->second.first,connection->first.second));
 
 								shader_blocks_copy_t::const_iterator j = m_copy_selection.find(from);
 
@@ -520,7 +520,7 @@ void scene::copy_connections()
 								if (!(check_block2 == check_block_end2)) {
 
 
-									const scene::io_t from_copy = (std::make_pair (j->second.first,connection->second.second));
+									const shrimp::io_t from_copy = (std::make_pair (j->second.first,connection->second.second));
 
 									// add connection to the m_dag_copy structure
 									m_dag_copy.insert (std::make_pair (to_copy,from_copy));
@@ -542,7 +542,7 @@ void scene::paste_blocks()
 		add_block (paste_name,"",paste);
 
 		// create new_groups (pasted groups)
-			groups_t::const_iterator g = m_groups_buffer.find(paste_name);
+			shrimp::groups_t::const_iterator g = m_groups_buffer.find(paste_name);
 			if(!(g == m_groups_buffer.end()))
 			{
 					const int Group = g->second;
@@ -551,9 +551,9 @@ void scene::paste_blocks()
 	}
 
 	// pasted connection of pasted blocks
-	for (dag_t::const_iterator connection = m_dag_copy.begin(); connection != m_dag_copy.end(); ++connection) {
-		const scene::io_t to = connection->first;
-		const scene::io_t from = connection->second;
+	for (shrimp::dag_t::const_iterator connection = m_dag_copy.begin(); connection != m_dag_copy.end(); ++connection) {
+		const shrimp::io_t to = connection->first;
+		const shrimp::io_t from = connection->second;
 		connect (to, from);
 	}
 

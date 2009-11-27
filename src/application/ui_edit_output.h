@@ -140,7 +140,7 @@ public:
 		delete w;
 	}
 
-	void edit_output (std::string& OutputName) {
+	void edit_output (const std::string& OutputName) {
 
 		m_edited_output = OutputName;
 

@@ -41,12 +41,12 @@ class dialog {
 
 private:
 	fltk::Window* w;
-	scene* m_shader;
+	services* m_services;
 	std::string m_edited_block;
 
 public:
-	dialog(scene* Shader) :
-		m_shader(Shader) {
+	dialog(services* Services) :
+		m_services(Services) {
 
 		// build dialog window
 		w = new fltk::Window(400, 80, "Block name");
@@ -104,15 +104,15 @@ public:
 		} else {
 
 			// check whether the name already exists
-			const std::string unique_name = m_shader->get_unique_block_name (new_name);
+			const std::string unique_name = m_services->get_unique_block_name (new_name);
 			if (unique_name == new_name) {
 
 				// the new name is unique
 				quit = true;
 
-				shader_block* block = m_shader->get_block (m_edited_block);
+				shader_block* block = m_services->get_block (m_edited_block);
 				if (block) {
-					m_shader->set_block_name (block, new_name);
+					m_services->set_block_name (block, new_name);
 				}
 			} else {
 

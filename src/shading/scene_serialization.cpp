@@ -273,7 +273,7 @@ bool scene::load (const std::string& Scene) {
 				if(!xml::get_attribute(*c->FirstChild()->ToElement(), "parent", output_id))
 					continue;
 
-				connect (io_t (id, name), io_t (output_id, output_name));
+				connect (shrimp::io_t (id, name), shrimp::io_t (output_id, output_name));
 			}
 		}
 	}
@@ -383,7 +383,7 @@ xml::element scene::xml_network() {
 			}
 
 			// store connection, if any
-			dag_t::const_iterator connection = m_dag.find (io_t (block->name(), input->m_name));
+			shrimp::dag_t::const_iterator connection = m_dag.find (shrimp::io_t (block->name(), input->m_name));
 			if (connection != m_dag.end()) {
 
 				xml::element xml_connection ("connection");
@@ -437,13 +437,13 @@ xml::element scene::xml_network() {
 	}
 
 	// groups
-	group_set_t groups = group_list();
-	for (group_set_t::const_iterator g = groups.begin(); g != groups.end(); ++g) {
+	shrimp::group_set_t groups = group_list();
+	for (shrimp::group_set_t::const_iterator g = groups.begin(); g != groups.end(); ++g) {
 
 		xml::element xml_group ("group");
 		xml_group.push_attribute ("id", *g);
 		xml_group.push_attribute ("name", get_group_name(*g));
-		for (groups_t::const_iterator i = m_groups.begin(); i != m_groups.end(); ++i) {
+		for (shrimp::groups_t::const_iterator i = m_groups.begin(); i != m_groups.end(); ++i) {
 
 			if (i->second == *g) {
 

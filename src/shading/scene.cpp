@@ -99,7 +99,6 @@ void scene::empty_scene() {
 
 	// delete scene structure
 	m_dag.clear();
-	m_selection.clear();
 	m_groups.clear();
 	m_group_names.clear();
 
@@ -229,6 +228,12 @@ void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& Blo
 }
 
 
+block_tree_node_t scene::get_block_hierarchy() const {
+
+	return m_block_classification;
+}
+
+
 std::string scene::get_shader_code() {
 
 	if (rib_root_block* rib_block = dynamic_cast<rib_root_block*>(m_rib_root_block)) {
@@ -257,46 +262,17 @@ void scene::export_scene (const std::string& Directory) {
 }
 
 
-void scene::bounding_box (double& Left, double& Right, double& Bottom, double& Top) {
-
-	if (m_blocks.empty())
-		return;
-
-	Left = Right = Bottom = Top = 0;
-	for (shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i) {
-
-		shader_block* block = block_i->second;
-
-		// the first block serves as reference
-		if (m_blocks.begin() == block_i) {
-
-			Left = block->m_position_x;
-			Right = block->m_position_x + block->m_width;
-			Bottom = block->m_position_y;
-			Top = block->m_position_y - block->m_height;
-
-			continue;
-		}
-
-		Left = std::min (Left, block->m_position_x);
-		Right = std::max (Right, block->m_position_x + block->m_width);
-		Bottom = std::min (Bottom, block->m_position_y);
-		Top = std::max (Top, block->m_position_y - block->m_height);
-	}
-}
-
-
 shader_block* scene::get_parent (const std::string& BlockName, const std::string& Input, std::string& ParentOutput) const {
 
-	const io_t input (BlockName, Input);
+	const shrimp::io_t input (BlockName, Input);
 
-	for (dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
+	for (shrimp::dag_t::const_iterator connection = m_dag.begin(); connection != m_dag.end(); ++connection) {
 
-		const io_t to = connection->first;
+		const shrimp::io_t to = connection->first;
 
 		if (to == input) {
 
-			const io_t from = connection->second;
+			const shrimp::io_t from = connection->second;
 			shader_blocks_t::const_iterator block = m_blocks.find(from.first);
 			ParentOutput = from.second;
 			return block->second;

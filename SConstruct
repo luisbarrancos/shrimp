@@ -13,6 +13,7 @@ vars.Add(PathVariable('fltk_lib_path', 'Point to the fltk library files', '', Pa
 env = Environment(variables = vars)
 
 env.ParseConfig("fltk2-config --cxxflags --ldflags")
+env.ParseConfig( 'pkg-config --cflags --libs sigc++-2.0' )
 env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'])
 
 if platform.system() == 'Linux':
@@ -41,6 +42,11 @@ if not conf.CheckCXXHeader('fltk/run.h'):
 	print 'Shrimp requires FLTK 2'
 	Exit(1)
 
+# Check for libsigc++
+if not conf.TryAction('pkg-config --exists sigc++-2.0')[0]:
+	print 'Shrimp requires libsigc++ 2.x'
+	Exit(1)
+
 env = conf.Finish()
 
 
@@ -63,15 +69,10 @@ StaticLibrary('tinyxml', Split("""
 env.Append(CPPPATH = ['src/application', 'src/miscellaneous', 'src/shading'])
 
 shrimp_files = Split("""
-	src/application/shrimp.cpp
-	src/application/ui_about.cpp
-	src/application/ui_application_window.cpp
-	src/application/ui_scene_view.cpp
-	src/application/ui_scene_view_events.cpp
-	src/application/ui_splash.cpp
 	src/miscellaneous/misc_system_functions.cpp
 	src/miscellaneous/misc_xml.cpp
 	src/miscellaneous/logging.cpp
+
 	src/shading/console.cpp
 	src/shading/preferences.cpp
 	src/shading/shader_block.cpp
@@ -79,8 +80,16 @@ shrimp_files = Split("""
 	src/shading/scene_blocks.cpp
 	src/shading/scene_grouping.cpp
 	src/shading/scene_serialization.cpp
-	src/shading/scene_selection.cpp
 	src/shading/rib_root_block.cpp
+
+	src/services.cpp
+	src/opengl_view.cpp
+
+	src/application/shrimp.cpp
+	src/application/ui_about.cpp
+	src/application/ui_application_window.cpp
+	src/application/ui_scene_view.cpp
+	src/application/ui_splash.cpp
 """)
 
 

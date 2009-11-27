@@ -173,7 +173,7 @@ public:
 		delete w;
 	}
 
-	void edit_input (std::string& InputName) {
+	void edit_input (const std::string& InputName) {
 
 		m_edited_input = InputName;
 

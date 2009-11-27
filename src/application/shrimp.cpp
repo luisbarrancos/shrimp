@@ -36,7 +36,7 @@
 // Launch FLTK and Shrimp's main window
 int main(int argc, char** argv) {
 
-	log_level_t level = DEBUG;
+	log_level_t level = ASPECT;
 	std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
 /*
@@ -123,15 +123,19 @@ int main(int argc, char** argv) {
 	// double-buffered screen
 	fltk::visual(fltk::DOUBLE_BUFFER);
 
+	// create services
+	services* services_instance = new services();
+	opengl_view* opengl_view_instance = new opengl_view (services_instance);
+
 	// create main
-	log() << aspect << "Creating main window" << std::endl;
-	application_window* application = new application_window();
+	log() << aspect << "shrimp: creating main window" << std::endl;
+	application_window* application = new application_window(services_instance, opengl_view_instance);
 
 	// if a scene name was given as a command-line parameter, try to load it
 	int nargs = 0;
 	if (argc > 1) {
 		std::string file = argv[1];
-		log() << aspect << "Trying to load scene from '" << argv[1] << "'" << std::endl;
+		log() << aspect << "shrimp: trying to load scene from '" << argv[1] << "'" << std::endl;
 
 		++nargs;
 		application->load_scene (file);
@@ -145,7 +149,7 @@ int main(int argc, char** argv) {
 
 	if (splash_window) {
 
-		log() << aspect << "Showing splash screen" << std::endl;
+		log() << aspect << "shrimp: showing splash screen" << std::endl;
 
 		// keep splash screen on top
 		splash_window->show();

@@ -277,7 +277,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		// get parameter values (inputs that are not connected)
 		for (shader_block::properties_t::const_iterator input = sb->m_inputs.begin(); input != sb->m_inputs.end(); ++input) {
 
-			if (m_scene->is_connected (scene::io_t (sb->name(), input->m_name))) {
+			if (m_scene->is_connected (shrimp::io_t (sb->name(), input->m_name))) {
 				continue;
 			}
 
@@ -754,7 +754,7 @@ std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, cons
 		// get parameter values (inputs that are not connected)
 		for (shader_block::properties_t::const_iterator input = sb->m_inputs.begin(); input != sb->m_inputs.end(); ++input) {
 
-			if (m_scene->is_connected (scene::io_t (sb->name(), input->m_name))) {
+			if (m_scene->is_connected (shrimp::io_t (sb->name(), input->m_name))) {
 				continue;
 			}
 

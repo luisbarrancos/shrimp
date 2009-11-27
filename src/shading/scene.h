@@ -23,6 +23,7 @@
 #define _scene_h_
 
 #include "shader_block.h"
+#include "shrimp_public_structures.h"
 
 #include "../miscellaneous/misc_xml.h"
 
@@ -39,14 +40,7 @@ public:
 
 	//////////// DAG and block data structures
 
-	// definition of a pad, as a pair of strings:
-	// the first is the block name, the second is the pad name
-	typedef std::pair <std::string, std::string> io_t;
-
-	// store connections as a directed acyclic graph, Output -> Input,
-	// in a map as <input, output>, an input receives only one output
-	typedef std::map <io_t, io_t> dag_t;
-	dag_t m_dag;
+	shrimp::dag_t m_dag;
 
 	// the list of blocks
 	typedef std::map<std::string, shader_block*> shader_blocks_t;
@@ -54,46 +48,17 @@ public:
 
 
 	//////////// Menu helpers
-	// sort the blocks using the directory names they're stored in
-
-	struct default_block_t {
-
-		std::string name;
-		std::string path;
-	};
-	typedef std::vector<default_block_t> default_block_list_t;
-
-	struct block_tree_node_t;
-	typedef std::vector<block_tree_node_t> block_tree_node_list_t;
-
-	struct block_tree_node_t {
-		std::string node_name;
-		std::string node_path;
-		block_tree_node_list_t child_nodes;
-
-		default_block_list_t blocks;
-	};
-	// root block
-	block_tree_node_t m_block_classification;
 
 
-	//////////// Selection, rolled blocks and group data structures
+	//////////// group data structures
 
-	typedef std::set<std::string> selection_t;
-	selection_t m_selection;
-
-	typedef std::map<std::string, int> groups_t;;
-	groups_t m_groups;
-
-	typedef std::set<int> groups_selection_t;;
-	groups_selection_t m_groups_selection;
-
-	typedef std::map<int, std::string> group_names_t;
-	group_names_t m_group_names;
+	shrimp::groups_t m_groups;
+	shrimp::groups_selection_t m_groups_selection;
+	shrimp::group_names_t m_group_names;
 
 
 	//////////// Copy,paste data structures
-	dag_t m_dag_copy;
+	shrimp::dag_t m_dag_copy;
 
 	typedef std::pair <std::string, shader_block* > copy_block_t;
 
@@ -101,7 +66,7 @@ public:
 	typedef std::map<copy_block_t,copy_block_t> shader_blocks_copy_t;
 	shader_blocks_copy_t m_copy_buffer;
 	shader_blocks_copy_t m_copy_selection;
-	groups_t m_groups_buffer;
+	shrimp::groups_t m_groups_buffer;
 
 	//////////// Functions
 
@@ -121,9 +86,8 @@ public:
 	// create default elements
 	void new_scene();
 
-	// load predefined Shrimp blocks
-	void load_default_blocks (block_tree_node_t& RootPath, unsigned long& BlockCount);
-
+	// return block hierarchy
+	block_tree_node_t get_block_hierarchy() const;
 
 	//////////// Blocks
 
@@ -146,11 +110,11 @@ public:
 	void set_block_name (shader_block* Block, const std::string& NewName);
 
 	// connect two blocks
-	void connect (const io_t& Input, const io_t& Output);
+	void connect (const shrimp::io_t& Input, const shrimp::io_t& Output);
 	// disconnect an input or output from the network
-	void disconnect (const io_t& IO);
+	void disconnect (const shrimp::io_t& IO);
 	// tell whether an input is connected to an output
-	bool is_connected (const io_t& Input);
+	bool is_connected (const shrimp::io_t& Input);
 
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
 	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
@@ -174,26 +138,6 @@ public:
 	xml::element xml_network();
 
 
-	//////////// Selection
-
-	// returns whether a block is selected
-	bool is_selected (const shader_block* Block);
-
-	// returns the size of the selection set
-	int selection_size();
-
-	// clear current selection
-	void clear_selection();
-
-	// clear copy paste buffer
-	void clear_copy_selection();
-
-	// toggle block selection state
-	void set_block_selection (shader_block* Block, const bool Selection);
-
-
-
-
 	//////////// Rolled blocks
 
 	// returns whether a block is rolled
@@ -212,8 +156,7 @@ public:
 	//////////// Grouping
 
 	// useful function to retrieve groups (not used for storage)
-	typedef std::set<int> group_set_t;
-	group_set_t group_list();
+	shrimp::group_set_t group_list();
 
 	// turn current selection into a group
 	void group_selection();
@@ -241,13 +184,12 @@ public:
 	void set_group_selection (const int Group , const bool Selection);
 
 	// returns whether a group is selected
-	bool is_selected (const int Group);
+	bool is_group_selected (const int Group);
 
 	int group_selection_size();
 
 	//////////// Misc
 
-	void bounding_box (double& Left, double& Right, double& Bottom, double& Top);
 	shader_block* get_parent (const std::string& BlockName, const std::string& Input, std::string& ParentOutput) const;
 
 
@@ -273,6 +215,12 @@ private:
 
 	typedef std::map <std::string, default_block_t> default_blocks_t;
 	default_blocks_t m_default_blocks;
+
+	// load predefined Shrimp blocks
+	void load_default_blocks (block_tree_node_t& RootPath, unsigned long& BlockCount);
+
+	// block hierarchy, contains the root block
+	block_tree_node_t m_block_classification;
 
 };
 

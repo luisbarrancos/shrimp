@@ -62,7 +62,7 @@ static std::vector<std::string> s_renderers;
 
 // trick for FLTK's callback
 class dialog;
-dialog* dialog_instance;
+dialog* preferences_dialog_instance;
 
 class dialog :
 	general_options
@@ -205,7 +205,7 @@ public:
 	bool pref_dialog() {
 
 		// save instance for callback
-		dialog_instance = this;
+		preferences_dialog_instance = this;
 
 		// set values
 		s_compilation->text (m_shader_compiler.c_str());
@@ -309,7 +309,7 @@ public:
 
 	static void cb_renderer (fltk::Widget* W, void* Data) {
 
-		dialog_instance->on_renderer_choice (W, Data);
+		preferences_dialog_instance->on_renderer_choice (W, Data);
 	}
 
 	void set_display_chooser (const std::string RendererCode, const std::string Value = "") {

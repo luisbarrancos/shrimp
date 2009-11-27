@@ -25,6 +25,8 @@
 #include "ui_preferences.h"
 #include "ui_edit_code.h"
 
+#include "../services.h"
+
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
 #include "../miscellaneous/misc_system_functions.h"
@@ -67,18 +69,20 @@ void application_window::on_window_callback (fltk::Widget*) {
 // File menu : New
 void application_window::on_menu_file_new (fltk::Widget*) {
 
-	m_scene->new_scene();
-	m_scene_file = "";
+	m_services->reset_scene();
 
 	// fit scene
 	const double new_size = m_scene_view->fit_scene();
 	m_zoom_slider.value (new_size);
+
+	// refresh
+	m_scene_view->redraw();
 }
 
 
 bool application_window::load_scene (const std::string& File) {
 
-	if (!m_scene->load (File)) {
+	if (!m_services->load (File)) {
 
 		const std::string alert = "Couldn't open '" + File + "'.";
 		fltk::alert (alert.c_str());
@@ -86,15 +90,12 @@ bool application_window::load_scene (const std::string& File) {
 		return false;
 	}
 
-	m_scene_file = File;
-
-	m_scene_view->set_scene (m_scene);
 	const double new_size = m_scene_view->fit_scene();
 
 	m_zoom_slider.value (new_size);
 
 	// Set scene name as window's title
-	label (m_scene->name().c_str());
+	label (m_services->get_scene_name().c_str());
 
 	return true;
 }
@@ -118,13 +119,7 @@ void application_window::on_menu_file_open (fltk::Widget*) {
 // File menu : Save
 void application_window::on_menu_file_save (fltk::Widget*) {
 
-	if (!m_scene_file.empty()) {
-
-		log() << aspect << "saving project (" << m_scene_file << ")" << std::endl;
-		m_scene->save_as (m_scene_file);
-
-	} else {
-
+	if (!m_services->save()) {
 		save_scene_as();
 	}
 }
@@ -138,18 +133,18 @@ void application_window::on_menu_file_save_as (fltk::Widget*) {
 // File menu : Shader Properties
 void application_window::on_menu_shader_properties (fltk::Widget*) {
 
-	std::string name (m_scene->name());
-	std::string description (m_scene->description());
-	std::string authors (m_scene->authors());
+	std::string name (m_services->get_scene_name());
+	std::string description (m_services->get_scene_description());
+	std::string authors (m_services->get_scene_authors());
 
-	if (shader_properties::sp_dialog (name, description, authors)) {
-
-		m_scene->set_name (shader_properties::name->value());
-		m_scene->set_description (shader_properties::description->text());
-		m_scene->set_authors (shader_properties::authors->value());
+	if (shader_properties::sp_dialog (name, description, authors))
+	{
+		m_services->set_scene_name (shader_properties::name->value());
+		m_services->set_scene_description (shader_properties::description->text());
+		m_services->set_scene_authors (shader_properties::authors->value());
 
 		// Set scene name as window's title
-		label (m_scene->name().c_str());
+		label (m_services->get_scene_name().c_str());
 	}
 }
 
@@ -163,7 +158,8 @@ void application_window::on_menu_code_preview (fltk::Widget*) {
 		surface_code = m_scene_view->get_scene()->build_shader_file (scene::SURFACE, "surface_preview");
 	}
 */
-	surface_code = m_scene->get_shader_code();
+	//TODO:
+	//surface_code = m_scene->get_shader_code();
 
 	code_preview::dialog d;
 	d.open (surface_code);
@@ -200,7 +196,7 @@ void application_window::on_menu_file_export_scene (fltk::Widget*) {
 
 	// export scene
 	log() << aspect << "exporting scene to : " << directory << std::endl;
-	m_scene_view->get_scene()->export_scene (directory);
+	m_services->export_scene (directory);
 }
 
 // File menu : Quit
@@ -211,80 +207,94 @@ void application_window::on_menu_file_quit (fltk::Widget*, void*) {
 
 //Edit menu : Copy selection
 void application_window::on_menu_edit_copy (fltk::Widget*) {
+	//TODO:
+	/*
 	if (m_scene) {
-				if (m_scene->selection_size()>=1){
-					m_scene_view->copy_selected_blocks();
-					// refresh
-					redraw();
-				}
+		if (m_scene->selection_size()>=1){
+			m_scene_view->copy_selected_blocks();
+			// refresh
+			redraw();
+		}
 	}
+	*/
 }
 
 //Edit menu : Paste selection
 void application_window::on_menu_edit_paste (fltk::Widget*) {
+	//TODO:
+	/*
 	if (m_scene) {
-					if (m_scene->m_copy_selection.size()){
-						m_scene_view->paste_buffered_blocks();
-						// refresh
-						redraw();
-					}
-					// paste buffer if no new copy selection
-					else if (m_scene->m_copy_buffer.size()){
-						m_scene->clear_selection();
-						for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
-								m_scene->m_selection.insert(new_block->first.first);
-						}
-						m_scene_view->copy_selected_blocks();
-						m_scene_view->paste_buffered_blocks();
-						// refresh
-						redraw();
-					}
+		if (m_scene->m_copy_selection.size()){
+			m_scene_view->paste_buffered_blocks();
+			// refresh
+			redraw();
 		}
+		// paste buffer if no new copy selection
+		else if (m_scene->m_copy_buffer.size()){
+			m_scene->clear_selection();
+			for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
+					m_scene->m_selection.insert(new_block->first.first);
+			}
+			m_scene_view->copy_selected_blocks();
+			m_scene_view->paste_buffered_blocks();
+			// refresh
+			redraw();
+		}
+	}
+	*/
 }
 
 //Edit menu : Cut selection
 void application_window::on_menu_edit_cut (fltk::Widget*) {
+	//TODO:
+	/*
 	if (m_scene) {
-		if (m_scene->selection_size()>=1){
-				// copy blocks
-				m_scene_view->copy_selected_blocks();
-				m_scene->copy_connections();
-				// delete blocks
-				if (m_scene->selection_size()>1){
-					std::string m_select_block = m_scene_view->get_selected_blocks();
-					//Multi selection
-					m_scene->delete_block(m_select_block);
-					m_scene->m_copy_buffer.clear();
-					m_scene->clear_selection();
-					m_scene->clear_copy_selection();
-				}
-				else if (m_scene->selection_size()==1){
-					m_scene->delete_block((m_scene_view->get_active_block())->name());
-					m_scene->m_copy_buffer.clear();
-					m_scene->clear_selection();
-					m_scene->clear_copy_selection();
-				}
+		if (m_scene->selection_size()>=1)
+		{
+			// copy blocks
+			m_scene_view->copy_selected_blocks();
+			m_scene->copy_connections();
+			// delete blocks
+			if (m_scene->selection_size()>1){
+				std::string m_select_block = m_scene_view->get_selected_blocks();
+				//Multi selection
+				m_scene->delete_block(m_select_block);
+				m_scene->m_copy_buffer.clear();
+				m_scene->clear_selection();
+				m_scene->clear_copy_selection();
+			}
+			else if (m_scene->selection_size()==1){
+				m_scene->delete_block((m_scene_view->get_active_block())->name());
+				m_scene->m_copy_buffer.clear();
+				m_scene->clear_selection();
+				m_scene->clear_copy_selection();
+			}
 
-				// refresh
-				redraw();
+			// refresh
+			redraw();
 		}
 	}
+	*/
 }
 
 //Edit menu : Group selection
 void application_window::on_menu_edit_group (fltk::Widget*) {
+	//TODO:
+	/*
 	if (m_scene) {
-				if (m_scene->selection_size()>=1){
-					m_scene->group_selection();
-					// refresh
-					redraw();
-				}
+		if (m_scene->selection_size()>=1){
+			m_scene->group_selection();
+			// refresh
+			redraw();
+		}
 	}
+	*/
 }
 
 //Edit menu : Ungroup selection
 void application_window::on_menu_edit_ungroup (fltk::Widget*) {
-
+	//TODO:
+	/*
 	const int m_select_group = m_scene_view->get_selected_group();
 
 	if (m_select_group){
@@ -293,13 +303,14 @@ void application_window::on_menu_edit_ungroup (fltk::Widget*) {
 				// refresh
 				redraw();
 	}
-
+	*/
 }
 
 //Edit menu : Delete selection
 void application_window::on_menu_edit_delete (fltk::Widget*) {
 
-
+	//TODO:
+	/*
 	if (m_scene) {
 		std::string m_select_block = m_scene_view->get_selected_blocks();
 				//Multi selection
@@ -322,13 +333,15 @@ void application_window::on_menu_edit_delete (fltk::Widget*) {
 				}
 
 			}
+	*/
 
 }
 
 //Edit menu : Edit source of selection
 void application_window::on_menu_edit_edit (fltk::Widget*) {
 
-
+	//TODO:
+	/*
 		if (m_scene) {
 				if (m_scene->selection_size()==1){
 					shader_block* block = m_scene_view->get_active_block();
@@ -342,35 +355,45 @@ void application_window::on_menu_edit_edit (fltk::Widget*) {
 						}
 				}
 			}
-
+	*/
 }
 
 void application_window::on_menu_view_toggle_grid (fltk::Widget*) {
 
+	//TODO:
+	/*
 	const bool grid_state = m_menu_show_grid->state();
 	m_scene_view->set_grid_state (grid_state);
+	*/
 }
 
 void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*) {
 
+	//TODO:
+	/*
 	const bool snap_to_grid_state = m_menu_snap_to_grid->state();
 	m_scene_view->set_snap_to_grid_state (snap_to_grid_state);
+	*/
 }
 
 void application_window::on_menu_view_toggle_overview (fltk::Widget*) {
 
+	/*
 	const bool overview_state = m_menu_overview->state();
 	m_scene_view->set_overview_state (overview_state);
+	*/
 }
 
 void application_window::on_menu_view_toggle_console (fltk::Widget*) {
 
+	/*
 	m_console_state = m_menu_show_console->state();
 	if (m_console_state) {
 		m_scene_view->set_console (m_console);
 	} else {
 		m_scene_view->set_console (0);
 	}
+	*/
 }
 
 // Help menu : About
@@ -385,7 +408,7 @@ void application_window::on_menu_help_about (fltk::Widget*, void*) {
 
 void application_window::on_zoom (fltk::Slider* o, void*) {
 
-	m_scene_view->set_size ((double)o->value());
+	m_opengl_view->set_size ((double)o->value());
 	m_scene_view->redraw();
 }
 
@@ -400,10 +423,10 @@ void application_window::on_button_fit_scene (fltk::Widget*) {
 void application_window::on_custom_block() {
 
 	// create a custom block
-	shader_block* new_block = m_scene->add_custom_block();
+	shader_block* new_block = m_services->add_custom_block();
 
 	// put it in the middle of the view
-	m_scene_view->move_block_to_view_center (new_block);
+	m_opengl_view->move_block_to_view_center (new_block);
 
 	// refresh
 	m_scene_view->redraw();
@@ -411,10 +434,10 @@ void application_window::on_custom_block() {
 
 
 // Shader preview
-void application_window::on_preview() {
-
+void application_window::on_preview()
+{
 	std::string tempdir = system_functions::get_tmp_directory();
-	m_scene->show_preview (tempdir);
+	m_services->show_preview (tempdir);
 }
 
 
@@ -481,8 +504,10 @@ void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
 }
 
 
-application_window::application_window() :
+application_window::application_window(services* services_instance, opengl_view* opengl_view_instance) :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
+	m_services (services_instance),
+	m_opengl_view (opengl_view_instance),
 	m_zoom_slider (80, 575, 400, 19, "Zoom"),
 	m_block_menu (20, 22, 90, 24, "Add block"),
 	m_console (0)
@@ -497,11 +522,6 @@ application_window::application_window() :
 	// initialize console
 	m_console = new console();
 	m_console->print ("Console:");
-
-	// create material structure
-	log() << aspect << "Creating default material" << std::endl;
-	m_scene = new scene();
-	m_scene_file = "";
 
 	// create UI
 	log() << aspect << "creating UI" << std::endl;
@@ -643,8 +663,8 @@ application_window::application_window() :
 		m_block_menu.callback ((fltk::Callback*)block_menu_callback);
 		m_block_menu.begin();
 
-			scene::block_tree_node_t root = m_scene->m_block_classification;
-			for (scene::block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
+			block_tree_node_t root = m_services->get_block_hierarchy();
+			for (block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
 				tree_node != root.child_nodes.end(); ++tree_node) {
 
 				build_menu (*tree_node);
@@ -711,37 +731,33 @@ application_window::application_window() :
 					frame->color ((fltk::Color) (56));
 					frame->selection_color ((fltk::Color) (69));
 
-					m_scene_view = new scene_view (2, 2, 792, 518);
+					m_scene_view = new scene_view (m_services, m_opengl_view, 2, 2, 792, 518);
 
 				main_view->end();
 				resizable (main_view);
 
 	end();
-
-	// setup view
-	log() << aspect << "Setting default shader" << std::endl;
-	m_scene_view->set_scene (m_scene);
 }
 
 application_window::~application_window() {
 
-	log() << aspect << "Application window destructor" << std::endl;
-	delete m_scene;
+	log() << aspect << "ui_application_window: destructor" << std::endl;
+	delete m_services;
 }
 
-void application_window::build_menu (const scene::block_tree_node_t& tree_node) {
+void application_window::build_menu (const block_tree_node_t& tree_node) {
 
 	fltk::ItemGroup* current_group = new fltk::ItemGroup (tree_node.node_name.c_str());
 	current_group->begin();
 
 	// check whether the directory has children
-	for (scene::block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
+	for (block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
 		sub_node != tree_node.child_nodes.end(); ++sub_node) {
 
 		build_menu (*sub_node);
 	}
 
-	for (scene::default_block_list_t::const_iterator block = tree_node.blocks.begin(); block != tree_node.blocks.end(); ++block) {
+	for (default_block_list_t::const_iterator block = tree_node.blocks.begin(); block != tree_node.blocks.end(); ++block) {
 		new fltk::Item (block->name.c_str());
 	}
 
@@ -755,9 +771,10 @@ void application_window::block_menu_action (fltk::Widget* w, void*) {
 	if (!item)
 		log() << error << "invalid menu item (block_menu_action)." << std::endl;
 	else {
-		// add block and put it in the view center
-		shader_block* new_block = m_scene->add_predefined_block (item->label());
-		m_scene_view->move_block_to_view_center (new_block);
+		// add block
+		shader_block* new_block = m_services->add_predefined_block (item->label());
+		// put it in the view center
+		m_opengl_view->move_block_to_view_center (new_block);
 
 		m_console->print ("Added block " + std::string(item->label()));
 
@@ -872,7 +889,7 @@ void application_window::set_scene_chooser_value (const std::string Scene) {
 int application_window::handle (int event) {
 
 	// update the zoom slider if necessary
-	m_zoom_slider.value (m_scene_view->get_size());
+	m_zoom_slider.value (m_opengl_view->get_size());
 
 	// do overriden function's work
 	return fltk::Window::handle (event);
@@ -907,9 +924,7 @@ void application_window::save_scene_as() {
 	}
 
 	log() << aspect << "saving project as " << file << std::endl;
-	m_scene->save_as (real_file_name);
-
-	m_scene_file = real_file_name;
+	m_services->save_as (real_file_name);
 }
 
 

@@ -24,10 +24,10 @@
 #include "../miscellaneous/misc_string_functions.h"
 
 
-scene::group_set_t scene::group_list() {
+shrimp::group_set_t scene::group_list() {
 
-	group_set_t groups;
-	for (scene::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+	shrimp::group_set_t groups;
+	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
 		groups.insert(g->second);
 	}
 
@@ -38,7 +38,7 @@ void scene::group_selection()
 {
 	// find the next group number
 	int max = 0;
-	for (groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
 
 		if(g->second > max)
 			max = g->second;
@@ -46,12 +46,14 @@ void scene::group_selection()
 	++max;
 
 	// store new group
-	for (selection_t::iterator s = m_selection.begin(); s != m_selection.end(); ++s) {
+	//TODO:
+	/*for (selection_t::iterator s = m_selection.begin(); s != m_selection.end(); ++s) {
 
 		m_groups.insert(std::make_pair(*s, max));
-	}
+	}*/
 
-	clear_selection();
+	//TODO:
+	//clear_selection();
 }
 
 
@@ -64,7 +66,7 @@ void scene::add_to_group (const std::string& Block, const int Group) {
 
 int scene::group (const shader_block* Block) {
 
-	groups_t::const_iterator g = m_groups.find(Block->name());
+	shrimp::groups_t::const_iterator g = m_groups.find(Block->name());
 	if(g == m_groups.end())
 		return 0;
 
@@ -74,8 +76,8 @@ int scene::group (const shader_block* Block) {
 
 void scene::ungroup (const int Group) {
 
-	groups_t groups2;
-	for (groups_t::iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+	shrimp::groups_t groups2;
+	for (shrimp::groups_t::iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
 
 		if (g->second != Group) {
 
@@ -91,7 +93,7 @@ void scene::ungroup (const int Group) {
 
 const std::string scene::get_group_name (const int Group) const {
 
-	group_names_t::const_iterator name = m_group_names.find(Group);
+	shrimp::group_names_t::const_iterator name = m_group_names.find(Group);
 	if (name == m_group_names.end())
 		return "Group " + string_cast(Group);
 
@@ -101,7 +103,7 @@ const std::string scene::get_group_name (const int Group) const {
 
 void scene::set_group_name(const int Group, const std::string& Name) {
 
-	group_names_t::iterator g = m_group_names.find(Group);
+	shrimp::group_names_t::iterator g = m_group_names.find(Group);
 	if (g == m_group_names.end()) {
 		m_group_names.insert (std::make_pair(Group, Name));
 	} else {
@@ -122,10 +124,10 @@ void scene::set_group_selection (const int Group , const bool selection) {
 	}
 }
 
-bool scene::is_selected (const int Group) {
+bool scene::is_group_selected (const int Group) {
 
 
-	groups_selection_t::const_iterator i = m_groups_selection.find (Group);
+	shrimp::groups_selection_t::const_iterator i = m_groups_selection.find (Group);
 	if (i == m_groups_selection.end()) {
 		return false;
 	}

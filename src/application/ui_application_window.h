@@ -61,17 +61,19 @@ class application_window : public fltk::Window {
 	fltk::Choice* m_scene_chooser;
 
 public:
-	application_window();
+	application_window(services* services_instance, opengl_view* opengl_view_instance);
 	~application_window();
 
 	bool load_scene (const std::string& File);
 
 private:
+	// shrimp services
+	services* m_services;
+
 	// OpenGL view of current scene
+	opengl_view* m_opengl_view;
 	scene_view* m_scene_view;
-	// currently edited scene
-	scene* m_scene;
-	std::string m_scene_file;
+
 	// console
 	bool m_console_state;
 	console* m_console;
@@ -124,7 +126,7 @@ private:
 	void block_menu_action (fltk::Widget* w, void*);
 
 
-	void build_menu (const scene::block_tree_node_t& tree);
+	void build_menu (const block_tree_node_t& tree);
 
 	// update renderer, display and scene choosers
 	void set_renderer_chooser_value (const std::string RendererCode);
