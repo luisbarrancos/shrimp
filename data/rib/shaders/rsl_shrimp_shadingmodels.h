@@ -261,7 +261,7 @@ Minnaert(
  *
  * brdf_hls.cc
  * The Hapke/Lommel-Seeliger Lunar-surface BRDF with
- * Schönberg backscattering and the Hapke retrodirective
+ * Sch?nberg backscattering and the Hapke retrodirective
  * function.
  *
  * Hapke, Bruce. "A Theoretical Photometric Function for
@@ -1040,7 +1040,7 @@ color aschlick(
 			cospsi = Ln.Nf;
 			cosbeta = Hn.xdir;
 
-			// self-obscuration
+			// self-shadowing, without reeemission
 			G = sgeoattenuation( costheta, roughness) *
 						sgeoattenuation( cospsi, roughness );
 			// anisotropy
@@ -1470,17 +1470,17 @@ color SampleEnvironment(
  * */
 float calcPhi(float nu, nv; float e1)
 {
-    return atan( sqrt( (nu+1)/(nv+1) ) * tan( S_PI * e1/2) );
+    return atan( sqrt( (nu+1)/(nv+1) ) * tan( S_PI_2 * e1) );
 }
 
 ///////////////////////////////////////////////////////////////////////////////
-/* NOTE:Someone mentioned PRMan allowed a custom distribution of rays in
- * gather() but there's nothing about this on the public specs, nor in
- * 3delight's docs. In any case, this deserves some more reading on the
- * topic to try and speed up things (i hope...) */
-/* TODO: move to a global illumination header, including custom distributions
- * for ray sampling */
-
+/* NOTE: PRMan allows custom ray distributions, Moritz Moeller mentioned using
+ * a for loop for a single sample gather call, for N rays, stored in a array.
+ * This is the approach being used at the moment in rsl_shrimp_sampling.h.
+ * TODO: use the Ashikhmin-Shirley sampling function in this header, instead
+ * of the following EnvIllumAshsir and clean up things a bit. Also the code
+ * in the sampling header uses stratified sampling which decreases noise
+ * a bit. */
 color EnvIllumAshShir(
                         normal Nf;
                         vector Vf, xdir;
@@ -1503,13 +1503,13 @@ color EnvIllumAshShir(
 	// This helps to stratify the samples, hopefully decreasing variance...
     // FIXME this can be done better...
         if (e1 >= 0 && e1 < 0.25)
-            ph = calcPhi(nu, nv, 1 - 4*(0.25 - e1));
+            ph = calcPhi(nu, nv, 4 * e1);
         else if (e1 >= 0.25 && e1 < 0.5)
-            ph = calcPhi(nu, nv, 1 - 4*(0.5 - e1)) + S_PI_2;
+            ph = S_PI - calcPhi(nu, nv, 1-4*(.5-e1));
         else if (e1 >= 0.5 && e1 < 0.75)
-            ph = calcPhi(nu, nv, 1 - 4*(0.75 - e1)) + S_PI;
+            ph = calcPhi(nu, nv, 4 * (e1-0.5)) + S_PI;
         else
-            ph = calcPhi(nu, nv, 1 - 4*(1 - e1)) - S_PI_2;
+            ph = S_2PI - calcPhi(nu, nv, 1-4*(1-e1));
     
         cosph = cos(ph);
         sinph = sin(ph);
@@ -2070,6 +2070,14 @@ LocIllumGranier(
  *		use diffuse(), which doesn't work.
  *
  * */
+
+/* TODO: clean up this a bit, restructure the block to be able to specify
+ * which and how many lobes to use. This is specified in one of Pat Hanrahan's
+ * handouts iirc. Basically, the Lafortune block and this function would
+ * benefit from major overhaul. Now that Romain is adding array support,
+ * preset blocks with some of the publicly distributable coefficient data
+ * could be worth it as well as a major block for manually editing the
+ * coefficients for each lobe. */
 
 // Number of coefficients per lobe: 3 for an isotropic surface
 #define LOBESIZE 3

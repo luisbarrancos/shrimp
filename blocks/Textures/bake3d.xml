@@ -23,28 +23,28 @@
 		
 	#elif RENDERER == _3delight
 	/* DisplayChannels are ignored in bake3d() (as of 8.5) */
-		$(status) = bake3d( $(bakefile), $(bakechannel), $(P), $(N),
-								"coordsystem", $(coordsys),
-								"radius", $(filterradius),
-								"radiusscale", $(filterscale),
-								"interpolate", $(interpolate),
-								$(bakechannel), $(bakedata) );
+		$(status) = bake3d(	$(bakefile), "", $(P), $(N),
+							"coordsystem", $(coordsys),
+							"radius", $(filterradius),
+							"radiusscale", $(filterscale),
+							"interpolate", $(interpolate),
+							$(bakechannel), $(bakedata) );
 		$(bakevalue) = $(bakedata);
 		
 	#elif RENDERER == prman
-		$(status) = bake3d( $(bakefile), $(bakechannel), $(P), $(N),
-								"coordsystem", $(coordsys),
-								"radius", $(filterradius),
-								"radiusscale", $(filterscale),
-								"interpolate", $(interpolate),
-								$(bakechannel), $(bakedata) );
+		$(status) = bake3d(	$(bakefile), $(bakechannel), $(P), $(N),
+							"coordsystem", $(coordsys),
+							"radius", $(filterradius),
+							"radiusscale", $(filterscale),
+							"interpolate", $(interpolate),
+							$(bakechannel), $(bakedata) );
 		$(bakevalue) = $(bakedata);
 		
 	#elif RENDERER == air
-		$(status) = bake3d( $(bakefile), $(P), $(N),
-								"radius", $(filterscale),
-								"radiusscale", $(filterradius),
-								$(bakechannel), $(bakedata) );
+		$(status) = bake3d(	$(bakefile), $(P), $(N),
+							"radius", $(filterscale),
+							"radiusscale", $(filterradius),
+							$(bakechannel), $(bakedata) );
 		$(bakevalue) = $(bakedata);
 
 	#else

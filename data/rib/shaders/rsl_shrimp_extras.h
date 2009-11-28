@@ -78,7 +78,7 @@ cook_torrance(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Smith geometric selfshadowing/masking */
+/* Approximation of the Smith geometric selfshadowing/masking function. */
 /* Product of 2 attenuation terms, between incident vector and microstructure
  * normal, and viewer and microstructure normal. */
 
@@ -92,7 +92,8 @@ float smith(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* He-Torrance geometric selfshadowing/masking */
+/* Full formula for the Smith geometric selfshadowing/masking, as used in the
+ * He-Torrance model. */
 
 float he_torrance(
 					float costheta, cosalpha, roughness;
