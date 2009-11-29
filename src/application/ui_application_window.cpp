@@ -151,15 +151,7 @@ void application_window::on_menu_shader_properties (fltk::Widget*) {
 // File menu : Code Preview...
 void application_window::on_menu_code_preview (fltk::Widget*) {
 
-	std::string surface_code ("");
-/*
-	if (m_scene_view->get_scene()->has_surface_network()) {
-
-		surface_code = m_scene_view->get_scene()->build_shader_file (scene::SURFACE, "surface_preview");
-	}
-*/
-	//TODO:
-	//surface_code = m_scene->get_shader_code();
+	std::string surface_code = m_services->show_code();
 
 	code_preview::dialog d;
 	d.open (surface_code);
@@ -245,65 +237,59 @@ void application_window::on_menu_edit_paste (fltk::Widget*) {
 }
 
 //Edit menu : Cut selection
-void application_window::on_menu_edit_cut (fltk::Widget*) {
-	//TODO:
-	/*
-	if (m_scene) {
-		if (m_scene->selection_size()>=1)
-		{
-			// copy blocks
-			m_scene_view->copy_selected_blocks();
-			m_scene->copy_connections();
-			// delete blocks
-			if (m_scene->selection_size()>1){
-				std::string m_select_block = m_scene_view->get_selected_blocks();
-				//Multi selection
-				m_scene->delete_block(m_select_block);
-				m_scene->m_copy_buffer.clear();
-				m_scene->clear_selection();
-				m_scene->clear_copy_selection();
-			}
-			else if (m_scene->selection_size()==1){
-				m_scene->delete_block((m_scene_view->get_active_block())->name());
-				m_scene->m_copy_buffer.clear();
-				m_scene->clear_selection();
-				m_scene->clear_copy_selection();
-			}
-
-			// refresh
-			redraw();
+void application_window::on_menu_edit_cut (fltk::Widget*)
+{
+	if (m_services->selection_size() >= 1)
+	{
+		//TODO:
+		/*
+		// copy blocks
+		m_scene_view->copy_selected_blocks();
+		m_scene->copy_connections();
+		// delete blocks
+		if (m_scene->selection_size()>1){
+			std::string m_select_block = m_scene_view->get_selected_blocks();
+			//Multi selection
+			m_scene->delete_block(m_select_block);
+			m_scene->m_copy_buffer.clear();
+			m_scene->clear_selection();
+			m_scene->clear_copy_selection();
 		}
+		else if (m_scene->selection_size()==1){
+			m_scene->delete_block((m_scene_view->get_active_block())->name());
+			m_scene->m_copy_buffer.clear();
+			m_scene->clear_selection();
+			m_scene->clear_copy_selection();
+		}
+		*/
+
+		// refresh
+		m_scene_view->redraw();
 	}
-	*/
 }
 
 //Edit menu : Group selection
-void application_window::on_menu_edit_group (fltk::Widget*) {
-	//TODO:
-	/*
-	if (m_scene) {
-		if (m_scene->selection_size()>=1){
-			m_scene->group_selection();
-			// refresh
-			redraw();
-		}
+void application_window::on_menu_edit_group (fltk::Widget*)
+{
+	if (m_services->selection_size() >= 1)
+	{
+		m_services->group_selection();
+
+		// refresh
+		m_scene_view->redraw();
 	}
-	*/
 }
 
 //Edit menu : Ungroup selection
-void application_window::on_menu_edit_ungroup (fltk::Widget*) {
-	//TODO:
-	/*
-	const int m_select_group = m_scene_view->get_selected_group();
-
-	if (m_select_group){
-
-				m_scene->ungroup(m_select_group);
-				// refresh
-				redraw();
+void application_window::on_menu_edit_ungroup (fltk::Widget*)
+{
+	const int m_select_group = m_opengl_view->get_selected_group();
+	if (m_select_group)
+	{
+		m_services->ungroup(m_select_group);
+		// refresh
+		redraw();
 	}
-	*/
 }
 
 //Edit menu : Delete selection
@@ -338,62 +324,57 @@ void application_window::on_menu_edit_delete (fltk::Widget*) {
 }
 
 //Edit menu : Edit source of selection
-void application_window::on_menu_edit_edit (fltk::Widget*) {
+void application_window::on_menu_edit_edit (fltk::Widget*)
+{
+	if (m_services->selection_size() == 1)
+	{
+		shader_block* block = m_opengl_view->get_active_block();
+		if (block)
+		{
+			edit_code::dialog d;
+			d.open_dialog (block);
 
-	//TODO:
-	/*
-		if (m_scene) {
-				if (m_scene->selection_size()==1){
-					shader_block* block = m_scene_view->get_active_block();
-
-					if (block){
-						edit_code::dialog d;
-						d.open_dialog (block);
-						// toggle block selection
-						m_scene->clear_selection();
-						m_scene->set_block_selection (block, !m_scene->is_selected (block));
-						}
-				}
-			}
-	*/
+			// toggle block selection
+			m_services->clear_selection();
+			m_services->set_block_selection (block, !m_services->is_selected (block));
+		}
+	}
 }
 
-void application_window::on_menu_view_toggle_grid (fltk::Widget*) {
-
-	//TODO:
-	/*
+void application_window::on_menu_view_toggle_grid (fltk::Widget*)
+{
 	const bool grid_state = m_menu_show_grid->state();
-	m_scene_view->set_grid_state (grid_state);
-	*/
+	m_opengl_view->set_grid_state (grid_state);
+
+	m_scene_view->redraw();
 }
 
-void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*) {
-
-	//TODO:
-	/*
+void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*)
+{
 	const bool snap_to_grid_state = m_menu_snap_to_grid->state();
-	m_scene_view->set_snap_to_grid_state (snap_to_grid_state);
-	*/
+	m_opengl_view->set_snap_to_grid_state (snap_to_grid_state);
+
+	m_scene_view->redraw();
 }
 
-void application_window::on_menu_view_toggle_overview (fltk::Widget*) {
-
-	/*
+void application_window::on_menu_view_toggle_overview (fltk::Widget*)
+{
 	const bool overview_state = m_menu_overview->state();
-	m_scene_view->set_overview_state (overview_state);
-	*/
+	m_opengl_view->set_overview_state (overview_state);
+
+	m_scene_view->redraw();
 }
 
-void application_window::on_menu_view_toggle_console (fltk::Widget*) {
-
-	/*
+void application_window::on_menu_view_toggle_console (fltk::Widget*)
+{
 	m_console_state = m_menu_show_console->state();
 	if (m_console_state) {
-		m_scene_view->set_console (m_console);
+		m_opengl_view->set_console (m_console);
 	} else {
-		m_scene_view->set_console (0);
+		m_opengl_view->set_console (0);
 	}
-	*/
+
+	m_scene_view->redraw();
 }
 
 // Help menu : About
@@ -508,9 +489,9 @@ application_window::application_window(services* services_instance, opengl_view*
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
 	m_services (services_instance),
 	m_opengl_view (opengl_view_instance),
+	m_console (0),
 	m_zoom_slider (80, 575, 400, 19, "Zoom"),
-	m_block_menu (20, 22, 90, 24, "Add block"),
-	m_console (0)
+	m_block_menu (20, 22, 90, 24, "Add block")
 {
 	log() << aspect << "Application window constructor" << std::endl;
 

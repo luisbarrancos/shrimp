@@ -71,6 +71,7 @@ public:
 	void connect (const shrimp::io_t& Input, const shrimp::io_t& Output) { m_scene->connect (Input, Output); }
 	void disconnect (const shrimp::io_t& IO) { m_scene->disconnect (IO); }
 
+	std::string show_code() { return m_scene->get_shader_code(); }
 	void show_preview (const std::string& TempDir) { m_scene->show_preview (TempDir); }
 	void export_scene (const std::string& Directory) { m_scene->export_scene (Directory); }
 
@@ -94,6 +95,7 @@ public:
 
 	// block roll
 	void set_block_rolled_state (shader_block* Block, const bool Rolled);
+	bool is_rolled (const shader_block* Block) const { return m_scene->is_rolled(Block); }
 
 	/////////// Group handling
 	shrimp::group_set_t group_list() { return m_scene->group_list(); }

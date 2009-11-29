@@ -44,22 +44,6 @@ static application_window* application_pointer = 0;
 
 class application_window : public fltk::Window {
 
-	// scene zoom widget
-	fltk::Slider m_zoom_slider;
-	fltk::PopupMenu m_block_menu;
-
-	// renderer list
-	general_options::renderers_t m_renderers;
-	// renderer chooser
-	fltk::Choice* m_renderer_chooser;
-	// display chooser
-	fltk::Choice* m_renderer_display_chooser;
-
-	// scene list
-	general_options::scenes_t m_scenes;
-	// scene chooser
-	fltk::Choice* m_scene_chooser;
-
 public:
 	application_window(services* services_instance, opengl_view* opengl_view_instance);
 	~application_window();
@@ -77,6 +61,22 @@ private:
 	// console
 	bool m_console_state;
 	console* m_console;
+
+	// scene zoom widget
+	fltk::Slider m_zoom_slider;
+	fltk::PopupMenu m_block_menu;
+
+	// renderer list
+	general_options::renderers_t m_renderers;
+	// renderer chooser
+	fltk::Choice* m_renderer_chooser;
+	// display chooser
+	fltk::Choice* m_renderer_display_chooser;
+
+	// scene list
+	general_options::scenes_t m_scenes;
+	// scene chooser
+	fltk::Choice* m_scene_chooser;
 
 	// menu items
 	fltk::ToggleItem* m_menu_show_grid;

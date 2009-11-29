@@ -482,9 +482,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 			const unsigned long max_properties = std::max (blockSel->input_count(), (unsigned long)blockSel->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 			// set minimal block height
-			//TODO:
-			//const double height1 = m_services->is_rolled (blockSel) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
-			const double height1 = (width * (1.0 / 3.7) * static_cast<double> (max_properties));
+			const double height1 = m_services->is_rolled (blockSel) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
 			const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 			//Above block
@@ -780,9 +778,7 @@ void opengl_view::draw_shader(int window_width, int window_height) {
 
 					// property not found, may be part of a group or rolled block
 					const int block_group = m_services->group (block);
-					//TODO:
-						const bool rolled_block = false;
-					//const bool rolled_block = m_services->is_rolled (block);
+					const bool rolled_block = m_services->is_rolled (block);
 
 					if (block_group) {
 
@@ -821,9 +817,7 @@ void opengl_view::draw_shader(int window_width, int window_height) {
 
 				// property not found, may be part of a group or rolled block
 				const int block_group = m_services->group (block);
-				//TODO:
-					const bool rolled_block = false;
-				//const bool rolled_block = m_services->is_rolled (block);
+				const bool rolled_block = m_services->is_rolled (block);
 
 				if (block_group) {
 
@@ -1166,17 +1160,19 @@ void opengl_view::transform_scene() {
 	glScaled (m_size, m_size, m_size);
 }
 
-void opengl_view::draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions) {
-
-	//TODO:
-	//if (!m_services->is_rolled (Block)) {
+void opengl_view::draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions)
+{
+	if (!m_services->is_rolled (Block))
+	{
 		draw_block_body (Block, X, Y);
 		draw_block_name (Block, X, Y);
 		draw_block_properties (Block, X, Y, PropertyPositions);
-	//} else {
-	//	draw_rolled_block_body (Block, X, Y);
-	//	draw_block_name (Block, X, Y);
-	//}
+	}
+	else
+	{
+		draw_rolled_block_body (Block, X, Y);
+		draw_block_name (Block, X, Y);
+	}
 }
 
 
@@ -1186,8 +1182,7 @@ void opengl_view::draw_block_body (const shader_block* Block, const double X, co
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
-	//TODO:
-	const double height1 = /*m_services->is_rolled (Block) ? width :*/ (width * (1.0 / 3.7) * static_cast<double> (max_properties));
+	const double height1 = m_services->is_rolled (Block) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;
@@ -1337,9 +1332,7 @@ void opengl_view::draw_rolled_block_body (const shader_block* Block, const doubl
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
 
 	// set minimal block height
-	//TODO:
-	//const double height1 = m_services->is_rolled (Block) ? width : (width * (1.0 /3.7) * static_cast<double> (max_properties));
-		const double height1 = 1;
+	const double height1 = m_services->is_rolled (Block) ? width : (width * (1.0 /3.7) * static_cast<double> (max_properties));
 	const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 	const double alpha = 0.5;
@@ -1779,24 +1772,18 @@ void opengl_view::draw_group_body (const double X, const double Y, const int cur
 void opengl_view::set_grid_state (const bool GridState) {
 
 	m_grid = GridState;
-	//TODO:
-	//redraw();
 }
 
 
 void opengl_view::set_snap_to_grid_state (const bool SnapState) {
 
 	m_snap_to_grid = SnapState;
-	//TODO:
-	//redraw();
 }
 
 
 void opengl_view::set_overview_state (const bool OverviewState) {
 
 	m_overview = OverviewState;
-	//TODO:
-	//redraw();
 }
 
 void opengl_view::snap_position (double& X, double& Y) {

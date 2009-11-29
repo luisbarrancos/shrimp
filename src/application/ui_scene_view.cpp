@@ -288,14 +288,15 @@ void scene_view::shader_block_right_click(std::string& block_name)
 			if (m_services->selection_size() > 1) {
 				new fltk::Item ("Group selection", 0, cb_group_selection, (void*)this);
 			}
-			//TODO:
-			/*
-			if (m_services->is_rolled (block)) {
+
+			if (m_services->is_rolled (m_active_block))
+			{
 				new fltk::Item ("Unroll", 0, cb_unroll_block, (void*)this);
-			} else {
+			}
+			else
+			{
 				new fltk::Item ("Roll", 0, cb_roll_block, (void*)this);
 			}
-			*/
 		}
 
 		new fltk::Item ("Info", 0, cb_block_info, (void*)this);
