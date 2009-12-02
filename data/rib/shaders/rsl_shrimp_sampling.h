@@ -3,33 +3,25 @@
 
 #include "rsl_shrimp_helpers.h" // useful quantities
 
-/* TODO: add weighting to the sampling functions? The paper "Notes on the
- * Ward Model", by Bruce Walter, for instance, references a different
- * expression than the one proposed by Ward. Atm, this will go to SVN as it
- * is, more work is needed though - this is Work In Progress, use at your own
- * risk. */
-
+/* Note: WIP */
 ////////////////////////////////////////////////////////////////////////////////
-// Phong PDF
+// Blinn PDF
 void
 sample_phong(
-					float xi1, xi2, exponent;
-					output varying float cosphi, sinphi, costheta, sintheta;
+				float xi1, xi2, exponent;
+				output varying float cosphi, sinphi, costheta, sintheta;
 		)
 {
 	float phi = S_2PI * xi2;
-	float theta = acos( pow( xi1, 1/(exponent+1)) );
+	costheta = pow( xi1, 1/(exponent+1));
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 	cosphi = cos(phi);
 	sinphi = sin(phi);
-	costheta = cos(theta);
-	sintheta = sin(theta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Beckmann microfacet distribution. Sampling the Cook-Torrance BRDF is too
-// complex, albeit doable, according go I.T.Dimov, T.V.Gurov, and A.A.Penzov,
-// in their paper "A Monte Carlo Approach for the Cook-Torrance Model".
-// This is in the TODO list.
+// Beckmann microfacet distribution. Also see paper by I.T.Dimov, T.V.Gurov,
+// and A.A.Penzov, "A Monte Carlo Approach for the Cook-Torrance Model".
 void
 sample_beckmann(
 					float xi1, xi2, m;
@@ -41,12 +33,11 @@ sample_beckmann(
 	cosphi = cos(phi);
 	sinphi = sin(phi);
 	costheta = cos(theta);
-	sintheta = sin(theta);
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Ward isotropic PDF. If ax == ay, the result would be the same, but this
-// way we generate the array a bit faster.
+// Ward isotropic PDF
 void
 sample_ward_iso(
 					float xi1, xi2, m;
@@ -58,7 +49,7 @@ sample_ward_iso(
 	cosphi = cos(phi);
 	sinphi = sin(phi);
 	costheta = cos(theta);
-	sintheta = sin(theta);
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -87,7 +78,7 @@ sample_ward_aniso(
 
 	theta = atan( sqrt( -log(xi1)/(SQR(cosphi)/nu2+SQR(sinphi)/nv2) ) );
 	costheta = cos(theta);
-	sintheta = sin(theta);
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -114,14 +105,12 @@ sample_ashikhmin_shirley(
 	cosphi = cos(phi);
 	sinphi = sin(phi);
 
-	theta = acos( pow( 1-xi1, 1/(nu*SQR(cosphi) + nv*SQR(sinphi) + 1)));
-	costheta = cos(theta);
-	sintheta = sin(theta);
+	costheta = pow( 1-xi1, 1/(nu*SQR(cosphi) + nv*SQR(sinphi) + 1));
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Schlick PDF. Seems to have slightly more than usual noise, need to check
-// Neumann's thesis, and Schlick's paper on metallic models.
+// Schlick PDF
 void
 sample_schlick(
 				float xi1, xi2, roughness, p; // p = isotropy [0,1]
@@ -152,14 +141,12 @@ sample_schlick(
 	cosphi = cos(phi);
 	sinphi = sin(phi);
 
-	theta = acos( sqrt( xi1 / (roughness-xi1 * roughness+xi1)));
-	costheta = cos(theta);
-	sintheta = sin(theta);
+	costheta = sqrt( xi1 / (roughness-xi1 * roughness+xi1));
+	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// This a slightly changed stratified sampling code from the RPS notes on 
-// generating custom ray distributions for gather() distributions.
+// Based in RPS's notes stratified sampling example.
 void
 strat_sampling(
 				uniform float model, samples;
@@ -311,8 +298,7 @@ samplepdf(
 	// gather() or environment() (in Aqsis's case)
 
 #if RENDERER==prman // gather distribution
-	if (idotn < 0) { // trace when visible to eye only (or reverse H in 
-					 // distribution generation instead of testing idotn here?
+	if (idotn < 0) { // trace when visible to eye only
 		gather( "illuminance", P, I, S_PI_2, rsamples, "surface:Ci", hitc,
 				"ray:direction", R, "distribution", raydirs, "label", label,
 				"subset", subset, "hitsides", "front", "bias", bias,
@@ -338,8 +324,7 @@ samplepdf(
 						"samples", envsamples);
 			} else { cout = color(0); }
 	}
-#else // 3delight, Pixie, Air (not sure what's more evil, quadruplicate
-	  // and redundant code or macro limbo)
+#else // 3delight, Pixie, Air
 #define COMMON_SAMPLE_ARGUMENTS \
 		"illuminance", P, raydirs[i], 0, 1, "surface:Ci", hitc, \
 		"label", label, "bias", bias, "maxdist", maxdist
