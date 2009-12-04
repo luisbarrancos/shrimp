@@ -36,7 +36,7 @@
 // Launch FLTK and Shrimp's main window
 int main(int argc, char** argv) {
 
-	log_level_t level = ASPECT;
+	log_level_t level = ERROR;
 	std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
 /*

@@ -77,6 +77,7 @@ public:
 
 	//////////// Selection
 	block_selection_t& get_block_selection() { return m_block_selection; }
+	void group_selection();
 
 	// returns whether a block is selected
 	bool is_selected (const shader_block* Block);
@@ -87,9 +88,6 @@ public:
 	// clear current selection
 	void clear_selection();
 
-	// clear copy paste buffer
-	void clear_copy_selection();
-
 	// toggle block selection state
 	void set_block_selection (shader_block* Block, const bool Selection);
 
@@ -98,24 +96,54 @@ public:
 	bool is_rolled (const shader_block* Block) const { return m_scene->is_rolled(Block); }
 
 	/////////// Group handling
+
 	shrimp::group_set_t group_list() { return m_scene->group_list(); }
-	void group_selection() { m_scene->group_selection(); }
 	void add_to_group (const std::string& Block, const int Group) { m_scene->add_to_group (Block, Group); }
 	int group (const shader_block* Block) { return m_scene->group (Block); }
 	void ungroup (const int Group) { m_scene->ungroup (Group); }
 	const std::string get_group_name (const int Group) const { return m_scene->get_group_name (Group); }
 	void set_group_name (const int Group, const std::string& Name) { m_scene->set_group_name (Group, Name); }
 	shrimp::groups_t& groups() { return m_scene->m_groups; }
-	void set_group_selection (const int Group , const bool Selection) { m_scene->set_group_selection (Group, Selection); }
-	bool is_group_selected (const int Group) { return m_scene->is_group_selected (Group); }
-	int group_selection_size() { return m_scene->group_selection_size(); }
+
+	void set_group_selection (const int Group , const bool Selection);
+	bool is_group_selected (const int Group);
+	int group_selection_size();
+
+
+	////////// Copy/Delete functions
+
+	// clear copy/paste buffer
+	void clear_copy_selection();
+
+	void copy_blocks(const std::string& Name, const int Group);
+
+	void copy_selected_blocks(shader_block* block);
+	void copy_selected_groups();
+	void paste_buffered_blocks();
+private:
+	// paste block
+	void paste_blocks();
+
+	// copy connections of copy/paste operation
+	void copy_connections();
 
 private:
 	// currently edited scene and its file name
 	scene* m_scene;
 	std::string m_scene_file;
-	block_selection_t m_block_selection;
 
+	// selection
+	block_selection_t m_block_selection;
+	shrimp::groups_selection_t m_groups_selection;
+
+	// copy buffers
+	typedef std::pair <std::string, shader_block* > copy_block_t;
+
+	// first copy_block:block original , second copy_block:new block
+	typedef std::map<copy_block_t,copy_block_t> shader_blocks_copy_t;
+	shader_blocks_copy_t m_copy_buffer;
+	shader_blocks_copy_t m_copy_selection;
+	shrimp::groups_t m_groups_buffer;
 };
 
 

@@ -416,6 +416,7 @@ int scene_view::handle (int Event)
 		// mouse up
 		case fltk::RELEASE:
 		{
+			//TODO:
 //			m_active_group = select_group();
 			if (fltk::event_button() == fltk::LeftButton) {
 				m_opengl_view->mouse_left_button_release();

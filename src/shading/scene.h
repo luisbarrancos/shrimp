@@ -34,8 +34,8 @@
 
 
 // the scene object (contains shaders)
-class scene {
-
+class scene
+{
 public:
 
 	//////////// DAG and block data structures
@@ -53,20 +53,12 @@ public:
 	//////////// group data structures
 
 	shrimp::groups_t m_groups;
-	shrimp::groups_selection_t m_groups_selection;
 	shrimp::group_names_t m_group_names;
 
 
 	//////////// Copy,paste data structures
 	shrimp::dag_t m_dag_copy;
 
-	typedef std::pair <std::string, shader_block* > copy_block_t;
-
-	// first copy_block:block original , second copy_block:new block
-	typedef std::map<copy_block_t,copy_block_t> shader_blocks_copy_t;
-	shader_blocks_copy_t m_copy_buffer;
-	shader_blocks_copy_t m_copy_selection;
-	shrimp::groups_t m_groups_buffer;
 
 	//////////// Functions
 
@@ -119,14 +111,6 @@ public:
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
 	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
 
-	// copy block
-	void copy_blocks(const std::string& Name, const int Group);
-
-	// paste block
-	void paste_blocks();
-
-	// copy connections of copy/paste operation
-	void copy_connections();
 
 	//////////// Serialization
 
@@ -157,9 +141,6 @@ public:
 
 	// useful function to retrieve groups (not used for storage)
 	shrimp::group_set_t group_list();
-
-	// turn current selection into a group
-	void group_selection();
 
 	// add a block to a group
 	void add_to_group (const std::string& Block, const int Group);

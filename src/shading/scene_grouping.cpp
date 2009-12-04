@@ -34,28 +34,6 @@ shrimp::group_set_t scene::group_list() {
 	return groups;
 }
 
-void scene::group_selection()
-{
-	// find the next group number
-	int max = 0;
-	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
-
-		if(g->second > max)
-			max = g->second;
-	}
-	++max;
-
-	// store new group
-	//TODO:
-	/*for (selection_t::iterator s = m_selection.begin(); s != m_selection.end(); ++s) {
-
-		m_groups.insert(std::make_pair(*s, max));
-	}*/
-
-	//TODO:
-	//clear_selection();
-}
-
 
 void scene::add_to_group (const std::string& Block, const int Group) {
 
@@ -112,30 +90,4 @@ void scene::set_group_name(const int Group, const std::string& Name) {
 	}
 }
 
-
-void scene::set_group_selection (const int Group , const bool selection) {
-
-
-	if (selection) {
-		m_groups_selection.insert (Group);
-
-	} else {
-		m_groups_selection.erase (Group);
-	}
-}
-
-bool scene::is_group_selected (const int Group) {
-
-
-	shrimp::groups_selection_t::const_iterator i = m_groups_selection.find (Group);
-	if (i == m_groups_selection.end()) {
-		return false;
-	}
-	else return true;
-}
-
-int scene::group_selection_size() {
-
-	return m_groups_selection.size();
-}
 

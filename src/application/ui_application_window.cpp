@@ -198,42 +198,31 @@ void application_window::on_menu_file_quit (fltk::Widget*, void*) {
 }
 
 //Edit menu : Copy selection
-void application_window::on_menu_edit_copy (fltk::Widget*) {
-	//TODO:
-	/*
-	if (m_scene) {
-		if (m_scene->selection_size()>=1){
-			m_scene_view->copy_selected_blocks();
-			// refresh
-			redraw();
-		}
-	}
-	*/
+void application_window::on_menu_edit_copy (fltk::Widget*)
+{
+	m_services->copy_selected_blocks(m_opengl_view->get_active_block());
 }
 
 //Edit menu : Paste selection
-void application_window::on_menu_edit_paste (fltk::Widget*) {
+void application_window::on_menu_edit_paste (fltk::Widget*)
+{
 	//TODO:
 	/*
-	if (m_scene) {
-		if (m_scene->m_copy_selection.size()){
-			m_scene_view->paste_buffered_blocks();
-			// refresh
-			redraw();
+	if (m_scene->m_copy_selection.size()){
+		m_scene_view->paste_buffered_blocks();
+	}
+	// paste buffer if no new copy selection
+	else if (m_scene->m_copy_buffer.size()){
+		m_scene->clear_selection();
+		for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
+				m_scene->m_selection.insert(new_block->first.first);
 		}
-		// paste buffer if no new copy selection
-		else if (m_scene->m_copy_buffer.size()){
-			m_scene->clear_selection();
-			for (scene::shader_blocks_copy_t::iterator new_block = m_scene->m_copy_buffer.begin(); new_block != m_scene->m_copy_buffer.end(); ++new_block){
-					m_scene->m_selection.insert(new_block->first.first);
-			}
-			m_scene_view->copy_selected_blocks();
-			m_scene_view->paste_buffered_blocks();
-			// refresh
-			redraw();
-		}
+		m_scene_view->copy_selected_blocks(m_opengl_view->get_active_block());
+		m_scene_view->paste_buffered_blocks();
 	}
 	*/
+
+	m_scene_view->redraw();
 }
 
 //Edit menu : Cut selection
@@ -244,7 +233,7 @@ void application_window::on_menu_edit_cut (fltk::Widget*)
 		//TODO:
 		/*
 		// copy blocks
-		m_scene_view->copy_selected_blocks();
+		m_scene_view->copy_selected_blocks(m_opengl_view->get_active_block());
 		m_scene->copy_connections();
 		// delete blocks
 		if (m_scene->selection_size()>1){
