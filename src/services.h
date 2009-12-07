@@ -120,6 +120,9 @@ public:
 	void copy_selected_blocks(shader_block* block);
 	void copy_selected_groups();
 	void paste_buffered_blocks();
+
+	void paste(shader_block* active_bock);
+
 private:
 	// paste block
 	void paste_blocks();

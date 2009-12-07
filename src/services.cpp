@@ -385,6 +385,28 @@ void services::copy_selected_groups()
 	}
 }
 
+
+void services::paste(shader_block* active_block)
+{
+	if (m_copy_selection.size())
+	{
+		paste_buffered_blocks();
+	}
+	// paste buffer if no new copy selection
+	else if (m_copy_buffer.size())
+	{
+		clear_selection();
+		for (shader_blocks_copy_t::iterator new_block = m_copy_buffer.begin(); new_block != m_copy_buffer.end(); ++new_block)
+		{
+			m_block_selection.insert (new_block->first.first);
+		}
+
+		copy_selected_blocks(active_block);
+		paste_buffered_blocks();
+	}
+}
+
+
 void services::paste_buffered_blocks()
 {
 //paste blocks
