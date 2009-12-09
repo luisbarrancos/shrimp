@@ -123,6 +123,8 @@ public:
 
 	void paste(shader_block* active_bock);
 
+	void delete_selection();
+
 private:
 	// paste block
 	void paste_blocks();

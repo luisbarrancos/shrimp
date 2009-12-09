@@ -70,126 +70,66 @@ shader_block* scene::add_custom_block (const std::string& Name, const bool RootB
 }
 
 
-void scene::delete_block (const std::string& BlockName) {
+void scene::delete_block (const std::string& BlockName)
+{
+	shader_block* block = get_block (BlockName);
+	if (block == 0 || block->m_root_block)
+	{
+		// can't delete root block
+		return;
+	}
 
-	// one block and not a group
-	/*if (selection_size()==1 && m_groups_selection.size()==0) {
-		//Avoid to delete Root block
-		if (BlockName != "Root block"){
-			// disconnect all pads
-
-			shader_block* block = get_block (BlockName);
-			for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
-				input != block->m_inputs.end(); ++input) {
-
-				if (block->m_inputs.size())disconnect (io_t (BlockName, input->m_name));
-			}
-			for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
-				output != block->m_outputs.end(); ++output) {
-
-				if (block->m_outputs.size())disconnect (io_t (BlockName, output->m_name));
-			}
-
-			// safely remove it from the network
-			m_blocks.erase (BlockName);
-
-			// finally delete it
-			delete block;
-		}
-	}*/
-
-	// multi selecion
-	/*else if (selection_size() >= 1) {
-		for (scene::selection_t::const_iterator block_i = m_selection.begin(); block_i != m_selection.end(); ++block_i) {
-
-			std::string current_selection = *block_i;
-
-			shader_block* block = get_block(current_selection);
-
-			if (!block) {
-
-				log() << error << "active block '" << current_selection << "' not found." << std::endl;
-				return;
-			}
-
-			int Group = group (block);
-			if (!Group) {
-
-				const std::string  BlockNameSelect = block->name();
-				//Avoid to delete Root block
-				if (BlockNameSelect != "Root block"){
-					// disconnect all pads
-					for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
-							input != block->m_inputs.end(); ++input) {
-
-						if (block->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
-						}
-					for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
-							output != block->m_outputs.end(); ++output) {
-
-						if (block->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
-						}
-					// safely remove it from the network
-						m_blocks.erase (BlockNameSelect);
-
-					// finally delete it
-						delete block;
-
-				}
-			}
-
-		}
-
-	}*/
-	// groups selected
-	/*if (m_groups_selection.size()) {
-
-		int Group = 0;
-		for (scene::groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
+	// disconnect all pads
+	for (shader_block::properties_t::const_iterator input = block->m_inputs.begin();
+		input != block->m_inputs.end(); ++input)
+	{
+		if (block->m_inputs.size())
 		{
-
-			for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i) {
-			const shader_block* blockSel = block_i->second;
-			int groupSel = group(blockSel);
-			Group = *g;
-
-
-			if (groupSel==Group)
-				{
-				const std::string  BlockNameSelect = blockSel->name();
-				if (BlockNameSelect != "Root block"){
-					for (shader_block::properties_t::const_iterator input = blockSel->m_inputs.begin();
-							input != blockSel->m_inputs.end(); ++input) {
-
-
-						if (blockSel->m_inputs.size())disconnect (io_t (BlockNameSelect, input->m_name));
-						}
-					for (shader_block::properties_t::const_iterator output = blockSel->m_outputs.begin();
-							output != blockSel->m_outputs.end(); ++output) {
-
-						if (blockSel->m_outputs.size())disconnect (io_t (BlockNameSelect, output->m_name));
-						}
-					// safely remove it from the network
-						m_blocks.erase (BlockNameSelect);
-
-					// delete the block itself
-					delete blockSel;
-					}
-				}
-			}
-		// safely remove from group
-		if (Group!=0){
-			ungroup(Group);
-			m_group_names.erase(Group);
-			}
-
+			disconnect (shrimp::io_t (BlockName, input->m_name));
 		}
-	}*/
+	}
+	for (shader_block::properties_t::const_iterator output = block->m_outputs.begin();
+		output != block->m_outputs.end(); ++output)
+	{
+		if (block->m_outputs.size())
+		{
+			disconnect (shrimp::io_t (BlockName, output->m_name));
+		}
+	}
+
+	// safely remove it from the network
+	m_blocks.erase (BlockName);
+
+	// finally delete it
+	delete block;
 }
 
 
-shader_block* scene::get_block (const std::string& Name) {
+void scene::delete_group (const int Group)
+{
+	for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i)
+	{
+		const shader_block* blockSel = block_i->second;
+		int groupSel = group(blockSel);
 
+		if (groupSel==Group)
+		{
+			const std::string BlockNameSelect = blockSel->name();
+			delete_block (BlockNameSelect);
+		}
+	}
+
+	// safely remove from group
+	if (Group!=0)
+	{
+		ungroup(Group);
+		m_group_names.erase(Group);
+	}
+}
+
+
+shader_block* scene::get_block (const std::string& Name)
+{
 	shader_blocks_t::const_iterator block = m_blocks.find (Name);
 	if (m_blocks.end() == block)
 		return 0;

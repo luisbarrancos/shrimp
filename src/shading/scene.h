@@ -91,6 +91,7 @@ public:
 	shader_block* add_custom_block (const std::string& Name = "New block", const bool RootBlock = false);
 	// remove a block from the network and delete it
 	void delete_block (const std::string& BlockName);
+	void delete_group (const int Group);
 
 	// get a block's pointer from its name
 	shader_block* get_block (const std::string& Name);

@@ -263,40 +263,19 @@ void application_window::on_menu_edit_ungroup (fltk::Widget*)
 	if (m_select_group)
 	{
 		m_services->ungroup(m_select_group);
+
 		// refresh
-		redraw();
+		m_scene_view->redraw();
 	}
 }
 
 //Edit menu : Delete selection
-void application_window::on_menu_edit_delete (fltk::Widget*) {
+void application_window::on_menu_edit_delete (fltk::Widget*)
+{
+	m_services->delete_selection();
 
-	//TODO:
-	/*
-	if (m_scene) {
-		std::string m_select_block = m_scene_view->get_selected_blocks();
-				//Multi selection
-				if ((m_scene->selection_size() >1) || m_scene->m_groups_selection.size()){
-						m_scene->delete_block(m_select_block);
-						m_scene->clear_selection();
-
-						// refresh
-						redraw();
-						}
-				//single selection
-				else if (m_scene->selection_size()==1){
-
-						m_scene->delete_block((m_scene_view->get_active_block())->name());
-						m_scene->clear_selection();
-
-						// refresh
-						redraw();
-
-				}
-
-			}
-	*/
-
+	// refresh
+	m_scene_view->redraw();
 }
 
 //Edit menu : Edit source of selection

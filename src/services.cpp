@@ -70,11 +70,10 @@ void services::group_selection()
 	++max;
 
 	// store new group
-	//TODO:
-	/*for (selection_t::iterator s = m_selection.begin(); s != m_selection.end(); ++s) {
-
-		m_scene->m_groups.insert(std::make_pair(*s, max));
-	}*/
+	for (block_selection_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
+	{
+		m_scene->m_groups.insert(std::make_pair(*block_i, max));
+	}
 
 	clear_selection();
 }
@@ -435,6 +434,24 @@ void services::paste_buffered_blocks()
 	}
 
 	clear_copy_selection();
+}
+
+
+void services::delete_selection()
+{
+	// delete selected blocks
+	for (block_selection_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
+	{
+		m_scene->delete_block (*block_i);
+	}
+	m_block_selection.clear();
+
+	// delete selected groups
+	for (shrimp::groups_selection_t::const_iterator group_i = m_groups_selection.begin(); group_i != m_groups_selection.end(); ++group_i)
+	{
+		m_scene->delete_group (*group_i);
+	}
+	m_groups_selection.clear();
 }
 
 
