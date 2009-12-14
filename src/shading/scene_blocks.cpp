@@ -205,10 +205,13 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 	m_blocks.erase (old_name);
 	m_blocks.insert (std::make_pair(new_name, Block));
 
-	// update selection and groups
-	//TODO:
-	//m_selection.erase (old_name);
-	m_groups.erase (old_name);
+	// update group (if any)
+	shrimp::groups_t::iterator block_group = m_groups.find (old_name);
+	if (block_group != m_groups.end())
+	{
+		m_groups.insert (std::make_pair(new_name, block_group->second));
+		m_groups.erase (old_name);
+	}
 
 	// we can now safely rename the block
 	Block->set_name (new_name);

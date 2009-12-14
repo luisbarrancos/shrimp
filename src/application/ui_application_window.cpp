@@ -53,398 +53,10 @@
 #include <iostream>
 
 
-// Main window's callback, prevents closing the application when hitting the Escape key
-void application_window::on_window_callback (fltk::Widget*) {
-
-	if (fltk::event() == fltk::KEY && fltk::event_key() == fltk::EscapeKey) {
-		// Don't do anything
-	} else {
-		// Exit
-		//TODO: check whether there's something to save
-		exit(0);
-	}
-}
-
-
-// File menu : New
-void application_window::on_menu_file_new (fltk::Widget*) {
-
-	m_services->reset_scene();
-
-	// fit scene
-	const double new_size = m_scene_view->fit_scene();
-	m_zoom_slider.value (new_size);
-
-	// refresh
-	m_scene_view->redraw();
-}
-
-
-bool application_window::load_scene (const std::string& File) {
-
-	if (!m_services->load (File)) {
-
-		const std::string alert = "Couldn't open '" + File + "'.";
-		fltk::alert (alert.c_str());
-
-		return false;
-	}
-
-	const double new_size = m_scene_view->fit_scene();
-
-	m_zoom_slider.value (new_size);
-
-	// Set scene name as window's title
-	label (m_services->get_scene_name().c_str());
-
-	return true;
-}
-
-
-// File menu : Open
-void application_window::on_menu_file_open (fltk::Widget*) {
-
-	// get current directory
-	char result[2048];
-	fltk::filename_absolute (result, 2048, ".");
-
-	// choose shader file
-	const char* file = fltk::file_chooser ("Open Shader", "*.xml", result);
-	if (!file)
-		return;
-
-	load_scene (file);
-}
-
-// File menu : Save
-void application_window::on_menu_file_save (fltk::Widget*) {
-
-	if (!m_services->save()) {
-		save_scene_as();
-	}
-}
-
-// File menu : Save As...
-void application_window::on_menu_file_save_as (fltk::Widget*) {
-
-	save_scene_as();
-}
-
-// File menu : Shader Properties
-void application_window::on_menu_shader_properties (fltk::Widget*) {
-
-	std::string name (m_services->get_scene_name());
-	std::string description (m_services->get_scene_description());
-	std::string authors (m_services->get_scene_authors());
-
-	if (shader_properties::sp_dialog (name, description, authors))
-	{
-		m_services->set_scene_name (shader_properties::name->value());
-		m_services->set_scene_description (shader_properties::description->text());
-		m_services->set_scene_authors (shader_properties::authors->value());
-
-		// Set scene name as window's title
-		label (m_services->get_scene_name().c_str());
-	}
-}
-
-// File menu : Code Preview...
-void application_window::on_menu_code_preview (fltk::Widget*) {
-
-	std::string surface_code = m_services->show_code();
-
-	code_preview::dialog d;
-	d.open (surface_code);
-}
-
-// File menu : Render Options...
-void application_window::on_menu_file_options (fltk::Widget*) {
-
-	preferences::dialog d;
-	d.pref_dialog();
-
-	// update the renderer, display and scene choosers according to the preferences
-	general_options prefs;
-	prefs.load();
-	const std::string renderer_code = prefs.m_renderer_code;
-	const std::string display_name = prefs.m_renderer_display;
-	const std::string scene = prefs.m_scene;
-
-	set_renderer_chooser_value (renderer_code);
-	set_display_chooser_value (renderer_code, display_name);
-	set_scene_chooser_value (scene);
-}
-
-
-// File menu : Export Scene...
-void application_window::on_menu_file_export_scene (fltk::Widget*) {
-
-	// choose directory
-	char result[2048];
-	fltk::filename_absolute (result, 2048, ".");
-	const char* directory = fltk::dir_chooser ("Export Scene To", result);
-	if (!directory)
-		return;
-
-	// export scene
-	log() << aspect << "exporting scene to : " << directory << std::endl;
-	m_services->export_scene (directory);
-}
-
-// File menu : Quit
-void application_window::on_menu_file_quit (fltk::Widget*, void*) {
-
-	exit (0);
-}
-
-//Edit menu : Copy selection
-void application_window::on_menu_edit_copy (fltk::Widget*)
-{
-	m_services->copy_selected_blocks(m_opengl_view->get_active_block());
-}
-
-//Edit menu : Paste selection
-void application_window::on_menu_edit_paste (fltk::Widget*)
-{
-	m_services->paste(m_opengl_view->get_active_block());
-
-	// refresh view
-	m_scene_view->redraw();
-}
-
-//Edit menu : Cut selection
-void application_window::on_menu_edit_cut (fltk::Widget*)
-{
-	if (m_services->selection_size() >= 1)
-	{
-		//TODO:
-		/*
-		// copy blocks
-		m_scene_view->copy_selected_blocks(m_opengl_view->get_active_block());
-		m_scene->copy_connections();
-		// delete blocks
-		if (m_scene->selection_size()>1){
-			std::string m_select_block = m_scene_view->get_selected_blocks();
-			//Multi selection
-			m_scene->delete_block(m_select_block);
-			m_scene->m_copy_buffer.clear();
-			m_scene->clear_selection();
-			m_scene->clear_copy_selection();
-		}
-		else if (m_scene->selection_size()==1){
-			m_scene->delete_block((m_scene_view->get_active_block())->name());
-			m_scene->m_copy_buffer.clear();
-			m_scene->clear_selection();
-			m_scene->clear_copy_selection();
-		}
-		*/
-
-		// refresh
-		m_scene_view->redraw();
-	}
-}
-
-//Edit menu : Group selection
-void application_window::on_menu_edit_group (fltk::Widget*)
-{
-	if (m_services->selection_size() >= 1)
-	{
-		m_services->group_selection();
-
-		// refresh
-		m_scene_view->redraw();
-	}
-}
-
-//Edit menu : Ungroup selection
-void application_window::on_menu_edit_ungroup (fltk::Widget*)
-{
-	const int m_select_group = m_opengl_view->get_selected_group();
-	if (m_select_group)
-	{
-		m_services->ungroup(m_select_group);
-
-		// refresh
-		m_scene_view->redraw();
-	}
-}
-
-//Edit menu : Delete selection
-void application_window::on_menu_edit_delete (fltk::Widget*)
-{
-	m_services->delete_selection();
-
-	// refresh
-	m_scene_view->redraw();
-}
-
-//Edit menu : Edit source of selection
-void application_window::on_menu_edit_edit (fltk::Widget*)
-{
-	if (m_services->selection_size() == 1)
-	{
-		shader_block* block = m_opengl_view->get_active_block();
-		if (block)
-		{
-			edit_code::dialog d;
-			d.open_dialog (block);
-
-			// toggle block selection
-			m_services->clear_selection();
-			m_services->set_block_selection (block, !m_services->is_selected (block));
-		}
-	}
-}
-
-void application_window::on_menu_view_toggle_grid (fltk::Widget*)
-{
-	const bool grid_state = m_menu_show_grid->state();
-	m_opengl_view->set_grid_state (grid_state);
-
-	m_scene_view->redraw();
-}
-
-void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*)
-{
-	const bool snap_to_grid_state = m_menu_snap_to_grid->state();
-	m_opengl_view->set_snap_to_grid_state (snap_to_grid_state);
-
-	m_scene_view->redraw();
-}
-
-void application_window::on_menu_view_toggle_overview (fltk::Widget*)
-{
-	const bool overview_state = m_menu_overview->state();
-	m_opengl_view->set_overview_state (overview_state);
-
-	m_scene_view->redraw();
-}
-
-void application_window::on_menu_view_toggle_console (fltk::Widget*)
-{
-	m_console_state = m_menu_show_console->state();
-	if (m_console_state) {
-		m_opengl_view->set_console (m_console);
-	} else {
-		m_opengl_view->set_console (0);
-	}
-
-	m_scene_view->redraw();
-}
-
-// Help menu : About
-#include "ui_about.h"
-#include <fltk/Monitor.h>
-
-void application_window::on_menu_help_about (fltk::Widget*, void*) {
-
-	fltk::Window* o = about_window();
-	o->show();
-}
-
-void application_window::on_zoom (fltk::Slider* o, void*) {
-
-	m_opengl_view->set_size ((double)o->value());
-	m_scene_view->redraw();
-}
-
-void application_window::on_button_fit_scene (fltk::Widget*) {
-
-	const double new_size = m_scene_view->fit_scene();
-
-	m_zoom_slider.value (new_size);
-}
-
-
-void application_window::on_custom_block() {
-
-	// create a custom block
-	shader_block* new_block = m_services->add_custom_block();
-
-	// put it in the middle of the view
-	m_opengl_view->move_block_to_view_center (new_block);
-
-	// refresh
-	m_scene_view->redraw();
-}
-
-
-// Shader preview
-void application_window::on_preview()
-{
-	std::string tempdir = system_functions::get_tmp_directory();
-	m_services->show_preview (tempdir);
-}
-
-
-void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
-
-	const std::string renderer_name ((const char*)Data);
-
-	general_options::renderers_t::const_iterator r = m_renderers.find (renderer_name);
-	if (r == m_renderers.end()) {
-		log() << error << "unknown renderer: '" << renderer_name << "'" << std::endl;
-		return;
-	}
-
-	// load the preferences and the display name
-	general_options prefs;
-	prefs.load();
-	std::string display_name = prefs.m_renderer_display;
-
-	display_name = set_display_chooser_value (renderer_name, display_name);
-
-	// save the renderer parameters
-	prefs.set_renderer (renderer_name);
-	prefs.set_display (display_name);
-	prefs.save();
-
-	// refresh
-	redraw();
-}
-
-
-void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data) {
-
-	const std::string display_name ((const char*)Data);
-
-	// save the display value
-	general_options prefs;
-	prefs.load();
-	prefs.set_display (display_name);
-	prefs.save();
-}
-
-
-void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
-
-	const std::string scene_name ((const char*)Data);
-
-	bool scene_found = false;
-	for (general_options::scenes_t::const_iterator s = m_scenes.begin(); s != m_scenes.end(); ++s) {
-		if (s->name == scene_name) {
-			scene_found = true;
-			break;
-		}
-	}
-	if (!scene_found) {
-		log() << error << "unknown scene: '" << scene_name << "'" << std::endl;
-		return;
-	}
-
-	// save the scene value
-	general_options prefs;
-	prefs.load();
-	prefs.set_scene (scene_name);
-	prefs.save();
-}
-
-
 application_window::application_window(services* services_instance, opengl_view* opengl_view_instance) :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
 	m_services (services_instance),
 	m_opengl_view (opengl_view_instance),
-	m_console (0),
 	m_zoom_slider (80, 575, 400, 19, "Zoom"),
 	m_block_menu (20, 22, 90, 24, "Add block")
 {
@@ -454,10 +66,6 @@ application_window::application_window(services* services_instance, opengl_view*
 
 	// set main window's callback
 	callback(cb_window);
-
-	// initialize console
-	m_console = new console();
-	m_console->print ("Console:");
 
 	// create UI
 	log() << aspect << "creating UI" << std::endl;
@@ -572,10 +180,6 @@ application_window::application_window(services* services_instance, opengl_view*
 				m_menu_overview->callback ((fltk::Callback*)cb_menu_view_toggle_overview, this);
 */
 
-				m_menu_show_console = new fltk::ToggleItem ("Show console");
-				m_menu_show_console->shortcut (fltk::CTRL + 'c');
-				m_menu_show_console->callback ((fltk::Callback*)cb_menu_view_toggle_console, this);
-
 			menu_view->end();
 
 		left_menu_bar->end();
@@ -675,11 +279,371 @@ application_window::application_window(services* services_instance, opengl_view*
 	end();
 }
 
-application_window::~application_window() {
-
+application_window::~application_window()
+{
 	log() << aspect << "ui_application_window: destructor" << std::endl;
 	delete m_services;
 }
+
+
+// Main window's callback, prevents closing the application when hitting the Escape key
+void application_window::on_window_callback (fltk::Widget*)
+{
+	if (fltk::event() == fltk::KEY && fltk::event_key() == fltk::EscapeKey)
+	{
+		// Don't do anything
+	}
+	else
+	{
+		// Exit
+		//TODO: check whether there's something to save
+		exit(0);
+	}
+}
+
+
+// File menu : New
+void application_window::on_menu_file_new (fltk::Widget*)
+{
+	m_services->reset_scene();
+
+	// fit scene
+	const double new_size = m_scene_view->fit_scene();
+	m_zoom_slider.value (new_size);
+
+	// refresh
+	m_scene_view->redraw();
+}
+
+
+// File menu : Open
+void application_window::on_menu_file_open (fltk::Widget*) {
+
+	// get current directory
+	char result[2048];
+	fltk::filename_absolute (result, 2048, ".");
+
+	// choose shader file
+	const char* file = fltk::file_chooser ("Open Shader", "*.xml", result);
+	if (!file)
+		return;
+
+	load_scene (file);
+}
+
+
+bool application_window::load_scene (const std::string& File)
+{
+	if (!m_services->load (File))
+	{
+		const std::string alert = "Couldn't open '" + File + "'.";
+		fltk::alert (alert.c_str());
+
+		return false;
+	}
+
+	const double new_size = m_scene_view->fit_scene();
+
+	m_zoom_slider.value (new_size);
+
+	// Set scene name as window's title
+	label (m_services->get_scene_name().c_str());
+
+	return true;
+}
+
+
+// File menu : Save
+void application_window::on_menu_file_save (fltk::Widget*)
+{
+	if (!m_services->save()) {
+		save_scene_as();
+	}
+}
+
+// File menu : Save As...
+void application_window::on_menu_file_save_as (fltk::Widget*)
+{
+	save_scene_as();
+}
+
+// File menu : Shader Properties
+void application_window::on_menu_shader_properties (fltk::Widget*) {
+
+	std::string name (m_services->get_scene_name());
+	std::string description (m_services->get_scene_description());
+	std::string authors (m_services->get_scene_authors());
+
+	if (shader_properties::sp_dialog (name, description, authors))
+	{
+		m_services->set_scene_name (shader_properties::name->value());
+		m_services->set_scene_description (shader_properties::description->text());
+		m_services->set_scene_authors (shader_properties::authors->value());
+
+		// Set scene name as window's title
+		label (m_services->get_scene_name().c_str());
+	}
+}
+
+// File menu : Code Preview...
+void application_window::on_menu_code_preview (fltk::Widget*) {
+
+	std::string surface_code = m_services->show_code();
+
+	code_preview::dialog d;
+	d.open (surface_code);
+}
+
+// File menu : Render Options...
+void application_window::on_menu_file_options (fltk::Widget*) {
+
+	preferences::dialog d;
+	d.pref_dialog();
+
+	// update the renderer, display and scene choosers according to the preferences
+	general_options prefs;
+	prefs.load();
+	const std::string renderer_code = prefs.m_renderer_code;
+	const std::string display_name = prefs.m_renderer_display;
+	const std::string scene = prefs.m_scene;
+
+	set_renderer_chooser_value (renderer_code);
+	set_display_chooser_value (renderer_code, display_name);
+	set_scene_chooser_value (scene);
+}
+
+
+// File menu : Export Scene...
+void application_window::on_menu_file_export_scene (fltk::Widget*) {
+
+	// choose directory
+	char result[2048];
+	fltk::filename_absolute (result, 2048, ".");
+	const char* directory = fltk::dir_chooser ("Export Scene To", result);
+	if (!directory)
+		return;
+
+	// export scene
+	log() << aspect << "exporting scene to : " << directory << std::endl;
+	m_services->export_scene (directory);
+}
+
+// File menu : Quit
+void application_window::on_menu_file_quit (fltk::Widget*, void*)
+{
+	exit (0);
+}
+
+//Edit menu : Copy selection
+void application_window::on_menu_edit_copy (fltk::Widget*)
+{
+	m_services->copy_selected_blocks(m_opengl_view->get_active_block());
+}
+
+//Edit menu : Paste selection
+void application_window::on_menu_edit_paste (fltk::Widget*)
+{
+	m_services->paste(m_opengl_view->get_active_block());
+
+	// refresh view
+	m_scene_view->redraw();
+}
+
+//Edit menu : Cut selection
+void application_window::on_menu_edit_cut (fltk::Widget*)
+{
+	if (m_services->selection_size() >= 1)
+	{
+		m_services->cut_selection(m_opengl_view->get_active_block(), m_opengl_view->get_selected_blocks());
+
+		// refresh
+		m_scene_view->redraw();
+	}
+}
+
+//Edit menu : Group selection
+void application_window::on_menu_edit_group (fltk::Widget*)
+{
+	if (m_services->selection_size() >= 1)
+	{
+		m_services->group_selection();
+
+		// refresh
+		m_scene_view->redraw();
+	}
+}
+
+//Edit menu : Ungroup selection
+void application_window::on_menu_edit_ungroup (fltk::Widget*)
+{
+	const int m_select_group = m_opengl_view->get_selected_group();
+	if (m_select_group)
+	{
+		m_services->ungroup(m_select_group);
+
+		// refresh
+		m_scene_view->redraw();
+	}
+}
+
+//Edit menu : Delete selection
+void application_window::on_menu_edit_delete (fltk::Widget*)
+{
+	m_services->delete_selection();
+
+	// refresh
+	m_scene_view->redraw();
+}
+
+//Edit menu : Edit source of selection
+void application_window::on_menu_edit_edit (fltk::Widget*)
+{
+	if (m_services->selection_size() == 1)
+	{
+		shader_block* block = m_opengl_view->get_active_block();
+		if (block)
+		{
+			edit_code::dialog d;
+			d.open_dialog (block);
+
+			// toggle block selection
+			m_services->clear_selection();
+			m_services->set_block_selection (block, !m_services->is_selected (block));
+		}
+	}
+}
+
+void application_window::on_menu_view_toggle_grid (fltk::Widget*)
+{
+	const bool grid_state = m_menu_show_grid->state();
+	m_opengl_view->set_grid_state (grid_state);
+
+	m_scene_view->redraw();
+}
+
+void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*)
+{
+	const bool snap_to_grid_state = m_menu_snap_to_grid->state();
+	m_opengl_view->set_snap_to_grid_state (snap_to_grid_state);
+
+	m_scene_view->redraw();
+}
+
+void application_window::on_menu_view_toggle_overview (fltk::Widget*)
+{
+	const bool overview_state = m_menu_overview->state();
+	m_opengl_view->set_overview_state (overview_state);
+
+	m_scene_view->redraw();
+}
+
+// Help menu : About
+#include "ui_about.h"
+#include <fltk/Monitor.h>
+
+void application_window::on_menu_help_about (fltk::Widget*, void*) {
+
+	fltk::Window* o = about_window();
+	o->show();
+}
+
+void application_window::on_zoom (fltk::Slider* o, void*) {
+
+	m_opengl_view->set_size ((double)o->value());
+	m_scene_view->redraw();
+}
+
+void application_window::on_button_fit_scene (fltk::Widget*) {
+
+	const double new_size = m_scene_view->fit_scene();
+
+	m_zoom_slider.value (new_size);
+}
+
+
+void application_window::on_custom_block() {
+
+	// create a custom block
+	shader_block* new_block = m_services->add_custom_block();
+
+	// put it in the middle of the view
+	m_opengl_view->move_block_to_view_center (new_block);
+
+	// refresh
+	m_scene_view->redraw();
+}
+
+
+// Shader preview
+void application_window::on_preview()
+{
+	std::string tempdir = system_functions::get_tmp_directory();
+	m_services->show_preview (tempdir);
+}
+
+
+void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
+
+	const std::string renderer_name ((const char*)Data);
+
+	general_options::renderers_t::const_iterator r = m_renderers.find (renderer_name);
+	if (r == m_renderers.end()) {
+		log() << error << "unknown renderer: '" << renderer_name << "'" << std::endl;
+		return;
+	}
+
+	// load the preferences and the display name
+	general_options prefs;
+	prefs.load();
+	std::string display_name = prefs.m_renderer_display;
+
+	display_name = set_display_chooser_value (renderer_name, display_name);
+
+	// save the renderer parameters
+	prefs.set_renderer (renderer_name);
+	prefs.set_display (display_name);
+	prefs.save();
+
+	// refresh
+	redraw();
+}
+
+
+void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data) {
+
+	const std::string display_name ((const char*)Data);
+
+	// save the display value
+	general_options prefs;
+	prefs.load();
+	prefs.set_display (display_name);
+	prefs.save();
+}
+
+
+void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
+
+	const std::string scene_name ((const char*)Data);
+
+	bool scene_found = false;
+	for (general_options::scenes_t::const_iterator s = m_scenes.begin(); s != m_scenes.end(); ++s) {
+		if (s->name == scene_name) {
+			scene_found = true;
+			break;
+		}
+	}
+	if (!scene_found) {
+		log() << error << "unknown scene: '" << scene_name << "'" << std::endl;
+		return;
+	}
+
+	// save the scene value
+	general_options prefs;
+	prefs.load();
+	prefs.set_scene (scene_name);
+	prefs.save();
+}
+
 
 void application_window::build_menu (const block_tree_node_t& tree_node) {
 
@@ -711,8 +675,6 @@ void application_window::block_menu_action (fltk::Widget* w, void*) {
 		shader_block* new_block = m_services->add_predefined_block (item->label());
 		// put it in the view center
 		m_opengl_view->move_block_to_view_center (new_block);
-
-		m_console->print ("Added block " + std::string(item->label()));
 
 		// refresh
 		m_scene_view->redraw();

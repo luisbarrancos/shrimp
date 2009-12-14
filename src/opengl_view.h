@@ -24,8 +24,6 @@
 
 #include "services.h"
 
-#include "shading/console.h"
-
 #include <fltk/GlWindow.h>
 #include <fltk/gl.h>
 
@@ -81,9 +79,6 @@ public:
 	// snap function (snaps given coordinates)
 	void snap_position (double& X, double& Y);
 
-	// console
-	void set_console (console* console_instance);
-
 	// draw scene
 	void draw_scene(bool valid, int window_width, int window_height);
 
@@ -113,9 +108,6 @@ private:
 	// store the scene being drawn
 	services* m_services;
 
-	// store console instance
-	console* m_console;
-
 	// store active block
 	std::string m_active_block;
 	shrimp::io_t m_active_property;
@@ -126,9 +118,6 @@ private:
 
 	// store current connection start
 	shrimp::io_t m_connection_start;
-
-	// draw console
-	void draw_console(int window_width, int window_height);
 
 	// draw grid
 	void draw_grid();

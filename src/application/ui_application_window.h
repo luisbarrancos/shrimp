@@ -34,7 +34,6 @@
 #include <fltk/ToggleItem.h>
 #include <fltk/Window.h>
 
-#include "../shading/console.h"
 #include "../shading/preferences.h"
 #include "../shading/scene.h"
 #include "ui_scene_view.h"
@@ -58,10 +57,6 @@ private:
 	opengl_view* m_opengl_view;
 	scene_view* m_scene_view;
 
-	// console
-	bool m_console_state;
-	console* m_console;
-
 	// scene zoom widget
 	fltk::Slider m_zoom_slider;
 	fltk::PopupMenu m_block_menu;
@@ -82,7 +77,6 @@ private:
 	fltk::ToggleItem* m_menu_show_grid;
 	fltk::ToggleItem* m_menu_snap_to_grid;
 	fltk::ToggleItem* m_menu_overview;
-	fltk::ToggleItem* m_menu_show_console;
 
 	void on_window_callback (fltk::Widget*);
 
@@ -109,7 +103,6 @@ private:
 	void on_menu_view_toggle_grid (fltk::Widget*);
 	void on_menu_view_toggle_grid_snap (fltk::Widget*);
 	void on_menu_view_toggle_overview (fltk::Widget*);
-	void on_menu_view_toggle_console (fltk::Widget*);
 
 	void on_zoom (fltk::Slider*, void* Data);
 	void on_button_fit_scene (fltk::Widget*);
@@ -162,7 +155,6 @@ private:
 	static void cb_menu_view_toggle_grid (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid (W); }
 	static void cb_menu_view_toggle_grid_snap (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid_snap (W); }
 	static void cb_menu_view_toggle_overview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_overview (W); }
-	static void cb_menu_view_toggle_console (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_console (W); }
 
 	static void cb_button_fit_scene (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_button_fit_scene(W); }
 	static void cb_zoom_slider (fltk::Slider* W, void* Data) { ((application_window*)Data)->on_zoom(W, Data); }

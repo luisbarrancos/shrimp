@@ -78,7 +78,6 @@ bool point_inside(double x,double y,double XX, double YY, double WW,double HH)
 
 opengl_view::opengl_view (services* services_instance) :
 	m_services (services_instance),
-	m_console (0),
 	m_min_block_height (0.5),
 	m_size (3),
 	m_last_mouse_x (0),
@@ -547,9 +546,6 @@ void opengl_view::draw_scene (bool valid, int window_width, int window_height) {
 		}
 
 	glPopMatrix();
-
-	// console (if any)
-	draw_console(window_width, window_height);
 }
 
 
@@ -1700,25 +1696,6 @@ void opengl_view::snap_position (double& X, double& Y) {
 
 		if (y_ceil - Y < snap_size)
 			Y = y_ceil;
-	}
-}
-
-
-void opengl_view::set_console (console* console_instance) {
-
-	m_console = console_instance;
-}
-
-
-void opengl_view::draw_console (int window_width, int window_height) {
-
-	if (m_console) {
-
-		// set constant size
-		glsetfont (fltk::HELVETICA, 10);
-
-		// draw lines at the bottom of the screen
-		fltk::drawtext (m_console->get_lines(3).c_str(), fltk::Rectangle (window_width, window_height), fltk::ALIGN_LEFT | fltk::ALIGN_BOTTOM | fltk::ALIGN_WRAP);
 	}
 }
 

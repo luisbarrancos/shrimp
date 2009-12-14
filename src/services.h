@@ -121,7 +121,9 @@ public:
 	void copy_selected_groups();
 	void paste_buffered_blocks();
 
-	void paste(shader_block* active_bock);
+	void paste(shader_block* active_block);
+
+	void cut_selection(shader_block* active_block, std::string selected_blocks);
 
 	void delete_selection();
 

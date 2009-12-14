@@ -162,13 +162,6 @@ public:
 	// save current scene's RIB and shader files to a directory
 	void export_scene (const std::string& Directory);
 
-	// toggle group selection state
-	void set_group_selection (const int Group , const bool Selection);
-
-	// returns whether a group is selected
-	bool is_group_selected (const int Group);
-
-	int group_selection_size();
 
 	//////////// Misc
 

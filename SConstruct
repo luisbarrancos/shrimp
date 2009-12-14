@@ -73,7 +73,6 @@ shrimp_files = Split("""
 	src/miscellaneous/misc_xml.cpp
 	src/miscellaneous/logging.cpp
 
-	src/shading/console.cpp
 	src/shading/preferences.cpp
 	src/shading/shader_block.cpp
 	src/shading/scene.cpp

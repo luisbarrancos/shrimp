@@ -437,6 +437,31 @@ void services::paste_buffered_blocks()
 }
 
 
+void services::cut_selection(shader_block* active_block, std::string selected_blocks)
+{
+	// copy blocks
+	copy_selected_blocks(active_block);
+	copy_connections();
+
+	// delete blocks
+	if (selection_size() > 1)
+	{
+		//Multi selection
+		m_scene->delete_block(selected_blocks);
+		m_copy_buffer.clear();
+		clear_selection();
+		clear_copy_selection();
+	}
+	else if (selection_size() == 1)
+	{
+		m_scene->delete_block(active_block->name());
+		m_copy_buffer.clear();
+		clear_selection();
+		clear_copy_selection();
+	}
+}
+
+
 void services::delete_selection()
 {
 	// delete selected blocks
