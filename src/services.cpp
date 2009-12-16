@@ -52,11 +52,6 @@ block_tree_node_t services::get_block_hierarchy() {
 }
 
 
-shader_block_map_t services::get_scene_blocks() {
-	return m_scene->m_blocks;
-}
-
-
 // turn current selection into a group
 void services::group_selection()
 {
@@ -124,7 +119,7 @@ void services::set_group_selection (const int Group , const bool selection) {
 bool services::is_group_selected (const int Group) {
 
 
-	shrimp::groups_selection_t::const_iterator i = m_groups_selection.find (Group);
+	groups_selection_t::const_iterator i = m_groups_selection.find (Group);
 	if (i == m_groups_selection.end()) {
 		return false;
 	}
@@ -138,11 +133,12 @@ int services::group_selection_size() {
 }
 
 
-void services::set_block_selection (shader_block* Block, const bool Selection)
+void services::set_block_selection (const shader_block* Block, const bool Selection)
 {
 	log() << aspect << "services: set_block_selection of " << Block->name() << " with " << Selection << std::endl;
 
-	if (!Block) {
+	if (!Block)
+	{
 		log() << error << "no block given for selection." << std::endl;
 		return;
 	}
@@ -165,7 +161,7 @@ void services::set_block_rolled_state (shader_block* Block, const bool Rolled)
 
 
 // copy block
-void services::copy_blocks(const std::string& Name,const int Group)
+void services::copy_blocks(const std::string& Name, const int Group)
 {
 
 	shader_block* BlockToCopy = get_block(Name);
@@ -369,18 +365,13 @@ void services::copy_selected_blocks(shader_block* block)
 //copy groups
 void services::copy_selected_groups()
 {
-	for (shrimp::groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
+	for (groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
 	{
-		for (scene::shader_blocks_t::iterator block = m_scene->m_blocks.begin(); block != m_scene->m_blocks.end(); ++block)
+		shrimp::shader_blocks_t blocks = m_scene->get_group_blocks (*g);
+		for (shrimp::shader_blocks_t::iterator block = blocks.begin(); block != blocks.end(); ++block)
 		{
-			const int group_org = *g;
-			if (group_org == this->group(block->second) )
-			{
-
-				copy_blocks(block->first,group_org);
-			}
+			copy_blocks((*block)->name(), *g);
 		}
-
 	}
 }
 
@@ -472,7 +463,7 @@ void services::delete_selection()
 	m_block_selection.clear();
 
 	// delete selected groups
-	for (shrimp::groups_selection_t::const_iterator group_i = m_groups_selection.begin(); group_i != m_groups_selection.end(); ++group_i)
+	for (groups_selection_t::const_iterator group_i = m_groups_selection.begin(); group_i != m_groups_selection.end(); ++group_i)
 	{
 		m_scene->delete_group (*group_i);
 	}

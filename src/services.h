@@ -25,10 +25,14 @@
 #include "shading/shrimp_public_structures.h"
 
 // Service class used to access all Shrimp functions (used to separate the GUI from the core)
-class services {
+class services
+{
 
 public: // structures
 	typedef std::set<std::string> block_selection_t;
+
+private:
+	typedef std::set<int> groups_selection_t;
 
 public:
 	// constructor/destructor
@@ -53,7 +57,7 @@ public:
 	// return block hierarchy
 	block_tree_node_t get_block_hierarchy();
 
-	shader_block_map_t get_scene_blocks();
+	shrimp::shader_blocks_t get_scene_blocks() { return m_scene->get_scene_blocks(); }
 
 	std::string get_unique_block_name (const std::string& Name) const { return m_scene->get_unique_block_name (Name); }
 
@@ -89,7 +93,7 @@ public:
 	void clear_selection();
 
 	// toggle block selection state
-	void set_block_selection (shader_block* Block, const bool Selection);
+	void set_block_selection (const shader_block* Block, const bool Selection);
 
 	// block roll
 	void set_block_rolled_state (shader_block* Block, const bool Rolled);
@@ -141,7 +145,7 @@ private:
 
 	// selection
 	block_selection_t m_block_selection;
-	shrimp::groups_selection_t m_groups_selection;
+	groups_selection_t m_groups_selection;
 
 	// copy buffers
 	typedef std::pair <std::string, shader_block* > copy_block_t;

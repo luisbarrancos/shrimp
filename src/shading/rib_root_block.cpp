@@ -140,7 +140,7 @@ bool rib_root_block::has_AOV_input (std::string& ParentName) {
 std::string rib_root_block::build_shader_file (const shader_t ShaderType, const std::string& ShaderName) {
 
 	// get the list of blocks composing the shader
-	scene::shader_blocks_t shader_blocks;
+	shrimp::shader_blocks_t shader_blocks;
 	switch (ShaderType) {
 
 		case SURFACE:
@@ -267,9 +267,9 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	std::string parameters;
 	std::string locals;
 	std::string shader_outputs;
-	for (scene::shader_blocks_t::const_iterator block = shader_blocks.begin(); block != shader_blocks.end(); ++block) {
+	for (shrimp::shader_blocks_t::const_iterator block = shader_blocks.begin(); block != shader_blocks.end(); ++block) {
 
-		shader_block* sb = block->second;
+		shader_block* sb = *block;
 
 		sb->reset_code_written();
 		sb->get_includes (includes);
@@ -646,7 +646,7 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName) {
 
 	// get the list of blocks composing the shader
-	scene::shader_blocks_t shader_blocks;
+	shrimp::shader_blocks_t shader_blocks;
 	switch (ShaderType) {
 
 		case SURFACE:
@@ -745,9 +745,9 @@ std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, cons
 	// get parameters and outputs
 	std::string parameters;
 	std::string shader_outputs;
-	for (scene::shader_blocks_t::const_iterator block = shader_blocks.begin(); block != shader_blocks.end(); ++block) {
+	for (shrimp::shader_blocks_t::const_iterator block = shader_blocks.begin(); block != shader_blocks.end(); ++block) {
 
-		shader_block* sb = block->second;
+		shader_block* sb = *block;
 
 		sb->reset_code_written();
 

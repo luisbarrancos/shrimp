@@ -42,18 +42,10 @@ public:
 
 	shrimp::dag_t m_dag;
 
-	// the list of blocks
-	typedef std::map<std::string, shader_block*> shader_blocks_t;
-	shader_blocks_t m_blocks;
-
-
-	//////////// Menu helpers
-
 
 	//////////// group data structures
 
 	shrimp::groups_t m_groups;
-	shrimp::group_names_t m_group_names;
 
 
 	//////////// Copy,paste data structures
@@ -102,6 +94,9 @@ public:
 	// set a block's name, making sure it's unique
 	void set_block_name (shader_block* Block, const std::string& NewName);
 
+	// get all scene blocks
+	shrimp::shader_blocks_t get_scene_blocks();
+
 	// connect two blocks
 	void connect (const shrimp::io_t& Input, const shrimp::io_t& Output);
 	// disconnect an input or output from the network
@@ -110,7 +105,7 @@ public:
 	bool is_connected (const shrimp::io_t& Input);
 
 	// list of upward blocks in the DAG (parents + parents' parents + etc)
-	void upward_blocks (shader_block* StartingBlock, shader_blocks_t& List);
+	void upward_blocks (shader_block* StartingBlock, shrimp::shader_blocks_t& List);
 
 
 	//////////// Serialization
@@ -152,6 +147,8 @@ public:
 	// dismantles a group
 	void ungroup (const int Group);
 
+	shrimp::shader_blocks_t get_group_blocks (const int Group);
+
 	// group name functions
 	const std::string get_group_name (const int Group) const;
 	void set_group_name (const int Group, const std::string& Name);
@@ -184,6 +181,13 @@ private:
 
 	rib_root_block* m_rib_root_block;
 
+	// the list of blocks
+	typedef std::map<std::string, shader_block*> shader_blocks_t;
+	shader_blocks_t m_blocks;
+
+	// group data structures
+	typedef std::map<int, std::string> group_names_t;
+	group_names_t m_group_names;
 
 	//////////// List of available default blocks
 	// the ones that come with the application and are loaded at launch

@@ -218,6 +218,20 @@ void scene::set_block_name (shader_block* Block, const std::string& NewName) {
 }
 
 
+shrimp::shader_blocks_t scene::get_scene_blocks()
+{
+	shrimp::shader_blocks_t blocks;
+
+	for (scene::shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i)
+	{
+		blocks.insert (block_i->second);
+	}
+
+	return blocks;
+}
+
+
+
 void scene::connect (const shrimp::io_t& Input, const shrimp::io_t& Output) {
 
 	shader_block* input_block = get_block (Input.first);
@@ -326,18 +340,18 @@ bool scene::is_connected (const shrimp::io_t& Input) {
 }
 
 
-void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
-
-	if (!StartingBlock) {
-
+void scene::upward_blocks (shader_block* StartingBlock, shrimp::shader_blocks_t& List)
+{
+	if (!StartingBlock)
+	{
 		return;
 	}
 
-	List.insert (std::make_pair (StartingBlock->name(), StartingBlock));
+	List.insert (StartingBlock);
 
 	for (shader_block::properties_t::const_iterator input = StartingBlock->m_inputs.begin();
-		input != StartingBlock->m_inputs.end(); ++input) {
-
+		input != StartingBlock->m_inputs.end(); ++input)
+	{
 		// get input's parent
 		std::string output_name;
 		shader_block* new_block = get_parent (StartingBlock->name(), input->m_name, output_name);
@@ -346,9 +360,9 @@ void scene::upward_blocks (shader_block* StartingBlock, shader_blocks_t& List) {
 		if (new_block && !new_block->is_shader_output (output_name)) {
 
 			// check whether it's already in the list
-			if (List.find (new_block->name()) == List.end()) {
+			if (List.find (new_block) == List.end()) {
 
-				List.insert (std::make_pair (new_block->name(), new_block));
+				List.insert (new_block);
 				upward_blocks (new_block, List);
 			}
 		}

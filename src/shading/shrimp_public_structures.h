@@ -25,9 +25,13 @@
 // Structures that need to be accessed from outside the core
 
 #include "shader_block.h"
-typedef std::map<std::string, shader_block*> shader_block_map_t;
 
-namespace shrimp {
+#include <string>
+#include <vector>
+
+
+namespace shrimp
+{
 	// definition of a pad, as a pair of strings:
 	// the first is the block name, the second is the pad name
 	typedef std::pair <std::string, std::string> io_t;
@@ -35,37 +39,33 @@ namespace shrimp {
 	// in a map as <input, output>, an input receives only one output
 	typedef std::map <io_t, io_t> dag_t;
 
+	typedef std::set<shader_block*> shader_blocks_t;
 	// Group structures
 	typedef std::set<int> group_set_t;
 	typedef std::map<std::string, int> groups_t;
-	typedef std::set<int> groups_selection_t;
-	typedef std::map<int, std::string> group_names_t;
-
 }
 
-#include <string>
-#include <vector>
 
 // Shrimp block list
-struct default_block_t {
-
+struct default_block_t
+{
 	std::string name;
 	std::string path;
 };
 typedef std::vector<default_block_t> default_block_list_t;
 
+
 // Shrimp block hierarchy
 struct block_tree_node_t;
 typedef std::vector<block_tree_node_t> block_tree_node_list_t;
 
-struct block_tree_node_t {
+struct block_tree_node_t
+{
 	std::string node_name;
 	std::string node_path;
 	block_tree_node_list_t child_nodes;
 
 	default_block_list_t blocks;
-
-
 };
 
 

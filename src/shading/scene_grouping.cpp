@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -69,9 +69,25 @@ void scene::ungroup (const int Group) {
 }
 
 
+shrimp::shader_blocks_t scene::get_group_blocks (const int Group)
+{
+	shrimp::shader_blocks_t blocks;
+
+	for (shrimp::groups_t::const_iterator block_i = m_groups.begin(); block_i != m_groups.end(); ++block_i)
+	{
+		if (block_i->second == Group)
+		{
+			blocks.insert (get_block (block_i->first));
+		}
+	}
+
+	return blocks;
+}
+
+
 const std::string scene::get_group_name (const int Group) const {
 
-	shrimp::group_names_t::const_iterator name = m_group_names.find(Group);
+	group_names_t::const_iterator name = m_group_names.find(Group);
 	if (name == m_group_names.end())
 		return "Group " + string_cast(Group);
 
@@ -81,7 +97,7 @@ const std::string scene::get_group_name (const int Group) const {
 
 void scene::set_group_name(const int Group, const std::string& Name) {
 
-	shrimp::group_names_t::iterator g = m_group_names.find(Group);
+	group_names_t::iterator g = m_group_names.find(Group);
 	if (g == m_group_names.end()) {
 		m_group_names.insert (std::make_pair(Group, Name));
 	} else {
