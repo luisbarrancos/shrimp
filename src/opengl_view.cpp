@@ -185,27 +185,21 @@ void opengl_view::move_active_block (const double XOffset, const double YOffset)
 
 
 	//If multi selecion
-	if (total>1){
-
-		services::block_selection_t& selection = m_services->get_block_selection();
-		for (services::block_selection_t::const_iterator block_i = selection.begin(); block_i != selection.end(); ++block_i) {
-
-			std::string current_selection = *block_i;
-
-			shader_block* block = m_services->get_block(current_selection);
-			int group = m_services->group (block);
-
-			if (!block && !group) {
-
-					log() << error << "active block or group'" << current_selection << "' not found." << std::endl;
-					return;
-				}
-
-			if (!group){
-				block->m_position_x += XOffset;
-				block->m_position_y += YOffset;
-				}
-			else move_active_group(XOffset,YOffset);
+	if (total > 1)
+	{
+		shrimp::shader_blocks_t& selection = m_services->get_block_selection();
+		for (shrimp::shader_blocks_t::const_iterator block_i = selection.begin(); block_i != selection.end(); ++block_i)
+		{
+			int group = m_services->get_block_group (*block_i);
+			if (!group)
+			{
+				(*block_i)->m_position_x += XOffset;
+				(*block_i)->m_position_y += YOffset;
+			}
+			else
+			{
+				move_active_group(XOffset,YOffset);
+			}
 		}
 	}
 
@@ -273,23 +267,21 @@ void opengl_view::move_active_group (const double XOffset, const double YOffset)
 	}
 
 	// move all the group's shaders
-	for (shrimp::groups_t::const_iterator g = m_services->groups().begin(); g != m_services->groups().end(); ++g) {
-
-		shader_block* block = m_services->get_block (g->first);
-		//Only one group
-		if (g->second == m_active_group) {
-
-			block->m_position_x += XOffset;
-			block->m_position_y += YOffset;
-		}
+	shrimp::shader_blocks_t group_blocks = m_services->get_group_blocks (m_active_group);
+	for (shrimp::shader_blocks_t::iterator block_i = group_blocks.begin(); block_i != group_blocks.end(); ++block_i)
+	{
+		(*block_i)->m_position_x += XOffset;
+		(*block_i)->m_position_y += YOffset;
+	}
+	//TODO:
+	/*
 		//All selected group
 		else if (m_services->is_group_selected(g->second)){
 
-			block->m_position_x += XOffset;
-			block->m_position_y += YOffset;
+			(*block_i)->m_position_x += XOffset;
+			(*block_i)->m_position_y += YOffset;
 		}
-
-	}
+	*/
 }
 
 void opengl_view::box_selection(int window_width, int window_height)
@@ -338,8 +330,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 	shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
 	for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i)
 	{
-		const shader_block* block = *block_i;
-		shader_block* blockSel = *block_i;
+		shader_block* block = *block_i;
 
 		//Project rectangle selection in "Block" space
 		GLdouble Fx,Fy,Fz;
@@ -360,7 +351,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 		gluUnProject(from_x,from_y,0, mvmatrix, projmatrix,viewport,&Fx,&Fy,&Fz );
 		gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
 
-		const int group = m_services->group (block);
+		const int group = m_services->get_block_group (block);
 		if (!group) {
 			//Height of the block
 			const double width = block->m_width;
@@ -378,7 +369,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 					{
 				//Make Block selected
 				m_services->set_block_selection (block, true);
-				m_current_selection_block = blockSel;
+				m_current_selection_block = block;
 					}
 			else m_services->set_block_selection (block, false);
 		    }
@@ -388,7 +379,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 					{
 					//Make Block selected
 					m_services->set_block_selection (block, true);
-					m_current_selection_block = blockSel;
+					m_current_selection_block = block;
 					}
 				else m_services->set_block_selection (block, false);
 			}
@@ -398,7 +389,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 					{
 					//Make Block selected
 					m_services->set_block_selection (block, true);
-					m_current_selection_block = blockSel;
+					m_current_selection_block = block;
 					}
 				else m_services->set_block_selection (block, false);
 				}
@@ -408,7 +399,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 					{
 					//Make Block selected
 					m_services->set_block_selection (block, true);
-					m_current_selection_block = blockSel;
+					m_current_selection_block = block;
 					}
 				else m_services->set_block_selection (block, false);
 				}
@@ -551,54 +542,34 @@ void opengl_view::draw_scene (bool valid, int window_width, int window_height) {
 }
 
 
-void opengl_view::draw_shader(int window_width, int window_height) {
-
+void opengl_view::draw_shader(int window_width, int window_height)
+{
 	glShadeModel (GL_FLAT);
 	glEnable (GL_LINE_SMOOTH);
 	glEnable (GL_BLEND);
 	glHint (GL_LINE_SMOOTH_HINT, GL_NICEST);
 	glLineWidth (1.5);
 
-	// initialize group positions
+	// compute group positions
 	m_group_positions.clear();
 
-	typedef std::map<int, int> group_counts_t;
-	group_counts_t counts;
-	for (shrimp::groups_t::const_iterator g = m_services->groups().begin();
-		g != m_services->groups().end(); ++g) {
+	shrimp::group_set_t group_list = m_services->group_list();
+	for (shrimp::group_set_t::const_iterator group = group_list.begin(); group != group_list.end(); ++group)
+	{
+		position average (0.0, 0.0);
 
-		const std::string block_name = g->first;
-		const int group_number = g->second;
-
-		shader_block* block = m_services->get_block (block_name);
-
-		// count current group
-		group_counts_t::iterator c = counts.find (group_number);
-		if (c == counts.end())
-			counts.insert (std::make_pair (group_number, 1));
-		else
-			c->second++;
-
-		// store position
-		group_position_t::iterator p = m_group_positions.find (group_number);
-		if (p == m_group_positions.end()) {
-			m_group_positions.insert (std::make_pair (group_number, position (block->m_position_x, block->m_position_y)));
-		} else {
-			p->second.position_x += block->m_position_x;
-			p->second.position_y += block->m_position_y;
-		}
-	}
-
-	for (group_position_t::iterator p = m_group_positions.begin(); p != m_group_positions.end(); ++p) {
-		group_counts_t::iterator c = counts.find (p->first);
-		if (c == counts.end()) {
-			log() << error << "Should not be reached." << std::endl;
-			continue;
+		shrimp::shader_blocks_t blocks = m_services->get_group_blocks (*group);
+		for (shrimp::shader_blocks_t::const_iterator block = blocks.begin(); block != blocks.end(); ++block)
+		{
+			average.position_x += (*block)->m_position_x;
+			average.position_y += (*block)->m_position_y;
 		}
 
-		// compute the average position
-		p->second.position_x /= static_cast<double> (c->second);
-		p->second.position_y /= static_cast<double> (c->second);
+		// compute and store group's average position
+		average.position_x /= static_cast<double> (blocks.size());
+		average.position_y /= static_cast<double> (blocks.size());
+
+		m_group_positions.insert (std::make_pair (*group, average));
 	}
 
 	// draw blocks
@@ -606,10 +577,10 @@ void opengl_view::draw_shader(int window_width, int window_height) {
 	shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
 	for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i) {
 
-		const shader_block* block = *block_i;
+		shader_block* block = *block_i;
 
 		// draw blocks that don't belong to any group
-		int group = m_services->group (block);
+		int group = m_services->get_block_group (block);
 		if (!group) {
 			if (m_snap_to_grid && (block->name() == m_active_block)) {
 
@@ -660,7 +631,7 @@ void opengl_view::draw_shader(int window_width, int window_height) {
 				} else {
 
 					// property not found, may be part of a group or rolled block
-					const int block_group = m_services->group (block);
+					const int block_group = m_services->get_block_group (block);
 					const bool rolled_block = m_services->is_rolled (block);
 
 					if (block_group) {
@@ -699,7 +670,7 @@ void opengl_view::draw_shader(int window_width, int window_height) {
 				const shader_block* block = m_services->get_block (from.first);
 
 				// property not found, may be part of a group or rolled block
-				const int block_group = m_services->group (block);
+				const int block_group = m_services->get_block_group (block);
 				const bool rolled_block = m_services->is_rolled (block);
 
 				if (block_group) {
@@ -869,9 +840,9 @@ std::string opengl_view::select_object() {
 		shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
 		for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i) {
 
-			const shader_block* block = *block_i;
+			shader_block* block = *block_i;
 
-			int group = m_services->group (block);
+			int group = m_services->get_block_group (block);
 			if (!group) {
 
 				glLoadName (index);
@@ -941,7 +912,7 @@ shrimp::io_t opengl_view::select_property() {
 
 			const shader_block* block = *block_i;
 
-			int group = m_services->group (block);
+			int group = m_services->get_block_group (block);
 			if (!group) {
 				positions_t property_positions;
 				draw_block_properties (block, block->m_position_x, block->m_position_y, property_positions, true);
@@ -1043,7 +1014,7 @@ void opengl_view::transform_scene() {
 	glScaled (m_size, m_size, m_size);
 }
 
-void opengl_view::draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions)
+void opengl_view::draw_block (shader_block* Block, const double X, const double Y, positions_t& PropertyPositions)
 {
 	if (!m_services->is_rolled (Block))
 	{
@@ -1059,7 +1030,7 @@ void opengl_view::draw_block (const shader_block* Block, const double X, const d
 }
 
 
-void opengl_view::draw_block_body (const shader_block* Block, const double X, const double Y)
+void opengl_view::draw_block_body (shader_block* Block, const double X, const double Y)
 {
 	const double width = Block->m_width;
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
@@ -1211,7 +1182,7 @@ void opengl_view::draw_block_body (const shader_block* Block, const double X, co
 	glEnd();
 }
 
-void opengl_view::draw_rolled_block_body (const shader_block* Block, const double X, const double Y) {
+void opengl_view::draw_rolled_block_body (shader_block* Block, const double X, const double Y) {
 
 	const double width = Block->m_width;
 	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))

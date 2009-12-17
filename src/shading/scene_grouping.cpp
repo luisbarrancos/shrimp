@@ -42,7 +42,7 @@ void scene::add_to_group (const std::string& Block, const int Group) {
 }
 
 
-int scene::group (const shader_block* Block) {
+int scene::get_block_group (const shader_block* Block) {
 
 	shrimp::groups_t::const_iterator g = m_groups.find(Block->name());
 	if(g == m_groups.end())
@@ -66,6 +66,25 @@ void scene::ungroup (const int Group) {
 	m_groups = groups2;
 
 	m_group_names.erase (Group);
+}
+
+
+void scene::group_blocks (const shrimp::shader_blocks_t& Blocks)
+{
+	// find the next group number
+	int max = 0;
+	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g)
+	{
+		if(g->second > max)
+			max = g->second;
+	}
+	++max;
+
+	// store new group
+	for (shrimp::shader_blocks_t::const_iterator block_i = Blocks.begin(); block_i != Blocks.end(); ++block_i)
+	{
+		m_groups.insert(std::make_pair((*block_i)->name(), max));
+	}
 }
 
 

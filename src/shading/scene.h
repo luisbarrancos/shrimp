@@ -39,14 +39,7 @@ class scene
 public:
 
 	//////////// DAG and block data structures
-
 	shrimp::dag_t m_dag;
-
-
-	//////////// group data structures
-
-	shrimp::groups_t m_groups;
-
 
 	//////////// Copy,paste data structures
 	shrimp::dag_t m_dag_copy;
@@ -142,11 +135,12 @@ public:
 	void add_to_group (const std::string& Block, const int Group);
 
 	// returns the number of the group the block belongs to (0 == no group)
-	int group (const shader_block* Block);
+	int get_block_group (const shader_block* Block);
 
 	// dismantles a group
 	void ungroup (const int Group);
 
+	void group_blocks (const shrimp::shader_blocks_t& Blocks);
 	shrimp::shader_blocks_t get_group_blocks (const int Group);
 
 	// group name functions
@@ -185,7 +179,8 @@ private:
 	typedef std::map<std::string, shader_block*> shader_blocks_t;
 	shader_blocks_t m_blocks;
 
-	// group data structures
+	//////////// group data structures
+	shrimp::groups_t m_groups;
 	typedef std::map<int, std::string> group_names_t;
 	group_names_t m_group_names;
 

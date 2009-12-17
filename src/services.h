@@ -27,13 +27,6 @@
 // Service class used to access all Shrimp functions (used to separate the GUI from the core)
 class services
 {
-
-public: // structures
-	typedef std::set<std::string> block_selection_t;
-
-private:
-	typedef std::set<int> groups_selection_t;
-
 public:
 	// constructor/destructor
 	services();
@@ -80,11 +73,10 @@ public:
 	void export_scene (const std::string& Directory) { m_scene->export_scene (Directory); }
 
 	//////////// Selection
-	block_selection_t& get_block_selection() { return m_block_selection; }
-	void group_selection();
+	shrimp::shader_blocks_t& get_block_selection() { return m_block_selection; }
 
 	// returns whether a block is selected
-	bool is_selected (const shader_block* Block);
+	bool is_selected (shader_block* Block);
 
 	// returns the size of the selection set
 	int selection_size();
@@ -93,7 +85,7 @@ public:
 	void clear_selection();
 
 	// toggle block selection state
-	void set_block_selection (const shader_block* Block, const bool Selection);
+	void set_block_selection (shader_block* Block, const bool Selection);
 
 	// block roll
 	void set_block_rolled_state (shader_block* Block, const bool Rolled);
@@ -102,12 +94,13 @@ public:
 	/////////// Group handling
 
 	shrimp::group_set_t group_list() { return m_scene->group_list(); }
+	void group_selection();
 	void add_to_group (const std::string& Block, const int Group) { m_scene->add_to_group (Block, Group); }
-	int group (const shader_block* Block) { return m_scene->group (Block); }
+	int get_block_group (const shader_block* Block) { return m_scene->get_block_group (Block); }
 	void ungroup (const int Group) { m_scene->ungroup (Group); }
 	const std::string get_group_name (const int Group) const { return m_scene->get_group_name (Group); }
 	void set_group_name (const int Group, const std::string& Name) { m_scene->set_group_name (Group, Name); }
-	shrimp::groups_t& groups() { return m_scene->m_groups; }
+	shrimp::shader_blocks_t get_group_blocks (const int Group) { return m_scene->get_group_blocks (Group); }
 
 	void set_group_selection (const int Group , const bool Selection);
 	bool is_group_selected (const int Group);
@@ -144,7 +137,8 @@ private:
 	std::string m_scene_file;
 
 	// selection
-	block_selection_t m_block_selection;
+	shrimp::shader_blocks_t m_block_selection;
+	typedef std::set<int> groups_selection_t;
 	groups_selection_t m_groups_selection;
 
 	// copy buffers

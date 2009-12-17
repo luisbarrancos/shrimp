@@ -150,9 +150,9 @@ private:
 	};
 	typedef std::map<shrimp::io_t, position> positions_t;
 
-	void draw_block (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions);
-	void draw_block_body (const shader_block* Block, const double X, const double Y);
-	void draw_rolled_block_body (const shader_block* Block, const double X, const double Y);
+	void draw_block (shader_block* Block, const double X, const double Y, positions_t& PropertyPositions);
+	void draw_block_body (shader_block* Block, const double X, const double Y);
+	void draw_rolled_block_body (shader_block* Block, const double X, const double Y);
 	void draw_block_name (const shader_block* Block, const double X, const double Y);
 	void draw_block_properties (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions, const bool Selection = false);
 	// draws a block property

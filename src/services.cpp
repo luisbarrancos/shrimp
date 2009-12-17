@@ -55,30 +55,17 @@ block_tree_node_t services::get_block_hierarchy() {
 // turn current selection into a group
 void services::group_selection()
 {
-	// find the next group number
-	int max = 0;
-	for (shrimp::groups_t::const_iterator g = m_scene->m_groups.begin(); g != m_scene->m_groups.end(); ++g) {
-
-		if(g->second > max)
-			max = g->second;
-	}
-	++max;
-
-	// store new group
-	for (block_selection_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
-	{
-		m_scene->m_groups.insert(std::make_pair(*block_i, max));
-	}
+	m_scene->group_blocks (m_block_selection);
 
 	clear_selection();
 }
 
 
-bool services::is_selected (const shader_block* Block) {
-
-	std::string name = Block->name();
-	block_selection_t::const_iterator i = m_block_selection.find (name);
-	if (i == m_block_selection.end()) {
+bool services::is_selected (shader_block* Block)
+{
+	shrimp::shader_blocks_t::const_iterator i = m_block_selection.find (Block);
+	if (i == m_block_selection.end())
+	{
 		return false;
 	}
 
@@ -133,7 +120,7 @@ int services::group_selection_size() {
 }
 
 
-void services::set_block_selection (const shader_block* Block, const bool Selection)
+void services::set_block_selection (shader_block* Block, const bool Selection)
 {
 	log() << aspect << "services: set_block_selection of " << Block->name() << " with " << Selection << std::endl;
 
@@ -143,11 +130,10 @@ void services::set_block_selection (const shader_block* Block, const bool Select
 		return;
 	}
 
-	const std::string block_name = Block->name();
 	if (Selection) {
-		m_block_selection.insert (block_name);
+		m_block_selection.insert (Block);
 	} else {
-		m_block_selection.erase (block_name);
+		m_block_selection.erase (Block);
 	}
 }
 
@@ -288,7 +274,7 @@ void services::paste_blocks()
 		if(!(g == m_groups_buffer.end()))
 		{
 			const int Group = g->second;
-			m_scene->m_groups.insert (std::make_pair(paste_name, Group));
+			m_scene->add_to_group (paste_name, Group);
 		}
 	}
 
@@ -325,21 +311,12 @@ void services::copy_selected_blocks(shader_block* block)
 	//If multi selection
 	if (total>1)
 	{
-		for (services::block_selection_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
+		for (shrimp::shader_blocks_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
 		{
-
-			std::string current_selection = *block_i;
-
-			shader_block* block_copy = get_block(current_selection);
+			shader_block* block_copy = *block_i;
 			block_name = block_copy->name();
 
-			if (!block_copy)
-			{
-				log() << error << "active block '" << current_selection << "' not found." << std::endl;
-				return;
-			}
-
-			int group = this->group (block_copy);
+			int group = get_block_group (block_copy);
 			if (!group)
 			{
 				copy_blocks (block_name, 0);
@@ -388,7 +365,7 @@ void services::paste(shader_block* active_block)
 		clear_selection();
 		for (shader_blocks_copy_t::iterator new_block = m_copy_buffer.begin(); new_block != m_copy_buffer.end(); ++new_block)
 		{
-			m_block_selection.insert (new_block->first.first);
+			m_block_selection.insert (new_block->first.second);
 		}
 
 		copy_selected_blocks(active_block);
@@ -411,7 +388,7 @@ void services::paste_buffered_blocks()
 		for (shader_blocks_copy_t::iterator new_block = m_copy_buffer.begin(); new_block != m_copy_buffer.end(); ++new_block)
 		{
 			// Don't select block part of a group
-			if (!group(new_block->second.second))
+			if (!get_block_group(new_block->second.second))
 			{
 				set_block_selection(new_block->second.second,1);
 			}
@@ -456,9 +433,9 @@ void services::cut_selection(shader_block* active_block, std::string selected_bl
 void services::delete_selection()
 {
 	// delete selected blocks
-	for (block_selection_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
+	for (shrimp::shader_blocks_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
 	{
-		m_scene->delete_block (*block_i);
+		m_scene->delete_block ((*block_i)->name());
 	}
 	m_block_selection.clear();
 

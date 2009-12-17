@@ -110,7 +110,7 @@ void scene::delete_group (const int Group)
 	for (scene:: shader_blocks_t::const_iterator block_i = m_blocks.begin(); block_i != m_blocks.end(); ++block_i)
 	{
 		const shader_block* blockSel = block_i->second;
-		int groupSel = group(blockSel);
+		int groupSel = get_block_group(blockSel);
 
 		if (groupSel==Group)
 		{
