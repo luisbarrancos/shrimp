@@ -82,7 +82,7 @@ int services::selection_size()
 void services::clear_selection()
 {
 	m_block_selection.clear();
-	m_groups_selection.clear();
+	m_group_selection.clear();
 }
 
 void services::clear_copy_selection()
@@ -91,32 +91,29 @@ void services::clear_copy_selection()
 }
 
 
-void services::set_group_selection (const int Group , const bool selection) {
-
-
-	if (selection) {
-		m_groups_selection.insert (Group);
-
-	} else {
-		m_groups_selection.erase (Group);
+void services::set_group_selection (const int Group , const bool selection)
+{
+	if (selection)
+	{
+		m_group_selection.insert (Group);
+	}
+	else
+	{
+		m_group_selection.erase (Group);
 	}
 }
 
 
-bool services::is_group_selected (const int Group) {
-
-
-	groups_selection_t::const_iterator i = m_groups_selection.find (Group);
-	if (i == m_groups_selection.end()) {
-		return false;
-	}
-	else return true;
+bool services::is_group_selected (const int Group)
+{
+	shrimp::group_set_t::const_iterator i = m_group_selection.find (Group);
+	return (i != m_group_selection.end());
 }
 
 
-int services::group_selection_size() {
-
-	return m_groups_selection.size();
+int services::group_selection_size()
+{
+	return m_group_selection.size();
 }
 
 
@@ -342,7 +339,7 @@ void services::copy_selected_blocks(shader_block* block)
 //copy groups
 void services::copy_selected_groups()
 {
-	for (groups_selection_t::const_iterator g = m_groups_selection.begin(); g != m_groups_selection.end(); ++g)
+	for (shrimp::group_set_t::const_iterator g = m_group_selection.begin(); g != m_group_selection.end(); ++g)
 	{
 		shrimp::shader_blocks_t blocks = m_scene->get_group_blocks (*g);
 		for (shrimp::shader_blocks_t::iterator block = blocks.begin(); block != blocks.end(); ++block)
@@ -405,7 +402,7 @@ void services::paste_buffered_blocks()
 }
 
 
-void services::cut_selection(shader_block* active_block, std::string selected_blocks)
+void services::cut_selection (shader_block* active_block)
 {
 	// copy blocks
 	copy_selected_blocks(active_block);
@@ -415,7 +412,7 @@ void services::cut_selection(shader_block* active_block, std::string selected_bl
 	if (selection_size() > 1)
 	{
 		//Multi selection
-		m_scene->delete_block(selected_blocks);
+		m_scene->delete_block(active_block->name());
 		m_copy_buffer.clear();
 		clear_selection();
 		clear_copy_selection();
@@ -440,11 +437,11 @@ void services::delete_selection()
 	m_block_selection.clear();
 
 	// delete selected groups
-	for (groups_selection_t::const_iterator group_i = m_groups_selection.begin(); group_i != m_groups_selection.end(); ++group_i)
+	for (shrimp::group_set_t::const_iterator group_i = m_group_selection.begin(); group_i != m_group_selection.end(); ++group_i)
 	{
 		m_scene->delete_group (*group_i);
 	}
-	m_groups_selection.clear();
+	m_group_selection.clear();
 }
 
 

@@ -76,28 +76,28 @@ void scene_view::draw() {
 
 void scene_view::on_select_block (fltk::Widget* W, void* Data)
 {
-	m_opengl_view->select_block();
+	m_services->set_block_selection (m_opengl_view->get_active_block(), true);
 	redraw();
 }
 
 
 void scene_view::on_deselect_block (fltk::Widget* W, void* Data)
 {
-	m_opengl_view->deselect_block();
+	m_services->set_block_selection (m_opengl_view->get_active_block(), false);
 	redraw();
 }
 
 
 void scene_view::on_roll_block (fltk::Widget* W, void* Data)
 {
-	m_opengl_view->roll_block();
+	m_services->set_block_rolled_state (m_opengl_view->get_active_block(), true);
 	redraw();
 }
 
 
 void scene_view::on_unroll_block (fltk::Widget* W, void* Data)
 {
-	m_opengl_view->unroll_block();
+	m_services->set_block_rolled_state (m_opengl_view->get_active_block(), false);
 	redraw();
 }
 

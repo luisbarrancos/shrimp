@@ -40,7 +40,7 @@ namespace shrimp
 	typedef std::map <io_t, io_t> dag_t;
 
 	typedef std::set<shader_block*> shader_blocks_t;
-	// Group structures
+	// group structures
 	typedef std::set<int> group_set_t;
 	typedef std::map<std::string, int> groups_t;
 }

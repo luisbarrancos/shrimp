@@ -73,7 +73,7 @@ public:
 	void export_scene (const std::string& Directory) { m_scene->export_scene (Directory); }
 
 	//////////// Selection
-	shrimp::shader_blocks_t& get_block_selection() { return m_block_selection; }
+	shrimp::shader_blocks_t get_selected_blocks() { return m_block_selection; }
 
 	// returns whether a block is selected
 	bool is_selected (shader_block* Block);
@@ -94,6 +94,7 @@ public:
 	/////////// Group handling
 
 	shrimp::group_set_t group_list() { return m_scene->group_list(); }
+	shrimp::group_set_t get_selected_groups() { return m_group_selection; }
 	void group_selection();
 	void add_to_group (const std::string& Block, const int Group) { m_scene->add_to_group (Block, Group); }
 	int get_block_group (const shader_block* Block) { return m_scene->get_block_group (Block); }
@@ -120,32 +121,31 @@ public:
 
 	void paste(shader_block* active_block);
 
-	void cut_selection(shader_block* active_block, std::string selected_blocks);
+	void cut_selection(shader_block* active_block);
 
 	void delete_selection();
+
 
 private:
 	// paste block
 	void paste_blocks();
-
 	// copy connections of copy/paste operation
 	void copy_connections();
 
-private:
+
 	// currently edited scene and its file name
 	scene* m_scene;
 	std::string m_scene_file;
 
 	// selection
 	shrimp::shader_blocks_t m_block_selection;
-	typedef std::set<int> groups_selection_t;
-	groups_selection_t m_groups_selection;
+	shrimp::group_set_t m_group_selection;
 
 	// copy buffers
-	typedef std::pair <std::string, shader_block* > copy_block_t;
+	typedef std::pair <std::string, shader_block*> copy_block_t;
+	// first copy_block: original block, second copy_block: new block
+	typedef std::map<copy_block_t, copy_block_t> shader_blocks_copy_t;
 
-	// first copy_block:block original , second copy_block:new block
-	typedef std::map<copy_block_t,copy_block_t> shader_blocks_copy_t;
 	shader_blocks_copy_t m_copy_buffer;
 	shader_blocks_copy_t m_copy_selection;
 	shrimp::groups_t m_groups_buffer;

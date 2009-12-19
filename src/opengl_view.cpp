@@ -78,7 +78,7 @@ bool point_inside(double x,double y,double XX, double YY, double WW,double HH)
 
 opengl_view::opengl_view (services* services_instance) :
 	m_services (services_instance),
-	m_min_block_height (0.5),
+	m_under_mouse_block (0),
 	m_size (3),
 	m_last_mouse_x (0),
 	m_last_mouse_y (0),
@@ -89,6 +89,7 @@ opengl_view::opengl_view (services* services_instance) :
 	m_projection_top (10),
 	m_projection_near (-1000),
 	m_projection_far (1000),
+	m_min_block_height (0.5),
 
 	m_grid (false),
 	m_snap_to_grid (false),
@@ -179,43 +180,21 @@ void opengl_view::center_scene (const double X, const double Y)
 
 void opengl_view::move_active_block (const double XOffset, const double YOffset)
 {
-	int group_total = m_services->group_selection_size();
-	int total = m_services->selection_size() + group_total;
-	shader_block* block = m_services->get_block (m_active_block);
-
-
-	//If multi selecion
-	if (total > 1)
+	// move selected and active blocks
+	shrimp::shader_blocks_t selection = m_services->get_selected_blocks();
+	if (m_under_mouse_block)
 	{
-		shrimp::shader_blocks_t& selection = m_services->get_block_selection();
-		for (shrimp::shader_blocks_t::const_iterator block_i = selection.begin(); block_i != selection.end(); ++block_i)
-		{
-			int group = m_services->get_block_group (*block_i);
-			if (!group)
-			{
-				(*block_i)->m_position_x += XOffset;
-				(*block_i)->m_position_y += YOffset;
-			}
-			else
-			{
-				move_active_group(XOffset,YOffset);
-			}
-		}
+		selection.insert (m_under_mouse_block);
 	}
 
-	//If single selection no parsing grab m_active_block
-	else if (block && (total<2)){
-			block->m_position_x += XOffset;
-			block->m_position_y += YOffset;
-		   }
-	//Move group as well
-	if (group_total || m_active_group){
-	move_active_group(XOffset,YOffset);
+	for (shrimp::shader_blocks_t::const_iterator block_i = selection.begin(); block_i != selection.end(); ++block_i)
+	{
+		(*block_i)->m_position_x += XOffset;
+		(*block_i)->m_position_y += YOffset;
 	}
-	else if (!block) {
-						log() << error << "active block FFFF'" << m_active_block << "' not found." << std::endl;
-						return;
-					}
+
+	// move groups as well
+	move_active_group (XOffset,YOffset);
 }
 
 void opengl_view::move_all_blocks (const double XOffset, const double YOffset)
@@ -231,8 +210,8 @@ void opengl_view::move_all_blocks (const double XOffset, const double YOffset)
 }
 
 
-void opengl_view::move_block_to_view_center (shader_block* Block) {
-
+void opengl_view::move_block_to_view_center (shader_block* Block)
+{
 	if (!Block) {
 
 		log() << error << "no block supplied! (move_block_to_view_center)" << std::endl;
@@ -247,8 +226,8 @@ void opengl_view::move_block_to_view_center (shader_block* Block) {
 }
 
 
-void opengl_view::move_scene (const double XOffset, const double YOffset) {
-
+void opengl_view::move_scene (const double XOffset, const double YOffset)
+{
 	m_projection_left -= XOffset;
 	m_projection_right -= XOffset;
 	m_projection_bottom -= YOffset;
@@ -258,35 +237,27 @@ void opengl_view::move_scene (const double XOffset, const double YOffset) {
 
 void opengl_view::move_active_group (const double XOffset, const double YOffset)
 {
-	int total = m_services->group_selection_size();
-
-	if (!total && (m_active_group == 0)) {
-
-		log() << error << "there's no group to move!" << std::endl;
-		return;
-	}
-
-	// move all the group's shaders
-	shrimp::shader_blocks_t group_blocks = m_services->get_group_blocks (m_active_group);
-	for (shrimp::shader_blocks_t::iterator block_i = group_blocks.begin(); block_i != group_blocks.end(); ++block_i)
+	// move selected and active groups
+	shrimp::group_set_t groups = m_services->get_selected_groups();
+	if (m_under_mouse_group)
 	{
-		(*block_i)->m_position_x += XOffset;
-		(*block_i)->m_position_y += YOffset;
+		groups.insert (m_under_mouse_group);
 	}
-	//TODO:
-	/*
-		//All selected group
-		else if (m_services->is_group_selected(g->second)){
 
+	for (shrimp::group_set_t::iterator group_i = groups.begin(); group_i != groups.end(); ++group_i)
+	{
+		// move all the group's blocks
+		shrimp::shader_blocks_t group_blocks = m_services->get_group_blocks (*group_i);
+		for (shrimp::shader_blocks_t::iterator block_i = group_blocks.begin(); block_i != group_blocks.end(); ++block_i)
+		{
 			(*block_i)->m_position_x += XOffset;
 			(*block_i)->m_position_y += YOffset;
 		}
-	*/
+	}
 }
 
 void opengl_view::box_selection(int window_width, int window_height)
 {
-
 	//2D opengl drawing
 	glShadeModel (GL_FLAT);
 	glDisable (GL_LINE_SMOOTH);
@@ -315,8 +286,6 @@ void opengl_view::box_selection(int window_width, int window_height)
 		glVertex3d(from_x,to_y,0);
 		glVertex3d(to_x,to_y,0);
 		glVertex3d(to_x,from_y,0);
-
-
 	glEnd();
 
 	glPopMatrix();
@@ -325,7 +294,7 @@ void opengl_view::box_selection(int window_width, int window_height)
 
 	//Detection of block selected
 	std::map<unsigned long, const shader_block*> block_indices;
-			unsigned long index = 1;
+	unsigned long index = 1;
 
 	shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
 	for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i)
@@ -352,7 +321,8 @@ void opengl_view::box_selection(int window_width, int window_height)
 		gluUnProject(to_x,to_y,0, mvmatrix, projmatrix,viewport,&Tx,&Ty,&Tz );
 
 		const int group = m_services->get_block_group (block);
-		if (!group) {
+		if (!group)
+		{
 			//Height of the block
 			const double width = block->m_width;
 
@@ -363,47 +333,42 @@ void opengl_view::box_selection(int window_width, int window_height)
 			const double height = (height1 < m_min_block_height) ? m_min_block_height : height1;
 
 			//Above block
-		    if (Fx<Tx && Ty<Fy){
-		    //Check if rectangle surround center of the block
-			if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
-					{
-				//Make Block selected
-				m_services->set_block_selection (block, true);
-				m_current_selection_block = block;
-					}
-			else m_services->set_block_selection (block, false);
-		    }
-		    else if (Fx>Tx && Ty<Fy){
-			//Check if rectangle surround center of the block
-				if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Tx,Ty,Fx,Fy))
-					{
-					//Make Block selected
-					m_services->set_block_selection (block, true);
-					m_current_selection_block = block;
-					}
-				else m_services->set_block_selection (block, false);
+			bool block_inside = false;
+			if (Fx<Tx && Ty<Fy)
+			{
+				//Check if rectangle surround center of the block
+				if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Fx,Ty,Tx,Fy))
+				{
+					block_inside = true;
+				}
 			}
-		   else if (Fx>Tx && Ty>Fy){
-					//Check if rectangle surround center of the block
+			else if (Fx>Tx && Ty<Fy)
+			{
+				//Check if rectangle surround center of the block
+				if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Tx,Ty,Fx,Fy))
+				{
+					block_inside = true;
+				}
+			}
+			else if (Fx>Tx && Ty>Fy)
+			{
+				//Check if rectangle surround center of the block
 				if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Tx,Fy,Fx,Ty))
-					{
-					//Make Block selected
-					m_services->set_block_selection (block, true);
-					m_current_selection_block = block;
-					}
-				else m_services->set_block_selection (block, false);
+				{
+					block_inside = true;
 				}
-		  else if (Fx<Tx && Ty>Fy){
-					//Check if rectangle surround center of the block
+			}
+			else if (Fx<Tx && Ty>Fy)
+			{
+				//Check if rectangle surround center of the block
 				if (point_inside (block->m_position_x+width/2, block->m_position_y-height/2 ,Fx,Fy,Tx,Ty))
-					{
-					//Make Block selected
-					m_services->set_block_selection (block, true);
-					m_current_selection_block = block;
-					}
-				else m_services->set_block_selection (block, false);
+				{
+					block_inside = true;
 				}
+			}
 
+			//Update block selection
+			m_services->set_block_selection (block, block_inside);
 
 			glLoadName (index);
 
@@ -412,69 +377,66 @@ void opengl_view::box_selection(int window_width, int window_height)
 			++index;
 		}
 
-		if (group) {
-
-
+		if (group)
+		{
 			group_position_t::const_iterator p = m_group_positions.find(group);
 
 			//Get group position
 			const double x = p->second.position_x;
 			const double y = p->second.position_y;
 
-			 //Above group
-			   //Check if rectangle surround center of the group
-			   if (Fx<Tx && Ty<Fy){
+			//Above group
+			bool group_inside = false;
+
+			//Check if rectangle surround center of the group
+			if (Fx<Tx && Ty<Fy)
+			{
 				//Check if rectangle surround center of the group
-					if (point_inside (x ,y ,Fx,Ty,Tx,Fy))
-						{
-						//Make group selected
-						m_services->set_group_selection (group, true);
-						m_current_group = p->first;
-						}
-					else m_services->set_group_selection (group, false);
+				if (point_inside (x ,y ,Fx,Ty,Tx,Fy))
+				{
+					group_inside = true;
 				}
-				else if (Fx>Tx && Ty<Fy){
-					//Check if rectangle surround center of the group
-					if (point_inside (x,y ,Tx,Ty,Fx,Fy))
-						{
-						//Make group selected
-						m_services->set_group_selection (group, true);
-						m_current_group = p->first;
-						}
-					else m_services->set_group_selection (group, false);
-					}
-			   else if (Fx>Tx && Ty>Fy){
-						//Check if rectangle surround center of the group
-					if (point_inside (x ,y ,Tx,Fy,Fx,Ty))
-						{
-						//Make group selected
-						m_services->set_group_selection (group, true);
-						m_current_group = p->first;
-						}
-					else m_services->set_group_selection (group, false);
-					}
-			  else if (Fx<Tx && Ty>Fy){
-						//Check if rectangle surround center of the group
-					if (point_inside (x ,y ,Fx,Fy,Tx,Ty))
-						{
-						//Make group selected
-						m_services->set_group_selection (group, true);
-						m_current_group = p->first;
-						}
-					else m_services->set_group_selection (group, false);
-					}
+			}
+			else if (Fx>Tx && Ty<Fy)
+			{
+				//Check if rectangle surround center of the group
+				if (point_inside (x,y ,Tx,Ty,Fx,Fy))
+				{
+					group_inside = true;
+				}
+			}
+			else if (Fx>Tx && Ty>Fy)
+			{
+				//Check if rectangle surround center of the group
+				if (point_inside (x ,y ,Tx,Fy,Fx,Ty))
+				{
+					group_inside = true;
+				}
+			}
+			else if (Fx<Tx && Ty>Fy)
+			{
+				//Check if rectangle surround center of the group
+				if (point_inside (x ,y ,Fx,Fy,Tx,Ty))
+				{
+					group_inside = true;
+				}
+			}
 
-				glLoadName (index);
+			//Update group selection
+			m_services->set_group_selection (group, group_inside);
 
-				block_indices.insert (std::make_pair (index, block));
+			glLoadName (index);
 
-				++index;
+			block_indices.insert (std::make_pair (index, block));
+
+			++index;
 		}
 	}
-
 }
-void opengl_view::draw_grid() {
 
+
+void opengl_view::draw_grid()
+{
 	glShadeModel (GL_FLAT);
 	glDisable (GL_LINE_SMOOTH);
 	glDisable (GL_BLEND);
@@ -582,8 +544,8 @@ void opengl_view::draw_shader(int window_width, int window_height)
 		// draw blocks that don't belong to any group
 		int group = m_services->get_block_group (block);
 		if (!group) {
-			if (m_snap_to_grid && (block->name() == m_active_block)) {
-
+			if (m_snap_to_grid && (block == m_under_mouse_block))
+			{
 				double x = block->m_position_x;
 				double y = block->m_position_y;
 
@@ -810,8 +772,9 @@ void opengl_view::update_projection(int window_width, int window_height) {
 }
 
 
-std::string opengl_view::select_object() {
-	log() << aspect << "opengl_view: select_object" << std::endl;
+shader_block* opengl_view::get_under_mouse_block()
+{
+	log() << aspect << "opengl_view: get_under_mouse_block" << std::endl;
 
 	// get current viewport
 	GLint viewport[4];
@@ -835,7 +798,7 @@ std::string opengl_view::select_object() {
 
 		transform_scene();
 
-		std::map<unsigned long, const shader_block*> block_indices;
+		std::map<unsigned long, shader_block*> block_indices;
 		unsigned long index = 1;
 		shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
 		for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i) {
@@ -863,7 +826,7 @@ std::string opengl_view::select_object() {
 	// Get list of picked blocks
 	GLint hits = glRenderMode (GL_RENDER);
 	if (hits <= 0)
-		return "";
+		return 0;
 
 	GLuint closest = 0;
 	GLuint dist = 0xFFFFFFFFU;
@@ -878,11 +841,11 @@ std::string opengl_view::select_object() {
 		hits--;
 	}
 
-	return block_indices[closest]->name();
+	return block_indices[closest];
 }
 
-shrimp::io_t opengl_view::select_property() {
-
+shrimp::io_t opengl_view::get_under_mouse_property()
+{
 	// get current viewport
 	GLint viewport[4];
 	glGetIntegerv (GL_VIEWPORT, viewport);
@@ -949,8 +912,8 @@ shrimp::io_t opengl_view::select_property() {
 	return std::make_pair ("", "");
 }
 
-int opengl_view::select_group() {
-
+int opengl_view::get_under_mouse_group()
+{
 	// get group list
 	shrimp::group_set_t groups = m_services->group_list();
 
@@ -1009,10 +972,11 @@ int opengl_view::select_group() {
 }
 
 
-void opengl_view::transform_scene() {
-
+void opengl_view::transform_scene()
+{
 	glScaled (m_size, m_size, m_size);
 }
+
 
 void opengl_view::draw_block (shader_block* Block, const double X, const double Y, positions_t& PropertyPositions)
 {
@@ -1126,6 +1090,7 @@ void opengl_view::draw_block_body (shader_block* Block, const double X, const do
 	// block outline (and external block text)
 	if (Block == m_under_mouse_block)
 	{
+		// mouse is over block, draw the block border as selected
 		glColor3f (1.0, 0.55, 0.0);
 	}
 	else
@@ -1305,8 +1270,8 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 
 }
 
-void opengl_view::draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi) {
-
+void opengl_view::draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi)
+{
 	const double third = Size / 3.0;
 	const double small = Size / 6.0;
 
@@ -1381,8 +1346,8 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			}
 		glEnd();
 	}
-	else if ("vector" == Type) {
-
+	else if ("vector" == Type)
+	{
 		// arrow
 		glColor3f (0.80, 0.91, 0.31);
 		glBegin (GL_QUADS);
@@ -1535,8 +1500,8 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	}
 }
 
-void opengl_view::draw_groups() {
-
+void opengl_view::draw_groups()
+{
 	const double alpha = 0.5;
 
 	for (group_position_t::const_iterator p = m_group_positions.begin(); p != m_group_positions.end(); ++p)
@@ -1550,7 +1515,7 @@ void opengl_view::draw_groups() {
 
 		// check whether the group's selected
 		// show group name
-		if (group == m_current_group)
+		if (group == m_under_mouse_group)
 		{
 			// selected group are "hover orange"
 			glColor4f (1.0, 0.55, 0.0, alpha);
@@ -1603,11 +1568,17 @@ void opengl_view::draw_group_body (const double X, const double Y, const int cur
 		}
 	glEnd();
 
-	// draw a white hexagon around
-		if (current_group == m_active_group)
-			// selected group are "hover orange"
-			{glColor4f (1.0, 0.55, 0.0, alpha);}
-		else {glColor3f (1, 1, 1);}
+	// draw an hexagon around
+	if (current_group == m_under_mouse_group)
+	{
+		// mouse is over a group, draw the group border as selected (orange)
+		glColor4f (1.0, 0.55, 0.0, alpha);
+	}
+	else
+	{
+		// white
+		glColor3f (1, 1, 1);
+	}
 
 	glBegin (GL_LINES);
 		double prev_x = X + radius * cos (0);
@@ -1690,29 +1661,16 @@ void opengl_view::mouse_move()
 	log() << aspect << "opengl_view: mouse_move" << std::endl;
 
 	// mouse move
-	m_active_property = select_property();
+	m_active_property = get_under_mouse_property();
 	m_current_mouse_x = fltk::event_x();
 	m_current_mouse_y = fltk::event_y();
 
-	m_active_block = select_object();
-	m_active_group = select_group();
+	m_under_mouse_block = get_under_mouse_block();
+	m_under_mouse_group = get_under_mouse_group();
 
-	//Mouse move over a block, set block as current and draw the block border as selected
-	if (m_active_block.size())
-	{
-		shader_block* block = m_services->get_block (m_active_block);
-		m_under_mouse_block = block;
-	}
-	//Mouse move over a group, set group as current and draw the group border as selected
-	else if (m_active_group)
-	{
-		set_current_group(m_active_group);
-	}
 	//Mouse over nothing
-	else
+	if (!m_under_mouse_group)
 	{
-		m_under_mouse_block = 0;
-		set_current_group(0);
 		m_box_selection = false;
 	}
 }
@@ -1730,8 +1688,8 @@ void opengl_view::mouse_any_button_down()
 
 	m_mouse_click = 0;
 
-	m_active_block = select_object();
-	m_active_group = select_group();
+	m_under_mouse_block = get_under_mouse_block();
+	m_under_mouse_group = get_under_mouse_group();
 }
 
 
@@ -1742,24 +1700,18 @@ void opengl_view::mouse_left_button_down()
 	const bool shift_key_down = fltk::event_state (fltk::SHIFT);
 	const bool ctrl_key_down = fltk::event_state (fltk::CTRL);
 
-	if (ctrl_key_down) {
-
-		if (m_active_block.size()) {
-
-			shader_block* block = m_services->get_block (m_active_block);
-
+	if (ctrl_key_down)
+	{
+		if (m_under_mouse_block)
+		{
 			// toggle block selection
-			m_services->set_block_selection (block, !m_services->is_selected (block));
-			if (m_services->is_selected (block)) {
-				m_current_selection_block= block;
-			}
+			m_services->set_block_selection (m_under_mouse_block, !m_services->is_selected (m_under_mouse_block));
 		}
-		if (m_active_group)
+		if (m_under_mouse_group)
 		{
 			if (m_services)
 			{
-				m_services->set_group_selection(m_active_group, !m_services->is_group_selected(m_active_group));
-				is_selected_group = m_active_group;
+				m_services->set_group_selection(m_under_mouse_group, !m_services->is_group_selected(m_under_mouse_group));
 			}
 		}
 
@@ -1767,21 +1719,14 @@ void opengl_view::mouse_left_button_down()
 
 	else if (shift_key_down)
 	{
-		if (m_active_block.size())
+		if (m_under_mouse_block)
 		{
-			shader_block* block = m_services->get_block (m_active_block);
-
 			// toggle block selection
-			m_services->set_block_selection (block, 1);
-			if (m_services->is_selected (block))
-			{
-				m_current_selection_block= block;
-			}
+			m_services->set_block_selection (m_under_mouse_block, 1);
 		}
-		if (m_active_group)
+		if (m_under_mouse_group)
 		{
-			m_services->set_group_selection(m_active_group, 1);
-			is_selected_group = m_active_group;
+			m_services->set_group_selection(m_under_mouse_group, 1);
 		}
 	}
 
@@ -1791,22 +1736,15 @@ void opengl_view::mouse_left_button_down()
 		m_connection_start_x = m_mouse_click_x;
 		m_connection_start_y = m_mouse_click_y;
 	}
-	//Save selected group number
-	else if (m_active_group) {
-		is_selected_group = m_active_group;
-		set_current_group(m_active_group);
-	}
-
-	else {
-		if (!m_active_block.size() && (!m_active_group))
+	else
+	{
+		if (!m_under_mouse_block && !m_under_mouse_group)
 		{
 			m_services->clear_selection();
-			is_selected_group = 0;
 		}
 
 		m_start_drag_x = fltk::event_x();
 		m_start_drag_y = fltk::event_y();
-
 	}
 }
 
@@ -1822,21 +1760,22 @@ void opengl_view::mouse_right_button_down()
 
 		// clear other actions
 		m_mouse_click = 0;
-		m_active_block = "";
-		m_active_group = 0;
+		m_under_mouse_block = 0;
+		m_under_mouse_group = 0;
 		m_active_property = std::make_pair ("", "");
 		m_connection_start = std::make_pair ("", "");
 	}
-	else if (m_active_block.size())
+	else if (m_under_mouse_block)
 	{
 		// mouse is over a block (but not over a property)
-		m_shader_block_right_click_signal.emit (m_active_block);
+		std::string block_name = m_under_mouse_block->name();
+		m_shader_block_right_click_signal.emit (block_name);
 
 	}
-	else if (m_active_group)
+	else if (m_under_mouse_group)
 	{
 		// mouse is over a group
-		m_block_group_right_click_signal.emit (m_active_group);
+		m_block_group_right_click_signal.emit (m_under_mouse_group);
 	}
 	else
 	{
@@ -1844,8 +1783,8 @@ void opengl_view::mouse_right_button_down()
 
 		// clear current actions
 		m_mouse_click = 0;
-		m_active_block = "";
-		m_active_group = 0;
+		m_under_mouse_block = 0;
+		m_under_mouse_group = 0;
 		m_active_property = std::make_pair ("", "");
 		m_connection_start = std::make_pair ("", "");
 
@@ -1881,32 +1820,28 @@ void opengl_view::mouse_left_button_drag(const int widget_width, const int widge
 	const double move_x = mouse_move_x * (m_projection_right - m_projection_left) / static_cast<double> (widget_width);
 	const double move_y = - mouse_move_y * (m_projection_top - m_projection_bottom) / static_cast<double> (widget_height);
 
-	if (m_active_property.first.size()) {
-
+	if (m_active_property.first.size())
+	{
 		// do nothing
-
 	}
-	else if (m_active_block.size()) {
-
+	else if (m_under_mouse_block)
+	{
 		// move selected block
 		move_active_block (move_x / m_size, move_y / m_size);
-
 	}
-	else if (m_active_group) {
-		set_current_group(m_active_group);
+	else if (m_under_mouse_group)
+	{
 		move_active_block (move_x / m_size, move_y / m_size);
-		//move_active_group (move_x / m_size, move_y / m_size);
 	}
-
-	else if (alt_key_down ){
+	else if (alt_key_down)
+	{
 		// move scene when ALT key press
 		move_scene (move_x, move_y);
 	}
-	else {
-
+	else
+	{
 		//Drawing of rectangle selection
-		m_box_selection=true;
-
+		m_box_selection = true;
 	}
 
 	m_last_mouse_x = m_current_mouse_x;
@@ -1951,21 +1886,17 @@ void opengl_view::mouse_left_button_release()
 
 		}
 		//select block
-		else if ((m_active_block.size() || m_active_group) &&  !(shift_key_down || ctrl_key_down))
+		else if ((m_under_mouse_block || m_under_mouse_group) &&  !(shift_key_down || ctrl_key_down))
 		{
-			shader_block* block = m_services->get_block (m_active_block);
 			m_services->clear_selection();
-			if (m_active_block.size()){
-				// toggle block selection
-				m_services->set_block_selection (block, !m_services->is_selected (block));
-				if (m_services->is_selected (block))
-				{
-					m_current_selection_block= block;
-				}
-			}
-			else if (m_active_group)
+			if (m_under_mouse_block)
 			{
-				m_services->set_group_selection(m_active_group, !m_services->is_group_selected(m_active_group));
+				// toggle block selection
+				m_services->set_block_selection (m_under_mouse_block, !m_services->is_selected (m_under_mouse_block));
+			}
+			else if (m_under_mouse_group)
+			{
+				m_services->set_group_selection(m_under_mouse_group, !m_services->is_group_selected(m_under_mouse_group));
 			}
 		}
 	}
@@ -1973,49 +1904,16 @@ void opengl_view::mouse_left_button_release()
 	// actually snap block when drag ends
 	if (m_snap_to_grid)
 	{
-		shader_block* block = m_services->get_block (m_active_block);
-
-		if (block) {
-			double x = block->m_position_x;
-			double y = block->m_position_y;
+		if (m_under_mouse_block)
+		{
+			double x = m_under_mouse_block->m_position_x;
+			double y = m_under_mouse_block->m_position_y;
 			snap_position (x, y);
 
-			block->m_position_x = x;
-			block->m_position_y = y;
+			m_under_mouse_block->m_position_x = x;
+			m_under_mouse_block->m_position_y = y;
 		}
 	}
-}
-
-
-void opengl_view::select_block()
-{
-	log() << aspect << "opengl_view: select_block" << std::endl;
-
-	shader_block* block = m_services->get_block (m_active_block);
-	m_services->set_block_selection (block, true);
-}
-
-
-void opengl_view::deselect_block()
-{
-	log() << aspect << "opengl_view: deselect_block" << std::endl;
-
-	shader_block* block = m_services->get_block (m_active_block);
-	m_services->set_block_selection (block, false);
-}
-
-
-void opengl_view::roll_block()
-{
-	shader_block* block = m_services->get_block (m_active_block);
-	m_services->set_block_rolled_state (block, true);
-}
-
-
-void opengl_view::unroll_block()
-{
-	shader_block* block = m_services->get_block (m_active_block);
-	m_services->set_block_rolled_state (block, false);
 }
 
 

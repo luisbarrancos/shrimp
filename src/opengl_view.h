@@ -35,47 +35,23 @@ public:
 	// constructor
 	opengl_view(services*);
 
+	// fits whole scene into window
+	double fit_scene(int window_width, int window_height);
+
 	// sets scene scale
 	void set_size (double Size);
 	double get_size() { return m_size; }
 
-	// set the OpenGL view projection
-	void update_projection(int window_width, int window_height);
-
-	// set scene centre
-	void center_scene (const double X, const double Y);
-
-	// fits whole scene into window
-	double fit_scene(int window_width, int window_height);
-
-	// move active block by given offset
-	void move_active_block (const double XOffset, const double YOffset);
-
-	// move all blocks by given offset
-	void move_all_blocks (const double XOffset, const double YOffset);
-
-	// move block to the view center
-	void move_block_to_view_center (shader_block* Block);
-
-	// move scene by given offset
-	void move_scene (const double XOffset, const double YOffset);
-
-	// move active group
-	void move_active_group (const double XOffset, const double YOffset);
-
+	shader_block* get_active_block() {return m_under_mouse_block;}
+	int get_selected_group() {return  m_under_mouse_group;}
 
 	// options
 	void set_grid_state (const bool GridState);
 	void set_snap_to_grid_state (const bool SnapState);
 	void set_overview_state (const bool OverviewState);
-	void set_current_group  (int group){m_current_group = group;}
-	int get_selected_group() {return  is_selected_group;}
-	std::string get_selected_blocks() {return(select_object());}
-	shader_block * get_active_block() {return m_current_selection_block;}
 
-
-	// snap function (snaps given coordinates)
-	void snap_position (double& X, double& Y);
+	// move block to the view center
+	void move_block_to_view_center (shader_block* Block);
 
 	// draw scene
 	void draw_scene(bool valid, int window_width, int window_height);
@@ -90,53 +66,30 @@ public:
 	void mouse_left_button_drag(const int widget_width, const int widget_height);
 	void mouse_left_button_release();
 
-	void select_block();
-	void deselect_block();
-
-	void roll_block();
-	void unroll_block();
-
 	// GUI events
 	sigc::signal<void, shrimp::io_t&> m_shader_property_right_click_signal;
 	sigc::signal<void, std::string&> m_shader_block_right_click_signal;
 	sigc::signal<void, int> m_block_group_right_click_signal;
 	sigc::signal<void> m_empty_right_click_signal;
 
+
 private:
 	// store the scene being drawn
 	services* m_services;
 
 	// store active block
-	std::string m_active_block;
+	shader_block* m_under_mouse_block;
 	shrimp::io_t m_active_property;
 
 	// store active group
-	int m_active_group;
-	int is_selected_group;
+	int m_under_mouse_group;
 
 	// store current connection start
 	shrimp::io_t m_connection_start;
 
-	// draw grid
-	void draw_grid();
-
-	// draws active shader
-	void draw_shader(int window_width, int window_height);
-
-	// draw a rectangle of selection
-	void box_selection(int window_width, int window_height);
-
-	const double m_min_block_height;
-
-	std::string select_object();
-
 	typedef std::map<unsigned long, std::pair<const shader_block*, std::string> > property_indices_t;
 	property_indices_t m_property_indices;
 	unsigned long m_property_index;
-	shrimp::io_t select_property();
-
-	// OpenGL scene transformation
-	void transform_scene();
 
 	// draws a block
 	struct position {
@@ -149,21 +102,6 @@ private:
 		double position_y;
 	};
 	typedef std::map<shrimp::io_t, position> positions_t;
-
-	void draw_block (shader_block* Block, const double X, const double Y, positions_t& PropertyPositions);
-	void draw_block_body (shader_block* Block, const double X, const double Y);
-	void draw_rolled_block_body (shader_block* Block, const double X, const double Y);
-	void draw_block_name (const shader_block* Block, const double X, const double Y);
-	void draw_block_properties (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions, const bool Selection = false);
-	// draws a block property
-	void draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi = false);
-
-	// draws block groups
-	void draw_groups();
-	void draw_group_body (int Group);
-	void draw_group_body (const double X, const double Y,const int current_group);
-
-	int select_group();
 
 	// handle block groups
 	typedef std::map<int, position> group_position_t;
@@ -201,15 +139,69 @@ private:
 	int m_view_width;
 	int m_view_height;
 
+	const double m_min_block_height;
+
 	// options
 	bool m_grid;
 	bool m_snap_to_grid;
 	bool m_overview;
 	int m_font_size;
-	shader_block* m_under_mouse_block;
-	shader_block* m_current_selection_block;
-	int m_current_group;
+
+
+
+	// set the OpenGL view projection
+	void update_projection(int window_width, int window_height);
+
+	// set scene centre
+	void center_scene (const double X, const double Y);
+
+	// move active block by given offset
+	void move_active_block (const double XOffset, const double YOffset);
+
+	// move all blocks by given offset
+	void move_all_blocks (const double XOffset, const double YOffset);
+
+	// move scene by given offset
+	void move_scene (const double XOffset, const double YOffset);
+
+	// move active group
+	void move_active_group (const double XOffset, const double YOffset);
+
+	// snap function (snaps given coordinates)
+	void snap_position (double& X, double& Y);
+
+
+	// draw grid
+	void draw_grid();
+
+	// draws active shader
+	void draw_shader(int window_width, int window_height);
+
+	// draw a rectangle of selection
+	void box_selection(int window_width, int window_height);
+
+	// OpenGL selection
+	shader_block* get_under_mouse_block();
+	shrimp::io_t get_under_mouse_property();
+	int get_under_mouse_group();
+
+	// OpenGL scene transformation
+	void transform_scene();
+
+	void draw_block (shader_block* Block, const double X, const double Y, positions_t& PropertyPositions);
+	void draw_block_body (shader_block* Block, const double X, const double Y);
+	void draw_rolled_block_body (shader_block* Block, const double X, const double Y);
+	void draw_block_name (const shader_block* Block, const double X, const double Y);
+	void draw_block_properties (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions, const bool Selection = false);
+	// draws a block property
+	void draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi = false);
+
+	// draws block groups
+	void draw_groups();
+	void draw_group_body (int Group);
+	void draw_group_body (const double X, const double Y,const int current_group);
 };
+
 
 #endif // _ui_opengl_view_h_
 

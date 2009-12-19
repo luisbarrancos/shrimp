@@ -454,7 +454,7 @@ void application_window::on_menu_edit_cut (fltk::Widget*)
 {
 	if (m_services->selection_size() >= 1)
 	{
-		m_services->cut_selection(m_opengl_view->get_active_block(), m_opengl_view->get_selected_blocks());
+		m_services->cut_selection(m_opengl_view->get_active_block());
 
 		// refresh
 		m_scene_view->redraw();
