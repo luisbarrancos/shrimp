@@ -49,6 +49,7 @@
 #endif
 
 #include <iostream>
+#include <vector>
 #include <cmath>
 #include <limits>
 
@@ -997,7 +998,7 @@ void opengl_view::draw_block (shader_block* Block, const double X, const double 
 void opengl_view::draw_block_body (shader_block* Block, const double X, const double Y)
 {
 	const double width = Block->m_width;
-	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
+	const unsigned long max_properties = std::max (Block->input_count(), static_cast<unsigned long>( Block->m_outputs.size() )); 
 
 	// set minimal block height
 	const double height1 = m_services->is_rolled (Block) ? width : (width * (1.0 / 3.7) * static_cast<double> (max_properties));
@@ -1019,138 +1020,86 @@ void opengl_view::draw_block_body (shader_block* Block, const double X, const do
 		glColor4f (0.33, 0.47, 0.69, alpha);
 
 	const float radius = 0.1;
-	const float step = 0.01;
+	const float step = 0.3;
 
-	glBegin (GL_QUADS);
-		// center rectangle
-		glVertex3d (X + radius, Y - radius, 0);
-		glVertex3d (X + width - radius, Y - radius, 0);
-		glVertex3d (X + width - radius, Y - height + radius, 0);
-		glVertex3d (X + radius, Y - height + radius, 0);
-		// top rectangle
-		glVertex3d ( X + radius, Y - radius, 0);
-		glVertex3d ( X + width - radius, Y - radius, 0);
-		glVertex3d ( X + width - radius, Y, 0);
-		glVertex3d ( X + radius, Y, 0);
-		// bottom rectangle
-		glVertex3d ( X + radius, Y - height + radius, 0);
-		glVertex3d ( X + width - radius, Y - height + radius, 0);
-		glVertex3d ( X + width - radius, Y - height, 0);
-		glVertex3d ( X + radius, Y - height, 0);
-		// left rectangle
-		glVertex3d ( X + radius, Y - radius, 0);
-		glVertex3d ( X, Y - radius, 0);
-		glVertex3d ( X, Y - height + radius, 0);
-		glVertex3d ( X + radius, Y - height + radius, 0);
-		// right rectangle
-		glVertex3d ( X + width, Y - radius, 0);
-		glVertex3d ( X + width - radius, Y - radius, 0);
-		glVertex3d ( X + width - radius, Y - height + radius, 0);
-		glVertex3d ( X + width, Y - height + radius, 0);
-	glEnd();
+	float xcoord, ycoord;
 
-	// corners
-	glBegin (GL_POLYGON);
-		// top left
-		float xcoord = X + radius;
-		float ycoord = Y - radius;
-		glVertex3d (xcoord, ycoord, 0);
-		for (float angle = M_PI/2; angle <= M_PI; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_POLYGON);
-		// top right
-		xcoord = X + width - radius;
-		ycoord = Y - radius;
-		glVertex3d (xcoord, ycoord, 0);
-		for (float angle = 0; angle <= M_PI/2; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_POLYGON);
-		// bottom left
-		xcoord = X + radius;
-		ycoord = Y - height + radius;
-		glVertex3d (xcoord, ycoord, 0);
-		for (float angle = -M_PI; angle <= -M_PI/2; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_POLYGON);
-		// bottom right
-		xcoord = X + width - radius;
-		ycoord = Y - height + radius;
-		glVertex3d (xcoord, ycoord, 0);
-		for (float angle = -M_PI/2; angle <= 0; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
+	// build points array
+	std::vector<float> points;
+
+	// top left
+	xcoord = X + radius;
+	ycoord = Y - radius;
+
+	for (float angle = M_PI; angle >= M_PI/2; angle -= step)
+	{
+		points.push_back( radius * cos(angle) + xcoord );
+		points.push_back( radius * sin(angle) + ycoord );
+		points.push_back( 0 );
+	}
+
+	// top right
+	xcoord = X + width - radius;
+	ycoord = Y - radius;
+
+	for (float angle = M_PI/2; angle >= 0; angle -= step)
+	{
+		points.push_back( radius * cos(angle) + xcoord );
+		points.push_back( radius * sin(angle) + ycoord );
+		points.push_back( 0 );
+	}
+
+	// bottom right
+	xcoord = X + width - radius;
+	ycoord = Y - height + radius;
+
+	for (float angle = 0; angle >= -M_PI/2; angle -= step)
+	{
+		points.push_back( radius * cos(angle) + xcoord );
+		points.push_back( radius * sin(angle) + ycoord );
+		points.push_back( 0 );
+	}
+
+	// bottom left
+	xcoord = X + radius;
+	ycoord = Y - height + radius;
+
+	for (float angle = -M_PI_2; angle >= -M_PI; angle -= step)
+	{
+		points.push_back( radius * cos(angle) + xcoord );
+		points.push_back( radius * sin(angle) + ycoord );
+		points.push_back( 0 );
+	}
+
+	// join up for line
+	points.push_back( X ); points.push_back( Y - radius ); points.push_back( 0 );
+
+	unsigned indices = ( points.size() / 3 );
+
+	glEnableClientState( GL_VERTEX_ARRAY );
+	glVertexPointer( 3, GL_FLOAT, 0, &points[0] ); // const GLvoid *
+
+	// body
+	glDrawArrays( GL_POLYGON, 0, indices );
 
 	// block outline (and external block text)
 	if (Block == m_under_mouse_block)
-	{
-		// mouse is over block, draw the block border as selected
+	{ // mouse is over block, draw the block border as selected
 		glColor3f (1.0, 0.55, 0.0);
-	}
-	else
-	{
+	} else {
 		glColor3f (1.0, 1.0, 1.0);
 	}
-	glBegin (GL_LINES);
-		// top rectangle contour
-		glVertex3d ( X + radius, Y, 0);
-		glVertex3d ( X + width - radius, Y, 0);
-		// bottom rectangle contour
-		glVertex3d ( X + radius, Y - height, 0);
-		glVertex3d ( X + width - radius, Y - height, 0);
-		// left rectangle contour
-		glVertex3d ( X, Y - height + radius, 0);
-		glVertex3d ( X, Y - radius, 0);
-		// right rectangle contour
-		glVertex3d ( X + width, Y - height + radius, 0);
-		glVertex3d ( X + width, Y - radius, 0);
-	glEnd();
 
 	// corners
-	glBegin (GL_LINE_STRIP);
-		// top left
-		xcoord = X + radius;
-		ycoord = Y - radius;
-		for (float angle = M_PI/2; angle <= M_PI; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_LINE_STRIP);
-		// top right
-		xcoord = X + width - radius;
-		ycoord = Y - radius;
-		for (float angle = 0; angle <= M_PI/2; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_LINE_STRIP);
-		// bottom left
-		xcoord = X + radius;
-		ycoord = Y - height + radius;
-		for (float angle = -M_PI; angle <= -M_PI/2; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
-	glBegin (GL_LINE_STRIP);
-		// bottom right
-		xcoord = X + width - radius;
-		ycoord = Y - height + radius;
-		for (float angle = -M_PI/2; angle <= 0; angle += step) {
-			glVertex3d ( radius * cos(angle) + xcoord, radius * sin(angle) + ycoord, 0);
-		}
-	glEnd();
+	glDrawArrays( GL_LINE_STRIP, 0, indices );
+
+	glDisableClientState( GL_VERTEX_ARRAY );
 }
 
 void opengl_view::draw_rolled_block_body (shader_block* Block, const double X, const double Y) {
 
 	const double width = Block->m_width;
-	const unsigned long max_properties = std::max (Block->input_count(), (unsigned long)Block->m_outputs.size()); // cast required by some unusual compilers (e.g. gcc version 4.1.3 20070929 (prerelease))
+	const unsigned long max_properties = std::max (Block->input_count(), static_cast<unsigned long>( Block->m_outputs.size() )); 
 
 	// set minimal block height
 	const double height1 = m_services->is_rolled (Block) ? width : (width * (1.0 /3.7) * static_cast<double> (max_properties));
