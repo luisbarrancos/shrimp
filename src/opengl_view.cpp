@@ -1031,7 +1031,7 @@ void opengl_view::draw_block_body (shader_block* Block, const double X, const do
 	xcoord = X + radius;
 	ycoord = Y - radius;
 
-	for (float angle = M_PI; angle >= M_PI/2; angle -= step)
+	for (float angle = M_PI; angle >= M_PI_2; angle -= step)
 	{
 		points.push_back( radius * cos(angle) + xcoord );
 		points.push_back( radius * sin(angle) + ycoord );
@@ -1042,7 +1042,7 @@ void opengl_view::draw_block_body (shader_block* Block, const double X, const do
 	xcoord = X + width - radius;
 	ycoord = Y - radius;
 
-	for (float angle = M_PI/2; angle >= 0; angle -= step)
+	for (float angle = M_PI_2; angle >= 0; angle -= step)
 	{
 		points.push_back( radius * cos(angle) + xcoord );
 		points.push_back( radius * sin(angle) + ycoord );
@@ -1053,7 +1053,7 @@ void opengl_view::draw_block_body (shader_block* Block, const double X, const do
 	xcoord = X + width - radius;
 	ycoord = Y - height + radius;
 
-	for (float angle = 0; angle >= -M_PI/2; angle -= step)
+	for (float angle = 0; angle >= -M_PI_2; angle -= step)
 	{
 		points.push_back( radius * cos(angle) + xcoord );
 		points.push_back( radius * sin(angle) + ycoord );
