@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -32,9 +32,9 @@
 
 rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
 	shader_block (Name, "", true),
+	root_type ("RIB"),
 	m_scene (Scene),
-	m_AOV (true),
-	root_type ("RIB")
+	m_AOV (true)
 {
 
 	// add inputs
@@ -54,17 +54,121 @@ rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
 }
 
 
-bool rib_root_block::has_surface_network() {
+std::string rib_root_block::show_code()
+{
+	std::string shader_list ("");
 
+	const std::string surface = build_shader_file (SURFACE, "preview_surface");
+	const std::string displacement = build_shader_file (DISPLACEMENT, "preview_displacement");
+	const std::string light = build_shader_file (LIGHT, "preview_light");
+	const std::string volume = build_shader_file (VOLUME, "preview_volume");
+
+	shader_list += surface + "\n" + displacement + "\n" + light + "\n" + volume + "\n";
+
+	return shader_list;
+}
+
+
+void rib_root_block::show_preview (const std::string& SceneDirectory)
+{
+	command_list_t commands;
+	write_scene_and_shaders (SceneDirectory, commands);
+
+	// output commands in a file for debugging purposes
+	const std::string command_file (SceneDirectory + '/' + "command_debug.txt");
+	write_command_list (commands, command_file);
+
+	// execute commands
+	for (command_list_t::const_iterator c = commands.begin(); c != commands.end(); ++c)
+	{
+		system_functions::execute_command (*c);
+	}
+
+/*
+	int pid = fork();
+	if(pid == -1)
+	{
+		std::cout << "Error creating new process\n";
+		//system(cleanup.c_str());
+	}
+	else if(pid == 0)
+	{
+		int status;
+		int pid2 = fork();
+		if(pid2 == -1)
+		{
+			std::cout << "Error creating new process\n";
+		}
+		else if(pid2 == 0)
+		{
+			std::cout << render_command << std::endl;
+			char* argv[4];
+			argv[0] = "sh";
+			argv[1] = "-c";
+			argv[2] = const_cast<char*>(render_command.c_str());
+			argv[3] = 0;
+			execve("/bin/sh", argv, environ);
+			//exit(127);
+		}
+	}
+*/
+}
+
+
+void rib_root_block::export_scene (const std::string& SceneDirectory)
+{
+	// output scene, get commmand list
+	command_list_t commands;
+	write_scene_and_shaders (SceneDirectory, commands);
+
+	// write command file
+	const std::string command_file (SceneDirectory + '/' + "command_list.txt");
+	write_command_list (commands, command_file);
+}
+
+
+void rib_root_block::set_general_statements (const std::string& Statements)
+{
+	m_general_statements = Statements;
+}
+
+
+std::string rib_root_block::get_general_statements()
+{
+	return m_general_statements;
+}
+
+
+void rib_root_block::set_imager_statement (const std::string& Statement)
+{
+	m_imager_statement = Statement;
+}
+
+
+std::string rib_root_block::get_imager_statement()
+{
+	return m_imager_statement;
+}
+
+
+void rib_root_block::set_AOV (const bool State)
+{
+	m_AOV = State;
+}
+
+
+bool rib_root_block::get_AOV()
+{
+	return m_AOV;
+}
+
+
+
+bool rib_root_block::has_connected_parent (const std::string& PadName)
+{
 	std::string foo;
-
-	// check for Ci's input parent
-	if (m_scene->get_parent (name(), "Ci", foo)) {
-		return true;
-	}
-
-	// check for Oi's input parent
-	if (m_scene->get_parent (name(), "Oi", foo)) {
+	if (m_scene->get_parent (name(), PadName, foo))
+	{
 		return true;
 	}
 
@@ -72,77 +176,12 @@ bool rib_root_block::has_surface_network() {
 }
 
 
-bool rib_root_block::has_displacement_network() {
-
-	std::string foo;
-
-	// check for P's input parent
-	if (m_scene->get_parent (name(), "P", foo)) {
-		return true;
-	}
-
-	// check for N's input parent
-	if (m_scene->get_parent (name(), "N", foo)) {
-		return true;
-	}
-
-	return false;
-}
-
-
-bool rib_root_block::has_light_network() {
-
-	std::string foo;
-
-	// check for Cl's input parent
-	if (m_scene->get_parent (name(), "Cl", foo)) {
-		return true;
-	}
-
-	// check for Ol's input parent
-	if (m_scene->get_parent (name(), "Ol", foo)) {
-		return true;
-	}
-
-	return false;
-}
-
-
-bool rib_root_block::has_atmosphere_network() {
-
-	std::string foo;
-
-	// check for Cv's input parent
-	if (m_scene->get_parent (name(), "Cv", foo)) {
-		return true;
-	}
-
-	// check for Ov's input parent
-	if (m_scene->get_parent (name(), "Ov", foo)) {
-		return true;
-	}
-
-	return false;
-}
-
-
-bool rib_root_block::has_AOV_input (std::string& ParentName) {
-
-	// check for an input parent
-	if (m_scene->get_parent (name(), "AOV", ParentName)) {
-		return true;
-	}
-
-	return false;
-}
-
-
-std::string rib_root_block::build_shader_file (const shader_t ShaderType, const std::string& ShaderName) {
-
-	// get the list of blocks composing the shader
+shrimp::shader_blocks_t rib_root_block::get_all_shader_blocks (const shader_t ShaderType)
+{
 	shrimp::shader_blocks_t shader_blocks;
-	switch (ShaderType) {
 
+	switch (ShaderType)
+	{
 		case SURFACE:
 		{
 			// get surface parents (Ci and Oi)
@@ -152,15 +191,16 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Oi_parent = m_scene->get_parent (name(), "Oi", Oi_output_name);
 
 			// make sure there's something to build
-			if (!Ci_parent && !Oi_parent) {
-
+			if (!Ci_parent && !Oi_parent)
+			{
 				log() << info << "there's no surface block connected to the root block." << std::endl;
-				return "";
 			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Ci_parent, shader_blocks);
-			m_scene->upward_blocks (Oi_parent, shader_blocks);
+			else
+			{
+				// make the list of connected blocks
+				m_scene->upward_blocks (Ci_parent, shader_blocks);
+				m_scene->upward_blocks (Oi_parent, shader_blocks);
+			}
 		}
 		break;
 
@@ -173,15 +213,16 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* P_parent = m_scene->get_parent (name(), "P", P_output_name);
 
 			// make sure there's something to build
-			if (!N_parent && !P_parent) {
-
+			if (!N_parent && !P_parent)
+			{
 				log() << info << "there's no displacement block connected to the root block." << std::endl;
-				return "";
 			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (N_parent, shader_blocks);
-			m_scene->upward_blocks (P_parent, shader_blocks);
+			else
+			{
+				// make the list of connected blocks
+				m_scene->upward_blocks (N_parent, shader_blocks);
+				m_scene->upward_blocks (P_parent, shader_blocks);
+			}
 		}
 		break;
 
@@ -194,15 +235,16 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Ol_parent = m_scene->get_parent (name(), "Ol", Ol_output_name);
 
 			// make sure there's something to build
-			if (!Cl_parent && !Ol_parent) {
-
+			if (!Cl_parent && !Ol_parent)
+			{
 				log() << info << "there's no light block connected to the root block." << std::endl;
-				return "";
 			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Cl_parent, shader_blocks);
-			m_scene->upward_blocks (Ol_parent, shader_blocks);
+			else
+			{
+				// make the list of connected blocks
+				m_scene->upward_blocks (Cl_parent, shader_blocks);
+				m_scene->upward_blocks (Ol_parent, shader_blocks);
+			}
 		}
 		break;
 
@@ -215,21 +257,34 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 			shader_block* Ov_parent = m_scene->get_parent (name(), "Ov", Ov_output_name);
 
 			// make sure there's something to build
-			if (!Cv_parent && !Ov_parent) {
-
+			if (!Cv_parent && !Ov_parent)
+			{
 				log() << info << "there's no atmosphere block connected to the root block." << std::endl;
-				return "";
 			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Cv_parent, shader_blocks);
-			m_scene->upward_blocks (Ov_parent, shader_blocks);
+			else
+			{
+				// make the list of connected blocks
+				m_scene->upward_blocks (Cv_parent, shader_blocks);
+				m_scene->upward_blocks (Ov_parent, shader_blocks);
+			}
 		}
 		break;
 
 		default:
 			log() << error << "unhandled shader type.";
-			return "";
+	}
+
+	return shader_blocks;
+}
+
+
+std::string rib_root_block::build_shader_file (const shader_t ShaderType, const std::string& ShaderName)
+{
+	// get the list of blocks composing the shader
+	shrimp::shader_blocks_t shader_blocks = get_all_shader_blocks (ShaderType);
+	if (!shader_blocks.size())
+	{
+		return "";
 	}
 
 	// start code
@@ -646,96 +701,10 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName) {
 
 	// get the list of blocks composing the shader
-	shrimp::shader_blocks_t shader_blocks;
-	switch (ShaderType) {
-
-		case SURFACE:
-		{
-			// get surface parents (Ci and Oi)
-			std::string Ci_output_name;
-			shader_block* Ci_parent = m_scene->get_parent (name(), "Ci", Ci_output_name);
-			std::string Oi_output_name;
-			shader_block* Oi_parent = m_scene->get_parent (name(), "Oi", Oi_output_name);
-
-			// make sure there's something to build
-			if (!Ci_parent && !Oi_parent) {
-
-				log() << info << "there's no surface block connected to the root block." << std::endl;
-				return "";
-			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Ci_parent, shader_blocks);
-			m_scene->upward_blocks (Oi_parent, shader_blocks);
-		}
-		break;
-
-		case DISPLACEMENT:
-		{
-			// get displacement parents (N and P)
-			std::string N_output_name;
-			shader_block* N_parent = m_scene->get_parent (name(), "N", N_output_name);
-			std::string P_output_name;
-			shader_block* P_parent = m_scene->get_parent (name(), "P", P_output_name);
-
-			// make sure there's something to build
-			if (!N_parent && !P_parent) {
-
-				log() << info << "there's no displacement block connected to the root block." << std::endl;
-				return "";
-			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (N_parent, shader_blocks);
-			m_scene->upward_blocks (P_parent, shader_blocks);
-		}
-		break;
-
-		case LIGHT:
-		{
-			// get light parents (Cl and Ol)
-			std::string Cl_output_name;
-			shader_block* Cl_parent = m_scene->get_parent (name(), "Cl", Cl_output_name);
-			std::string Ol_output_name;
-			shader_block* Ol_parent = m_scene->get_parent (name(), "Ol", Ol_output_name);
-
-			// make sure there's something to build
-			if (!Cl_parent && !Ol_parent) {
-
-				log() << info << "there's no light block connected to the root block." << std::endl;
-				return "";
-			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Cl_parent, shader_blocks);
-			m_scene->upward_blocks (Ol_parent, shader_blocks);
-		}
-		break;
-
-		case VOLUME:
-		{
-			// get atmosphere parents (Cv and Ov)
-			std::string Cv_output_name;
-			shader_block* Cv_parent = m_scene->get_parent (name(), "Cv", Cv_output_name);
-			std::string Ov_output_name;
-			shader_block* Ov_parent = m_scene->get_parent (name(), "Ov", Ov_output_name);
-
-			// make sure there's something to build
-			if (!Cv_parent && !Ov_parent) {
-
-				log() << info << "there's no atmosphere block connected to the root block." << std::endl;
-				return "";
-			}
-
-			// make the list of connected blocks
-			m_scene->upward_blocks (Cv_parent, shader_blocks);
-			m_scene->upward_blocks (Ov_parent, shader_blocks);
-		}
-		break;
-
-		default:
-			log() << error << "unhandled shader type.";
-			return "";
+	shrimp::shader_blocks_t shader_blocks = get_all_shader_blocks (ShaderType);
+	if (!shader_blocks.size())
+	{
+		return "";
 	}
 
 	// start code
@@ -830,21 +799,6 @@ std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, cons
 	meta_file += "</k3dml>\n";
 
 	return meta_file;
-}
-
-
-std::string rib_root_block::show_code() {
-
-	std::string shader_list ("");
-
-	const std::string surface = build_shader_file (SURFACE, "preview_surface");
-	const std::string displacement = build_shader_file (DISPLACEMENT, "preview_displacement");
-	const std::string light = build_shader_file (LIGHT, "preview_light");
-	const std::string volume = build_shader_file (VOLUME, "preview_volume");
-
-	shader_list += surface + "\n" + displacement + "\n" + light + "\n" + volume + "\n";
-
-	return shader_list;
 }
 
 
@@ -994,7 +948,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// prepare AOV preview (if connected)
 	std::string parent_name ("");
-	bool AOV = get_AOV() && has_AOV_input (parent_name);
+	bool AOV = get_AOV() && has_connected_parent ("AOV");
 
 	// write the RIB file
 	file << "# Shrimp preview scene\n";
@@ -1071,8 +1025,8 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 }
 
 
-void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList) {
-
+void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList)
+{
 	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
 
 	// compile the shaders from the template scene
@@ -1080,10 +1034,10 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	prefs.load();
 	std::string scene_template (prefs.get_RIB_scene());
 
-	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
-	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
-	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "LightSource") );
-	CommandList.push_back( parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
+	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
+	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
+	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "LightSource") );
+	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
 
 	// build the default shaders
 	CommandList.push_back( shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path) );
@@ -1095,8 +1049,8 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	std::string light_shader ("");
 	std::string atmosphere_shader ("");
 
-	if (has_surface_network()) {
-
+	if (has_connected_parent ("Ci") || has_connected_parent ("Oi"))
+	{
 		// RenderMan surface shader
 		surface_shader = "preview_surface";
 		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
@@ -1106,8 +1060,8 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		export_k3d_slmeta (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
 	}
 
-	if (has_displacement_network()) {
-
+	if (has_connected_parent ("P") || has_connected_parent ("N"))
+	{
 		// RenderMan displacement shader
 		displacement_shader = "preview_displacement";
 		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
@@ -1117,8 +1071,8 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		export_k3d_slmeta (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
 	}
 
-	if (has_light_network()) {
-
+	if (has_connected_parent ("Cl") || has_connected_parent ("Ol"))
+	{
 		// RenderMan light shader
 		light_shader = "preview_light";
 		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
@@ -1128,8 +1082,8 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		export_k3d_slmeta (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
 	}
 
-	if (has_atmosphere_network()) {
-
+	if (has_connected_parent ("Cv") || has_connected_parent ("Ov"))
+	{
 		// RenderMan atmosphere shader
 		atmosphere_shader = "preview_atmosphere";
 		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
@@ -1146,99 +1100,6 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	CommandList.push_back( scene_rendering_command (rib_preview, Directory) );
 }
 
-
-void rib_root_block::show_preview (const std::string& SceneDirectory) {
-
-	command_list_t commands;
-	write_scene_and_shaders (SceneDirectory, commands);
-
-	// output commands in a file for debugging purposes
-	const std::string command_file (SceneDirectory + '/' + "command_debug.txt");
-	write_command_list (commands, command_file);
-
-	// execute commands
-	for (command_list_t::const_iterator c = commands.begin(); c != commands.end(); ++c) {
-
-		system_functions::execute_command (*c);
-	}
-
-/*
-	int pid = fork();
-	if(pid == -1)
-	{
-		std::cout << "Error creating new process\n";
-		//system(cleanup.c_str());
-	}
-	else if(pid == 0)
-	{
-		int status;
-		int pid2 = fork();
-		if(pid2 == -1)
-		{
-			std::cout << "Error creating new process\n";
-		}
-		else if(pid2 == 0)
-		{
-			std::cout << render_command << std::endl;
-			char* argv[4];
-			argv[0] = "sh";
-			argv[1] = "-c";
-			argv[2] = const_cast<char*>(render_command.c_str());
-			argv[3] = 0;
-			execve("/bin/sh", argv, environ);
-			//exit(127);
-		}
-	}
-*/
-}
-
-
-void rib_root_block::export_scene (const std::string& SceneDirectory) {
-
-	// output scene, get commmand list
-	command_list_t commands;
-	write_scene_and_shaders (SceneDirectory, commands);
-
-	// write command file
-	const std::string command_file (SceneDirectory + '/' + "command_list.txt");
-	write_command_list (commands, command_file);
-}
-
-
-void rib_root_block::set_general_statements (const std::string& Statements) {
-
-	m_general_statements = Statements;
-}
-
-
-std::string rib_root_block::get_general_statements() {
-
-	return m_general_statements;
-}
-
-
-void rib_root_block::set_imager_statement (const std::string& Statement) {
-
-	m_imager_statement = Statement;
-}
-
-
-std::string rib_root_block::get_imager_statement() {
-
-	return m_imager_statement;
-}
-
-
-void rib_root_block::set_AOV (const bool State) {
-
-	m_AOV = State;
-}
-
-
-bool rib_root_block::get_AOV() {
-
-	return m_AOV;
-}
 
 std::string rib_root_block::parse_scene_shader (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType) {
 
