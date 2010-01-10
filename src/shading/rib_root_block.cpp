@@ -344,12 +344,23 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 
 		// get output values (as local or output variables)
 		//TODO test that each name is unique
-		for (shader_block::properties_t::const_iterator output = sb->m_outputs.begin(); output != sb->m_outputs.end(); ++output) {
+		for (shader_block::properties_t::const_iterator output = sb->m_outputs.begin(); output != sb->m_outputs.end(); ++output)
+		{
 
-			if (!output->m_shader_output) {
-				locals += "\t" + sb->output_type (output->m_name) + " " +
-						sb->sl_name() + "_" + output->m_name + ";\n";
-			} else {
+			if (!output->m_shader_output)
+			{
+				std::string otype = sb->output_type (output->m_name);
+				std::string array_size = "";
+				if (otype == "array")
+				{
+					otype = sb->get_output_type_extension (output->m_name);
+					array_size = "[" + string_cast (sb->get_output_type_extension_size (output->m_name)) + "]";
+				}
+
+				locals += "\t" + otype + " " + sb->sl_name() + "_" + output->m_name + array_size + ";\n";
+			}
+			else
+			{
 				shader_outputs += "\t\toutput ";
 				const std::string storage = sb->output_storage (output->m_name);
 				shader_outputs += storage + " ";
