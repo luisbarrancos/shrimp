@@ -420,10 +420,12 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 	// open function and write locals
 	shader_code += "{\n";
 	shader_code += "\tINIT_AOV_PARAMETERS\n";
+	shader_code += "\n";
 	shader_code += "\t/* Local variables */\n";
 	shader_code += locals;
 
-	shader_code += "/* Blocks follow */\n";
+	shader_code += "\n";
+	shader_code += "\t/* Blocks follow */\n";
 
 	// actual function code
 	switch (ShaderType) {
@@ -589,12 +591,126 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 }
 
 
-void rib_root_block::build_shader_code (shader_block* Block, std::string& ShaderCode) {
+std::set<std::string> parse_array_variables (const std::string& BlockCode)
+{
+	std::string code = remove_all_spaces (BlockCode);
 
+	std::set<std::string> variables;
+
+	std::string::size_type variable_beginning;
+	std::string::size_type variable_end;
+	for (std::string::size_type c = 1; c < code.size() - 1; ++c)
+	{
+		if (code[c - 1] == '$' && code[c] == '(')
+		{
+			variable_beginning = c + 1;
+		}
+
+		if (code[c] == ')' && code[c + 1] == '[')
+		{
+			variable_end = c - 1;
+			std::string variable_name = std::string (code, variable_beginning, variable_end - variable_beginning + 1);
+			variables.insert (variable_name);
+		}
+	}
+
+	return variables;
+}
+
+
+std::string create_array_value_variables (const std::string code)
+{
+return code;
+	// Mini parser to find arrays
+	std::string array_name = "foo";
+	std::string::size_type previous_line_end = 0;
+	bool in_array = false;
+	std::string::size_type array_start;
+	typedef std::map<std::string::size_type, std::set<std::string> > arrays_t;
+	arrays_t arrays;
+
+	char previous_character = ' ';
+	for (std::string::size_type n = 0; n < code.size(); ++n)
+	{
+		char c = code[n];
+		if (c == ' ' || c == '\n' || c == '\t' || c == '\r')
+		{
+			continue;
+		}
+
+		if (c == ';')
+		{
+			previous_line_end = n;
+		}
+		else if (c == '=')
+		{
+		}
+		else if (c == '{')
+		{
+			if (previous_character == '=')
+			{
+				in_array = true;
+				array_start = n;
+			}
+		}
+		else if (c == '}')
+		{
+			if (in_array)
+			{
+				const std::string array = std::string (code, array_start, n);
+				arrays.insert (std::make_pair (previous_line_end, parse_array_variables (array)));
+				in_array = false;
+			}
+		}
+
+		previous_character = c;
+	}
+
+	// replace variables
+	std::string code2 = code;
+	std::string::size_type offset = 0;
+
+	for (arrays_t::const_iterator a = arrays.begin(); a != arrays.end(); ++a)
+	{
+		std::string::size_type line_end = a->first;
+		std::set<std::string> variables = a->second;
+
+		if (variables.size() == 0)
+		{
+			continue;
+		}
+
+		// build declarations
+		std::string declarations;
+		for (std::set<std::string>::const_iterator v = variables.begin(); v != variables.end(); ++v)
+		{
+			declarations += "\n" + array_name + '_' + *v + " = $(" + *v + ");";
+		}
+
+		// insert them in the code
+		if (line_end == 0)
+		{
+			code2 = declarations + "\n" + code2;
+		}
+		else
+		{
+			code2.insert (code2.begin() + line_end + offset + 1, declarations.begin(), declarations.end());
+		}
+
+		offset += declarations.size();
+	}
+
+//log() << error << "AFTER:" << code2 << std::endl;
+	return code2;
+}
+
+
+void rib_root_block::build_shader_code (shader_block* Block, std::string& ShaderCode)
+{
 	log() << aspect << "building code for block '" << Block->name() << "'" << std::endl;
 
 	// get block's code
-	std::string code = Block->get_code();
+	std::string code = create_array_value_variables (Block->get_code());
 
 	// replace block name
 	replace_variable (code, "$(blockname)", Block->sl_name());

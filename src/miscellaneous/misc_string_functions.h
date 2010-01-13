@@ -75,7 +75,7 @@ inline const bool from_string(const std::string& Value, const bool& Default)
 
 // Other functions
 
-inline void replace_variable(std::string& Text, const std::string& Old, const std::string& New)
+inline void replace_variable (std::string& Text, const std::string& Old, const std::string& New)
 {
 	size_t found;
 	size_t pos = 0;
@@ -98,7 +98,7 @@ inline std::string change_file_extension(const std::string& File, const std::str
     return std::string(File, 0, File.rfind('.')) + '.' + NewExtension;
 }
 
-inline std::string trim(const std::string& String)
+inline std::string trim (const std::string& String)
 {
 	if(String.empty())
 		return String;
@@ -116,6 +116,31 @@ inline std::string trim(const std::string& String)
 		trimmed.erase(end+1);
 
 	return trimmed;
+}
+
+inline std::string remove_all_spaces (const std::string& String)
+{
+	if(String.empty())
+		return String;
+
+	std::string no_space (String);
+	const char to_remove[] = " \t\n";
+
+	size_t found;
+	size_t pos = 0;
+
+	do
+	{
+		found = no_space.find_first_of (to_remove);
+		if (found != no_space.npos)
+		{
+			no_space.replace (found, 1, "");
+			pos = found;
+		}
+	}
+	while (found != no_space.npos);
+
+	return no_space;
 }
 
 #endif // _misc_string_functions_h_
