@@ -194,7 +194,7 @@ private:
 	void draw_block_name (const shader_block* Block, const double X, const double Y);
 	void draw_block_properties (const shader_block* Block, const double X, const double Y, positions_t& PropertyPositions, const bool Selection = false);
 	// draws a block property
-	void draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi = false);
+	void draw_property (const std::string& Name, const std::string& Type, bool Shader_param,  const double X, const double Y, const double Size, const bool Multi = false);
 
 	// draws block groups
 	void draw_groups();

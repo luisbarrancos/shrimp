@@ -59,10 +59,6 @@ bool point_between (double a, double b, double c)
 	double lb = a <= b;
 	double ub = b <= c;
 	double ans = lb && ub;
-// printf("a %f\n",a);
-// printf("b %f\n",b);
-// printf("c %f\n",c);
-// printf("point_between %f\n", ans);
 	return ans;
 }
 
@@ -71,7 +67,6 @@ bool point_inside(double x,double y,double XX, double YY, double WW,double HH)
 	bool in_lr = point_between (XX, x, WW);
 	bool in_tb = point_between (YY, y, HH);
 	bool inside = in_lr && in_tb;
-// printf("point_inside %d\n",inside);
 	return inside;
 }
 
@@ -1178,6 +1173,8 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 		}
 
 		std::string type = Block->input_type (input->m_name);
+		bool shader_param = (Block->is_shader_parameter (input->m_name) && !Block->m_root_block);
+
 		// FIXME: Name.c_str() is input name, not description
 		// show property name
 		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.75); // scale with zoom level
@@ -1188,7 +1185,7 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 			type = "selected";
 
 		if (input->m_multi_operator_parent_name.empty())
-			draw_property (input->m_name, type, start_x, start_y, property_size, input->is_multi_operator());
+			draw_property (input->m_name, type, shader_param, start_x, start_y, property_size, input->is_multi_operator());
 
 		PropertyPositions.insert (std::make_pair (shrimp::io_t (Block->name(), input->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
 
@@ -1207,11 +1204,12 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 		}
 
 		std::string type = Block->output_type (output->m_name);
+		bool shader_param = false;
 
 		if (std::make_pair (Block->name(), output->m_name) == m_active_property)
 			type = "selected";
 
-		draw_property (output->m_name, type, start_x, start_y, property_size);
+		draw_property (output->m_name, type, shader_param, start_x, start_y, property_size);
 		PropertyPositions.insert (std::make_pair (shrimp::io_t (Block->name(), output->m_name), position (start_x + property_size / 2, start_y - property_size / 2)));
 
 		start_y -= property_size * (3.0/2.0);
@@ -1219,10 +1217,11 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 
 }
 
-void opengl_view::draw_property (const std::string& Name, const std::string& Type, const double X, const double Y, const double Size, const bool Multi)
+void opengl_view::draw_property (const std::string& Name, const std::string& Type, bool shader_param, const double X, const double Y, const double Size, const bool Multi)
 {
 	const double third = Size / 3.0;
 	const double small = Size / 6.0;
+
 
 	if ("selected" == Type) {
 
@@ -1244,6 +1243,18 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("colour" == Type || "color" == Type) {
 
 		// R G B
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+		}
+		else{
 		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1251,6 +1262,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+			}
 
 		glBegin (GL_QUADS);
 			glColor3f (1.0, 0.0, 0.0);
@@ -1275,6 +1287,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("point" == Type) {
 
 		// circle
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.45, 0.83, 0.97);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else{
 		glColor3f (0.45, 0.83, 0.97);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1282,6 +1314,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+			}
 
 		glColor3f (0.03, 0.14, 0.17);
 		const int sections = 16;
@@ -1298,6 +1331,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("vector" == Type)
 	{
 		// arrow
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.80, 0.91, 0.31);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else{
 		glColor3f (0.80, 0.91, 0.31);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1305,6 +1358,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 
 		glColor3f (0.11, 0.12, 0.09);
 		glBegin (GL_LINES);
@@ -1321,6 +1375,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("normal" == Type) {
 
 		// arrow
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.97, 0.74, 0.28);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else {
 		glColor3f (0.97, 0.74, 0.28);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1328,6 +1402,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 
 		glColor3f (0.14, 0.11, 0.04);
 		glBegin (GL_LINES);
@@ -1349,6 +1424,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("string" == Type) {
 
 		// two horizontal lines
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.6, 0.6, 0.6);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else {
 		glColor3f (0.6, 0.6, 0.6);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1356,6 +1451,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
@@ -1369,6 +1465,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("matrix" == Type) {
 
 		// two horizontal lines
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.79, 0.66, 0.89);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else {
 		glColor3f (0.79, 0.66, 0.89);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1376,6 +1492,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
@@ -1389,6 +1506,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	else if ("array" == Type) {
 
 		// Grey square
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.8, 0.8, 0.8);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else {
 		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1396,6 +1533,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 
 		glBegin (GL_QUADS);
 			glColor3f (0.00, 0.00, 0.00);
@@ -1422,6 +1560,26 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 	}
 	else { // float
 		// blank
+
+		if (shader_param){
+		// Over orange square for shader parameter
+		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_QUADS);
+			glVertex3d (X, Y, 0);
+			glVertex3d (X + Size, Y, 0);
+			glVertex3d (X + Size, Y - Size, 0);
+			glVertex3d (X, Y - Size, 0);
+		glEnd();
+
+		glColor3f (0.8, 0.8, 0.8);
+		glBegin (GL_QUADS);
+			glVertex3d (X + small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - small, 0);
+			glVertex3d (X + Size - small, Y - Size + small, 0);
+			glVertex3d (X + small, Y - Size + small, 0);
+		glEnd();
+		}
+		else {
 		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1429,6 +1587,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
+		}
 	}
 
 	if (Multi) {
@@ -1447,6 +1606,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X - small, Y + small, 0);
 		glEnd();
 	}
+
 }
 
 void opengl_view::draw_groups()
