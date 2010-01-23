@@ -202,7 +202,7 @@ application_window::application_window(services* services_instance, opengl_view*
 
 		right_menu_bar->end();
 
-				// block menu
+		// block menu
 		m_block_menu.tooltip ("Add a predefined block to the scene");
 		m_block_menu.callback ((fltk::Callback*)block_menu_callback);
 		m_block_menu.begin();
@@ -700,8 +700,8 @@ void application_window::build_help (const block_tree_node_t& tree_node,ofstream
 
 	string line;
 	string blockname;
-	fltk::ItemGroup* current_group = new fltk::ItemGroup (tree_node.node_name.c_str());
-	current_group->begin();
+	//fltk::ItemGroup* current_group = new fltk::ItemGroup (tree_node.node_name.c_str());
+	//current_group->begin();
 
 	// check whether the directory has children
 	for (block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
@@ -731,7 +731,7 @@ void application_window::build_help (const block_tree_node_t& tree_node,ofstream
 
 
 	}
-	current_group->end();
+	//current_group->end();
 
 }
 
