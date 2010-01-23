@@ -12,5 +12,5 @@
 	#endif
 	#undef $(blockname)_$(value:type)
 	</rsl_code>
-	<usage>1 dimensional signed noise. SNoise is exactly like Noise, excepçt that the result defaults to the range [-&quot;amplitude&quot;,&quot;amplitude&quot;], rather than [0,&quot;amplitude&quot;]. The average value is therefore zero. The parameter &quot;amplitude&quot; defaults to 1, so the noise range defaults to [-1,1].</usage>
+	<usage>1 dimensional signed noise. SNoise is exactly like Noise, except that the result defaults to the range [-&quot;amplitude&quot;,&quot;amplitude&quot;], rather than [0,&quot;amplitude&quot;]. The average value is therefore zero. The parameter &quot;amplitude&quot; defaults to 1, so the noise range defaults to [-1,1].</usage>
 </shrimp>

@@ -38,6 +38,10 @@
 #include "../shading/scene.h"
 #include "ui_scene_view.h"
 
+#include <fstream>
+#include <iostream>
+using namespace std;
+
 class application_window;
 static application_window* application_pointer = 0;
 
@@ -120,6 +124,7 @@ private:
 
 
 	void build_menu (const block_tree_node_t& tree);
+	void build_help (const block_tree_node_t& tree, std::ofstream& out, std::ofstream& outc);
 
 	// update renderer, display and scene choosers
 	void set_renderer_chooser_value (const std::string RendererCode);
@@ -167,6 +172,7 @@ private:
 
 	static void on_menu_file_close (fltk::Widget*, void*);
 	static void on_menu_file_quit (fltk::Widget*, void*);
+	static void on_menu_help_help (fltk::Widget*, void*);
 	static void on_menu_help_about (fltk::Widget*, void*);
 
 

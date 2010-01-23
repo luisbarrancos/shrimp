@@ -51,7 +51,7 @@
 
 #include <fstream>
 #include <iostream>
-
+using namespace std;
 
 application_window::application_window(services* services_instance, opengl_view* opengl_view_instance) :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
@@ -191,29 +191,54 @@ application_window::application_window(services* services_instance, opengl_view*
 			fltk::ItemGroup* menu_help = new fltk::ItemGroup ("&Help");
 			menu_help->begin();
 
+				fltk::Item* menu_help_help = new fltk::Item ("Help");
+				menu_help_help->callback ((fltk::Callback*)on_menu_help_help);
+
 				fltk::Item* menu_help_about = new fltk::Item ("About");
 				menu_help_about->callback ((fltk::Callback*)on_menu_help_about);
+
 
 			menu_help->end();
 
 		right_menu_bar->end();
 
-		// block menu
+				// block menu
 		m_block_menu.tooltip ("Add a predefined block to the scene");
 		m_block_menu.callback ((fltk::Callback*)block_menu_callback);
 		m_block_menu.begin();
+
+		ofstream out("./doc/index.xml");
+		ofstream outc("./doc/content.xml");
+
+		if(out && outc) {
+					out << "<?xml-stylesheet type=\"text/xsl\" href=\"block.xsl\"?>" << endl;
+					out << "<block>" << endl;
+					outc << "<?xml-stylesheet type=\"text/xsl\" href=\"content.xsl\"?>" << endl;
+					outc << "<block>" << endl;
+					}
 
 			block_tree_node_t root = m_services->get_block_hierarchy();
 			for (block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
 				tree_node != root.child_nodes.end(); ++tree_node) {
 
 				build_menu (*tree_node);
+				if(!out) {
+							cout << "Cannot open file.\n";
+							}
+						else {
+							build_help (*tree_node,out,outc);
+						}
 			}
-
+			out << "</block>" << endl;
+			out.close();
+			outc << "</block>" << endl;
+			outc.close();
 			// add custom block entry
 			new fltk::Item ("Custom block");
 
 		m_block_menu.end();
+
+			// help file generation
 
 		// load data from preferences
 		general_options prefs;
@@ -547,6 +572,12 @@ void application_window::on_menu_help_about (fltk::Widget*, void*) {
 	o->show();
 }
 
+void application_window::on_menu_help_help (fltk::Widget*, void*) {
+
+// Open index.html file
+	system("firefox -url \"./doc/index.html\"&");
+}
+
 void application_window::on_zoom (fltk::Slider* o, void*) {
 
 	m_opengl_view->set_size ((double)o->value());
@@ -662,6 +693,46 @@ void application_window::build_menu (const block_tree_node_t& tree_node) {
 	}
 
 	current_group->end();
+}
+
+void application_window::build_help (const block_tree_node_t& tree_node,ofstream& out,ofstream& outc) {
+
+
+	string line;
+	string blockname;
+	fltk::ItemGroup* current_group = new fltk::ItemGroup (tree_node.node_name.c_str());
+	current_group->begin();
+
+	// check whether the directory has children
+	for (block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
+		sub_node != tree_node.child_nodes.end(); ++sub_node) {
+
+		build_help (*sub_node,out,outc);
+	}
+
+	for (default_block_list_t::const_iterator block = tree_node.blocks.begin(); block != tree_node.blocks.end(); ++block) {
+		//new fltk::Item (block->name.c_str());
+		//create index.xml file
+		ifstream in (block->path.c_str());
+		blockname = block->name.c_str();
+		if (in.is_open()){
+			while (! in.eof() )
+			    {
+			      getline (in,line);
+			      out << line << endl;
+
+			    }
+				outc << "<shrimp name=\""<< blockname <<"\""<<" path="<<"\"." << block->path.c_str() <<"\"></shrimp>" << endl;
+			    in.close();
+			  }
+		else cout << "Unable to open file";
+		//out << "<block name="<<"\""<< block->name.c_str() <<"\"" <<" path="<<"\"." << block->path.c_str() <<"\""<<">" <<"</block>" << endl;
+
+
+
+	}
+	current_group->end();
+
 }
 
 void application_window::block_menu_action (fltk::Widget* w, void*) {

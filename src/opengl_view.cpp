@@ -1247,14 +1247,20 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
 		glEnd();
 		}
-		else{
 		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
@@ -1262,7 +1268,7 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X + Size, Y - Size, 0);
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
-			}
+
 
 		glBegin (GL_QUADS);
 			glColor3f (1.0, 0.0, 0.0);
@@ -1291,6 +1297,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.45, 0.83, 0.97);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1298,23 +1320,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.45, 0.83, 0.97);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else{
-		glColor3f (0.45, 0.83, 0.97);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-			}
 
 		glColor3f (0.03, 0.14, 0.17);
 		const int sections = 16;
@@ -1335,6 +1340,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.80, 0.91, 0.31);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1342,23 +1363,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.80, 0.91, 0.31);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else{
-		glColor3f (0.80, 0.91, 0.31);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 
 		glColor3f (0.11, 0.12, 0.09);
 		glBegin (GL_LINES);
@@ -1379,6 +1383,21 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+		glColor3f (0.97, 0.74, 0.28);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1386,23 +1405,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.97, 0.74, 0.28);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else {
-		glColor3f (0.97, 0.74, 0.28);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 
 		glColor3f (0.14, 0.11, 0.04);
 		glBegin (GL_LINES);
@@ -1428,6 +1430,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.6, 0.6, 0.6);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1435,23 +1453,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.6, 0.6, 0.6);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else {
-		glColor3f (0.6, 0.6, 0.6);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
@@ -1469,6 +1470,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.79, 0.66, 0.89);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1476,23 +1493,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.79, 0.66, 0.89);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else {
-		glColor3f (0.79, 0.66, 0.89);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 
 		glColor3f (0.0, 0.0, 0.0);
 		glBegin (GL_LINES);
@@ -1510,6 +1510,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1517,23 +1533,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.8, 0.8, 0.8);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else {
-		glColor3f (0.8, 0.8, 0.8);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 
 		glBegin (GL_QUADS);
 			glColor3f (0.00, 0.00, 0.00);
@@ -1564,6 +1563,22 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		if (shader_param){
 		// Over orange square for shader parameter
 		glColor3f (1.0, 0.55, 0.0 );
+		glBegin (GL_LINES);
+			glVertex3d (X - small, Y + small, 0);
+			glVertex3d (X + Size + small, Y + small, 0);
+
+			glVertex3d (X + Size + small, Y + small, 0);
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+
+			glVertex3d (X + Size + small, Y - Size - small, 0);
+			glVertex3d (X - small, Y - Size - small, 0);
+
+			glVertex3d (X - small, Y - Size - small, 0);
+			glVertex3d (X - small, Y + small, 0);
+		glEnd();
+		}
+
+		glColor3f (0.8, 0.8, 0.8);
 		glBegin (GL_QUADS);
 			glVertex3d (X, Y, 0);
 			glVertex3d (X + Size, Y, 0);
@@ -1571,23 +1586,6 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 			glVertex3d (X, Y - Size, 0);
 		glEnd();
 
-		glColor3f (0.8, 0.8, 0.8);
-		glBegin (GL_QUADS);
-			glVertex3d (X + small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - small, 0);
-			glVertex3d (X + Size - small, Y - Size + small, 0);
-			glVertex3d (X + small, Y - Size + small, 0);
-		glEnd();
-		}
-		else {
-		glColor3f (0.8, 0.8, 0.8);
-		glBegin (GL_QUADS);
-			glVertex3d (X, Y, 0);
-			glVertex3d (X + Size, Y, 0);
-			glVertex3d (X + Size, Y - Size, 0);
-			glVertex3d (X, Y - Size, 0);
-		glEnd();
-		}
 	}
 
 	if (Multi) {

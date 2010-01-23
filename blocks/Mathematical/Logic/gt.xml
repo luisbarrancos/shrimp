@@ -1,7 +1,7 @@
 <shrimp type="function" name="Greater" description="Greater than" author="rconstruct">
 	<input name="A" description="Input value" type="float" default="0"/>
 	<input name="B" description="Input value" type="float" default="0"/>
-	<output name="value" description="1 if a>b, 0 if not" type="float"/>
+	<output name="value" description="1 if a&gt;b, 0 if not" type="float"/>
 	<rsl_code>
 	if( $(B) > $(B) )
 		$(value) = 1;
