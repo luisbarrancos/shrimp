@@ -124,7 +124,20 @@ bool general_options::load() {
 					} else if (name == "samples_y") {
 
 						m_samples_y = from_string (trim (a->Value()), 1.0); // keep 1.0 (not 1) to convert to double
-					} else if (name == "scene") {
+
+					}else if (name == "pixel_filter") {
+
+						m_pixel_filter = trim (a->Value());
+					}
+					 else if (name == "filter_width_s") {
+
+						 m_filter_width_s = from_string (trim (a->Value()), 8.0); // keep 1.0 (not 1) to convert to double
+					}
+					 else if (name == "filter_width_t") {
+
+						 m_filter_width_t = from_string (trim (a->Value()), 8.0); // keep 1.0 (not 1) to convert to double
+					}
+					else if (name == "scene") {
 
 						m_scene = trim (a->Value());
 					}
@@ -151,6 +164,9 @@ bool general_options::load() {
 		log() << aspect << "   shading rate     : " << m_shading_rate << std::endl;
 		log() << aspect << "   pixel samples X  : " << m_samples_x << std::endl;
 		log() << aspect << "   pixel samples Y  : " << m_samples_y << std::endl;
+		log() << aspect << "   pixel filter     : " << m_pixel_filter << std::endl;
+		log() << aspect << "   filter_width_s   : " << m_filter_width_s << std::endl;
+		log() << aspect << "   filter_width_t   : " << m_filter_width_t << std::endl;
 		log() << aspect << "   scene            : " << m_scene << std::endl;
 
 		log() << aspect << "   splash screen    : " << m_splash_screen << std::endl;
@@ -184,6 +200,9 @@ bool general_options::save() {
 	output.push_attribute ("shading_rate", string_cast (m_shading_rate));
 	output.push_attribute ("samples_x", string_cast (m_samples_x));
 	output.push_attribute ("samples_y", string_cast (m_samples_y));
+	output.push_attribute ("pixel_filter", m_pixel_filter);
+	output.push_attribute ("filter_width_s",m_filter_width_s);
+	output.push_attribute ("filter_width_t",m_filter_width_t);
 	output.push_attribute ("scene", string_cast (m_scene));
 	prefs.push_child (output);
 
@@ -214,6 +233,10 @@ void general_options::set_defaults() {
 	m_shading_rate = 1;
 	m_samples_x = 1;
 	m_samples_y = 1;
+	m_filter_width_s = 8;
+	m_filter_width_t = 8;
+	m_pixel_filter = "sinc";
+
 
 	m_splash_screen = true;
 }
@@ -333,7 +356,8 @@ void general_options::load_renderer_list() {
 					stream >> new_display;
 					new_renderer.displays.push_back (new_display);
 				}
-			} else if (element == "texture") {
+			}
+			else if (element == "texture") {
 				// Get attributes
 				for (TiXmlAttribute* a = n->ToElement()->FirstAttribute(); a; a = a->Next()) {
 
@@ -347,8 +371,36 @@ void general_options::load_renderer_list() {
 					}
 				}
 
+				for (TiXmlNode* c = n->ToElement()->FirstChild("texture")->FirstChild("texture_switches")->FirstChild("filter")->FirstChild("filter_type")->FirstChild(); c; c = c->NextSibling()) {
+
+					const std::string element (c->Value());
+
+					const std::string list = c->Value();
+					std::istringstream stream (list);
+
+					std::string new_filter;
+					stream >> new_filter;
+					new_renderer.filter_type.push_back (new_filter);
+					while (!stream.eof()) {
+						stream >> new_filter;
+						new_renderer.filter_type.push_back (new_filter);
+						}
+					}
+
+				for (TiXmlNode* c = n->ToElement()->FirstChild("texture")->FirstChild("texture_switches")->FirstChild("filter")->FirstChild("filter_width"); c; c = c->NextSibling()) {
+					const std::string element (c->Value());
+					// Get attributes
+					for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
+						const std::string name (a->Name());
+						if (name == "default") {
+							new_renderer.filter_size = a->Value();
+						}
+					}
+				}
+			}
+
 				// TODO
-			} else {
+			 else {
 				log() << error << "unknown renderer attribute: " << element << std::endl;
 			}
 		}
@@ -444,6 +496,10 @@ void general_options::set_scene (const std::string& Scene) {
 	m_scene = Scene;
 }
 
+void general_options::set_pixelfilter(const std::string& Pixel_filter){
+
+ 	m_pixel_filter = Pixel_filter;
+}
 
 const std::string general_options::preferences_file() {
 

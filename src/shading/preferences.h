@@ -49,6 +49,7 @@ class general_options
 public:
 	// renderer list
 	typedef std::vector<std::string> displays_t;
+	typedef std::vector<std::string> filters_t;
 	struct renderer_t {
 
 		std::string name;
@@ -56,6 +57,9 @@ public:
 		std::string compiled_shader_extension;
 		std::string renderer_command;
 		displays_t displays;
+		filters_t filter_type;
+		std::string filter_size;
+
 
 		std::string texture_command;
 		std::string texture_default;
@@ -81,12 +85,16 @@ public:
 	std::string m_compiled_shader_extension;
 	std::string m_renderer;
 	std::string m_renderer_display;
+	std::string m_pixel_filter;
+
 
 	double m_output_width;
 	double m_output_height;
 	double m_shading_rate;
 	double m_samples_x;
 	double m_samples_y;
+	double m_filter_width_s;
+	double m_filter_width_t;
 
 	std::string m_scene;
 
@@ -111,6 +119,7 @@ public:
 	void set_renderer (const std::string& RendererCode);
 	void set_display (const std::string& RendererDisplay);
 	void set_scene (const std::string& Scene);
+	void set_pixelfilter (const std::string& Pixel_filter);
 
 private:
 	const std::string preferences_file();

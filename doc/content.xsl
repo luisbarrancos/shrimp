@@ -5,8 +5,8 @@
 <xsl:template match="/">
 	<html>
 
-	<body bgcolor="#babac6">
-
+	<body bgcolor="#333333" link="#435571" vlink="#a6c4f7">
+	<font color="#edeceb"> 
 	<a name="stcontent"></a>
 	<h2> Index </h2>
  	<hr width="100%"> </hr>
@@ -25,6 +25,7 @@
 	  	</table>
 	</xsl:for-each>
 	</table>
+	</font>
 	</body>
 	</html>
 </xsl:template>

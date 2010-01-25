@@ -3,36 +3,38 @@
 
 <xsl:template match="/">
 	<html>
-	<body>
+	<body bgcolor="#333333">
+	<font color="#dadee3">
 	<title>Shrimp 2.0 : Standard Blocks</title>
 
 
-	<a name="stblocks"></a>
+	<a name="stblocks"></a><br/>
+	<img src="splash.png" alt="Shrimp 2.0"></img>
 	<h1>Shrimp 2.0 : Standard Blocks</h1>
 	<xsl:for-each select="block/shrimp">
 	<xsl:sort select="@name"/>
 		  <xsl:variable name="bc" select="@name"/>
-		  <h1><a name="{$bc}">
-			<xsl:value-of select="@name"/></a></h1>
+		  <a  name="{$bc}"><table width="100%" border="1" bgcolor="#435571"><h2><ul><font color="#ffffff">
+			<xsl:value-of select="@name"/></font></ul></h2></table></a>
 		    <hr width="100%"> </hr>
 		    <table border="1">
 		      <tr>
-			<th bgcolor="#ff4040">Type</th>
+			<th bgcolor="#435571">Type</th>
 			<td><xsl:value-of select="@type"/></td>
 		      </tr>
 		      
 		      <tr>
-			<th bgcolor="#ff4040">Description</th>
+			<th bgcolor="#435571">Description</th>
 			<td><dfn><xsl:value-of select="@description"/></dfn></td>
 		      </tr>
 		      <tr>
-			<th bgcolor="#ff4040">Usage</th>
+			<th bgcolor="#435571">Usage</th>
 			<td><dfn><xsl:value-of select="usage"/></dfn></td>
 		      </tr>
 		    </table>
 		  <h3>Input</h3>
 		  <table border="1">
-		      <tr bgcolor="#80ff80">
+		      <tr bgcolor="#435571">
 			<th>Name</th>
 			<th>Description</th>
 			<th>Type</th>
@@ -53,7 +55,7 @@
 		  </table>
 		  <h3>Output</h3>
 		<table border="1">
-		      <tr bgcolor="#8080ff">
+		      <tr bgcolor="#435571">
 			<th>Name</th>
 			<th>Description</th>
 			<th>Type</th>
@@ -75,9 +77,11 @@
 		  <xsl:call-template name="break">
 			<xsl:param name="code" select="shrimp/rsl_code"/>
 		  </xsl:call-template>
-		  </code>			
+		  </code>
+		  <br/>
+		  		
 	</xsl:for-each>
-
+	</font>
 	</body>
 	</html>
 </xsl:template>

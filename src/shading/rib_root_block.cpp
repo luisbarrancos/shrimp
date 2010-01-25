@@ -1141,6 +1141,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	file << "Format " << prefs.m_output_width << " " << prefs.m_output_height << " 1\n";
 	file << "PixelSamples " << prefs.m_samples_x << " " << prefs.m_samples_y << "\n";
 	file << "ShadingRate " << prefs.m_shading_rate << "\n";
+	file << "PixelFilter \"" << prefs.m_pixel_filter << "\" " << prefs.m_filter_width_s << " " << prefs.m_filter_width_t <<"\n";
 	file << "Exposure 1 1\n";
 	file << "Quantize \"rgba\" 255 0 255 0.5\n";
 	file << "ShadingInterpolation \"smooth\"\n";
