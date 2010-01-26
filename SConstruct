@@ -80,6 +80,7 @@ shrimp_files = Split("""
 	src/shading/scene_grouping.cpp
 	src/shading/scene_serialization.cpp
 	src/shading/rib_root_block.cpp
+	src/shading/rib_root_block_parsing.cpp
 
 	src/services.cpp
 	src/opengl_view.cpp

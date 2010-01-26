@@ -96,7 +96,7 @@ private:
 	// build a shader starting from he root block, returns the shader file content
 	std::string build_shader_file (const shader_t ShaderType, const std::string& ShaderName);
 	// recursively build the shader code ending at given block
-	void build_shader_code (shader_block* Block, std::string& ShaderCode);
+	void build_shader_code (shader_block* Block, std::string& ShaderCode, std::set<std::string>& LocalVariables);
 	// build the K-3D slmeta file for a shader
 	std::string build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName);
 

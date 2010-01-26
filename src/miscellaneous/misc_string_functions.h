@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -25,6 +25,7 @@
 #include <limits>
 #include <sstream>
 #include <string>
+#include <vector>
 
 // string_cast
 
@@ -141,6 +142,54 @@ inline std::string remove_all_spaces (const std::string& String)
 	while (found != no_space.npos);
 
 	return no_space;
+}
+
+inline bool is_alpha (const char c)
+{
+	if (c == '_')
+		return true;
+
+	if (c >= 'A' && c <= 'Z')
+		return true;
+
+	if (c >= 'a' && c <= 'z')
+		return true;
+
+	return false;
+}
+
+inline bool is_num (const char c)
+{
+	return (c >= '0' && c <= '9');
+}
+
+// split a string using the separator
+inline std::vector<std::string> split (char separator, const std::string to_split)
+{
+	size_t found;
+	size_t pos = 0;
+
+	std::vector<std::string> tokens;
+	do
+	{
+		found = to_split.find (separator, pos);
+		if (found != to_split.npos)
+		{
+			if (found > pos)
+			{
+				tokens.push_back (std::string (to_split, pos, found - pos));
+			}
+			pos = found + 1;
+		}
+	}
+	while (found != to_split.npos);
+
+	if (pos < to_split.size())
+	{
+		tokens.push_back (std::string (to_split, pos));
+	}
+
+	return tokens;
 }
 
 #endif // _misc_string_functions_h_
