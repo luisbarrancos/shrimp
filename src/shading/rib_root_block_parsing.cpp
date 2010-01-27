@@ -83,6 +83,7 @@ std::string create_array_value_variables (const std::string code)
 
 	bool single_line_comment = false;
 	bool multi_line_comment = false;
+	bool preprocessor_directive = false;
 	bool in_shrimp_variable = false;
 	bool in_shrimp_variable_array_index = false;
 
@@ -109,13 +110,9 @@ std::string create_array_value_variables (const std::string code)
 			|| multi_line_comment
 			)
 		{
-			if (c == '\n' || c == '\r')
-			{
-			}
-
 			if (single_line_comment)
 			{
-				if (c == '\n')
+				if (c == '\n' && previous_character != '\\')
 				{
 					single_line_comment = false;
 
@@ -142,6 +139,29 @@ std::string create_array_value_variables (const std::string code)
 					multi_line_comment = false;
 			}
 
+			if (preprocessor_directive)
+			{
+				if (c == '\n' && previous_character != '\\')
+				{
+					preprocessor_directive = false;
+
+					// new code line
+					string_pos new_code_line_start = new_code.size();
+
+					string_pos p = n;
+					char next_c = code[p];
+					while ((p < code.size()) && (next_c == '\n' || next_c == '\r'))
+					{
+						++p;
+						++new_code_line_start;
+
+						next_c = code[p];
+					}
+
+					new_code_line (new_code_line_start, new_code);
+				}
+			}
+
 			continue;
 		}
 
@@ -152,6 +172,10 @@ std::string create_array_value_variables (const std::string code)
 		else if (c == '*' && previous_character == '/')
 		{
 			multi_line_comment = true;
+		}
+		else if (c == '#')
+		{
+			preprocessor_directive = true;
 		}
 		else if (c == ';')
 		{
