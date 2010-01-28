@@ -38,26 +38,7 @@ static const char aqsis[] = "aqsis";
 static const char entropy[] = "entropy";
 static const char pixie[] = "pixie";
 static const char prman[] = "prman";
-<<<<<<< .mine
-<<<<<<< .mine
-/* RenderDotC status is dead(-ish) ? */
-=======
-/* Remove RenderDotC ? Seems dead(-ish?) */
-=======
->>>>>>> .r296
->>>>>>> .r299
 static const char renderdotc[] = "renderdotc";
-<<<<<<< .mine
-<<<<<<< .mine
-/* Add Mantra, but better move to a dev branch all VEX work */
-=======
-/* Add Mantra, probably should belong to a -dev- branch, not main, but we
- * can move it to -dev-, and remove it from -main- later, while doing some
- * initial tests already. */
-static const char mantra[] = "mantra";
-=======
->>>>>>> .r296
->>>>>>> .r299
 
 class general_options
 {

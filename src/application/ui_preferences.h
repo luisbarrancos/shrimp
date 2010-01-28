@@ -126,18 +126,9 @@ public:
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
 					else if (r_i->first == prman)
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
-<<<<<<< .mine
-<<<<<<< .mine
-					/* RenderDotC status is dead(-ish)? Remove it? */
-=======
-					/* i would remove RenderDotC, seemd dead(-ish?) */
-=======
->>>>>>> .r296
->>>>>>> .r299
 					else if (r_i->first == renderdotc)
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
 				}
-				/* Add Mantra to dev branch */
 			s_renderer->end();
 			w->add (s_renderer);
 			s_renderer->tooltip ("overwrite current rendering settings with another renderer");
