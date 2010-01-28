@@ -126,8 +126,15 @@ public:
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)pixie);
 					else if (r_i->first == prman)
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)prman);
+					/* i would remove RenderDotC, seemd dead(-ish?) */
 					else if (r_i->first == renderdotc)
 						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
+					/* Mantra here, just to get rid of the error msgs and to 
+					 * start doing some initial tests. Might go later to the
+					 * dev branch, and removed from main though, until it's
+					 * all polished. */
+					else if (r_i->first == mantra)
+						new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)mantra);
 				}
 			s_renderer->end();
 			w->add (s_renderer);

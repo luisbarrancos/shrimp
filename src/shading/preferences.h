@@ -38,7 +38,12 @@ static const char aqsis[] = "aqsis";
 static const char entropy[] = "entropy";
 static const char pixie[] = "pixie";
 static const char prman[] = "prman";
+/* Remove RenderDotC ? Seems dead(-ish?) */
 static const char renderdotc[] = "renderdotc";
+/* Add Mantra, probably should belong to a -dev- branch, not main, but we
+ * can move it to -dev-, and remove it from -main- later, while doing some
+ * initial tests already. */
+static const char mantra[] = "mantra";
 
 class general_options
 {

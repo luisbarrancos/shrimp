@@ -788,11 +788,24 @@ void application_window::set_renderer_chooser_value (const std::string RendererC
 			if (RendererCode == prman)
 				renderer_menu_number = current_menu_number;
 		}
+		/* I would remove RenderDotC, seems dead(-ish?). Any objections? */
 		else if (r_i->first == renderdotc) {
 			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)renderdotc);
 			if (RendererCode == renderdotc)
 				renderer_menu_number = current_menu_number;
 		}
+		/* Adding Mantra, this way we can do some tests until the -dev- branch
+		 * is created, and we move all VEX development to -dev-, before merging
+		 * all to -main-. */
+		else if (r_i->first == mantra) {
+			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)mantra);
+			if (RendererCode == mantra)
+				renderer_menu_number = current_menu_number;
+		/* Gelato/GSL is dead. OSL however, seems interesting and shouldn't
+		 * represent any major problems, although we would be restricted to
+		 * the small test-rendering application included with OSL. For the 
+		 * time being nothing more, everything else going to -dev- much later
+		 * anyway. */
 		else
 			log() << error << "unknown renderer: " << r_i->second.name << std::endl;
 	}
