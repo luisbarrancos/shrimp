@@ -1441,6 +1441,8 @@ color LocIllumAshShir(
 }
 
 // "global" illumination model
+// NOTE: sampling is wrong, use the sampling function in the respective header
+// instead.
 
 /* ---- function to sample environment ----
  * P: location of sample
@@ -2011,11 +2013,11 @@ LocIllumGranier(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-// Stephen Westin's implementation of the Lafortune model, with some data //////
-// for the lobes, taken from version by Ryan Heniser (that you can find at /////
-// The RenderMan Academy (www.rendermanacademy.com). ///////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-// Slightly tweaked for Shrimp's structure, lobe data in the xml block /////////
+// Lafortune shader, with anisotropy support (Cx, Cy, Cz), and the correction //
+// factor for the model suggested by Attila Neumann, in his dissertation: //////
+// "Constructions of Bidirectional Reflectance Distribution Functions". ////////
+// Originally based on Stephen Westin's RSL implemention, and in Ryan //////////
+// Heniser's DSO implementation. ///////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 /*
@@ -2071,142 +2073,189 @@ LocIllumGranier(
  *
  * */
 
-/* TODO: clean up this a bit, restructure the block to be able to specify
- * which and how many lobes to use. This is specified in one of Pat Hanrahan's
- * handouts iirc. Basically, the Lafortune block and this function would
- * benefit from major overhaul. Now that Romain is adding array support,
- * preset blocks with some of the publicly distributable coefficient data
- * could be worth it as well as a major block for manually editing the
- * coefficients for each lobe. */
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+/* Added anisotropy support, so each wave of each lobe has 3 coefficients 
+ * and 1 exponent : Cx, Cy, Cz, n.
+ * Description of behaviour:
+ * Anisotropy, Cx != Cy
+ * Retro-reflection, Cx = Cy > 0
+ * Specularity at grazing angles, Cx = Cy > Cz
+ * Phong, -Cx = -Cy = Cz = nth_root((n+2)/(2*PI))
+ * Generalized diffuse behaviour, Cx = Cy = 0, Cz = nth_root((n+2)/(2*PI))
+ * */
 
-// Number of coefficients per lobe: 3 for an isotropic surface
-#define LOBESIZE 3
+#define LOBESIZE 4
 // Number of wavelengths (wired in)
 #define N_WAVES 3
 // Number of lobes (wired in)
 #define N_LOBES 3
+// data lenght
+#define COEFFLEN 36 /* (N_LOBES*N_WAVES*LOBESIZE) */
+// lobe lenght
+#define LOBELEN 12 /* (LOBESIZE*N_WAVES) */
 
-#define COEFFLEN (LOBESIZE*N_WAVES*N_LOBES)
-
-// Default BRDF: flat blue paint
-// Use "Color  [ .3094 .39667 .70837 ]" for consistency with default
-
+////////////////////////////////////////////////////////////////////////////////
 color
-lafortunersl (
+lafortunersl(
 				float Ka, Kd, Ks;
-				color surfacecolor;
-				uniform float coeff[27];
-				uniform float colormatrix[9];
+				vector correction; // Neumann correction (for each lobe)
+				color cs; // surface color, will be supplied via blocks later
+				uniform float model, cmatrix; // clamp it to valid range
 				normal Nn;
-				vector In, dir;
+				vector In, dir; // normalize(I), dPdu
 				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
-				)
+		)
 {
-	
-	vector local_z;
-	vector local_x, local_y; // unit vector in "u" and "v" directions
-	vector Ln;
-	float x, z, f; // subterms
-	float fr = 0, fg = 0, fb = 0; // RGB components of the non-Lambertian term
-	uniform float basepointer, j; // loop counters
+	uniform float colormatrix[9] = {  1.063302, 0.382044, -0.445346,
+									 -0.298125, 1.667665, -0.369540,
+									 -1.322302,-0.446321,  2.768624 };
 
-	// Get unit vector in "u" parameter direction
+#if RENDERER==aqsis || RENDERER==pixie
+	// Aqsis can access components via xyz/comp only
+	float p[3] = { xcomp(correction), ycomp(correction), zcomp(correction) };
+	// both Aqsis and Pixie can't initialize arrays with single element
+	// get storage for lobe coefficients
+	uniform float coeff[COEFFLEN];
+#else
+	float p[3] = { correction[0], correction[1], correction[2] };
+	uniform float coeff[COEFFLEN] = 0;
+#endif // Aqsis component access, Aqsis & Pixie array initialization
+
+	// get lobe data (model should be in valid range)
+	lafortunedata( model, coeff );
+
+	vector local_x, local_y; // U and V direction vectors
+	vector local_z;
+	vector Ln;
+
+	float x, y, z, f; // subterms
+	float Cx, Cy, Cz, n; // coefficients+exponent
+	float fr = 0, fg = 0, fb = 0; // RGB components of non-Lambertian term
+	uniform float basepointer, j;
+
+	// get unit vector in U parameter direction
 	local_x = normalize(dir);
-	
-	// NOTE: In Atila Neumann's "Constructions on BRDFs" thesis, there's a
-	// scaling factor.
 	local_z = faceforward( Nn, In );
-	
-	// Get a local coordinate system.
-	local_y = normalize(local_z^local_x);
-  
-	/* The first term is the diffuse component. This should be the
-	 * diffuse component in the Lafortune model multiplied by pi. */
-	
+	vector Vf = -In;
+	// get a local coordinate system
+	local_y = local_z^local_x;
+	// store presets whenever possible
+	float xvf = local_x.Vf, yvf = local_y.Vf, zvf = local_z.Vf;
+	float ndotl; /* local_z.Ln */
+
+	// The first term is the diffuse component
 	uniform float nondiff, nonspec;
+	// exponents and Neumann pump-up
 	uniform float rexponent, gexponent, bexponent;
+	float norm;
 	color cdiff = color(0), cspec = color(0);
+
 	extern point P;
-	
+
 	illuminance( category, P, local_z, S_PI_2 )
 	{
 		extern vector L;
 		extern color Cl;
 
 		Ln = normalize(L);
+		ndotl = local_z.Ln;
 
 		nondiff = 0;
 		if (1 == lightsource("__nondiffuse", nondiff) && nondiff < 1) {
-			cdiff += Cl * (1-nondiff) * Ln.local_z;
+			cdiff += Cl * (1-nondiff) * ndotl;
 		}
-		
+
 		nonspec = 0;
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
-    
-			/* Compute the terms
-			 * x = x_in * x_view  +  y_in * y_view
-			 * z = z_in * z_view
-			 * */
-			x = local_x.In * local_x.Ln + local_y.In * local_y.Ln;
-			z = - ( local_z.In * local_z.Ln );
 
-			/* Coefficient structures:
+			// compute the terms
+			x = xvf * local_x.Ln;
+			y = yvf * local_y.Ln;
+			z = zvf * ndotl;
+
+			/* Coefficient structure:
 			 * for each lobe of N_LOBES:
 			 * for each channel of N_WAVES:
-			 * cxy, cz, n
-			 * where cxy, cz, are the directional and scale components
-			 * and n is the exponent for the cosine
+			 * Cx, Cy, Cz, n
+			 * where Cx, Cy, are the directional components
+			 * and Cz the scale exponent
+			 * with n the exponent for the cosine.
 			 * */
-			for ( basepointer=0; basepointer < COEFFLEN ;
-					basepointer += LOBESIZE * N_WAVES )
-			{
-				rexponent = coeff[basepointer+2];
-				gexponent = coeff[basepointer+LOBESIZE+2];
-				bexponent = coeff[basepointer+2*LOBESIZE+2];
-				
-				fr = fg = fb = 0.0;
-				f = -x * coeff[basepointer] + z * coeff[basepointer+1];
-				
-				if ( f > 0.001*rexponent ) {
-					fr = pow ( f, rexponent );
-				}
-				
-				f = -x * coeff[basepointer+LOBESIZE] 
-					+ z * coeff[basepointer+LOBESIZE+1];
-				
-				if ( f > 0.001*gexponent ) {
-					fg = pow ( f, gexponent );
-				}
-				
-				f = -x * coeff[basepointer+2*LOBESIZE]
-					+ z * coeff[basepointer+2*LOBESIZE+1];
-				
-				if ( f > 0.001*bexponent ) {
-					fb = pow ( f, bexponent );
-				}
-			}
 
-			cspec += Cl * (1-nonspec) * color "rgb" (fr,fg,fb)
-						* (local_z.Ln);
+			for ( basepointer = 0; basepointer < COEFFLEN;
+					basepointer += LOBELEN )
+			{
+				rexponent = coeff[basepointer+3];
+				gexponent = coeff[basepointer+LOBESIZE+3];
+				bexponent = coeff[basepointer+2*LOBESIZE+3];
+
+				fr = fg = fb = 0;
+
+				// red
+				Cx = coeff[basepointer];
+				Cy = coeff[basepointer+1];
+				Cz = coeff[basepointer+2];
+				if (Cx * Cy * Cz * rexponent == 0) {
+					/* 0,0,0,1, no more lobes, so exit the loop,
+					 * leaving the color at last lobe's value (or 0) */
+					break;
+				}
+				f = x * Cx + y * Cy + z * Cz;
+				fr = (f > EPS * rexponent) ?
+					/* beware of sign reversal with exponentiation */
+					sign(f) * pow( abs(f), rexponent ) : 0;
+				// green
+				Cx = coeff[basepointer+LOBESIZE];
+				Cy = coeff[basepointer+LOBESIZE+1];
+				Cz = coeff[basepointer+LOBESIZE+2];
+				f = x * Cx + y * Cy + z * Cz;
+				fg = (f > EPS * gexponent) ?
+					sign(f) * pow( abs(f), gexponent ) : 0;
+				// blue
+				Cx = coeff[basepointer+2*LOBESIZE];
+				Cy = coeff[basepointer+2*LOBESIZE+1];
+				Cz = coeff[basepointer+2*LOBESIZE+2];
+				f = x * Cx + y * Cy + z * Cz;
+				fb = (f > EPS * bexponent) ?
+					sign(f) * pow( abs(f), bexponent ) : 0;
+				/* Neumann "pump-up" factor, from Attila Neumann's dissertation
+				 * "Constructions of Bidirectional Reflection Distribution
+				 * Functions", Technische Universität Wien. */
+				// beware of division by zero
+				norm = ndotl / max( EPS, pow( max( ndotl, zvf),
+							p[basepointer/LOBELEN]));
+				cspec += Cl * (1-nonspec) * color( fr, fg, fb ) * norm;
+			}
 		}
 	}
-	
-	// Color correction from camera space
-	// use dot product with rows of matrix
-	fr = colormatrix[0] * comp(cspec,0) + 
-		 colormatrix[1] * comp(cspec,1) + colormatrix[2] * comp(cspec,2);
-	fg = colormatrix[3] * comp(cspec,0) +
-		 colormatrix[4] * comp(cspec,1) + colormatrix[5] * comp(cspec,2);
-	fb = colormatrix[6] * comp(cspec,0) +
-		 colormatrix[7] * comp(cspec,1) + colormatrix[8] * comp(cspec,2);
-	cspec = color "rgb" ( fr, fg, fb );
+	// color correction from camera space
+	// use dot product with rows of matrix (3x3)
+	if (cmatrix == 1) { // do color correction
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		fr = colormatrix[0] * comp(cspec, 0) +
+			colormatrix[1] * comp(cspec,1) + colormatrix[2] * comp(cspec,2);
+		fg = colormatrix[3] * comp(cspec, 0) +
+			colormatrix[4] * comp(cspec,1) + colormatrix[5] * comp(cspec,2);
+		fb = colormatrix[6] * comp(cspec, 0) +
+			colormatrix[7] * comp(cspec,1) + colormatrix[8] * comp(cspec,2);
+#else
+		fr = colormatrix[0] * cspec[0] + colormatrix[1] * cspec[1] +
+			colormatrix[2] * cspec[2];
+		fg = colormatrix[3] * cspec[0] + colormatrix[4] * cspec[1] +
+			colormatrix[5] * cspec[2];
+		fb = colormatrix[6] * cspec[0] + colormatrix[7] * cspec[1] +
+			colormatrix[8] * cspec[2];
+#endif // Aqsis component access via xyz/comp only
+		cspec = color( fr, fg, fb );
+	}
 
-	aov_surfacecolor += surfacecolor;
+	aov_surfacecolor += cs;
 	aov_ambient += Ka * ambient();
 	aov_diffuse += Kd * cdiff;
 	aov_specular += Ks * cspec;
-	
+
 	return aov_surfacecolor * (aov_ambient + aov_diffuse) + aov_specular;
 }
 
