@@ -187,15 +187,15 @@ public:
 
 			s_pixel_filter = new fltk::Choice (110,start +330, 120,25,"pixel filter");
 			w->add (s_pixel_filter);
-			s_pixel_filter->tooltip ("select current filter used to filter the Pixel Samples into the final color");
+			s_pixel_filter->tooltip ("select current filter used to filter the Pixel Samples into the final color in s and t");
 
 			s_filter_width_s = new fltk::Input (110,start + 360, 50,23,"filter width s");
 			w->add (s_filter_width_s);
-			s_filter_width_s->tooltip ("pixels that contribute to the filtered pixel's color in s.");
+			s_filter_width_s->tooltip ("Suggested values , Box: 1.0 Triangle: 2.0 Blackman-Harris: 2.0 Gaussian: 2.5 Catmull-Rom: 4.0 Separable Catmull-Rom: 4.0 Mitchell: 4.0 Lanczos: 6.0 Bessel: 6.49 Sinc: 8.0");
 
 			s_filter_width_t = new fltk::Input (260,start + 360, 50,23,"filter width t");
 			w->add (s_filter_width_t);
-			s_filter_width_t->tooltip ("pixels that contribute to the filtered pixel's color in t");
+			s_filter_width_t->tooltip ("Suggested values , Box: 1.0 Triangle: 2.0 Blackman-Harris: 2.0 Gaussian: 2.5 Catmull-Rom: 4.0 Separable Catmull-Rom: 4.0 Mitchell: 4.0 Lanczos: 6.0 Bessel: 6.49 Sinc: 8.0");
 
 			s_help_reader = new fltk::Input (120,start + 390, 250,23,"help reader");
 			w->add (s_help_reader);
