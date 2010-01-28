@@ -77,7 +77,7 @@ public:
 	typedef std::vector<scene_t> scenes_t;
 	scenes_t m_scenes;
 
-
+	std::string m_help_reader;
 	bool m_splash_screen;
 
 	std::string m_renderer_code;
@@ -120,6 +120,7 @@ public:
 	void set_display (const std::string& RendererDisplay);
 	void set_scene (const std::string& Scene);
 	void set_pixelfilter (const std::string& Pixel_filter);
+	void set_help (const std::string& Help);
 
 private:
 	const std::string preferences_file();

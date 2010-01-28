@@ -59,7 +59,7 @@ static fltk::Choice* s_pixel_filter;
 static fltk::Input* s_filter_width_s;
 static fltk::Input* s_filter_width_t;
 static fltk::Choice* s_scene;
-
+static fltk::Input* s_help_reader;
 
 static std::vector<std::string> s_renderers;
 
@@ -99,7 +99,7 @@ public:
 
 
 		// build dialog window
-		w = new fltk::Window (400, 450, "preferences");
+		w = new fltk::Window (400, 500, "preferences");
 		w->begin();
 
 			s_splash_screen = new fltk::LightButton (250,10, 130,23, "splash screen");
@@ -185,24 +185,28 @@ public:
 			w->add (s_pixelsamples_y);
 			s_pixelsamples_y->tooltip ("renderMan pixel samples on Y");
 
-			s_pixel_filter = new fltk::Choice (110,start +320, 120,25,"pixel filter");
+			s_pixel_filter = new fltk::Choice (110,start +330, 120,25,"pixel filter");
 			w->add (s_pixel_filter);
 			s_pixel_filter->tooltip ("select current filter used to filter the Pixel Samples into the final color");
 
-			s_filter_width_s = new fltk::Input (110,start + 350, 50,23,"filter width s");
+			s_filter_width_s = new fltk::Input (110,start + 360, 50,23,"filter width s");
 			w->add (s_filter_width_s);
 			s_filter_width_s->tooltip ("pixels that contribute to the filtered pixel's color in s.");
 
-			s_filter_width_t = new fltk::Input (260,start + 350, 50,23,"filter width t");
+			s_filter_width_t = new fltk::Input (260,start + 360, 50,23,"filter width t");
 			w->add (s_filter_width_t);
 			s_filter_width_t->tooltip ("pixels that contribute to the filtered pixel's color in t");
 
+			s_help_reader = new fltk::Input (120,start + 390, 250,23,"help reader");
+			w->add (s_help_reader);
+			s_compilation->tooltip ("help reader command");
 
-			fltk::ReturnButton* rb = new fltk::ReturnButton (150, start + 390, 70, 25, "OK");
+
+			fltk::ReturnButton* rb = new fltk::ReturnButton (150, start + 420, 70, 25, "OK");
 			rb->label ("Ok");
 			rb->callback (cb_ok, (void*)this);
 
-			fltk::Button* cb = new fltk::Button (250, start + 390, 70, 25, "Cancel");
+			fltk::Button* cb = new fltk::Button (250, start + 420, 70, 25, "Cancel");
 			cb->label ("Cancel");
 			cb->callback (cb_cancel, (void*)this);
 
@@ -248,6 +252,7 @@ public:
 		std::string filter_width_t = string_cast (m_filter_width_t);
 		s_filter_width_s->text (filter_width_s.c_str());
 		s_filter_width_t->text (filter_width_t.c_str());
+		s_help_reader->text(m_help_reader.c_str());
 		s_splash_screen->value (m_splash_screen);
 
 		// show it
@@ -291,6 +296,7 @@ public:
 			m_scene = m_scenes[scene_number].name;
 		}
 
+		m_help_reader = trim (s_help_reader->value());
 		m_splash_screen = s_splash_screen->value();
 
 		save();
@@ -383,13 +389,13 @@ public:
 		return "";
 	}
 
-	void set_pixelfilter_chooser (const std::string PixelFilter, const std::string Value = "") {
+	void set_pixelfilter_chooser (const std::string RendererCode, const std::string Value = "") {
 
 			unsigned long filter_number = 0;
 
-			general_options::renderers_t::const_iterator r = m_renderers.find (PixelFilter);
+			general_options::renderers_t::const_iterator r = m_renderers.find (RendererCode);
 			if ( m_renderers.end() == r) {
-				log() << error << "unknown renderer (set_pixelfilter_chooser): '" << PixelFilter << "'." << std::endl;
+				log() << error << "unknown renderer (set_pixelfilter_chooser): '" << RendererCode << "'." << std::endl;
 			}
 
 			s_pixel_filter->remove_all();

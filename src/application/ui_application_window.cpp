@@ -575,7 +575,12 @@ void application_window::on_menu_help_about (fltk::Widget*, void*) {
 void application_window::on_menu_help_help (fltk::Widget*, void*) {
 
 // Open index.html file
-	system("firefox -url \"./doc/index.html\"&");
+	general_options prefs;
+	prefs.load();
+	std::string help_reader = prefs.m_help_reader;
+
+//	system("firefox -url \"./doc/index.html\"&");
+	system(help_reader.c_str());
 }
 
 void application_window::on_zoom (fltk::Slider* o, void*) {

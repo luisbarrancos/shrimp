@@ -142,6 +142,19 @@ bool general_options::load() {
 						m_scene = trim (a->Value());
 					}
 				}
+			} else if (element == "help_reader") {
+
+				for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
+
+					const std::string name (a->Name());
+
+					m_help_reader = trim (a->Value());
+					if (name == "help") {
+
+				 	m_help_reader = trim (a->Value());
+
+					}
+				 }
 			} else if (element == "splash") {
 
 				for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
@@ -169,6 +182,7 @@ bool general_options::load() {
 		log() << aspect << "   filter_width_t   : " << m_filter_width_t << std::endl;
 		log() << aspect << "   scene            : " << m_scene << std::endl;
 
+		log() << aspect << "   help reader      : " << m_help_reader << std::endl;
 		log() << aspect << "   splash screen    : " << m_splash_screen << std::endl;
 	}
 
@@ -206,6 +220,10 @@ bool general_options::save() {
 	output.push_attribute ("scene", string_cast (m_scene));
 	prefs.push_child (output);
 
+	xml::element help ("help_reader");
+	help.push_attribute ("help", m_help_reader);
+	prefs.push_child (help);
+
 	xml::element splash ("splash");
 	splash.push_attribute ("show", string_cast (m_splash_screen));
 	prefs.push_child (splash);
@@ -237,7 +255,7 @@ void general_options::set_defaults() {
 	m_filter_width_t = 8;
 	m_pixel_filter = "sinc";
 
-
+	m_help_reader =( "firefox \"./doc/index.html\"&");
 	m_splash_screen = true;
 }
 
@@ -398,6 +416,15 @@ void general_options::load_renderer_list() {
 					}
 				}
 			}
+			else if (element == "help_reader") {
+				// Get attributes
+				for (TiXmlAttribute* a = n->ToElement()->FirstAttribute(); a; a = a->Next()) {
+					const std::string name (a->Name());
+					if (name == "help") {
+						m_help_reader = a->Value();
+					}
+				}
+			}
 
 				// TODO
 			 else {
@@ -499,6 +526,12 @@ void general_options::set_scene (const std::string& Scene) {
 void general_options::set_pixelfilter(const std::string& Pixel_filter){
 
  	m_pixel_filter = Pixel_filter;
+}
+
+void general_options::set_help (const std::string& Help_Reader){
+
+	m_help_reader = Help_Reader;
+
 }
 
 const std::string general_options::preferences_file() {
