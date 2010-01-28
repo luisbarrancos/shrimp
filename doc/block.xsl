@@ -14,8 +14,11 @@
 	<xsl:for-each select="block/shrimp">
 	<xsl:sort select="@name"/>
 		  <xsl:variable name="bc" select="@name"/>
-		  <a  name="{$bc}"><table width="100%" border="1" bgcolor="#435571"><h2><ul><font color="#ffffff">
-			<xsl:value-of select="@name"/></font></ul></h2></table></a>
+		  <a  name="{$bc}">
+			<table width="100%" border="1" bgcolor="#435571">
+			<td><font color="#ffffff"><h2><ul><xsl:value-of select="@name"/></ul></h2></font></td>
+			</table>
+		  </a>
 		    <hr width="100%"> </hr>
 		    <table border="1">
 		      <tr>
