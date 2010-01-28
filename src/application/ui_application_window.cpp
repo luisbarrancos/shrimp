@@ -801,6 +801,7 @@ void application_window::set_renderer_chooser_value (const std::string RendererC
 			new fltk::Item (r_i->second.name.c_str(), 0, cb_renderer, (void*)mantra);
 			if (RendererCode == mantra)
 				renderer_menu_number = current_menu_number;
+		}
 		/* Gelato/GSL is dead. OSL however, seems interesting and shouldn't
 		 * represent any major problems, although we would be restricted to
 		 * the small test-rendering application included with OSL. For the 
