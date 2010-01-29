@@ -28,12 +28,12 @@ sample_beckmann(
 					output varying float cosphi, sinphi, costheta, sintheta;
 		)
 {
-	float phi = S_2PI * xi2;
-	float theta = atan( sqrt( -(SQR(m)) * log(1-xi1) ));
+	float m2 = SQR(m), phi = S_2PI * xi2;
+	float tantheta = sqrt( -m2 * log(1-xi1) );
+	costheta = 1 / sqrt(1 + SQR(tantheta));
+	sintheta = costheta * tantheta;
 	cosphi = cos(phi);
 	sinphi = sin(phi);
-	costheta = cos(theta);
-	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -45,11 +45,11 @@ sample_ward_iso(
 		)
 {
 	float phi = S_2PI * xi2;
-	float theta = atan( m * sqrt( -log(xi1) ) );
+	float tantheta = m * sqrt( -log(xi1) );
 	cosphi = cos(phi);
 	sinphi = sin(phi);
-	costheta = cos(theta);
-	sintheta = sqrt( max(0, 1-SQR(costheta)));
+	costheta = 1 / sqrt( 1 + SQR(tantheta) );
+	sintheta = costheta * tantheta;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -60,25 +60,27 @@ sample_ward_aniso(
 					output varying float cosphi, sinphi, costheta, sintheta;
 		)
 {
-	float phi, theta;
+	float tantheta, tanphi;
 	if (xi2 < 0.25) {
-		phi = atan( mratio * tan(S_PI_2 * 4 * xi2));
+		tanphi = mratio * tan( S_PI_2 * 4 * xi2);
+		cosphi = 1 / sqrt(1 + SQR(tanphi));
+		sinphi = tanphi * cosphi;
 	} else if (xi2 < 0.5) {
-		phi = atan( mratio * tan(S_PI_2 * (1-4*(0.5 - xi2)) ));
-		phi = S_PI - phi;
+		tanphi = mratio * tan( S_PI_2 * (1 - 4 * (0.5 - xi2)) );
+		cosphi = -1 / sqrt( 1 + SQR(tanphi));
+		sinphi = -tanphi * cosphi;
 	} else if (xi2 < 0.75) {
-		phi = atan( mratio * tan(S_PI_2 * (4*(xi2 - 0.5)) ));
-		phi += S_PI;
+		tanphi = mratio * tan( S_2PI * (4 * (xi2 - 0.5)) );
+		cosphi = -1 / sqrt( 1 + SQR(tanphi));
+		sinphi = tanphi * cosphi;
 	} else {
-		phi = atan( mratio * tan(S_PI_2 * (1-4*(1 - xi2)) ));
-		phi = S_2PI - phi;
+		tanphi = mratio * tan( S_2PI * (1 - 4 * (1 - xi2)) );
+		cosphi = 1 / sqrt( 1 + SQR(tanphi));
+		sinphi = -tanphi * cosphi;
 	}
-	cosphi = cos(phi);
-	sinphi = sin(phi);
-
-	theta = atan( sqrt( -log(xi1)/(SQR(cosphi)/nu2+SQR(sinphi)/nv2) ) );
-	costheta = cos(theta);
-	sintheta = sqrt( max(0, 1-SQR(costheta)));
+	tantheta = -log(1 - xi1) / (SQR(cosphi) / nu2 + SQR(sinphi) / nv2);
+	costheta = 1 / sqrt(1 + tantheta);
+	sintheta = costheta * sqrt(tantheta);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -104,7 +106,6 @@ sample_ashikhmin_shirley(
 	}
 	cosphi = cos(phi);
 	sinphi = sin(phi);
-
 	costheta = pow( 1-xi1, 1/(nu*SQR(cosphi) + nv*SQR(sinphi) + 1));
 	sintheta = sqrt( max(0, 1-SQR(costheta)));
 }
