@@ -3,7 +3,7 @@
     <input name="Kd" description="Diffuse light coefficient" type="float" default="0.2"/>
     <input name="Ks" description="Specular coefficient" type="float" default="1"/>
 	<input name="p" description="Correction for each lobe" type="vector" default="vector(0)"/>
-    <input name="model" description="Lobe data, range [0,7]" storage="uniform" type="float" default="21"/>
+    <input name="model" description="Lobe data, range [0,28]" storage="uniform" type="float" default="21"/>
     <input name="colormatrix" description="Color matrix metal/skin, range [1,2]" storage="uniform" type="float" default="0"/>
 	<input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
 	<input name="I" description="Direction of viewer" storage="varying" type="vector" default="normalize(I)"/>
