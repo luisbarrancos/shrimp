@@ -212,8 +212,32 @@ application_window::application_window(services* services_instance, opengl_view*
 
 		if(out && outc) {
 					out << "<?xml-stylesheet type=\"text/xsl\" href=\"block.xsl\"?>" << endl;
+					out << "<!-- Copyright 2009, Romain Behar <romainbehar@users.sourceforge.net>; " <<"\n" <<
+							"This file is part of Shrimp 2." <<"\n" <<
+							"Shrimp 2 is free software: you can redistribute it and/or modify " <<"\n" <<
+							"it under the terms of the GNU General Public License as published by " <<"\n" <<
+							"the Free Software Foundation, either version 3 of the License, or " <<"\n" <<
+							"(at your option) any later version. " <<"\n" <<
+							"Shrimp 2 is distributed in the hope that it will be useful, " <<"\n" <<
+							"but WITHOUT ANY WARRANTY; without even the implied warranty of " <<"\n" <<
+							"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the " <<"\n" <<
+							"GNU General Public License for more details. " <<"\n" <<
+							"You should have received a copy of the GNU General Public License " <<"\n" <<
+							"along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.-->" << endl;
 					out << "<block>" << endl;
 					outc << "<?xml-stylesheet type=\"text/xsl\" href=\"content.xsl\"?>" << endl;
+					outc << "<!-- Copyright 2009, Romain Behar <romainbehar@users.sourceforge.net> " <<"\n" <<
+							"This file is part of Shrimp 2." <<"\n" <<
+							"Shrimp 2 is free software: you can redistribute it and/or modify " <<"\n" <<
+							"it under the terms of the GNU General Public License as published by " <<"\n" <<
+							"the Free Software Foundation, either version 3 of the License, or " <<"\n" <<
+							"(at your option) any later version. " <<"\n" <<
+							"Shrimp 2 is distributed in the hope that it will be useful, " <<"\n" <<
+							"but WITHOUT ANY WARRANTY; without even the implied warranty of " <<"\n" <<
+							"MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the " <<"\n" <<
+							"GNU General Public License for more details. " <<"\n" <<
+							"You should have received a copy of the GNU General Public License " <<"\n" <<
+							"along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.-->" << endl;
 					outc << "<block>" << endl;
 					}
 

@@ -3,6 +3,25 @@
 
 <xsl:template match="/">
 	<html>
+	<!--
+    Copyright 2009, Romain Behar &#60;romainbehar&#64;users.sourceforge.net&#62;
+
+    This file is part of Shrimp 2.
+
+    Shrimp 2 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Shrimp 2 is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Shrimp 2.  If not, see &#60;http://www.gnu.org/licenses/&#62;.
+	-->
+	
 	<body bgcolor="#333333">
 	<font color="#dadee3">
 	<title>Shrimp 2.0 : Standard Blocks</title>
@@ -32,7 +51,11 @@
 		      </tr>
 		      <tr>
 			<th bgcolor="#435571">Usage</th>
-			<td><dfn><xsl:value-of select="usage"/></dfn></td>
+			<td><dfn><xsl:value-of select="usage/text()"/></dfn></td>
+		      </tr>
+		      <tr>
+			<th bgcolor="#435571">Link</th>
+			<td><dfn> <a href="{usage/rsl_link}"><xsl:value-of select="usage/rsl_link"/></a></dfn></td>
 		      </tr>
 		    </table>
 		  <h3>Input</h3>

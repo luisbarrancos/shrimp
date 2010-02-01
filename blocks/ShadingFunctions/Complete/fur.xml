@@ -34,5 +34,6 @@
 				$(hairid), $(ribnormal), $(ribclump), $(category),
 				DECLARE_AOV_PARAMETERS );
 	</rsl_code>
-    <usage>Clint Hanson and Armin Bruderlin&apos;s fur shader, presented at Siggraph2000, from The RenderMan Repository - http://www.renderman.org . Note that specular color should be (1+tipcolor)/2. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot;, &quot;aov_specularcolor&quot; and &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.</usage>
+    <usage>Clint Hanson and Armin Bruderlin&apos;s fur shader, presented at Siggraph2000, from The RenderMan Repository - check the link . Note that specular color should be (1+tipcolor)/2. This block passes the resulting values to the &quot;aov_surfacecolor&quot;, &quot;aov_ambient&quot;, &quot;aov_diffuse&quot;, &quot;aov_specularcolor&quot; and &quot;aov_specular&quot; AOV presets. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.
+	<rsl_link>http://www.renderman.org</rsl_link></usage>
 </shrimp>
