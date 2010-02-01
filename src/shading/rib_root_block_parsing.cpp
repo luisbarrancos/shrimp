@@ -231,12 +231,15 @@ std::string create_array_value_variables (const std::string code)
 			if (in_shrimp_variable_array_index)
 			{
 				in_shrimp_variable_array_index = false;
-				shrimp_variable_end = n - 1;
+				shrimp_variable_end = n - 2; //?
 				shrimp_variable_array_index = trim (std::string (code, shrimp_variable_start, shrimp_variable_end - shrimp_variable_start + 1));
 
 				// replace variable in new code
 				add_declaration (shrimp_variable, shrimp_variable_array_index);
-				new_code.replace (new_code.size() - (n - shrimp_variable_real_start + 1), new_code.size(), get_valued_variable_name (shrimp_variable) + "[" + shrimp_variable_array_index + "]");
+
+				string_pos replacement_start = new_code.size() - (n - shrimp_variable_real_start + 1);
+				string_pos replacement_size = new_code.size() - replacement_start - 1;
+				new_code.replace (replacement_start, replacement_size, get_valued_variable_name (shrimp_variable));
 			}
 		}
 
