@@ -25,7 +25,7 @@
 #include <set>
 #include <string>
 
-std::string create_array_value_variables (const std::string code);
+std::string create_array_value_variables (const std::string code, std::set<std::string>& local_variables);
 
 #endif
 

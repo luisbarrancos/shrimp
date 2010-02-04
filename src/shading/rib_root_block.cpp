@@ -605,7 +605,8 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	log() << aspect << "building code for block '" << Block->name() << "'" << std::endl;
 
 	// get block's code
-	std::string code = create_array_value_variables (Block->get_code());
+	//std::string code = Block->get_code();
+	std::string code = create_array_value_variables (Block->get_code(), LocalVariables);
 
 	// replace block name
 	replace_variable (code, "$(blockname)", Block->sl_name());
@@ -615,11 +616,31 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 
 		const std::string tag = "$(" + input->m_name + ":type)";
 		replace_variable (code, tag, input->get_type());
+
+		// replace variable types in the LocalVariables (quick and dirty)
+		std::set<std::string> locals2;
+		for (std::set<std::string>::iterator local = LocalVariables.begin(); local != LocalVariables.end(); ++local)
+		{
+			std::string new_local = *local;
+			replace_variable (new_local, tag, input->get_type());
+			locals2.insert(new_local);
+		}
+		LocalVariables = locals2;
 	}
 	for (shader_block::properties_t::const_iterator output = Block->m_outputs.begin(); output != Block->m_outputs.end(); ++output) {
 
 		const std::string tag = "$(" + output->m_name + ":type)";
 		replace_variable (code, tag, output->get_type());
+
+		// replace variable types in the LocalVariables (quick and dirty)
+		std::set<std::string> locals2;
+		for (std::set<std::string>::iterator local = LocalVariables.begin(); local != LocalVariables.end(); ++local)
+		{
+			std::string new_local = *local;
+			replace_variable (new_local, tag, output->get_type());
+			locals2.insert(new_local);
+		}
+		LocalVariables = locals2;
 	}
 
 	// process input parents

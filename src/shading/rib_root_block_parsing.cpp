@@ -31,7 +31,7 @@
 typedef std::string::size_type string_pos;
 
 std::vector<std::string> new_code_lines;
-std::set<std::string> new_declarations;
+std::set<std::string> new_instanciations;
 
 
 string_pos previous_line_start = 0;
@@ -39,12 +39,10 @@ string_pos previous_line_start = 0;
 
 void new_code_line (string_pos n, std::string& new_code)
 {
-	if (new_declarations.size() > 0)
+	if (new_instanciations.size() > 0)
 	{
-		std::string declarations = "";
-		for (std::set<std::string>::iterator i = new_declarations.begin(); i != new_declarations.end(); ++i)
+		for (std::set<std::string>::iterator i = new_instanciations.begin(); i != new_instanciations.end(); ++i)
 		{
-			declarations += *i;
 			new_code_lines.push_back (*i);
 		}
 	}
@@ -56,7 +54,7 @@ void new_code_line (string_pos n, std::string& new_code)
 	if (n > 0)
 		n--;
 
-	new_declarations.clear();
+	new_instanciations.clear();
 }
 
 std::string get_valued_variable_name (std::string name)
@@ -64,9 +62,13 @@ std::string get_valued_variable_name (std::string name)
 	return "valued_variable_" + name;
 }
 
-void add_declaration (std::string name, std::string index)
+void add_declaration (std::string name, std::string index, std::set<std::string>& local_declarations)
 {
-	new_declarations.insert ("$(" + name + ":type) " + get_valued_variable_name (name) + " = $(" + name + ");\n");
+	std::string declaration = "$(" + name + ":type) " + get_valued_variable_name (name);
+	std::string instanciation = get_valued_variable_name (name) + " = $(" + name + ");\n";
+
+	local_declarations.insert (declaration);
+	new_instanciations.insert (instanciation);
 }
 
 
@@ -76,10 +78,10 @@ void add_declaration (std::string name, std::string index)
 // with
 //   type nnn_i = $(nnn); // to prevent 'normalize(vvv)[i]'
 //   nnn_i[i]
-std::string create_array_value_variables (const std::string code)
+std::string create_array_value_variables (const std::string code, std::set<std::string>& local_declarations)
 {
 	new_code_lines.clear();
-	new_declarations.clear();
+	new_instanciations.clear();
 
 	bool single_line_comment = false;
 	bool multi_line_comment = false;
@@ -235,7 +237,7 @@ std::string create_array_value_variables (const std::string code)
 				shrimp_variable_array_index = trim (std::string (code, shrimp_variable_start, shrimp_variable_end - shrimp_variable_start + 1));
 
 				// replace variable in new code
-				add_declaration (shrimp_variable, shrimp_variable_array_index);
+				add_declaration (shrimp_variable, shrimp_variable_array_index, local_declarations);
 
 				string_pos replacement_start = new_code.size() - (n - shrimp_variable_real_start + 1);
 				string_pos replacement_size = new_code.size() - replacement_start - 1;
