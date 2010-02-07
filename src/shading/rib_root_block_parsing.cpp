@@ -62,7 +62,7 @@ std::string get_valued_variable_name (std::string name)
 	return "valued_variable_" + name;
 }
 
-void add_declaration (std::string name, std::string index, std::set<std::string>& local_declarations)
+void add_declaration (std::string name, std::set<std::string>& local_declarations)
 {
 	std::string declaration = "$(" + name + ":type) " + get_valued_variable_name (name);
 	std::string instanciation = get_valued_variable_name (name) + " = $(" + name + ");\n";
@@ -93,7 +93,6 @@ std::string create_array_value_variables (const std::string code, std::set<std::
 	string_pos shrimp_variable_start;
 	string_pos shrimp_variable_end;
 	std::string shrimp_variable;
-	std::string shrimp_variable_array_index;
 
 	unsigned int parenthesis_level = 0;
 
@@ -205,7 +204,7 @@ std::string create_array_value_variables (const std::string code, std::set<std::
 		{
 			parenthesis_level++;
 
-			if (previous_character == '$')
+			if (previous_character == '$' && !in_shrimp_variable_array_index)
 			{
 				in_shrimp_variable = true;
 				shrimp_variable_real_start = n - 1;
@@ -223,24 +222,22 @@ std::string create_array_value_variables (const std::string code, std::set<std::
 				shrimp_variable = trim (std::string (code, shrimp_variable_start, shrimp_variable_end - shrimp_variable_start + 1));
 			}
 		}
-		else if (c == '[' && previous_character == ')')
+		else if (c == '[' && previous_character == ')' && !in_shrimp_variable_array_index)
 		{
 			in_shrimp_variable_array_index = true;
-			shrimp_variable_start = n + 1;
 		}
 		else if (c == ']')
 		{
 			if (in_shrimp_variable_array_index)
 			{
 				in_shrimp_variable_array_index = false;
-				shrimp_variable_end = n - 2; //?
-				shrimp_variable_array_index = trim (std::string (code, shrimp_variable_start, shrimp_variable_end - shrimp_variable_start + 1));
 
 				// replace variable in new code
-				add_declaration (shrimp_variable, shrimp_variable_array_index, local_declarations);
+				add_declaration (shrimp_variable, local_declarations);
 
 				string_pos replacement_start = new_code.size() - (n - shrimp_variable_real_start + 1);
-				string_pos replacement_size = new_code.size() - replacement_start - 1;
+				string_pos replacement_size = shrimp_variable_end - shrimp_variable_real_start + 2;
+
 				new_code.replace (replacement_start, replacement_size, get_valued_variable_name (shrimp_variable));
 			}
 		}
@@ -256,6 +253,19 @@ std::string create_array_value_variables (const std::string code, std::set<std::
 	}
 
 	return shader_block;
+}
+
+
+
+// Replace:
+//   array = { v1, v2, v3 };
+// with
+//   array[0] = v1;
+//   array[1] = v2;
+//   array[2] = v3;
+std::string replace_array_assignations (const std::string code, std::set<std::string>& local_declarations)
+{
+return code;
 }
 
 

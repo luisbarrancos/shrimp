@@ -605,8 +605,8 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	log() << aspect << "building code for block '" << Block->name() << "'" << std::endl;
 
 	// get block's code
-	//std::string code = Block->get_code();
 	std::string code = create_array_value_variables (Block->get_code(), LocalVariables);
+	code = replace_array_assignations (code, LocalVariables);
 
 	// replace block name
 	replace_variable (code, "$(blockname)", Block->sl_name());
