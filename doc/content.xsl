@@ -9,6 +9,7 @@
 	<font color="#edeceb"> 
 	<a name="stcontent"></a>
 	<h2> Index </h2>
+	<code>Number of blocks:<xsl:value-of select="count(//shrimp)"/></code>
  	<hr width="100%"> </hr>
 
 
