@@ -170,13 +170,27 @@ std::string property::get_type_extension() const {
 }
 
 
-int property::get_type_extension_size() const {
+int property::get_type_extension_size() const
+{
 
 	return m_current_type_extension_size;
 }
 
 
-bool property::set_storage (const std::string& Storage) {
+std::string property::get_type_for_declaration() const
+{
+	std::string type_declaration = get_type();
+	if (type_declaration == "array")
+	{
+		type_declaration = get_type_extension();
+	}
+
+	return type_declaration;
+}
+
+
+bool property::set_storage (const std::string& Storage)
+{
 
 	m_current_storage = convert_storage (Storage);
 

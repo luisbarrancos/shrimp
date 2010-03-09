@@ -30,8 +30,8 @@
 
 
 // a block property : input or output
-class property {
-
+class property
+{
 public:
 	property (const std::string& Name, const std::string& Description = "");
 
@@ -68,6 +68,8 @@ public:
 	std::string get_type_extension() const;
 
 	int get_type_extension_size() const;
+
+	std::string get_type_for_declaration() const;
 
 	bool set_storage (const std::string& Storage);
 	std::string get_storage() const;

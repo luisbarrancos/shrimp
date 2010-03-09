@@ -605,7 +605,13 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	log() << aspect << "building code for block '" << Block->name() << "'" << std::endl;
 
 	// get block's code
-	std::string code = create_array_value_variables (Block->get_code(), LocalVariables);
+	std::string code = Block->get_code();
+
+	// create array value variables for arrays (two passes for nested ones, could need more)
+	code = create_array_value_variables (code, LocalVariables);
+	code = create_array_value_variables (code, LocalVariables);
+
+	// replace arrays assignations (which are not allowed in RSL)
 	code = replace_array_assignations (code, LocalVariables);
 
 	// replace block name
@@ -615,14 +621,14 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	for (shader_block::properties_t::const_iterator input = Block->m_inputs.begin(); input != Block->m_inputs.end(); ++input) {
 
 		const std::string tag = "$(" + input->m_name + ":type)";
-		replace_variable (code, tag, input->get_type());
+		replace_variable (code, tag, input->get_type_for_declaration());
 
 		// replace variable types in the LocalVariables (quick and dirty)
 		std::set<std::string> locals2;
 		for (std::set<std::string>::iterator local = LocalVariables.begin(); local != LocalVariables.end(); ++local)
 		{
 			std::string new_local = *local;
-			replace_variable (new_local, tag, input->get_type());
+			replace_variable (new_local, tag, input->get_type_for_declaration());
 			locals2.insert(new_local);
 		}
 		LocalVariables = locals2;
@@ -630,14 +636,14 @@ void rib_root_block::build_shader_code (shader_block* Block, std::string& Shader
 	for (shader_block::properties_t::const_iterator output = Block->m_outputs.begin(); output != Block->m_outputs.end(); ++output) {
 
 		const std::string tag = "$(" + output->m_name + ":type)";
-		replace_variable (code, tag, output->get_type());
+		replace_variable (code, tag, output->get_type_for_declaration());
 
 		// replace variable types in the LocalVariables (quick and dirty)
 		std::set<std::string> locals2;
 		for (std::set<std::string>::iterator local = LocalVariables.begin(); local != LocalVariables.end(); ++local)
 		{
 			std::string new_local = *local;
-			replace_variable (new_local, tag, output->get_type());
+			replace_variable (new_local, tag, output->get_type_for_declaration());
 			locals2.insert(new_local);
 		}
 		LocalVariables = locals2;
