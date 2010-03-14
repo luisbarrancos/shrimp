@@ -10,9 +10,10 @@ float beckmann(
 				float cosalpha, roughness;
 		)
 {
-	float tanalpha_over_m = max( 0, sqrt( 1 - SQR(cosalpha)) / cosalpha)
-		/ roughness;
-	return exp(-SQR(tanalpha_over_m)) / (SQR(roughness)*pow(cosalpha,4));
+	float m2 = SQR(roughness);
+	float cosalpha2 = SQR(cosalpha);
+	float tanalpha2_over_m2 = max(0, 1 - cosalpha2) / (cosalpha2 * m2);
+	return exp( -tanalpha2_over_m2) / (m2 * SQR(cosalpha2));
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -21,16 +22,17 @@ float ward(
 			float cosalpha, roughness;
 		)
 {
-	float tanalpha = max( 0, sqrt( 1 - SQR(cosalpha)) / cosalpha );
 	float m2 = SQR(roughness);
-	float out = 1 / (m2 * S_PI * pow( cosalpha, 3 ));
-	out *= exp( -(SQR(tanalpha)/m2));
-	return out;	
+	float cosalpha2 = SQR(cosalpha);
+	float tanalpha2_over_m2 = max(0, 1 - cosalpha2) / (cosalpha2 * m2);
+	return exp( -tanalpha2_over_m2) / (m2 * S_PI * cosalpha2 * cosalpha);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Trowbridge-Reitz distribution */
-/* Note: this distribution needs a normalization factor */
+/* Trowbridge-Reitz distribution, suggested by Jim Blinn to the Torrance-
+ * -Sparrow model, based on the equation of an elipse, with m2 being the
+ * eccentricity, 0 for shiny surfaces, 1 for rough. This distribution needs
+ * an normalization factor (user-parameter), not included here. */
 
 float
 trowbridge_reitz(
@@ -55,19 +57,17 @@ heidrich_seidel(
 					)
 {
 	vector dir = normalize( Nf ^ xdir );
-	float beta = Ln.dir;
-	float theta = Vf.dir;
-	float sinbeta = sqrt( max( 0, 1 - SQR(beta)));
-	float sintheta = sqrt( max( 0, 1 - SQR(theta)));
-	return pow( sinbeta * sintheta - (beta * theta), 1/roughness);
+	float cosbeta = Ln.dir;
+	float costheta = Vf.dir;
+	float sinbeta = sqrt( max( 0, 1 - SQR(cosbeta)));
+	float sintheta = sqrt( max( 0, 1 - SQR(costheta)));
+	return pow( sinbeta * sintheta - (cosbeta * costheta), 1/roughness);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Geometric attenuation */
-
-/* Torrance-Sparrow */
-float
-cook_torrance(
+/* Geometric shadowing/masking term, suggested by Jim Blinn to the Torrance-
+ * -Sparrow model. */
+float blinn_ts(
 					float costheta, cosalpha, cospsi, cospsi2;
 					)
 {	
@@ -78,11 +78,12 @@ cook_torrance(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Approximation of the Smith geometric selfshadowing/masking function. */
-/* Product of 2 attenuation terms, between incident vector and microstructure
+/* Christophe Schlick's approximation of the first Smith geometric
+ * selfshadowing/masking function (for a known microfacet normal), the product
+ * of 2 attenuation terms, between incident vector and microstructure
  * normal, and viewer and microstructure normal. */
 
-float smith(
+float schlick_smith(
 				float cospsi, costheta, roughness;
 				)
 {
@@ -92,10 +93,10 @@ float smith(
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* Full formula for the Smith geometric selfshadowing/masking, as used in the
- * He-Torrance model. */
+/* Second Smith equation (fulL) for geometric shadowing/masking, for an
+ * averaged microfacet normal. */
 
-float he_torrance(
+float smith(
 					float costheta, cosalpha, roughness;
 					)
 {

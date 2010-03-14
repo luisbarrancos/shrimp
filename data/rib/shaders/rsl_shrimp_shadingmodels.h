@@ -1105,24 +1105,40 @@ cooktorrance(
 
 			// Microfacet distribution functions
 			if (distmodel == 0) {
+				// Cook-Torrance model, refinement of Blinn adaptations of
+				// the Torrance-Sparrow model
 				D = beckmann( cosalpha, roughness );
 			} else if (distmodel == 1) {
+				// Suggested by Kelemen and Szirmay-Kalos, which have further
+				// simplify the Cook-Torrance model
 				D = ward( cosalpha, roughness );
 			} else if (distmodel == 2) {
+				// Suggested by Blinn to the Torrance-Sparrow model, in which
+				// facets are modelled as ellipsoids of varying eccentricity,
+				// with m (roughness) = 0 for shiny surfaces, 1 for rough
+				// surfaces. This distribution needs a normalization factor
+				// not included. The Blinn model in Maya is the Torrance-Sparrow
+				// model with Blinn's suggested adaptations, and fast
+				// approximations to both the geometric masking/shadowing term
+				// and the Fresnel term.
 				D = trowbridge_reitz( cosalpha, roughness );
 			} else {
+				// Anisotropic distribution suggested by Heidrich and Seidel.
 				D = heidrich_seidel( Nf, Vf, Ln, anisodir, roughness );
 			}
 
 			// Geometric attenuation term
 			if (geomodel == 0) {
-				G = cook_torrance( costheta, cosalpha, cospsi, cospsi2 );
+				// Original masking/shadowing term suggested by Blinn to the
+				// Torrance-Sparrow model
+				G = blinn_ts( costheta, cosalpha, cospsi, cospsi2 );
 			} else if (geomodel == 1) {
-				// This would be the Schlick approximation of the Smith
-				// shadowing & masking function
-				G = smith( cospsi, costheta, roughness );
+				// Schlick's approximation of the first Smith equation for
+				// a known microfacet normal
+				G = schlick_smith( cospsi, costheta, roughness );
 			} else {
-				G = he_torrance( costheta, cospsi, roughness );
+				// Smith second equation for an averaged microfacet normal
+				G = smith( costheta, cospsi, roughness );
 			}
 
 			// Using the full formula fresnel for unpolarized light, from
@@ -1144,16 +1160,15 @@ cooktorrance(
 
 #if RENDERER == aqsis // cannot find a suitable cast for the expression
 			if (distmodel == 3) {
-				Ccook += Cl * (1-nonspec) * (((D*G*F / (costheta * cospsi)) *
-						cospsi) + specularbrdf( Ln, Nf, Vf, roughness*.5));
+				Ccook += Cl * (1-nonspec) * (D*G*F / costheta) +
+					specularbrdf( Ln, Nf, Vf, roughness*.5);
 			} else {
-				Ccook += Cl * (1-nonspec) * ((D*G*F / (costheta * cospsi)) *
-							cospsi);
+				Ccook += Cl * (1-nonspec) * (D*G*F / costheta);
 			}
 #else
-			Ccook += Cl * (1-nonspec) * (((D*G*F / (costheta * cospsi)) *
-				cospsi) + ((distmodel == 3) ?
-					specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0)));
+			Ccook += Cl * (1-nonspec) * (D*G*F / costheta) +
+				( (distmodel == 3) ?
+				  specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0));
 #endif // Aqsis doesn't likes ternary operator?
 		}
 	}
