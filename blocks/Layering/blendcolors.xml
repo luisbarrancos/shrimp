@@ -10,5 +10,10 @@
 	<rsl_code>
 			$(value) = blendcolor ( $(C1) , $(C2) , $(bld) , $(pct) , $(mask) , $(imask) );
 		</rsl_code>
-	<usage>Returns the blending color in selected blending mode.</usage>
+	<usage>Returns the blending color in selected blending mode:
+	(1)over			(2)average		(3)add			(4)substract	(5)screen	
+	(6)multiply		(7)lighten		(8)darken		(9)overlay		(10)pegtop soft light
+	(11)hard light	(12)Color Dodge	(13)Color Burn	(14)reflect	
+	(15)difference	(16)exclusion	(17)saturate	(18)desaturate
+	(19)illuminate</usage>
 </shrimp>
