@@ -443,26 +443,27 @@ general_options::renderers_t general_options::get_renderer_list() {
 }
 
 
-void general_options::load_scene_list() {
+void general_options::load_scene_list()
+{
+	m_scene.clear();
 
 	// load scene list
-//#ifdef FLTK
 	dirent** scene_files = 0;
 	const int scene_count = fltk::filename_list (m_rib_scene_dir.c_str(), &scene_files);
 
-	if (scene_count > 0) {
-
+	if (scene_count > 0)
+	{
 		typedef std::vector<std::string> names_t;
 		names_t scene_paths;
-		for (int f = 0; f < scene_count; ++f) {
-
+		for (int f = 0; f < scene_count; ++f)
+		{
 			const std::string file = std::string (scene_files[f]->d_name);
 			const std::string file_path = rib_scene_dir() + "/" + file;
-			if (!fltk::filename_isdir (file_path.c_str())) {
-
+			if (!fltk::filename_isdir (file_path.c_str()))
+			{
 				const char* extension = fltk::filename_ext (file.c_str());
-				if (std::string(extension) == ".rib") {
-
+				if (std::string(extension) == ".rib")
+				{
 					// save XML file
 					const std::string name (file.begin(), file.end() - 4);
 
@@ -480,14 +481,12 @@ void general_options::load_scene_list() {
 		}
 
 		free (scene_files);
-
 	}
-//#endif
 }
 
 
-general_options::scenes_t general_options::get_scene_list() {
-
+general_options::scenes_t general_options::get_scene_list()
+{
 	return m_scenes;
 }
 
