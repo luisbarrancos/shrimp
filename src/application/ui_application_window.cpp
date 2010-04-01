@@ -458,7 +458,7 @@ void application_window::on_menu_file_options (fltk::Widget*) {
 
 	set_renderer_chooser_value (renderer_code);
 	set_display_chooser_value (renderer_code, display_name);
-//	set_scene_chooser_value (scene);
+	set_scene_chooser_value (scene);
 }
 
 
@@ -872,6 +872,7 @@ void application_window::set_scene_chooser_value (const std::string Scene) {
 	unsigned long scene_menu_number = 0;
 	unsigned long current_menu_number = 0;
 	bool found = false;
+	m_scene_chooser->remove_all();
 	m_scene_chooser->begin();
 	for (general_options::scenes_t::iterator s_i = m_scenes.begin(); s_i != m_scenes.end(); ++s_i, ++current_menu_number) {
 		new fltk::Item (s_i->name.c_str(), 0, cb_scene, (void*)s_i->name.c_str());
