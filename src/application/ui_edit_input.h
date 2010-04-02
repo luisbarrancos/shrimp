@@ -191,8 +191,7 @@ static void cb_file_chooser (fltk::Widget *w, void *v) {
 		std::ostringstream new_file;
 		new_file << "\"" << file << "\"";
 		s_value->text (new_file.str().c_str());
-		preview->remove();
-
+//		preview->remove();
 
 }
 
