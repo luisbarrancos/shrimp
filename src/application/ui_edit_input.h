@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -62,8 +62,8 @@ static fltk::SharedImage* tiff_check(const char *, uchar *, int);
 static fltk::SharedImage* preview;
 
 
-static void cb_colour_chooser (fltk::Widget *w, void *v) {
-
+static void cb_colour_chooser (fltk::Widget *w, void *v)
+{
 	uchar r = 0, g = 0, b = 0;
 	//fltk::split_color(current_color, r, g, b);
 
@@ -78,125 +78,124 @@ static void cb_colour_chooser (fltk::Widget *w, void *v) {
 	// redraw parent box
 	w->parent()->redraw();
 }
-// uncomment to have image preview in the file dialog
-//static int readTiff(const char* filename, int& rw, int& rh, unsigned char * &rbits)
-//{
-//
-//
-//	// we turn off Warnings too many specific tags that confuse libtiff
-//	TIFFErrorHandler warn = TIFFSetWarningHandler(0);
-//
-//	TIFF* tiff = TIFFOpen(filename, "r");
-//
-//	// turn warnings back
-//	TIFFSetWarningHandler(warn);
-//
-//	if (tiff) {
-//		int rc = 1;			// what to return
-//		uint32 w, h;
-//		size_t npixels;
-//		uint32* raster;
-//
-//		TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
-//		TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
-//
-//		// notice that despite the fact that this always says orient=1 (TOPLEFT)
-//		// we still get upsidedown images!
-//		uint16 orient;
-//		TIFFGetField(tiff, TIFFTAG_ORIENTATION, &orient);    // set the origin of the image.
-//
-//
-//		// in case my data structures are different
-//		rw = w;
-//		rh = h;
-//
-//		npixels = w * h;
-//		raster = (uint32*) _TIFFmalloc(npixels * sizeof (uint32));
-//		if (raster != NULL) {
-//			//Force the good orientation
-//			if (TIFFReadRGBAImageOriented(tiff, w, h, raster, 0,0)) {
-//				rbits = (unsigned char*) raster;
-//
-//			} else {
-//				rc=0;
-//				_TIFFfree(raster);
-//			}
-//		}
-//
-//		TIFFClose(tiff);
-//		return rc;
-//	} else
-//		return 0;
-//}
-//
-//
-//fltk::SharedImage *	tiff_check(const char *name,uchar *header,int headerlen)
-//{
-//
-//
-//  if (memcmp(header, "II*", 3) != 0)
-//    return 0;
-//
-//	// read the image
-//	int w,h;
-//
-//	unsigned char* image;
-//	if (!name || !readTiff(name,w,h,image))
-//		{
-//		fltk::alert("Can't open TIFF file!");
-//		return 0;
-//		}
-//	else {
-//
-//
-//		if (preview) {
-//
-//			preview =(fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
-//			preview->setsize(w,h);
-//
-//		}
-//		else{
-//
-//			preview = (fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
-//		}
-//		if(preview == NULL)
-//		{
-//		   fltk::alert("No SharedImage possible for\n%s",name);
-//		   return (fltk::SharedImage::get("?"));
-//		}
-//
-//		return preview;
-//
-//	}
-//}
 
-static void cb_file_chooser (fltk::Widget *w, void *v) {
+// image preview in the file dialog
+static int readTiff(const char* filename, int& rw, int& rh, unsigned char* &rbits)
+{
+	// we turn off Warnings too many specific tags that confuse libtiff
+	TIFFErrorHandler warn = TIFFSetWarningHandler(0);
 
-	// get current directory
-		char result[2048];
-		fltk::filename_absolute (result, 2048, ".");
+	TIFF* tiff = TIFFOpen(filename, "r");
 
-// uncomment to have image preview in the file dialog
-//		fltk::SharedImage::set_cache_size(4096);
-//		fltk::SharedImage::add_handler(tiff_check);
+	// turn warnings back
+	TIFFSetWarningHandler(warn);
+
+	if (tiff)
+	{
+		int rc = 1;			// what to return
+		uint32 w, h;
+		size_t npixels;
+		uint32* raster;
+
+		TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
+		TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
+
+		// notice that despite the fact that this always says orient=1 (TOPLEFT)
+		// we still get upsidedown images!
+		uint16 orient;
+		TIFFGetField(tiff, TIFFTAG_ORIENTATION, &orient);    // set the origin of the image.
 
 
+		// in case my data structures are different
+		rw = w;
+		rh = h;
 
-		// choose shader file
-		const char* file = fltk::file_chooser ("Open Texture", "*.{tif,tdl}", result);
-		if (!file){
-
-			return ;
+		npixels = w * h;
+		raster = (uint32*) _TIFFmalloc(npixels * sizeof (uint32));
+		if (raster != NULL)
+		{
+			//Force the good orientation
+			if (TIFFReadRGBAImageOriented(tiff, w, h, raster, 0,0))
+			{
+				rbits = (unsigned char*) raster;
+			}
+			else
+			{
+				rc=0;
+				_TIFFfree(raster);
+			}
 		}
-		std::ostringstream new_file;
-		new_file << "\"" << file << "\"";
-		s_value->text (new_file.str().c_str());
-//		preview->remove();
 
+		TIFFClose(tiff);
+		return rc;
+	} else
+		return 0;
 }
 
-class dialog {
 
+fltk::SharedImage* tiff_check(const char* name, uchar* header, int headerlen)
+{
+	if (memcmp(header, "II*", 3) != 0)
+		return 0;
+
+	// read the image
+	int w, h;
+	unsigned char* image;
+	if (!name || !readTiff(name, w, h, image))
+	{
+		fltk::alert("Can't open TIFF file!");
+		return 0;
+	}
+
+	if (preview)
+	{
+		preview = (fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
+		preview->setsize(w, h);
+	}
+	else
+	{
+		preview = (fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
+	}
+
+	if (!preview)
+	{
+		fltk::alert("No SharedImage possible for '%s'\n",name);
+		return fltk::SharedImage::get("?");
+	}
+
+	return preview;
+}
+
+
+// File chooser callback, to select TIFF or TDL files
+static void cb_file_chooser (fltk::Widget *w, void *v)
+{
+	// get current directory
+	char result[2048];
+	fltk::filename_absolute (result, 2048, ".");
+
+	// image preview in the file dialog
+	fltk::SharedImage::set_cache_size (4096);
+	fltk::SharedImage::add_handler (tiff_check);
+
+	// choose shader file
+	const char* file = fltk::file_chooser ("Open Texture", "*.{tif,tdl}", result);
+	if (!file)
+	{
+		// cancel
+		return;
+	}
+
+	// save file name
+	s_value->text (file);
+
+	// crashes when selecting a texture file using the new file dialog in block attribute
+	//preview->remove();
+}
+
+
+class dialog
+{
 private:
 	fltk::Window* w;
 	shader_block* m_shader_block;
@@ -207,8 +206,8 @@ private:
 
 public:
 	dialog (shader_block* Block) :
-		m_shader_block (Block) {
-
+		m_shader_block (Block)
+	{
 		// build dialog window
 		w = new fltk::Window(400, 160, "Edit input");
 		w->begin();
@@ -238,8 +237,8 @@ public:
 			s_storage->begin();
 				// make sure the list isn't destroyed before the dialog closes
 				m_storage_types = get_property_storage_types();
-				for (storages_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i) {
-
+				for (storages_t::const_iterator st_i = m_storage_types.begin(); st_i != m_storage_types.end(); ++st_i)
+				{
 					new fltk::Item (st_i->c_str());
 				}
 			s_storage->end();
@@ -251,8 +250,8 @@ public:
 			s_type->begin();
 				// make sure the list isn't destroyed before the dialog closes
 				m_types = get_property_types();
-				for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i) {
-
+				for (types_t::const_iterator t_i = m_types.begin(); t_i != m_types.end(); ++t_i)
+				{
 					new fltk::Item (t_i->c_str());
 				}
 			s_type->end();
@@ -265,8 +264,8 @@ public:
 			s_array_type = new fltk::Choice (290,60, 100,23, "");
 			s_array_type->begin();
 				m_array_types = get_array_types();
-				for (types_t::const_iterator t_i = m_array_types.begin(); t_i != m_array_types.end(); ++t_i) {
-
+				for (types_t::const_iterator t_i = m_array_types.begin(); t_i != m_array_types.end(); ++t_i)
+				{
 					new fltk::Item (t_i->c_str());
 				}
 			s_array_type->end();

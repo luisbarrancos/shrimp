@@ -15,18 +15,13 @@ env = Environment(variables = vars)
 env.ParseConfig("fltk2-config --cxxflags --ldflags")
 env.ParseConfig( 'pkg-config --cflags --libs sigc++-2.0' )
 
-# uncomment for support of tif and tdl preview in file dialog
-# env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png','tiff'])
-env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png'])
+# Linked libraries
+env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png','tiff'])
 
 
 if platform.system() == 'Linux':
-	env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
-	env.Append(LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'])
-	
-	#uncomment for support of tif and tdl preview in file dialog
-	#env.Append(CPPPATH = ['/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/' , '/usr/include/'])
-	#env.Append(LIBPATH = ['.', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path', '/usr/lib'])
+	env.Append(CPPPATH = ['/usr/include/', '/usr/include/GL', '$fltk_include_path', '/usr/local/include/fltk/compat/'])
+	env.Append(LIBPATH = ['.', '/usr/lib/', '/usr/local/lib', '/usr/X11R6/lib', '$fltk_lib_path'])
 
 elif platform.system() == 'Darwin':
 # OS X
@@ -54,6 +49,9 @@ if not conf.CheckCXXHeader('fltk/run.h'):
 if not conf.TryAction('pkg-config --exists sigc++-2.0')[0]:
 	print 'Shrimp requires libsigc++ 2.x'
 	Exit(1)
+
+# Check for libtiff
+#TODO
 
 env = conf.Finish()
 
