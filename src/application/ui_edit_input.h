@@ -24,6 +24,8 @@
 
 #include "../miscellaneous/logging.h"
 
+#include "tiffImage.h"
+
 #include <fltk/Button.h>
 #include <fltk/CheckButton.h>
 #include <fltk/Choice.h>
@@ -138,6 +140,15 @@ fltk::SharedImage* tiff_check(const char* name, uchar* header, int headerlen)
 	if (memcmp(header, "II*", 3) != 0)
 		return 0;
 
+	fltk::SharedImage* tiffImage = new fltk::tiffImage(name);
+	if (!name || !tiffImage)
+	{
+		fltk::alert("Can't open TIFF file!");
+		return 0;
+	}
+
+	return tiffImage;
+/*
 	// read the image
 	int w, h;
 	unsigned char* image;
@@ -164,6 +175,7 @@ fltk::SharedImage* tiff_check(const char* name, uchar* header, int headerlen)
 	}
 
 	return preview;
+*/
 }
 
 

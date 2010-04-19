@@ -96,6 +96,7 @@ shrimp_files = Split("""
 	src/application/ui_application_window.cpp
 	src/application/ui_scene_view.cpp
 	src/application/ui_splash.cpp
+	src/application/tiffImage.cxx
 """)
 
 
