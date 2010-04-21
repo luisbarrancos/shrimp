@@ -191,15 +191,17 @@ static void cb_file_chooser (fltk::Widget *w, void *v)
 	fltk::SharedImage::add_handler (tiff_check);
 
 	// choose shader file
-	const char* file = fltk::file_chooser ("Open Texture", "*.{tif,tdl}", result);
+	const char* file = fltk::file_chooser ("Open Texture", "*.{tif,tiff}\t*.{tdl,tex,tx}", result);
 	if (!file)
 	{
 		// cancel
 		return;
 	}
-
 	// save file name
-	s_value->text (file);
+	std::ostringstream new_file;
+	new_file << "\"" << file << "\"";
+	s_value->text (new_file.str().c_str());
+
 
 	// crashes when selecting a texture file using the new file dialog in block attribute
 	//preview->remove();
