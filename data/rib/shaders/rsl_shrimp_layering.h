@@ -1,258 +1,298 @@
-#ifndef SHRIMP_LAYERING_H
-#define SHRIMP_LAYERING_H 1
+#ifndef RSL_SHRIMP_LAYERING_H
+#define RSL_SHRIMP_LAYERING_H	1
 
 /* Utility functions to blend between layers */
 ////////////////////////////////////////////////////////////////////////////////
-//Base on multiple reference
-//http://www.pegtop.net/delphi/articles/blendmodes/index.htm
-//http://dunnbypaul.net/blends/
+// Based on http://www.pegtop.net/delphi/articles/blendmodes/index.htm
+// http://dunnbypaul.net/blends/
+// and: http://www.nathanm.com/photoshop-blending-math/
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "rsl_shrimp_helpers.h"
+#include "rsl_shrimp_helpers.h" // luminance, color absolute, exp, min, max
 
-//Clamp Color Function
-color clampcolors(color inputColor; float minRValue; float minGValue; float minBValue; float maxRValue; float maxGValue; float maxBValue){
-	color outColor;
-	outColor = inputColor;
-	if(comp(inputColor,0) < minRValue)
-		setcomp(outColor,0,minRValue);
-	if(comp(inputColor,1) < minGValue)
-		setcomp(outColor,1,minGValue);
-	if(comp(inputColor,2) < minBValue)
-		setcomp(outColor,1,minBValue);
-	if(comp(inputColor,0) > maxRValue)
-		setcomp(outColor,0,maxRValue);
-	if(comp(inputColor,1) > maxGValue)
-		setcomp(outColor,1,maxGValue);
-	if(comp(inputColor,2) > maxBValue)
-		setcomp(outColor,2,maxBValue);
-	return outColor;
+// Clamp color function with user-set min/max per component
+color clampcolors(
+					color inputC;
+					float minR, minG, minB, maxR, maxG, maxB;
+		)
+{
+	color C = inputC;
+	return clamp( C, color( minR, minG, minB ), color( maxR, maxG, maxB ) );
 }
 
-//Blending Mode Functions
-
-//over
-color over(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1*(1-pct)+C2*pct;
-	return outColor;
-}
-
-//average
-color average(color C1; color C2; float pct){
-	color outColor;
-	//outColor = mix(C1,(C1*pct)/2,pct);
-	outColor = (C1*(C2*pct+(1-pct)))/(2*(0.5+(0.5*pct)));
-	return outColor;
-}
-
-//add
-color add(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1+(C2*pct);
-	return outColor;
-}
-
-//substract
-color substract(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1-(C2*pct);
-	return outColor;
-}
-
-//screen
-color screen(color C1; color C2; float pct){
-	color outColor;
-	outColor = 1-((1-C2*pct)*(1-C1));
-	return outColor;
-}
-
-//multiply
-color multiply(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1*(C2*pct+(1-pct));
-	return outColor;
-}
-
-//lighten
-color lighten(color C1; color C2; float pct){
-	color outColor;
-	outColor = max(C2*pct,C1)*pct+C1*(1-pct);
-	return outColor;
-}
-
-//darken
-color darken(color C1; color C2; float pct){
-	color outColor;
-	outColor = min(C2*pct,C1)*pct+C1*(1-pct);
-	return outColor;
-}
-
-//overlay
-color overlay(color C1; color C2; float pct; ){
-	float compareColor;
-	color outColor;
-	compareColor = luminance(pct);
-	if(compareColor > 0.5){
-		outColor = (2*(0.5+(0.5*pct)))*((C1+(C2*pct))-(C1*(C2*pct)))-(1*pct);
-	}
-	else{
-	outColor = (2*(0.5+(0.5*pct)))*C1*(C2*pct+(1-pct));
-	}
-	return outColor;
-}
-
-//hardlight
-color hardlight(color C1; color C2; float pct){
-	float compareColor;
-	color outColor;
-	compareColor = luminance(C1);
-	if(compareColor > 0.5){
-		outColor = (2*(0.5+(0.5*pct)))*((C1+(C2*pct))-(C1*(C2*pct)))-(1*pct);
-	}
-	else{
-	outColor = (2*(0.5+(0.5*pct)))*C1*(C2*pct+(1-pct));
-	}
-	return outColor;
-}
-
-//Color Dodge
-color colordodge(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1/(1-C2*pct);
-	return outColor;
-}
-
-//Color Burn
-color colorburn(color C1; color C2; float pct){
-	color outColor;
-	outColor = 1-(1-C1)/(C2*pct+(1-pct));
-	return outColor;
-}
-
-//reflect
-color reflect(color C1; color C2; float pct){
-	color outColor;
-	outColor = (C1*(C1*pct+1-pct))/(1-(C2*pct));
-	return outColor;
-}
-
-//difference
-color colordifference(color C1; color C2; float pct){
-	color outColor;
-	outColor = (C2*pct-C1)*pct+C1*(1-pct);
-	return outColor;
-}
-
-//exclusion
-color exclusion(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1+C2*pct-2*(C1*C2*pct);
-	return outColor;
-}
-
-//saturate
-color saturate(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1*(1+C2*pct);
-	return outColor;
-}
-
-//desaturate
-color desaturate(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1*(1-C2*pct);
-	return outColor;
-}
-
-//illuminate
-color colorilluminate(color C1; color C2; float pct){
-	color outColor;
-	outColor = C1*(2*C2*pct+1-pct);
-	return outColor;
-}
-
-color blendcolor (color C1;color C2;float bld; float pct;float msk;float imask){
-	float mask;
-	color value;
-
-	if(imask==1){
-					mask=msk;
-				}
-				else{
-					mask=1-msk;
-				}
-	if (bld == 1){ //over
-		value = mix( over(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 2){ //average
-		value = mix(average(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 3){ //add
-		value = mix(add(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 4){	//substract
-		value = mix(substract(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 5){	//screen
-		value = mix(screen(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 6){	//multiply
-		value = mix(multiply(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 7){	//lighten
-		value = mix(lighten(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 8){	//darken
-		value = mix(darken(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 9){	//overlay
-		value = mix(overlay(C1,C2,pct),C1,mask);
-	}
-	if (bld == 10){ //pegtop soft light
-		value = mix(((1-C1) * multiply(C1,C2,pct) + C1*screen(C1,C2,pct)),C1,mask);
-	}
-	if (bld == 11){ //hard light
-		value = mix(hardlight(C1,C2,pct),C1,mask);
-	}
-	if (bld == 12){ //Color Dodge
-		value = mix(colordodge(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 13){ //Color Burn
-		value = mix(colorburn(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 14){ //reflect
-		value = mix(reflect(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 15){ //difference
-		value = mix(colordifference(C1,C2,pct),C1,mask);
-	}
-	if (bld == 16){ //exclusion
-		value = mix(exclusion(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 17){ //saturate
-		value = mix(saturate(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 18){ //desaturate
-		value = mix(desaturate(C1,C2,pct),C1,mask);
-	}
-	else
-	if (bld == 19){ //illuminate
-		value = mix(colorilluminate(C1,C2,pct),C1,mask);
-	}
-}
 ////////////////////////////////////////////////////////////////////////////////
-#endif /* SHRIMP_LAYERING_H */
+// Blending modes
+// Multiply, Screen, Overlay, Darken, Lighten, ColorDodge, ColorBurn,
+// HardLight, SoftLight, Difference and Exclusion are separable modes -
+// each component of the result color is determined by the components of the
+// foreground and background colors - with the blending function applied
+// separately to each component. Colors are operated on a component by
+// component basis in RSL.
+// "Over" - linear interpolation between C1 and C2
+color color_over(	color C1, C2; float weight; )
+{	return clamp( color mix( C1, C2, weight), color(0), color(1) );	}
+
+////////////////////////////////////////////////////////////////////////////////
+// "Average"
+color color_avg(	color C1, C2; float weight; )
+{
+	color C = mix( C1, (C1 + C2) / color(2), weight );
+	return clamp(C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Add
+color color_add(	color C1, C2; float weight; )
+{
+	color C = C1 + (C2 * weight);
+	return clamp(C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Subtract
+color color_sub(	color C1, C2; float weight; )
+{
+	color C = C1 - (C2 * weight);
+	return clamp(C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Screen
+color color_screen(	color C1, C2; float weight; )
+{	return mix( C1, clamp( (1 - C1) * C2 + C1, color(0), color(1)), weight); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Multiply 
+color color_multiply(	color C1, C2; float weight; )
+{	return mix( C1, clamp( C1 * C2, color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Divide
+color color_divide(		color C1, C2; float weight; )
+{
+	return mix( C1, clamp( C1 / max( color(EPS), C2), color(0), color(1) ),
+			weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Lighten
+color color_lighten(	color C1, C2; float weight; )
+{	return mix( C1, clamp( max( C1, C2 ), color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Darken
+color color_darken(		color C1, C2; float weight; )
+{	return mix( C1, clamp( min( C1, C2 ), color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Hardlight (non-commutative - a combination of multiply and screen,
+// also the same as Overlay commuted:
+color color_hardlight(	color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via x/y/z/comp only
+		setcomp( C, i, ( comp(C2, i) < 0.5) ?
+				comp(C1, i) * comp(C2, i) : // multiply, else screen: w = 1
+				(1 - comp(C1, i)) * comp(C2, i) + comp(C1, i) );
+#else // color_multiply or color_screen, with w = 1
+		C[i] = ( C2[i] < 0.5 ) ?
+			C[i] = C1[i] * C2[i] : (1 - C1[i]) * C2[i] + C1[i] ;
+#endif // Aqsis component access via x/y/z/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1) ), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Overlay (a combination of multiply and screen, non-commutative)
+// Hardlight commuted:
+color color_overlay(	color C1, C2; float weight; )
+{	return color_hardlight( C2, C1, weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Vivid light, non-commutative (combination of color burn and color dodge)
+color color_vividlight(	color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		setcomp( C, i, ( comp(C2, i) <= 0.5 ) ?
+				comp(C1, i) / (1 - 2 * comp(C2, i)) :
+				1 - (1 - comp(C1, i)) / (2 + ( comp(C2, i) - 0.5)) );
+#else
+		C[i] = ( C2[i] <= 0.5 ) ?
+			C1[i] / (1 - 2 * C2[i]) : 1 - (1 - C1[i]) / (2 + (C2[i] - 0.5));
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1) ), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Linear light, non-commutative (combination of linear burn and linear dodge)
+color color_linearlight(color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		setcomp( C, i, ( comp(C2, i) <= 0.5 ) ?
+				comp(C1, i) + 2 * comp(C2, i) :
+				comp(C1, i) + 2 * ( comp(C2, i) - 0.5 ) );
+#else
+		C[i] = ( C2[i] <= 0.5 ) ?
+			C1[i] + 2 * C2[i] - 1 : C1[i] + 2 * ( C2[i] - 0.5 );
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1) ), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Pin light, non-commutative (combination of darken and lighten)
+color color_pinlight(	color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == Aqsis // Aqsis component access via xyz/comp only
+		setcomp( C, i, ( comp(C2, i) <= 0.5 ) ?
+				min( comp(C1, i), 2 * comp(C2, i) ) :
+				max( comp(C1, i), 2 * ( comp(C2, i) - 0.5 ) ) );
+#else
+		C[i] = ( C2[i] <= 0.5 ) ?
+			min( C1[i], 2 * C2[i] ) : max( C1[i], 2 * ( C2[i] - 0.5 ) );
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1) ), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Softlight (non-commutative - a combination of multiply and screen,
+// (Soft Light formula is only approximate)
+// if (Blend > ½) R = 1 - (1-Base) × (1-(Blend-½))
+// if (Blend <= ½) R = Base × (Blend+½) 
+color color_softlight(	color C1, C2; float weight; )
+{
+	color C = ( ((1 - C1) * C2 * C1) +
+			(C1 * color_screen( C1, C2, weight )) );
+	return clamp(C, color(0), color(1) );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Softlight (PS) (non-commutative)
+color color_softlightps(	color C1, C2; float weight; )
+{
+	color C = color(0); float dxC = 0;
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		if ( comp(C2, i) <= 0.5) {
+			setcomp( C, i, comp(C1, i) - (1 - 2 * comp(C2, i)) *
+					comp(C1, i) * (1 - comp(C1, i)) );
+		} else {
+			dxc = ( comp(C1, i) <= 0.25) ?
+				( (16 * comp(C1, i) - 12) * comp(C1, i) + 4) * comp(C1, i) :
+				sqrt( comp(C1, i) );
+			setcomp( C, i, comp(C1, i) + (2 * comp(C2, i) - 1) *
+					(dxc - comp(C1, i)));
+		}
+#else
+		if ( C2[i] <= 0.5) {
+			C[i] = C1[i] - (1 - 2 * C2[i]) * C1[i] * (1 - C1[i]);
+		} else {
+			dxc = (C1[i] <= 0.25) ?
+				( (16 * C1[i] - 12) * C1[i] + 4) * C1[i] : sqrt( C1[i] );
+			C[i] = C1[i] + (2 * C2[i] - 1) * (dxc - C1[i]);
+		}
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1)), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Color dodge
+color color_dodge(	color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		setcomp( C, i, ( comp(C2, i) < 1 ) ?
+				min( 1, comp(C1, i) / (1 - comp(C2, i)) ) : 1 );
+#else
+		C[i] = ( C2[i] < 1 ) ? min( 1, C1[i] / (1 - C2[i])) : 1;
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1)), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Color burn
+color color_burn(	color C1, C2; float weight; )
+{
+	color C = color(0);
+	uniform float i;
+	for (i = 0; i < 3; i += 1) {
+#if RENDERER == aqsis // Aqsis component access via xyz/comp only
+		setcomp( C, i, ( comp(C2, i) > 0 ) ?
+				1 - min( 1, (1 - comp(C1, i)) / comp(C2, i)) : 0 );
+#else
+		C[i] = ( C2[i] > 0 ) ? 1 - min( 1, (1 - C1[i]) / C2[i] ) : 0;
+#endif // Aqsis component access via xyz/comp only
+	}
+	return mix( C1, clamp( C, color(0), color(1)), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Linear dodge
+color color_lineardodge(color C1, C2; float weight; )
+{	return mix( C1, clamp( C1 + C2, color(0), color(1) ), weight );	}
+
+////////////////////////////////////////////////////////////////////////////////
+// Linear burn
+color color_linearburn(	color C1, C2; float weight; )
+{	return mix( C1, clamp( C1 + C2 - 1, color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Difference
+color color_difference(	color C1, C2; float weight; )
+{
+	color C = absc( C1 - C2 ); // abs(C1[i] - C2[i] )
+	return mix( C1, clamp( C, color(0), color(1) ), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Exclusion
+color color_exclusion(	color C1, C2; float weight; )
+{
+	color C = C1 + C2 - 2 * C1 * C2;
+	return mix( C1, clamp( C, color(0), color(1)), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Reflect
+color color_reflect(	color C1, C2; float weight; )
+{
+	color C = (C1 * (C1 + 1)) / max( color(EPS), (1 - C2));
+	return mix( C1, clamp( C, color(0), color(1)), weight );
+}
+
+////////////////////////////////////////////////////////////////////////////////
+// Saturate
+color color_saturate(	color C1, C2; float weight; )
+{	return mix( C1, clamp(C1 * (1 + C2), color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Desaturate
+color color_desaturate(	color C1, C2; float weight; )
+{	return mix( C1, clamp( C1 * (1 - C2), color(0), color(1)), weight ); }
+
+////////////////////////////////////////////////////////////////////////////////
+// Illuminate
+color color_illuminate(	color C1, C2; float weight; )
+{	return mix( C1, clamp( C1 * (2 * C2 + 1), color(0), color(1)), weight); }
+
+////////////////////////////////////////////////////////////////////////////////
+#endif // RSL_SHRIMP_LAYERING_H
+

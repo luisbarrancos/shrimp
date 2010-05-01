@@ -1,5 +1,5 @@
-#ifndef SHRIMP_HELPERS_H
-#define SHRIMP_HELPERS_H 1
+#ifndef RSL_SHRIMP_HELPERS_H
+#define RSL_SHRIMP_HELPERS_H 1
 
 /* Useful macros, functions and quantities */
 ////////////////////////////////////////////////////////////////////////////////
@@ -65,22 +65,17 @@ rotate2d( float x, y, theta, ox, oy;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
-/* 
- * boolean ops (from Perlin85)
- * */
-////////////////////////////////////////////////////////////////////////////////
-
-#define intersection( a, b )	( (a) * (b) )
-#define union( a, b )			( (a) + (b) - (a)*(b) )
-#define difference( a, b )		( (a) - (a)*(b) )
-#define complement( a )			( 1 - (a) )
-#define exclusiveor( a, b )		( difference( union( (a),(b) ), \
-									intersection( (a),(b) ) ) ) 
+/* Boolean ops (from Perlin85) */
+#define INTERSECTION(A, B)		( (A) * (B) )
+#define UNION(A, B)				( (A) + (B) - (A) * (B) )
+#define DIFFERENCE(A, B)		( (A) - (A) * (B) )
+#define COMPLEMENT(A)			( 1 - (A) )
+#define EXCLUSIVEOR(A, B)		( DIFFERENCE( UNION( (A), (B) ), \
+									INTERSECTION( (A), (B) )))
 
 ////////////////////////////////////////////////////////////////////////////////
 // From shrimp_util.h //////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
 /* 
  * shrimp_util.h
  *
@@ -92,58 +87,49 @@ rotate2d( float x, y, theta, ox, oy;
  * in "Texturing and Modelleling" by Ebert et al.
  * */
 
-/*
- * This is the same as mix except blend allows a non-scalar 3rd arg.
- * */
+// This is the same as mix except blend allows a non-scalar 3rd arg.
+#define BLEND(A, B, X)		( (A) * (1 - (X)) + (B) * (X) )
 
-#define blend( a, b, x ) ( (a) * (1 - (x)) + (b) * (x) )
-
-/*
- * The following 2 macros are useful in generating tiling patterns.
+/* The following 2 macros are useful in generating tiling patterns.
  * repeat transforms surface coords into coords in the current tile.
  * whichtile returns the number of the current tile.
  * */
-#define repeat( x, freq )			( mod( (x) * (freq), 1 ) )
-#define whichtile( x, freq )		( floor( (x) * (freq) ) )
+#define REPEAT(X, FREQ)				( mod( (X) * (FREQ), 1 ))
+#define WHICHTILE(X, FREQ)			( floor( (X) * (FREQ) ))
 
-/*
- * Adds offset to the point, but wraps around so 0<=x<=1
- * */
-#define shift( x, offset )			( mod( (x) + (offset), 1 ) )
+// Adds offset to the point, but wraps around so 0<=x<=1
+#define SHIFT(X, OFFSET)			( mod( (X) + (OFFSET), 1 ))
 
-/* 
- * Just shorthand, but it makes things more readable
- * */
-#define odd(x)						(mod((x), 2) == 1)
-#define even(x)						(mod((x), 2) == 0) 
+// Just shorthand, but it makes things more readable
+#define ODD(X)						( mod( (X), 2) == 1)
+#define EVEN(X)						( mod( (X), 2) == 0)
 
-/*
- * Some definitions from rmannotes
- * */
-#define pulse( a, b, x )				( step( a, x ) - step( b, x ) )
-#define filteredpulse( a, b, x, dx )	( max( 0, ( min( (x-dx/2)+dx, b) - \
-											max( x-dx/2, a)) / dx ) )
-#define boxstep( a, b, x )			clamp( ( (x)-(a) ) / ( (b)-(a) ), 0, 1 )
+// * Some definitions from rmannotes
+#define PULSE(A, B, X)				( step( A, X ) - step( B, X ) )
+#define FILTEREDPULSE(A, B, X, DX)	( max( 0, ( min( (X-DX/2) + DX, B) - \
+								      max( X-DX/2, A)) / DX ) )
+#define BOXSTEP(A, B, X)			clamp( ( (X)-(A) ) / ( (B)-(A) ), 0, 1)
 
 /* uniformly distributed noise */
-#define udn(x,lo,hi) (smoothstep(.25, .75, noise(x)) * ((hi) - (lo)) + (lo))
-#define udn2(x,y,lo,hi) (smoothstep(.25, .75, noise(x,y)) * ((hi)-(lo))+(lo))
+#define UDN(X, LO, HI)				( smoothstep( 0.25, 0.75, noise(X)) * \
+									( (HI)-(LO) ) + (LO))
+#define UDN2(X, Y, LO, HI)			( smoothstep( 0.25, 0.75, noise(X, Y)) * \
+									( (HI)-(LO)) + (LO))
 
 ////////////////////////////////////////////////////////////////////////////////
 /* The filterwidth macro takes a float and returns the approximate amount
  * that the float changes from pixel to adjacent pixel */
-#ifndef filterwidth
-#	define filterwidth(x)  ( max( abs( Du(x)*du ) + abs( Dv(x)*dv ), \
-			MINFILTWIDTH ) )
+#ifndef FILTERWIDTH
+#define FILTERWIDTH(X)	( max( abs(Du(X)*du) + abs(Dv(X)*dv), MINFILTWIDTH ))
 #endif
 
-#ifndef filterwidthp
-#	define filterwidthp(p) ( max( sqrt( area(p) ), MINFILTWIDTH ) )
+#ifndef FILTERWIDTHP
+#define FILTERWIDTHP(P)	( max( sqrt( area(P) ), MINFILTWIDTH ))
 #endif
 
-#ifndef fadeout
-#	define fadeout(g,g_avg,featuresize,fwidth) \
-	( mix( g, g_avg, smoothstep( .2, .6, fwidth/featuresize)))
+#ifndef FADEOUT
+#define FADEOUT(G, AVG, SIZE, WIDTH) \
+		( mix( G, AVG, smoothstep( 0.2, 0.6, WIDTH/SIZE )))
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -634,10 +620,15 @@ color expc( color C; ) {
 	return color( exp( comp(C, 0)), exp( comp(C, 1)), exp(comp(C, 2)));
 }
 
+color absc( color C; ) {
+	return color( abs( comp(C, 0)), abs( comp(C, 1)), abs( comp(C, 2)) );
+}
+
 float vmax( color C; ) { return max( comp(C, 0), comp(C, 1), comp(C, 2)); }
 float vmin( color C; ) { return min( comp(C, 0), comp(C, 1), comp(C, 2)); }
 #else
 color expc( color C; ) { return color( exp(C[0]), exp(C[1]), exp(C[2]) ); }
+color absc( color C; ) { return color( abs(C[0]), abs(C[1]), abs(C[2]) ); }
 float vmax( color C; ) { return max( C[0], C[1], C[2] ); }
 float vmin( color C; ) { return min( C[0], C[1], C[2] ); }
 #endif // Aqsis component selection workaround
