@@ -1,0 +1,7 @@
+.*\.o$
+.*\.a$
+.sconf_temp
+.sconsign.dblite
+config.log
+doc/.*\.xml
+shrimp
