@@ -979,6 +979,7 @@ color schlickspec(
 ////////////////////////////////////////////////////////////////////////////////
 
 // Approximation of the Smith geometric attenuation function
+// G(v) = v / (σ - σv + v )
 float sgeoattenuation(
 						float costheta, roughness;
 		)
@@ -988,6 +989,7 @@ float sgeoattenuation(
 }
 
 // Angle dependence
+// A(w) = sqrt( ψ / (ψ² - ψ²w² + w²)
 float angledependence(
 						float cosbeta, isotropy;
 		)
@@ -998,13 +1000,14 @@ float angledependence(
 }
 
 // Zenith dependence
+// Z(t) = σ / (1 + σt² - t²)²
 float zenithdependence(
 						float cosbeta, roughness;
 		)
 {
 	float cosbeta2 = SQR(cosbeta);
-	float zz = 1 - (1 - roughness) * cosbeta2;
-	return roughness / SQR(zz) ;
+	float Zdenom = (1 + roughness * cosbeta2 - cosbeta2);
+	return roughness / SQR(Zdenom);
 }
 
 // NOTE: better plot it
@@ -1020,7 +1023,7 @@ color aschlick(
 	vector xdir = normalize(Nf ^ dir);
 
 	float costheta = Vf.Nf, cospsi, cosbeta;
-	float G, A, Z, D;
+	float G, A, Z, D, F;
 	uniform float nonspec;
 
 	color C = color(0);
@@ -1046,15 +1049,17 @@ color aschlick(
 			// anisotropy
 			A = angledependence( cosbeta, isotropy );
 			Z = zenithdependence( Nf.Hn, roughness );
+			F = schlickfresnel( Ln, Hn, ior); // L.H = V.H
 
-			D = Z * A * G / (4 * cospsi * costheta) * cospsi;
+			// D(t,v,v',w) = G(v)G(v')Z(t)A(w) / (4πvv') + (1 -G(v)G(v')/π *A
+			D = F * ( Z*A*G / (4*costheta) + (cospsi * (1-G)) );
 
 			C += Cl * (1-nonspec) * D;
 		}
 	}
-	float F = schlickfresnel( Nf, Vf, ior );
 
-	return clamp(F*C, color(0), color(1));
+	return C;
+//	return clamp(C, color(0), color(1));
 }				
 
 ////////////////////////////////////////////////////////////////////////////////
