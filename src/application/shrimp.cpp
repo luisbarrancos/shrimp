@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -20,6 +20,7 @@
 
 #include <memory>
 
+#include "image_handling.h"
 #include "ui_splash.h"
 #include "ui_application_window.h"
 
@@ -34,8 +35,8 @@
 
 
 // Launch FLTK and Shrimp's main window
-int main(int argc, char** argv) {
-
+int main(int argc, char** argv)
+{
 	log_level_t level = ERROR;
 	std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
@@ -116,7 +117,8 @@ int main(int argc, char** argv) {
 	// open splash screen
 	fltk::Window* splash_window = 0;
 	double splash_start = fltk::get_time_secs();
-	if (show_splash) {
+	if (show_splash)
+	{
 		splash_window = splash_screen();
 	}
 
@@ -133,7 +135,8 @@ int main(int argc, char** argv) {
 
 	// if a scene name was given as a command-line parameter, try to load it
 	int nargs = 0;
-	if (argc > 1) {
+	if (argc > 1)
+	{
 		std::string file = argv[1];
 		log() << aspect << "shrimp: trying to load scene from '" << argv[1] << "'" << std::endl;
 
@@ -147,8 +150,8 @@ int main(int argc, char** argv) {
 	}
 	application->show (argc - nargs, &argv[nargs]);
 
-	if (splash_window) {
-
+	if (splash_window)
+	{
 		log() << aspect << "shrimp: showing splash screen" << std::endl;
 
 		// keep splash screen on top
@@ -162,6 +165,9 @@ int main(int argc, char** argv) {
 		splash_window->hide();
 		delete splash_window;
 	}
+
+	// initialize image handlers
+	initialize_fltk_image_handlers();
 
 	// FLTK's event loop
 	return fltk::run();

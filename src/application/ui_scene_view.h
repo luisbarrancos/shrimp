@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -48,6 +48,9 @@ public:
 	int handle (int Event);
 
 	double fit_scene() { const double result = m_opengl_view->fit_scene (w(), h()); redraw(); return result; }
+
+	// texture handling
+	void load_texture(const char* filename, GLuint& texId);
 
 	// callbacks
 	void shader_property_right_click (shrimp::io_t& Property);
