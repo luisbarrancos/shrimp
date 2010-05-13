@@ -10,10 +10,10 @@ float beckmann(
 				float cosalpha, roughness;
 		)
 {
+	// (1/ cos^2(alpha)*m^2) * exp( -( tan^2(alpha)/m^2 ))
 	float m2 = SQR(roughness);
-	float cosalpha2 = SQR(cosalpha);
-	float tanalpha2_over_m2 = max(0, 1 - cosalpha2) / (cosalpha2 * m2);
-	return exp( -tanalpha2_over_m2) / (m2 * SQR(cosalpha2));
+	float c2 = SQR(cosalpha);
+	return exp( (c2 - 1) / (c2 * m2) ) / ( SQR(c2) * m2);
 }
 
 ////////////////////////////////////////////////////////////////////////////////
