@@ -1052,14 +1052,12 @@ color aschlick(
 			F = schlickfresnel( Ln, Hn, ior); // L.H = V.H
 
 			// D(t,v,v',w) = G(v)G(v')Z(t)A(w) / (4πvv') + (1 -G(v)G(v')/π *A
-			D = F * ( Z*A*G / (4*costheta) + (cospsi * (1-G)) );
+			D = F*Z*A*G / (4*costheta) + (cospsi * F * A * (1-G));
 
 			C += Cl * (1-nonspec) * D;
 		}
 	}
-
-	return C;
-//	return clamp(C, color(0), color(1));
+	return clamp(C, color(0), color(1));
 }				
 
 ////////////////////////////////////////////////////////////////////////////////
