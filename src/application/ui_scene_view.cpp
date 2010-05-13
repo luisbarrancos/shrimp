@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -434,5 +434,9 @@ int scene_view::handle (int Event)
 	}
 }
 
+
+void load_texture(const char* filename, GLuint& texId)
+{
+}
 
 

@@ -22,9 +22,9 @@
 #ifndef _ui_edit_input_h_
 #define _ui_edit_input_h_
 
-#include "../miscellaneous/logging.h"
+#include "image_handling.h"
 
-#include "tiffImage.h"
+#include "../miscellaneous/logging.h"
 
 #include <fltk/Button.h>
 #include <fltk/CheckButton.h>
@@ -39,10 +39,9 @@
 #include <fltk/file_chooser.h>
 #include <fltk/FileChooser.h>
 #include <fltk/filename.h>
-#include <fltk/Image.h>
+//#include <fltk/Image.h>
 #include <fltk/SharedImage.h>
-#include <fltk/pnmImage.h>
-#include <tiffio.h>
+//#include <fltk/pnmImage.h>
 
 #include <iostream>
 #include <string>
@@ -59,9 +58,6 @@ static fltk::Choice* s_type = 0;
 static fltk::Choice* s_array_type = 0;
 static fltk::ValueInput* s_array_size = 0;
 static fltk::CheckButton* s_shader_parameter = 0;
-
-static fltk::SharedImage* tiff_check(const char *, uchar *, int);
-static fltk::SharedImage* preview;
 
 
 static void cb_colour_chooser (fltk::Widget *w, void *v)
@@ -81,103 +77,6 @@ static void cb_colour_chooser (fltk::Widget *w, void *v)
 	w->parent()->redraw();
 }
 
-// image preview in the file dialog
-static int readTiff(const char* filename, int& rw, int& rh, unsigned char* &rbits)
-{
-	// we turn off Warnings too many specific tags that confuse libtiff
-	TIFFErrorHandler warn = TIFFSetWarningHandler(0);
-
-	TIFF* tiff = TIFFOpen(filename, "r");
-
-	// turn warnings back
-	TIFFSetWarningHandler(warn);
-
-	if (tiff)
-	{
-		int rc = 1;			// what to return
-		uint32 w, h;
-		size_t npixels;
-		uint32* raster;
-
-		TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &w);
-		TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &h);
-
-		// notice that despite the fact that this always says orient=1 (TOPLEFT)
-		// we still get upsidedown images!
-		uint16 orient;
-		TIFFGetField(tiff, TIFFTAG_ORIENTATION, &orient);    // set the origin of the image.
-
-
-		// in case my data structures are different
-		rw = w;
-		rh = h;
-
-		npixels = w * h;
-		raster = (uint32*) _TIFFmalloc(npixels * sizeof (uint32));
-		if (raster != NULL)
-		{
-			//Force the good orientation
-			if (TIFFReadRGBAImageOriented(tiff, w, h, raster, 0,0))
-			{
-				rbits = (unsigned char*) raster;
-			}
-			else
-			{
-				rc=0;
-				_TIFFfree(raster);
-			}
-		}
-
-		TIFFClose(tiff);
-		return rc;
-	} else
-		return 0;
-}
-
-
-fltk::SharedImage* tiff_check(const char* name, uchar* header, int headerlen)
-{
-	if (memcmp(header, "II*", 3) != 0)
-		return 0;
-
-	fltk::SharedImage* tiffImage = new fltk::tiffImage(name);
-	if (!name || !tiffImage)
-	{
-		fltk::alert("Can't open TIFF file!");
-		return 0;
-	}
-
-	return tiffImage;
-/*
-	// read the image
-	int w, h;
-	unsigned char* image;
-	if (!name || !readTiff(name, w, h, image))
-	{
-		fltk::alert("Can't open TIFF file!");
-		return 0;
-	}
-
-	if (preview)
-	{
-		preview = (fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
-		preview->setsize(w, h);
-	}
-	else
-	{
-		preview = (fltk::SharedImage*)(new fltk::Image((const uchar*)image,fltk::RGBA,w,h));
-	}
-
-	if (!preview)
-	{
-		fltk::alert("No SharedImage possible for '%s'\n",name);
-		return fltk::SharedImage::get("?");
-	}
-
-	return preview;
-*/
-}
-
 
 // File chooser callback, to select TIFF or TDL files
 static void cb_file_chooser (fltk::Widget *w, void *v)
@@ -185,10 +84,6 @@ static void cb_file_chooser (fltk::Widget *w, void *v)
 	// get current directory
 	char result[2048];
 	fltk::filename_absolute (result, 2048, ".");
-
-	// image preview in the file dialog
-	fltk::SharedImage::set_cache_size (4096);
-	fltk::SharedImage::add_handler (tiff_check);
 
 	// choose shader file
 	const char* file = fltk::file_chooser ("Open Texture", "*.{tif,tiff}\t*.{tdl,tex,tx}", result);

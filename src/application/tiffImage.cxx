@@ -10,9 +10,11 @@
 #include "tiffImage.h"
 #include <tiffio.h>
 
+// a TIFF file handler modeled after FLTK's pnmImage
+
 using namespace fltk;
 //
-// 'tiffImage::tiffImage()' - Load a PNM image...
+// 'tiffImage::tiffImage()' - Load a TIFF image...
 //
 bool tiffImage::fetch()
 {
@@ -58,7 +60,7 @@ bool tiffImage::fetch()
 
   // store the image
   unsigned char* image = (unsigned char*)raster;
-  for (int y = 0; y < h; y ++) {
+  for (uint32 y = 0; y < h; y ++) {
     uchar* linebuf = linebuffer(y);
     uchar* ptr = linebuf;
 
