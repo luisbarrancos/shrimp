@@ -30,7 +30,8 @@ sample_beckmann(
 {
 	float m2 = SQR(m), phi = S_2PI * xi2;
 	float tantheta = sqrt( -m2 * log(1-xi1) );
-	costheta = 1 / sqrt(1 + SQR(tantheta));
+	costheta = 1 / sqrt( max( 0, 1 + SQR(tantheta) ) );
+	// tan(theta) = sin(theta)/cos(theta)
 	sintheta = costheta * tantheta;
 	cosphi = cos(phi);
 	sinphi = sin(phi);
@@ -46,10 +47,10 @@ sample_ward_iso(
 {
 	float phi = S_2PI * xi2;
 	float tantheta = m * sqrt( -log(xi1) );
+	costheta = 1 / sqrt(1 + SQR(tantheta) );
+	sintheta = costheta * tantheta;
 	cosphi = cos(phi);
 	sinphi = sin(phi);
-	costheta = 1 / sqrt( 1 + SQR(tantheta) );
-	sintheta = costheta * tantheta;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -139,6 +140,7 @@ sample_schlick(
 		phi = sqrt( (p2 * xisqr) / (1-xisqr+xisqr * p2)) * S_PI_2;
 		phi = S_2PI - phi;
 	}
+	phi += (p < 1) ? S_PI_2 : 0;
 	cosphi = cos(phi);
 	sinphi = sin(phi);
 
@@ -314,6 +316,22 @@ samplepdf(
 							"samples", envsamples ) : color(0);
 		}
 	}
+#elif RENDERER==_3delight // 9.0.34 supports ray distribution arrays in gather
+	if (idotn < 0) { // trace when visible to eye only
+		gather( "illuminance", P, I, S_PI_2, rsamples, "surface:Ci", hitc,
+				"ray:direction", R, "distribution", raydirs, "label", label,
+				"bias", bias, "maxdist", maxdist, "subset", subset,
+				"hitmode", hitmode )
+		{
+			cout += hitc;
+		} else {
+			cout += (envmap != "") ?
+				color environment( envmap, vtransform( envspace,
+							"object", R), "filter", filter,
+							"width", width, "blur", envblur,
+							"samples", envsamples ) : color(0);
+		}
+	}
 #elif RENDERER==aqsis // environment loop
 	uniform float i;
 	if (envmap != "") {
@@ -325,7 +343,7 @@ samplepdf(
 						"samples", envsamples);
 			} else { cout = color(0); }
 	}
-#else // 3delight, Pixie, Air
+#else // Pixie, Air
 #define COMMON_SAMPLE_ARGUMENTS \
 		"illuminance", P, raydirs[i], 0, 1, "surface:Ci", hitc, \
 		"label", label, "bias", bias, "maxdist", maxdist
@@ -334,9 +352,7 @@ samplepdf(
 	for (i = 0; i < rsamples; i += 1) {
 		if (idotn < 0) { // trace when visible to eye only
 			gather(	COMMON_SAMPLE_ARGUMENTS
-#if RENDERER==_3delight
-					, "subset", subset, "hitmode", hitmode
-#elif RENDERER==Air
+#if RENDERER==Air
 					, "subset", subset, "othreshold", 0
 #endif // common gather parameters
 				  )
