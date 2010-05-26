@@ -19,42 +19,21 @@
 */
 
 
-#ifndef _image_handling_h_
-#define _image_handling_h_
+#ifndef _i_opengl_texture_h_
+#define _i_opengl_texture_h_
 
-#include "tiffImage.h"
-
-#include "../interfaces/i_opengl_texture.h"
-
-#include <fltk/SharedImage.h>
-
-#include <tiffio.h>
-
-
-void initialize_fltk_image_handlers();
-
-
-class opengl_texture : public i_opengl_texture
+class i_opengl_texture
 {
 public:
-	opengl_texture();
-	~opengl_texture();
+	virtual void set_file(const char* filename) {}
 
-	void set_file(const char* filename);
+	virtual int width() { return 0; }
+	virtual int height() { return 0; }
+	virtual int format() { return 0; }
 
-	int width();
-	int height();
-	int format();
-
-	uchar* data();
-
-private:
-	fltk::SharedImage* image;
-
-	int image_width;
-	int image_height;
-	int image_format;
+	virtual uchar* data() { return 0; }
 };
 
-#endif // _image_handling_h_
+
+#endif // _i_opengl_texture_h_
 

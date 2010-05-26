@@ -125,6 +125,9 @@ int main(int argc, char** argv)
 	// double-buffered screen
 	fltk::visual(fltk::DOUBLE_BUFFER);
 
+	// initialize image handlers
+	initialize_fltk_image_handlers();
+
 	// create services
 	services* services_instance = new services();
 	opengl_view* opengl_view_instance = new opengl_view (services_instance);
@@ -165,9 +168,6 @@ int main(int argc, char** argv)
 		splash_window->hide();
 		delete splash_window;
 	}
-
-	// initialize image handlers
-	initialize_fltk_image_handlers();
 
 	// FLTK's event loop
 	return fltk::run();
