@@ -21,7 +21,10 @@
 
 #include "image_handling.h"
 
+#include "../miscellaneous/logging.h"
+
 #include <fltk/ask.h>
+#include <fltk/gl.h>
 #include <cstring>
 
 
@@ -49,6 +52,82 @@ fltk::SharedImage* tiff_handler(const char* name, uchar* header, int headerlen)
 	}
 
 	return tiffImage;
+}
+
+
+opengl_texture::opengl_texture()
+{
+}
+
+
+void opengl_texture::set_file(const char* filename)
+{
+	image = fltk::SharedImage::get(filename);
+	if (image == 0)
+	{
+		log() << error << "Couldn't open image: " << filename << std::endl;
+		return;
+	}
+
+	image->fetch_if_needed();
+
+	// Process only RGB images
+	int depth = image->depth();
+	if (depth != 3 && depth != 4)
+	{
+		log() << error << "Only RGB and RGBA images are supported (" << filename << "), image's depth = " << image->depth() << std::endl;
+		return;
+	}
+
+	if (depth == 3)
+	{
+		image_format = GL_RGB;
+	}
+	else if (depth == 4)
+	{
+		image_format = GL_RGBA;
+	}
+
+	image_width = image->width();
+	image_height = image->height();
+}
+
+
+int opengl_texture::width()
+{
+	return image_width;
+}
+
+
+int opengl_texture::height()
+{
+	return image_height;
+}
+
+
+int opengl_texture::format()
+{
+	return image_format;
+}
+
+
+uchar* opengl_texture::data()
+{
+	if (image == 0)
+	{
+		return 0;
+	}
+
+	return image->buffer();
+}
+
+
+opengl_texture::~opengl_texture()
+{
+	if (image != 0)
+	{
+		image->destroy();
+	}
 }
 
 
