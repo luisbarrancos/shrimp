@@ -72,7 +72,7 @@ StaticLibrary('tinyxml', Split("""
 
 
 # Shrimp
-env.Append(CPPPATH = ['src/application', 'src/interfaces', 'src/miscellaneous', 'src/shading'])
+env.Append(CPPPATH = ['src/application', 'src/interfaces', 'src/miscellaneous', 'src/opengl_view', 'src/shading'])
 
 shrimp_files = Split("""
 	src/miscellaneous/misc_system_functions.cpp
@@ -89,7 +89,9 @@ shrimp_files = Split("""
 	src/shading/rib_root_block_parsing.cpp
 
 	src/services.cpp
-	src/opengl_view.cpp
+
+	src/opengl_view/draw.cpp
+	src/opengl_view/opengl_view.cpp
 
 	src/application/image_handling.cpp
 	src/application/shrimp.cpp

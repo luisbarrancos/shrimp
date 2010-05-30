@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -22,10 +22,8 @@
 #ifndef _ui_opengl_view_h_
 #define _ui_opengl_view_h_
 
-#include "services.h"
+#include "../services.h"
 
-#include <fltk/GlWindow.h>
-#include <fltk/gl.h>
 
 #include <sigc++/signal.h>
 
@@ -58,13 +56,13 @@ public:
 
 	// event functions
 	void mouse_wheel_update(double move);
-	void mouse_move();
-	void mouse_any_button_down();
-	void mouse_left_button_down();
+	void mouse_move(int mouse_x, int mouse_y);
+	void mouse_any_button_down(int mouse_x, int mouse_y);
+	void mouse_left_button_down(const int mouse_x, const int mouse_y, const bool shift_key_down, const bool ctrl_key_down);
 	void mouse_right_button_down();
-	void mouse_any_button_drag();
-	void mouse_left_button_drag(const int widget_width, const int widget_height);
-	void mouse_left_button_release();
+	void mouse_any_button_drag(const int mouse_x, const int mouse_y);
+	void mouse_left_button_drag(const int widget_width, const int widget_height, const bool alt_key_down);
+	void mouse_left_button_release(const int mouse_x, const int mouse_y, const bool shift_key_down, const bool ctrl_key_down, const bool alt_key_down);
 
 	// GUI events
 	sigc::signal<void, shrimp::io_t&> m_shader_property_right_click_signal;
@@ -181,9 +179,9 @@ private:
 	void box_selection(int window_width, int window_height);
 
 	// OpenGL selection
-	shader_block* get_under_mouse_block();
-	shrimp::io_t get_under_mouse_property();
-	int get_under_mouse_group();
+	shader_block* get_under_mouse_block(const int mouse_x, const int mouse_y);
+	shrimp::io_t get_under_mouse_property(const int mouse_x, const int mouse_y);
+	int get_under_mouse_group(const int mouse_x, const int mouse_y);
 
 	// OpenGL scene transformation
 	void transform_scene();

@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -34,8 +34,7 @@
 #include <iostream>
 
 
-scene::scene() :
-	m_file_name(std::string(""))
+scene::scene()
 {
 	unsigned long successful_blocks = 0;
 
@@ -82,20 +81,19 @@ const std::string scene::authors() const {
 	return m_authors;
 }
 
-void scene::set_authors (const std::string& Authors) {
-
+void scene::set_authors (const std::string& Authors)
+{
 	m_authors = Authors;
 }
 
-void scene::empty_scene() {
-
+void scene::empty_scene()
+{
 	log() << aspect << "Emptying current scene." << std::endl;
 
 	// delete scene information
 	m_name = "";
 	m_description = "";
 	m_authors = "";
-	m_file_name = "";
 
 	// delete scene structure
 	m_dag.clear();

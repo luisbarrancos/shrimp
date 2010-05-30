@@ -25,22 +25,17 @@
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
 
-#include <fltk/filename.h>
-
 #include <fstream>
 
 
-bool scene::load (const std::string& Scene) {
-
+bool scene::load (const std::string& Scene)
+{
 	// try opening scene
 	TiXmlDocument xml_shader(Scene.c_str());
-	if (!xml_shader.LoadFile()) {
-
+	if (!xml_shader.LoadFile())
+	{
 		log() << error << "couldn't load shader " << Scene << ", is it a valid XML file?" << std::endl;
 		return false;
-	} else {
-
-		m_file_name = Scene;
 	}
 
 	// start parsing basic shader information
@@ -282,7 +277,9 @@ bool scene::load (const std::string& Scene) {
 }
 
 
-bool scene::save_as (const std::string& ShaderFile) {
+void scene::save_as (const std::string& ShaderFile)
+{
+	log() << aspect << "saving scene as: '" << ShaderFile << "'" << std::endl;
 
 	// serialize the shader into an XML file
 	xml::element shader ("shrimp");
@@ -295,24 +292,16 @@ bool scene::save_as (const std::string& ShaderFile) {
 	shader.push_child (about);
 	shader.children.push_back (xml_network());
 
-	// automatically add the .xml extension
-	m_file_name = ShaderFile;
-	const char* extension = fltk::filename_ext (m_file_name.c_str());
-	if (std::string (extension) != ".xml")
-		m_file_name += ".xml";
-
 	// save the file
 	std::ofstream out_file;
-	out_file.open (m_file_name.c_str(), std::ios::out | std::ios::trunc);
+	out_file.open (ShaderFile.c_str(), std::ios::out | std::ios::trunc);
 	xml::output_tree (shader, out_file);
 	out_file.close();
-
-	return true;
 }
 
 
-xml::element scene::xml_network() {
-
+xml::element scene::xml_network()
+{
 	xml::element network ("network");
 
 	for (shader_blocks_t::const_iterator b = m_blocks.begin(); b != m_blocks.end(); ++b) {

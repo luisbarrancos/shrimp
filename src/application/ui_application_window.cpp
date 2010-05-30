@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -898,8 +898,8 @@ int application_window::handle (int event) {
 }
 
 
-void application_window::save_scene_as() {
-
+void application_window::save_scene_as()
+{
 	// get current directory
 	char result[2048];
 	fltk::filename_absolute (result, 2048, ".");
@@ -916,16 +916,15 @@ void application_window::save_scene_as() {
 		real_file_name += ".xml";
 
 	// check whether file already exists
-	if (std::ifstream (real_file_name.c_str())) {
-
+	if (std::ifstream (real_file_name.c_str()))
+	{
 		const std::string message = "Do you want to overwrite '" + std::string (fltk::filename_name (real_file_name.c_str())) + "'?";
-		if (!fltk::ask (message.c_str())) {
-
+		if (!fltk::ask (message.c_str()))
+		{
 			return;
 		}
 	}
 
-	log() << aspect << "saving project as " << file << std::endl;
 	m_services->save_as (real_file_name);
 }
 

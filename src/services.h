@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -38,7 +38,7 @@ public:
 	// load and save scene
 	bool load (const std::string& Scene) { bool result = m_scene->load (Scene); if (result) { m_scene_file = Scene; } return result; }
 	bool save () { if (m_scene_file != "") { /* use current scene file */ m_scene->save_as (m_scene_file); return true; } else { return false; } }
-	bool save_as (const std::string& ShaderFile) { m_scene_file = ShaderFile; return m_scene->save_as (ShaderFile); }
+	void save_as (const std::string& ShaderFile) { m_scene_file = ShaderFile; m_scene->save_as (ShaderFile); }
 
 	std::string get_scene_name() const { return m_scene->name(); }
 	void set_scene_name (const std::string& Name) { m_scene->set_name (Name); }

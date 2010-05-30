@@ -31,7 +31,6 @@
 #include "ui_edit_output.h"
 #include "ui_edit_rib.h"
 
-#include "../opengl_view.h"
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
 
@@ -372,7 +371,7 @@ int scene_view::handle (int Event)
 		// mouse move
 		case fltk::MOVE:
 		{
-			m_opengl_view->mouse_move();
+			m_opengl_view->mouse_move(fltk::event_x(), fltk::event_y());
 			redraw();
 		}
 		return 1;
@@ -383,15 +382,17 @@ int scene_view::handle (int Event)
 		{
 			if ((fltk::event_button() == fltk::LeftButton) || (fltk::event_button() == fltk::RightButton)) {
 
-				m_opengl_view->mouse_any_button_down();
+				m_opengl_view->mouse_any_button_down (fltk::event_x(), fltk::event_y());
 				redraw();
 
-				if (fltk::event_button() == fltk::LeftButton) {
-					m_opengl_view->mouse_left_button_down();
+				if (fltk::event_button() == fltk::LeftButton)
+				{
+					m_opengl_view->mouse_left_button_down(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL));
 					redraw();
 				}
 
-				if (fltk::event_button() == fltk::RightButton) {
+				if (fltk::event_button() == fltk::RightButton)
+				{
 					m_opengl_view->mouse_right_button_down();
 					redraw();
 				}
@@ -402,11 +403,11 @@ int scene_view::handle (int Event)
 		// mouse drag
 		case fltk::DRAG:
 		{
-			m_opengl_view->mouse_any_button_drag();
+			m_opengl_view->mouse_any_button_drag(fltk::event_x(), fltk::event_y());
 			redraw();
 
 			if (fltk::event_button() == fltk::LeftButton) {
-				m_opengl_view->mouse_left_button_drag(w(), h());
+				m_opengl_view->mouse_left_button_drag(w(), h(), fltk::event_state (fltk::ALT));
 				redraw();
 			}
 
@@ -418,8 +419,9 @@ int scene_view::handle (int Event)
 		{
 			//TODO:
 //			m_active_group = select_group();
-			if (fltk::event_button() == fltk::LeftButton) {
-				m_opengl_view->mouse_left_button_release();
+			if (fltk::event_button() == fltk::LeftButton)
+			{
+				m_opengl_view->mouse_left_button_release(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL), fltk::event_state (fltk::ALT));
 				redraw();
 			}
 

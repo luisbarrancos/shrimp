@@ -22,7 +22,7 @@
 #ifndef _ui_scene_view_h_
 #define _ui_scene_view_h_
 
-#include "../opengl_view.h"
+#include "../opengl_view/opengl_view.h"
 #include "../shading/scene.h"
 
 #include <fltk/run.h>

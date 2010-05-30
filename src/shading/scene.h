@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -105,7 +105,7 @@ public:
 
 	// load and save a scene (a network of blocks with additional information, in an XML file)
 	bool load (const std::string& Scene);
-	bool save_as (const std::string& ShaderFile);
+	void save_as (const std::string& ShaderFile);
 
 	// return an XML representation of the shader
 	xml::element xml_network();
@@ -169,9 +169,6 @@ private:
 	std::string m_description;
 	// scene author(s)
 	std::string m_authors;
-
-	// the current scene file name (when saving)
-	std::string m_file_name;
 
 	rib_root_block* m_rib_root_block;
 
