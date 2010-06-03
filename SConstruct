@@ -15,6 +15,7 @@ env = Environment(variables = vars)
 env.ParseConfig("fltk2-config --cxxflags --ldflags")
 env.ParseConfig( 'pkg-config --cflags --libs sigc++-2.0' )
 
+
 # Linked libraries
 env.Append(LIBS = ['tinyxml', 'GL', 'GLU', 'fltk2_gl', 'fltk2_images', 'jpeg', 'png','tiff'])
 
@@ -55,6 +56,9 @@ if not conf.TryAction('pkg-config --exists sigc++-2.0')[0]:
 
 env = conf.Finish()
 
+
+# Define front end (currently only FLTK is available)
+env.Append( CPPDEFINES = ['SHRIMP_FLTK'] )
 
 # Debug
 #env.Append(CXXFLAGS = '-O2')
