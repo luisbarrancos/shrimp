@@ -34,8 +34,11 @@
 #include <iostream>
 
 
-scene::scene()
+scene::scene(i_system_functions* SystemFunctions) :
+	m_system_functions (SystemFunctions)
 {
+	log() << aspect << "scene: constructor" << std::endl;
+
 	unsigned long successful_blocks = 0;
 
 	block_tree_node_t root_node;
@@ -123,7 +126,7 @@ void scene::new_scene() {
 
 	// create RIB root block
 	const std::string unique_name = get_unique_block_name ("Root block");
-	m_rib_root_block = new rib_root_block (unique_name, this);
+	m_rib_root_block = new rib_root_block (unique_name, this, m_system_functions);
 	m_blocks.insert (std::make_pair (unique_name, m_rib_root_block));
 }
 

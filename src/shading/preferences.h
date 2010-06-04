@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -22,10 +22,14 @@
 #ifndef _preferences_h_
 #define _preferences_h_
 
+#include "../interfaces/i_system_functions.h"
+
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
-#include "../miscellaneous/misc_system_functions.h"
 #include "../miscellaneous/misc_xml.h"
+
+//TODO: remove me
+#include <fltk/filename.h>
 
 #include <fstream>
 #include <string>
@@ -42,6 +46,8 @@ static const char renderdotc[] = "renderdotc";
 
 class general_options
 {
+	i_system_functions* m_system_functions;
+
 	const std::string m_preferences_file;
 	const std::string m_rib_renderer_file;
 	const std::string m_rib_scene_dir;
@@ -50,8 +56,8 @@ public:
 	// renderer list
 	typedef std::vector<std::string> displays_t;
 	typedef std::vector<std::string> filters_t;
-	struct renderer_t {
-
+	struct renderer_t
+	{
 		std::string name;
 		std::string shader_compiler;
 		std::string compiled_shader_extension;
@@ -99,7 +105,7 @@ public:
 	std::string m_scene;
 
 public:
-	general_options();
+	general_options(i_system_functions* SystemFunctions);
 
 	const std::string renderer_file() const;
 	const std::string rib_scene_dir() const;

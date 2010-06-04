@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -19,7 +19,9 @@
 */
 
 
-#include "misc_system_functions.h"
+#include "system_functions.h"
+
+#include "../miscellaneous/logging.h"
 
 #include <cstdlib>
 #include <iostream>
@@ -29,10 +31,10 @@
 # include <sys/stat.h>
 #endif
 
-namespace system_functions
-{
 
-const std::string get_shrimp_user_directory() {
+std::string system_functions::get_user_directory()
+{
+	log() << aspect << "system_functions::get_user_directory()" << std::endl;
 
 	// get user's home
 	char home[1024];
@@ -40,8 +42,8 @@ const std::string get_shrimp_user_directory() {
 
 	// check for .shrimp directory, create it if not there
 	std::string shrimp = std::string (home) + ".shrimp";
-	if (!fltk::filename_isdir (shrimp.c_str())) {
-
+	if (!fltk::filename_isdir (shrimp.c_str()))
+	{
 #if defined _WIN32
 		mkdir (shrimp.c_str());
 #else
@@ -52,15 +54,16 @@ const std::string get_shrimp_user_directory() {
 	return shrimp;
 }
 
-const std::string get_tmp_directory() {
 
+std::string system_functions::get_temp_directory()
+{
 	// get .shrimp directory
-	std::string shrimp = get_shrimp_user_directory();
+	std::string shrimp = get_user_directory();
 
 	// check for temp directory
 	std::string temp = shrimp + "/temp";
-	if (!fltk::filename_isdir(temp.c_str())) {
-
+	if (!fltk::filename_isdir(temp.c_str()))
+	{
 #if defined _WIN32
 		mkdir(temp.c_str());
 #else
@@ -71,15 +74,9 @@ const std::string get_tmp_directory() {
 	return temp;
 }
 
-bool execute_command (const std::string& Command) {
 
-	int status = system (Command.c_str());
-
-	return status > 0;
-}
-
-const std::string get_absolute_path (const std::string& Path) {
-
+std::string system_functions::get_absolute_path (const std::string& Path)
+{
 	// get user's home
 	char home[1024];
 	fltk::filename_absolute (home, 1024, Path.c_str());
@@ -87,5 +84,12 @@ const std::string get_absolute_path (const std::string& Path) {
 	return std::string (home);
 }
 
-} // namespace system_functions
+
+bool system_functions::execute_command (const std::string& Command)
+{
+	int status = system (Command.c_str());
+
+	return status > 0;
+}
+
 

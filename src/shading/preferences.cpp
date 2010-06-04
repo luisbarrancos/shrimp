@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -22,7 +22,8 @@
 #include "preferences.h"
 
 
-general_options::general_options() :
+general_options::general_options(i_system_functions* SystemFunctions) :
+	m_system_functions (SystemFunctions),
 	m_preferences_file ("preferences.xml"),
 	m_rib_renderer_file ("./data/rib/renderers.xml"),
 	m_rib_scene_dir ("./data/rib/scenes")
@@ -32,19 +33,21 @@ general_options::general_options() :
 }
 
 
-const std::string general_options::renderer_file() const {
-
+const std::string general_options::renderer_file() const
+{
 	return m_rib_renderer_file;
 }
 
 
-const std::string general_options::rib_scene_dir() const {
-
+const std::string general_options::rib_scene_dir() const
+{
 	return m_rib_scene_dir;
 }
 
 
-bool general_options::load() {
+bool general_options::load()
+{
+	log() << aspect << "general_options::load()" << std::endl;
 
 	// set defaults in case some values are not yet present in the loaded file
 	set_defaults();
@@ -53,8 +56,8 @@ bool general_options::load() {
 	std::string file = preferences_file();
 
 	TiXmlDocument xml_prefs(file.c_str());
-	if (!xml_prefs.LoadFile()) {
-
+	if (!xml_prefs.LoadFile())
+	{
 		log() << aspect << "Preferences file not found (" << file << "), creating the default one." << std::endl;
 		save();
 
@@ -517,25 +520,26 @@ void general_options::set_display (const std::string& RendererDisplay) {
 }
 
 
-void general_options::set_scene (const std::string& Scene) {
-
+void general_options::set_scene (const std::string& Scene)
+{
 	m_scene = Scene;
 }
 
-void general_options::set_pixelfilter(const std::string& Pixel_filter){
-
- 	m_pixel_filter = Pixel_filter;
+void general_options::set_pixelfilter(const std::string& Pixel_filter)
+{
+	m_pixel_filter = Pixel_filter;
 }
 
-void general_options::set_help (const std::string& Help_Reader){
-
+void general_options::set_help (const std::string& Help_Reader)
+{
 	m_help_reader = Help_Reader;
-
 }
 
-const std::string general_options::preferences_file() {
+const std::string general_options::preferences_file()
+{
+	log() << aspect << "general_options::preferences_file()" << std::endl;
 
-	std::string file = system_functions::get_shrimp_user_directory();
+	std::string file = m_system_functions->get_user_directory();
 	file += '/' + m_preferences_file;
 
 	return file;

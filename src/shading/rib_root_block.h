@@ -25,11 +25,15 @@
 #include "shader_block.h"
 #include "scene.h"
 
+#include "../interfaces/i_system_functions.h"
+
 
 class rib_root_block : public shader_block
 {
+	i_system_functions* m_system_functions;
+
 public:
-	rib_root_block (const std::string& Name, scene* Scene);
+	rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions);
 
 	std::string show_code();
 
