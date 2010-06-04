@@ -25,9 +25,6 @@
 #include "opengl_view.h"
 
 
-#include <fltk/GlWindow.h>
-#include <fltk/gl.h>
-
 #if defined(__APPLE__) && defined (__MACH__)
     #include <OpenGL/glu.h>
 #else
@@ -38,6 +35,32 @@
 #include <vector>
 #include <cmath>
 #include <limits>
+
+
+
+
+// FLTK specific includes and functions
+#if defined(SHRIMP_FLTK)
+#include <fltk/GlWindow.h>
+#include <fltk/gl.h>
+
+void drawGlText(const std::string Text, const float X, const float Y, const float Z, const float Size, const bool Bold)
+{
+	if (Bold)
+	{
+		glsetfont (fltk::HELVETICA_BOLD, Size);
+	}
+	else
+	{
+		glsetfont (fltk::HELVETICA, Size);
+	}
+
+	fltk::gldrawtext (Text.c_str(), X, Y, Z);
+}
+
+#endif
+
+
 
 
 void opengl_view::draw_grid()
@@ -511,11 +534,10 @@ void opengl_view::draw_rolled_block_body (shader_block* Block, const double X, c
 }
 
 
-void opengl_view::draw_block_name (const shader_block* Block, const double X, const double Y) {
-
+void opengl_view::draw_block_name (const shader_block* Block, const double X, const double Y)
+{
 	// show block name
-	glsetfont (fltk::HELVETICA_BOLD, (m_font_size+0.5) * m_size * 0.75); // gets a bit more readable if bold
-	fltk::gldrawtext (Block->name().c_str(), (float)X, (float) (Y + .05), (float)0);
+	drawGlText (Block->name(), (float)X, (float) (Y + .05), 0, (m_font_size+0.5) * m_size * 0.75, true);
 }
 
 
@@ -547,11 +569,9 @@ void opengl_view::draw_block_properties (const shader_block* Block, const double
 		std::string type = Block->input_type (input->m_name);
 		bool shader_param = (Block->is_shader_parameter (input->m_name) && !Block->m_root_block);
 
-		// FIXME: Name.c_str() is input name, not description
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.75); // scale with zoom level
 		glColor4f (0.65, 0.77, 0.97, 1.0); // #a5c5f7 light blue
-		fltk::gldrawtext (input->m_name.c_str(), (float) (start_x + property_size * 1.25), (float) (start_y - 0.135), (float)0);
+		drawGlText (input->m_name, start_x + property_size * 1.25, start_y - 0.135, 0, m_font_size * m_size * 0.75, false);
 
 		if (std::make_pair (Block->name(), input->m_name) == m_active_property)
 			type = "selected";
@@ -607,10 +627,8 @@ void opengl_view::draw_property (const std::string& Name, const std::string& Typ
 		glEnd();
 
 		// show property name
-		glsetfont (fltk::HELVETICA, m_font_size * m_size * 0.75); // scale with zoom level
 		glColor4f (1.0, 0.55, 0.0, 1.0); // orange hover color
-		// FIXME: Name.c_str() is input name, not description
-		fltk::gldrawtext (Name.c_str(), (float) (X + Size * 1.25), (float) (Y - 0.135), (float)0);
+		drawGlText (Name, X + Size * 1.25, Y - 0.135, 0, m_font_size * m_size * 0.75, false);
 	}
 	else if ("colour" == Type || "color" == Type) {
 
@@ -1004,11 +1022,10 @@ void opengl_view::draw_groups()
 			glColor3f (1, 1, 1);
 		}
 
-		glsetfont (fltk::HELVETICA_BOLD, (m_font_size+0.5) * m_size * 0.75);
 
 		std::string name = m_services->get_group_name (group);
 		// position with hexagon/group radius taken into account
-		fltk::gldrawtext (name.c_str(), (float) (x-0.3f), (float) (y+0.4f), (float)0);
+		drawGlText (name, x-0.3f, y+0.4f, 0, (m_font_size+0.5) * m_size * 0.75, false);
 	}
 }
 
