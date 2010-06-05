@@ -1,4 +1,4 @@
-<shrimp type="function" name="dpdu" description="Surface derivative along U" author="rconstruct">
+<shrimp type="function" name="dPdu" description="Surface derivative along U" author="rconstruct">
 	<output name="dPdu" description="Surface derivative of point P along U" type="vector"/>
 	<rsl_code>
 		$(dPdu) = dPdu;
