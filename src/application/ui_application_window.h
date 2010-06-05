@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -90,6 +90,7 @@ private:
 	void on_menu_file_save_as (fltk::Widget*);
 	void on_menu_file_export_scene (fltk::Widget*);
 	void on_menu_file_options (fltk::Widget*);
+	static void on_menu_file_quit (fltk::Widget*, void*);
 
 	void on_menu_shader_properties (fltk::Widget*);
 	void on_menu_code_preview (fltk::Widget*);
@@ -107,6 +108,9 @@ private:
 	void on_menu_view_toggle_grid (fltk::Widget*);
 	void on_menu_view_toggle_grid_snap (fltk::Widget*);
 	void on_menu_view_toggle_overview (fltk::Widget*);
+
+	void on_menu_help_about (fltk::Widget*);
+	void on_menu_help_help (fltk::Widget*);
 
 	void on_zoom (fltk::Slider*, void* Data);
 	void on_button_fit_scene (fltk::Widget*);
@@ -161,6 +165,9 @@ private:
 	static void cb_menu_view_toggle_grid_snap (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_grid_snap (W); }
 	static void cb_menu_view_toggle_overview (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_view_toggle_overview (W); }
 
+	static void cb_menu_help_about (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_help_about (W); }
+	static void cb_menu_help_help (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_menu_help_help (W); }
+
 	static void cb_button_fit_scene (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_button_fit_scene(W); }
 	static void cb_zoom_slider (fltk::Slider* W, void* Data) { ((application_window*)Data)->on_zoom(W, Data); }
 	static void cb_custom_block (fltk::Widget* W, void* Data) { ((application_window*)Data)->on_custom_block(); }
@@ -170,10 +177,6 @@ private:
 	static void cb_renderer_display (fltk::Widget* W, void* Data) { application_pointer->on_renderer_display_choice (W, Data); }
 	static void cb_scene (fltk::Widget* W, void* Data) { application_pointer->on_scene_choice (W, Data); }
 
-	static void on_menu_file_close (fltk::Widget*, void*);
-	static void on_menu_file_quit (fltk::Widget*, void*);
-	static void on_menu_help_help (fltk::Widget*, void*);
-	static void on_menu_help_about (fltk::Widget*, void*);
 
 
 	// internal functions

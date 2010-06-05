@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -19,29 +19,27 @@
 */
 
 
-#ifndef _misc_system_functions_h_
-#define _misc_system_functions_h_
-
-#include <fltk/filename.h>
+#ifndef _i_system_functions_h_
+#define _i_system_functions_h_
 
 #include <string>
 
-namespace system_functions
+class i_system_functions
 {
+public:
+	// return user's data directory (home)
+	virtual std::string get_user_directory() { return std::string(); }
 
-// return user's directory for Shrimp
-const std::string get_shrimp_user_directory();
+	// return temporary directory
+	virtual std::string get_temp_directory() { return std::string(); }
 
-// return user's temporary directory
-const std::string get_tmp_directory();
+	// return absolute system path
+	virtual std::string get_absolute_path (const std::string& Path) { return std::string(); }
 
-// return absolute path from given one
-const std::string get_absolute_path(const std::string& Path);
+	// execute a system command
+	virtual bool execute_command (const std::string& Command) { return false; }
+};
 
-// execute a command
-bool execute_command(const std::string& Command);
 
-} // namespace system_functions
-
-#endif // _misc_system_functions_h_
+#endif // _i_system_functions_h_
 

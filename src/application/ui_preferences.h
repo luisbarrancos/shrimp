@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -77,8 +77,9 @@ private:
 	std::string m_hidden_renderer_code;
 
 public:
-	dialog() {
-
+	dialog(i_system_functions* SystemFunctions) :
+		general_options (SystemFunctions)
+	{
 		// load preferences
 		load();
 

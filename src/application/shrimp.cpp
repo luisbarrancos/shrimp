@@ -21,6 +21,7 @@
 #include <memory>
 
 #include "image_handling.h"
+#include "system_functions.h"
 #include "ui_splash.h"
 #include "ui_application_window.h"
 
@@ -109,8 +110,11 @@ int main(int argc, char** argv)
 	fltk::LightButton::default_style->textcolor (text_colour);
 	fltk::LightButton::default_style->selection_color (hover_colour);
 
+	// create system function instane
+	i_system_functions* system_instance = new system_functions();
+
 	// check preferences for splash screen
-	general_options prefs;
+	general_options prefs (system_instance);
 	prefs.load();
 	const bool show_splash = prefs.m_splash_screen;
 
@@ -129,7 +133,7 @@ int main(int argc, char** argv)
 	initialize_fltk_image_handlers();
 
 	// create services
-	services* services_instance = new services();
+	services* services_instance = new services(system_instance);
 	opengl_view* opengl_view_instance = new opengl_view (services_instance);
 
 	// create main

@@ -29,7 +29,6 @@
 
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
-#include "../miscellaneous/misc_system_functions.h"
 #include "../miscellaneous/misc_xml.h"
 
 #include <fltk/Color.h>
@@ -77,6 +76,7 @@ application_window::application_window(services* services_instance, opengl_view*
 		left_menu_bar->begin();
 
 			// file menu
+			log() << aspect << "building UI's file menu" << std::endl;
 			fltk::ItemGroup* menu_file = new fltk::ItemGroup ("&File");
 			menu_file->begin();
 
@@ -127,6 +127,7 @@ application_window::application_window(services* services_instance, opengl_view*
 			menu_file->end();
 
 			// view edit
+			log() << aspect << "building UI's edit menu" << std::endl;
 			fltk::ItemGroup* menu_edit = new fltk::ItemGroup ("&Edit");
 			menu_edit->begin();
 
@@ -163,6 +164,7 @@ application_window::application_window(services* services_instance, opengl_view*
 			menu_edit->end();
 
 			// view menu
+			log() << aspect << "building UI's view menu" << std::endl;
 			fltk::ItemGroup* menu_view = new fltk::ItemGroup ("&View");
 			menu_view->begin();
 
@@ -185,6 +187,7 @@ application_window::application_window(services* services_instance, opengl_view*
 		left_menu_bar->end();
 
 		// help menu
+		log() << aspect << "building UI's help menu" << std::endl;
 		fltk::MenuBar* right_menu_bar = new fltk::MenuBar (750, 0, 39, 20);
 		right_menu_bar->begin();
 
@@ -192,10 +195,10 @@ application_window::application_window(services* services_instance, opengl_view*
 			menu_help->begin();
 
 				fltk::Item* menu_help_help = new fltk::Item ("Help");
-				menu_help_help->callback ((fltk::Callback*)on_menu_help_help);
+				menu_help_help->callback ((fltk::Callback*)cb_menu_help_help, this);
 
 				fltk::Item* menu_help_about = new fltk::Item ("About");
-				menu_help_about->callback ((fltk::Callback*)on_menu_help_about);
+				menu_help_about->callback ((fltk::Callback*)cb_menu_help_about, this);
 
 
 			menu_help->end();
@@ -263,12 +266,16 @@ application_window::application_window(services* services_instance, opengl_view*
 		m_block_menu.end();
 
 			// help file generation
+		log() << aspect << "help file generation end" << std::endl;
 
 		// load data from preferences
-		general_options prefs;
+std::string s = m_services->system_function_instance()->get_user_directory();
+		general_options prefs (m_services->system_function_instance());
 		prefs.load();
 		m_renderers = prefs.get_renderer_list();
 		m_scenes = prefs.get_scene_list();
+
+		log() << aspect << "intializing UI window" << std::endl;
 
 		// renderer chooser
 		m_renderer_chooser = new fltk::Choice (250, 22, 100, 24, "Renderer");
@@ -326,6 +333,8 @@ application_window::application_window(services* services_instance, opengl_view*
 				resizable (main_view);
 
 	end();
+
+	log() << aspect << "completed UI" << std::endl;
 }
 
 application_window::~application_window()
@@ -446,11 +455,11 @@ void application_window::on_menu_code_preview (fltk::Widget*) {
 // File menu : Render Options...
 void application_window::on_menu_file_options (fltk::Widget*) {
 
-	preferences::dialog d;
+	preferences::dialog d (m_services->system_function_instance());
 	d.pref_dialog();
 
 	// update the renderer, display and scene choosers according to the preferences
-	general_options prefs;
+	general_options prefs (m_services->system_function_instance());
 	prefs.load();
 	const std::string renderer_code = prefs.m_renderer_code;
 	const std::string display_name = prefs.m_renderer_display;
@@ -590,16 +599,16 @@ void application_window::on_menu_view_toggle_overview (fltk::Widget*)
 #include "ui_about.h"
 #include <fltk/Monitor.h>
 
-void application_window::on_menu_help_about (fltk::Widget*, void*) {
-
+void application_window::on_menu_help_about (fltk::Widget*)
+{
 	fltk::Window* o = about_window();
 	o->show();
 }
 
-void application_window::on_menu_help_help (fltk::Widget*, void*) {
-
+void application_window::on_menu_help_help (fltk::Widget*)
+{
 // Open index.html file
-	general_options prefs;
+	general_options prefs (m_services->system_function_instance());
 	prefs.load();
 	std::string help_reader = prefs.m_help_reader;
 
@@ -607,22 +616,22 @@ void application_window::on_menu_help_help (fltk::Widget*, void*) {
 	system(help_reader.c_str());
 }
 
-void application_window::on_zoom (fltk::Slider* o, void*) {
-
+void application_window::on_zoom (fltk::Slider* o, void*)
+{
 	m_opengl_view->set_size ((double)o->value());
 	m_scene_view->redraw();
 }
 
-void application_window::on_button_fit_scene (fltk::Widget*) {
-
+void application_window::on_button_fit_scene (fltk::Widget*)
+{
 	const double new_size = m_scene_view->fit_scene();
 
 	m_zoom_slider.value (new_size);
 }
 
 
-void application_window::on_custom_block() {
-
+void application_window::on_custom_block()
+{
 	// create a custom block
 	shader_block* new_block = m_services->add_custom_block();
 
@@ -637,7 +646,7 @@ void application_window::on_custom_block() {
 // Shader preview
 void application_window::on_preview()
 {
-	std::string tempdir = system_functions::get_tmp_directory();
+	std::string tempdir = m_services->system_function_instance()->get_temp_directory();
 	m_services->show_preview (tempdir);
 }
 
@@ -653,7 +662,7 @@ void application_window::on_renderer_choice (fltk::Widget* W, void* Data) {
 	}
 
 	// load the preferences and the display name
-	general_options prefs;
+	general_options prefs (m_services->system_function_instance());
 	prefs.load();
 	std::string display_name = prefs.m_renderer_display;
 
@@ -674,7 +683,7 @@ void application_window::on_renderer_display_choice (fltk::Widget* W, void* Data
 	const std::string display_name ((const char*)Data);
 
 	// save the display value
-	general_options prefs;
+	general_options prefs (m_services->system_function_instance());
 	prefs.load();
 	prefs.set_display (display_name);
 	prefs.save();
@@ -698,7 +707,7 @@ void application_window::on_scene_choice (fltk::Widget* W, void* Data) {
 	}
 
 	// save the scene value
-	general_options prefs;
+	general_options prefs (m_services->system_function_instance());
 	prefs.load();
 	prefs.set_scene (scene_name);
 	prefs.save();

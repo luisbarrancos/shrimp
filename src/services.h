@@ -24,13 +24,20 @@
 #include "shading/scene.h"
 #include "shading/shrimp_public_structures.h"
 
+#include "interfaces/i_system_functions.h"
+
+
 // Service class used to access all Shrimp functions (used to separate the GUI from the core)
 class services
 {
+	i_system_functions* m_system_functions;
+
 public:
 	// constructor/destructor
-	services();
+	services(i_system_functions* SystemFunctions);
 	~services();
+
+	i_system_functions* system_function_instance();
 
 	// reset to a new scene
 	void reset_scene();

@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -23,21 +23,30 @@
 
 #include "miscellaneous/logging.h"
 
-services::services() {
+services::services(i_system_functions* SystemFunctions) :
+	m_system_functions (SystemFunctions)
+{
 	log() << aspect << "services: constructor" << std::endl;
 
-	log() << aspect << "services: initializing scene" << std::endl;
-	m_scene = new scene();
+	m_scene = new scene(SystemFunctions);
 	reset_scene();
 }
 
 
-services::~services() {
+services::~services()
+{
 	delete m_scene;
 }
 
 
-void services::reset_scene() {
+i_system_functions* services::system_function_instance()
+{
+	return m_system_functions;
+}
+
+
+void services::reset_scene()
+{
 	log() << aspect << "services: reset scene" << std::endl;
 
 	m_scene->new_scene();

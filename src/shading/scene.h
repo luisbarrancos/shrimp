@@ -27,6 +27,8 @@
 
 #include "../miscellaneous/misc_xml.h"
 
+#include "../interfaces/i_system_functions.h"
+
 #include <map>
 #include <set>
 #include <string>
@@ -36,6 +38,8 @@
 // the scene object (contains shaders)
 class scene
 {
+	i_system_functions* m_system_functions;
+
 public:
 
 	//////////// DAG and block data structures
@@ -47,7 +51,7 @@ public:
 
 	//////////// Functions
 
-	scene();
+	scene(i_system_functions* SystemFunctions);
 	~scene();
 
 	// get and set name, description

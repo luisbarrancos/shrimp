@@ -31,7 +31,8 @@
 #include <fstream>
 
 
-rib_root_block::rib_root_block (const std::string& Name, scene* Scene) :
+rib_root_block::rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions) :
+	m_system_functions (SystemFunctions),
 	shader_block (Name, "", true),
 	root_type ("RIB"),
 	m_scene (Scene),
@@ -82,7 +83,7 @@ void rib_root_block::show_preview (const std::string& SceneDirectory)
 	// execute commands
 	for (command_list_t::const_iterator c = commands.begin(); c != commands.end(); ++c)
 	{
-		system_functions::execute_command (*c);
+		m_system_functions->execute_command (*c);
 	}
 
 /*
@@ -549,7 +550,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		+ "*/\n\n";
 
 	// initialize Shrimp's renderer constants with integer values
-	general_options prefs;
+	general_options prefs (m_system_functions);
 	prefs.load();
 	general_options::renderers_t m_renderers = prefs.get_renderer_list();
 	unsigned long renderer_number = 1001;
@@ -881,7 +882,7 @@ bool rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::st
 
 std::string rib_root_block::shader_compilation_command (const std::string& Shader, const std::string& ShaderPath, const std::string& DestinationName, const std::string& DestinationPath, const std::string& IncludePath) {
 
-	general_options prefs;
+	general_options prefs (m_system_functions);
 	prefs.load();
 
 	//std::string compiled_shader = change_file_extension(Shader, prefs.m_compiled_shader_extension);
@@ -900,7 +901,7 @@ std::string rib_root_block::shader_compilation_command (const std::string& Shade
 
 std::string rib_root_block::scene_rendering_command (const std::string& RIBFile, const std::string& ShaderPath) {
 
-	general_options prefs;
+	general_options prefs (m_system_functions);
 	prefs.load();
 
 	std::string command = prefs.m_renderer;
@@ -919,7 +920,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	std::ofstream file (RIBFile.c_str());
 
 	// options
-	general_options prefs;
+	general_options prefs (m_system_functions);
 	prefs.load();
 
 	// get the scene template
@@ -1077,10 +1078,10 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList)
 {
-	const std::string shader_path = system_functions::get_absolute_path("./data/rib/shaders");
+	const std::string shader_path = m_system_functions->get_absolute_path("./data/rib/shaders");
 
 	// compile the shaders from the template scene
-	general_options prefs;
+	general_options prefs (m_system_functions);
 	prefs.load();
 	std::string scene_template (prefs.get_RIB_scene());
 
