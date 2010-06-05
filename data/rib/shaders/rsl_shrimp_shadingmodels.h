@@ -1218,15 +1218,13 @@ anisophongspec(
 				normal Nn;
 				vector In;
 				float nu, nv, ior;
+				vector vu, vv; // tangent directions, normalized
 				uniform string category;
 				)
 {
 	normal Nf = faceforward( Nn, In);
 	vector Vf = -In, Ln, Hv;
-	
-	extern vector dPdu, dPdv;
-	vector vu = normalize(dPdu), vv = normalize(dPdv);
-	
+		
 	// preset quantities
 	float ndotv = Nf.Vf, ndoth, ndotl, speccont;
 	float nu2, nv2, nunv, nh, nhmax;
@@ -1313,14 +1311,15 @@ shw_brushed_metal(
     float cos_light, cos_eye;      // Cosines of angles from tangent vector
     
     normal Nf = faceforward (Nn, In);
-    vector Vf = -In, Ln, Hn;
+    vector Vf = -In, Ln = vector(0), Hn = vector(0);
+
 	float costheta = max( Nf.Vf, 0 );
     
     // "Specular" highlight in the Phong sense: directional-diffuse
-    cos_eye = -vdir.Vf;
-    sin_eye = sqrt( max(0, 1.0 - SQR(cos_eye)));
+    cos_eye = vdir.In;
+	sin_eye = sqrt( max( 0, 1.0 - SQR(cos_eye)));
     
-    uniform float nonspec;
+    uniform float nonspec = 0;
 	color C = color(0);
 	extern point P;
     
@@ -1333,7 +1332,7 @@ shw_brushed_metal(
 		if (1 == lightsource("__nonspecular", nonspec) && nonspec < 1) {
 			
 			Ln = normalize(L);
-			Hn = 0.5 * ( Vf + Ln );
+			Hn = normalize(Ln+Vf);
 			
 	        cos_light = vdir.Ln;
 			sin_light = sqrt( max( 0, 1 - SQR(cos_light)));
@@ -2123,7 +2122,8 @@ lafortunersl(
 				color cs; // surface color, will be supplied via blocks later
 				uniform float model, cmatrix; // clamp it to valid range
 				normal Nn;
-				vector In, dir; // normalize(I), dPdu
+				vector In; // normalize(I)
+				vector dir; // normalized tangent direction
 				uniform string category;
 				DECLARE_AOV_OUTPUT_PARAMETERS
 		)
@@ -2617,16 +2617,14 @@ color
 woodreflectance(
                     float eta, beta, roughness;
                     float Ka, Kd, Ks;
-                    vector fiberAxis, In;
+                    vector fiberAxis, In, xdir;
                     normal Nn;
                     color diffuseColor, fiberColor;
 					uniform string category;
 					DECLARE_AOV_OUTPUT_PARAMETERS
         )
 {
-	uniform float sqrt2pi = 2.5066283, nondiff, nonspec;
-	extern vector dPdu;
-	extern float u, v;
+	uniform float nondiff = 0, nonspec = 0;
 	
 	vector local_z;	// Surface normal in "world" space
 	vector local_x; // unit vector in U direction
@@ -2643,18 +2641,17 @@ woodreflectance(
 	float halfAngle, diffAngle;
 	float fiberFactor, geometryFactor;
 
-	float Kr, Kt;           // for output of fresnel()
-	float ssAtten;          /* Attenuation from going through the smooth
-							 * interface twice */
+	float Kr = 0, Kt = 0;	// for output of fresnel()
+	float ssAtten;			// Attenuation from going through the smooth
+							// interface twice
 	float dummy, ssAttenOut, ssFactor, cosIncline;
 
-    
 	/* Get local coordinate system in terms of native parameters (u, v).
 	 * * We should really use (s, t). */
 	local_z = Nf;
 	
 	// Get unit vector in "u" parameter direction
-	local_x = normalize( dPdu );
+	local_x = normalize( xdir );
 	
 	// Get final local basis vector y perpendicular to x and z.
 	local_y = local_z ^ local_x;
@@ -2685,7 +2682,7 @@ woodreflectance(
 	thOutPrime = asin( ssOutDir.axis);
 
 	extern point P;
-	
+
     // Calculate anisotropic highlight for each light
 	illuminance( category, P, Nf, S_PI_2 ) {
 		
@@ -2711,7 +2708,7 @@ woodreflectance(
 		diffAngle = thOutPrime - thInPrime;
 		
 		// Compute value of Gaussian at this angle
-		fiberFactor = tx_beta * exp( -pow( halfAngle / tx_beta, 2)/2)/sqrt2pi;
+		fiberFactor = tx_beta*exp( -pow( halfAngle / tx_beta, 2)/2)/S_SQRT_2PI;
 		
 		cosIncline = cos( diffAngle / 2);
 		geometryFactor = 1 / pow( cosIncline, 2);
