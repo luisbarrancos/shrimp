@@ -40,6 +40,18 @@ public:
 	// return absolute system path
 	std::string get_absolute_path (const std::string& Path);
 
+	// return the content of a directory (directories and files)
+	std::vector<std::string> list_directory (const std::string& directory);
+
+	// return true when the path is a directory
+	bool is_directory (const std::string& path);
+
+	// combine paths and files (add '/' or '\')
+	std::string combine_paths (const std::string& path1, const std::string& path2);
+
+	// return file extension
+	std::string get_file_extension (const std::string& file);
+
 	// execute a command
 	bool execute_command (const std::string& Command);
 

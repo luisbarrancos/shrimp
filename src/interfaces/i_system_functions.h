@@ -22,6 +22,7 @@
 #ifndef _i_system_functions_h_
 #define _i_system_functions_h_
 
+#include <vector>
 #include <string>
 
 class i_system_functions
@@ -35,6 +36,18 @@ public:
 
 	// return absolute system path
 	virtual std::string get_absolute_path (const std::string& Path) { return std::string(); }
+
+	// return the content of a directory (directories and files)
+	virtual std::vector<std::string> list_directory (const std::string& directory) { return std::vector<std::string>(); }
+
+	// return true when the path is a directory
+	virtual bool is_directory (const std::string& path) { return false; }
+
+	// combine paths and files (add '/' or '\')
+	virtual std::string combine_paths (const std::string& path1, const std::string& path2) { return std::string(); }
+
+	// return file extension
+	virtual std::string get_file_extension (const std::string& file) { return std::string(); }
 
 	// execute a system command
 	virtual bool execute_command (const std::string& Command) { return false; }

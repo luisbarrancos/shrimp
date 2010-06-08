@@ -23,6 +23,8 @@
 
 #include "../miscellaneous/logging.h"
 
+#include <fltk/filename.h>
+
 #include <cstdlib>
 #include <iostream>
 
@@ -82,6 +84,52 @@ std::string system_functions::get_absolute_path (const std::string& Path)
 	fltk::filename_absolute (home, 1024, Path.c_str());
 
 	return std::string (home);
+}
+
+
+std::vector<std::string> system_functions::list_directory (const std::string& directory)
+{
+	std::vector<std::string> list;
+
+	// read directory content
+	dirent** directory_items;
+	const int file_count = fltk::filename_list (directory.c_str(), &directory_items);
+	if (file_count < 0)
+	{
+		log() << error << "Couldn't list the content of directory '" << directory << "'" << std::endl;
+	}
+	else
+	{
+		for (int f = 0; f < file_count; ++f)
+		{
+			std::string file = std::string (directory_items[f]->d_name);
+			list.push_back (file);
+
+			free (directory_items[f]);
+		}
+	}
+
+	free (directory_items);
+
+	return list;
+}
+
+
+bool system_functions::is_directory (const std::string& path)
+{
+	return fltk::filename_isdir (path.c_str());
+}
+
+
+std::string system_functions::combine_paths (const std::string& path1, const std::string& path2)
+{
+	return path1 + '/' + path2;
+}
+
+
+std::string system_functions::get_file_extension (const std::string& file)
+{
+	return std::string (fltk::filename_ext (file.c_str()));
 }
 
 

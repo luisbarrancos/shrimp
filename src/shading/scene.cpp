@@ -20,11 +20,8 @@
 
 
 #include "scene.h"
-#include "rib_root_block.h"
-
 #include "preferences.h"
-
-#include <fltk/filename.h>
+#include "rib_root_block.h"
 
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
@@ -131,14 +128,14 @@ void scene::new_scene() {
 }
 
 
-void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& BlockCount) {
-
+void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& BlockCount)
+{
 	// read directory content
-	dirent** block_files;
-	const int file_count = fltk::filename_list (RootNode.node_path.c_str(), &block_files);
+	std::vector<std::string> directory_content = m_system_functions->list_directory(RootNode.node_path);
 
 	// skip empty directories
-	if (file_count < 0) {
+	if (directory_content.size() == 0)
+	{
 		log() << error << "tried to load blocks from empty directory '" << RootNode.node_path << "'." << std::endl;
 		return;
 	}
@@ -151,34 +148,33 @@ void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& Blo
 
 	shader_block_builder builder;
 	int successful_block_count = 0;
-	for (int f = 0; f < file_count; ++f) {
-
-		const std::string file = std::string (block_files[f]->d_name);
-		const std::string file_path = RootNode.node_path + "/" + file;
-		if (fltk::filename_isdir (file_path.c_str())) {
-
-			if (file[0] == '.') {
+	for (unsigned int f = 0; f < directory_content.size(); ++f)
+	{
+		const std::string file = directory_content[f];
+		const std::string file_path = m_system_functions->combine_paths (RootNode.node_path, file);
+		if (m_system_functions->is_directory (file_path))
+		{
+			if (file[0] == '.')
+			{
 				// skip default directories
 			}
-			else {
+			else
+			{
 				// save directory
 				file_paths.push_back (file_path);
 				files.push_back (file);
 			}
 		}
-		else {
-			const char* extension = fltk::filename_ext (file.c_str());
-			if (std::string (extension) == ".xml") {
-
+		else
+		{
+			const std::string extension = m_system_functions->get_file_extension (file);
+			if (extension == ".xml")
+			{
 				// save XML file
 				block_paths.push_back (file_path);
 			}
 		}
-
-		free (block_files[f]);
 	}
-
-	free (block_files);
 
 	// process subdirectories
 	names_t::iterator path_i = file_paths.begin();

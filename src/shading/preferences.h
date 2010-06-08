@@ -28,14 +28,12 @@
 #include "../miscellaneous/misc_string_functions.h"
 #include "../miscellaneous/misc_xml.h"
 
-//TODO: remove me
-#include <fltk/filename.h>
-
 #include <fstream>
 #include <string>
 
-// all renderers must be referenced here, they're used by FLTK's callbacks
-// and serve as renderer identifiers through the -DRENDERER=... option
+
+// all renderers must be referenced here,
+// they serve as renderer identifiers through the -DRENDERER=... option
 static const char _3delight[] = "_3delight";
 static const char air[] = "air";
 static const char aqsis[] = "aqsis";
@@ -75,8 +73,8 @@ public:
 	renderers_t m_renderers;
 
 	// scene list
-	struct scene_t {
-
+	struct scene_t
+	{
 		std::string name;
 		std::string file;
 	};

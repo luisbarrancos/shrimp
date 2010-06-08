@@ -263,46 +263,42 @@ void general_options::set_defaults() {
 }
 
 
-std::string general_options::get_RIB_scene() {
-
+std::string general_options::get_RIB_scene()
+{
 	load();
 
-	dirent** scene_files;
-	const int scene_count = fltk::filename_list (m_rib_scene_dir.c_str(), &scene_files);
+	std::vector<std::string> scene_files = m_system_functions->list_directory (m_rib_scene_dir);
 
 	std::string scene_path ("");
-	for (int f = 0; f < scene_count; ++f) {
-
-		const std::string file = std::string (scene_files[f]->d_name);
-		const std::string file_path = m_rib_scene_dir + "/" + file;
-		if (!fltk::filename_isdir (file_path.c_str())) {
-
-			const char* extension = fltk::filename_ext (file.c_str());
-			if (std::string (extension) == ".rib") {
-
+	for (unsigned int f = 0; f < scene_files.size(); ++f)
+	{
+		const std::string file = scene_files[f];
+		const std::string file_path = m_system_functions->combine_paths (m_rib_scene_dir, file);
+		if (!m_system_functions->is_directory (file_path))
+		{
+			const std::string extension = m_system_functions->get_file_extension (file);
+			if (extension == ".rib")
+			{
 				const std::string name (file.begin(), file.end() - 4);
-				if (name == m_scene) {
-
+				if (name == m_scene)
+				{
 					// found the file defined in the preferences
 					scene_path = file_path;
 				}
 			}
 		}
-
-		free (scene_files[f]);
 	}
 
-	free (scene_files);
-
 	// load and return the file
-	if (scene_path.size()) {
-
+	if (scene_path.size())
+	{
 		std::ifstream scene_file (scene_path.c_str());
-		if (!scene_file) {
-
+		if (!scene_file)
+		{
 			log() << error << "couldn't open RIB scene template '" << scene_path << "' file." << std::endl;
-		} else {
-
+		}
+		else
+		{
 			std::stringstream buffer;
 			buffer << scene_file.rdbuf();
 
@@ -332,12 +328,12 @@ std::string general_options::get_RIB_scene() {
 }
 
 
-void general_options::load_renderer_list() {
-
+void general_options::load_renderer_list()
+{
 	// load renderer list
 	TiXmlDocument xml_renderers (renderer_file().c_str());
-	if (!xml_renderers.LoadFile()) {
-
+	if (!xml_renderers.LoadFile())
+	{
 		log() << error << "couldn't load renderer file '" << renderer_file() << "' (not found or malformed)." << std::endl;
 		return;
 	}
@@ -440,8 +436,8 @@ void general_options::load_renderer_list() {
 }
 
 
-general_options::renderers_t general_options::get_renderer_list() {
-
+general_options::renderers_t general_options::get_renderer_list()
+{
 	return m_renderers;
 }
 
@@ -451,21 +447,20 @@ void general_options::load_scene_list()
 	m_scene.clear();
 
 	// load scene list
-	dirent** scene_files = 0;
-	const int scene_count = fltk::filename_list (m_rib_scene_dir.c_str(), &scene_files);
+	std::vector<std::string> scene_files = m_system_functions->list_directory (m_rib_scene_dir);
 
-	if (scene_count > 0)
+	if (scene_files.size() > 0)
 	{
 		typedef std::vector<std::string> names_t;
 		names_t scene_paths;
-		for (int f = 0; f < scene_count; ++f)
+		for (unsigned int f = 0; f < scene_files.size(); ++f)
 		{
-			const std::string file = std::string (scene_files[f]->d_name);
-			const std::string file_path = rib_scene_dir() + "/" + file;
-			if (!fltk::filename_isdir (file_path.c_str()))
+			const std::string file = scene_files[f];
+			const std::string file_path = m_system_functions->combine_paths (rib_scene_dir(), file);
+			if (!m_system_functions->is_directory (file_path))
 			{
-				const char* extension = fltk::filename_ext (file.c_str());
-				if (std::string(extension) == ".rib")
+				const std::string extension = m_system_functions->get_file_extension (file);
+				if (extension == ".rib")
 				{
 					// save XML file
 					const std::string name (file.begin(), file.end() - 4);
@@ -479,11 +474,7 @@ void general_options::load_scene_list()
 					m_scenes.push_back (new_scene);
 				}
 			}
-
-			free (scene_files[f]);
 		}
-
-		free (scene_files);
 	}
 }
 
@@ -494,15 +485,15 @@ general_options::scenes_t general_options::get_scene_list()
 }
 
 
-void general_options::set_renderer (const std::string& RendererCode) {
-
+void general_options::set_renderer (const std::string& RendererCode)
+{
 	std::string shader_compiler ("");
 	std::string compiled_shader_extension ("");
 	std::string renderer ("");
 
 	renderers_t::const_iterator r = m_renderers.find (RendererCode);
-	if (r == m_renderers.end()) {
-
+	if (r == m_renderers.end())
+	{
 		log() << error << "unknown renderer code: " << RendererCode << std::endl;
 		return;
 	}
@@ -514,8 +505,8 @@ void general_options::set_renderer (const std::string& RendererCode) {
 }
 
 
-void general_options::set_display (const std::string& RendererDisplay) {
-
+void general_options::set_display (const std::string& RendererDisplay)
+{
 	m_renderer_display = RendererDisplay;
 }
 
