@@ -52,6 +52,9 @@ public:
 	// return file extension
 	std::string get_file_extension (const std::string& file);
 
+	// save text to a file
+	void save_file (const std::string& destination, const std::string& content);
+
 	// execute a command
 	bool execute_command (const std::string& Command);
 

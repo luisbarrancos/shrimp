@@ -320,7 +320,7 @@ xml::element scene::xml_network()
 		}
 		if (block->m_root_block) {
 			if (rib_root_block* rib_block = dynamic_cast<rib_root_block*> (block)) {
-				xml_block.push_attribute ("root", rib_block->root_type);
+				xml_block.push_attribute ("root", rib_block->get_root_type());
 				xml::element general_statements ("rib_statements");
 					general_statements.set_text (rib_block->get_general_statements());
 				xml_block.push_child (general_statements);

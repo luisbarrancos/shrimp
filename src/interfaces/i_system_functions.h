@@ -49,6 +49,9 @@ public:
 	// return file extension
 	virtual std::string get_file_extension (const std::string& file) { return std::string(); }
 
+	// save text to a file
+	virtual void save_file (const std::string& destination, const std::string& content) {}
+
 	// execute a system command
 	virtual bool execute_command (const std::string& Command) { return false; }
 };

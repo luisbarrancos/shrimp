@@ -32,20 +32,26 @@ class rib_root_block : public shader_block
 {
 	i_system_functions* m_system_functions;
 
+	// the type of root block (constant: RIB)
+	const std::string root_type;
+
+	scene* m_scene;
+
+	// AOV output preview
+	bool m_AOV;
+
 public:
 	rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions);
 
 	std::string show_code();
 
+	std::string get_root_type() { return root_type; }
 
 	// show a preview of current scene
 	void show_preview (const std::string& Directory);
 
 	// export scene (RIB file and shaders)
 	void export_scene (const std::string& Directory);
-
-	// the type of root block (constant: RIB)
-	const std::string root_type;
 
 	// getters and setters
 	void set_general_statements (const std::string& Statements);
@@ -57,14 +63,9 @@ public:
 	bool get_AOV();
 
 private:
-	scene* m_scene;
-
 	// RIB scene statements
 	std::string m_general_statements;
 	std::string m_imager_statement;
-
-	// AOV output preview
-	bool m_AOV;
 
 	typedef enum
 	{
@@ -92,9 +93,9 @@ private:
 	void write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName);
 
 	// export a shader to a RSL file
-	bool export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile);
+	void export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName);
 	// export a K-3D slmeta file
-	bool export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile);
+	void export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName);
 
 
 	// build a shader starting from he root block, returns the shader file content

@@ -28,12 +28,10 @@
 #include "../miscellaneous/logging.h"
 #include "../miscellaneous/misc_string_functions.h"
 
-#include <fstream>
-
 
 rib_root_block::rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions) :
-	m_system_functions (SystemFunctions),
 	shader_block (Name, "", true),
+	m_system_functions (SystemFunctions),
 	root_type ("RIB"),
 	m_scene (Scene),
 	m_AOV (true)
@@ -85,35 +83,6 @@ void rib_root_block::show_preview (const std::string& SceneDirectory)
 	{
 		m_system_functions->execute_command (*c);
 	}
-
-/*
-	int pid = fork();
-	if(pid == -1)
-	{
-		std::cout << "Error creating new process\n";
-		//system(cleanup.c_str());
-	}
-	else if(pid == 0)
-	{
-		int status;
-		int pid2 = fork();
-		if(pid2 == -1)
-		{
-			std::cout << "Error creating new process\n";
-		}
-		else if(pid2 == 0)
-		{
-			std::cout << render_command << std::endl;
-			char* argv[4];
-			argv[0] = "sh";
-			argv[1] = "-c";
-			argv[2] = const_cast<char*>(render_command.c_str());
-			argv[3] = 0;
-			execve("/bin/sh", argv, environ);
-			//exit(127);
-		}
-	}
-*/
 }
 
 
@@ -852,31 +821,21 @@ std::string rib_root_block::build_k3d_meta_file (const shader_t ShaderType, cons
 }
 
 
-bool rib_root_block::export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile) {
-
+void rib_root_block::export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName)
+{
 	const std::string surface = build_shader_file (ShaderType, ShaderName);
 
-	std::ofstream file (ShaderFile.c_str());
-
-	file << surface;
-
-	file.close();
-
-	return true;
+	std::string destination = m_system_functions->combine_paths (Directory, FileName);
+	m_system_functions->save_file (destination, surface);
 }
 
 
-bool rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& ShaderFile) {
-
+void rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName)
+{
 	const std::string surface = build_k3d_meta_file (ShaderType, ShaderName);
 
-	std::ofstream file ((ShaderFile + "meta").c_str());
-
-	file << surface;
-
-	file.close();
-
-	return true;
+	std::string destination = m_system_functions->combine_paths (Directory, FileName + "meta");
+	m_system_functions->save_file (destination, surface);
 }
 
 
@@ -914,11 +873,8 @@ std::string rib_root_block::scene_rendering_command (const std::string& RIBFile,
 }
 
 
-void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName, const std::string& DisplacementName, const std::string& LightName, const std::string& AtmosphereName, const std::string& ImagerName) {
-
-	// open file
-	std::ofstream file (RIBFile.c_str());
-
+void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName, const std::string& DisplacementName, const std::string& LightName, const std::string& AtmosphereName, const std::string& ImagerName)
+{
 	// options
 	general_options prefs (m_system_functions);
 	prefs.load();
@@ -992,7 +948,8 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 	// prepare display (defaults to "framebuffer")
 	std::string display = prefs.m_renderer_display;
-	if (display.empty()) {
+	if (display.empty())
+	{
 		display = "framebuffer";
 	}
 
@@ -1001,12 +958,13 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	bool AOV = get_AOV() && has_connected_parent ("AOV");
 
 	// write the RIB file
-	file << "# Shrimp preview scene\n";
-	file << "\n";
-	file << "Option \"searchpath\" \"string resource\" [\"@:./:./data/rib/scenes:$HOME/.shrimp/temp:&\"]\n";
-	file << "\n";
-	file << "Display \"outputimage.tif\" \"" << display << "\" \"rgba\"\n";
-	if (AOV) {
+	std::string rib_file = "# Shrimp preview scene\n";
+	rib_file += "\n";
+	rib_file += "Option \"searchpath\" \"string resource\" [\"@:./:./data/rib/scenes:$HOME/.shrimp/temp:&\"]\n";
+	rib_file += "\n";
+	rib_file += "Display \"outputimage.tif\" \"" + display + "\" \"rgba\"\n";
+	if (AOV)
+	{
 		// standard/predefined AOVs ( from shrimp_aov.h )
 		// the user can create AOV blocks later, but that means updating the
 		// RIB file, displays type, etc.., so we'll provide for a start, a good
@@ -1016,63 +974,65 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 		// displays descriptions in renderer .xml file needs to be updated to
 		// include these preset AOVs, but for a secondaries display option
 		// AOV presets
-		file << "# AOVs here\n";
-		file << "Display \"+" + TempDir + "/" + "aov_surfacecolor"
+		rib_file += "# AOVs here\n";
+		rib_file += "Display \"+" + TempDir + "/" + "aov_surfacecolor"
 			 + ".tif" + "\" \"file\" \"varying color aov_surfacecolor\" "
 			 + "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_ambient" + ".tif"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_ambient" + ".tif"
 			+ "\" \"file\" \"varying color aov_ambient\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_diffuse" + ".tif"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_diffuse" + ".tif"
 			+ "\" \"file\" \"varying color aov_diffuse\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_specular" + ".tif"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_specular" + ".tif"
 			+ "\" \"file\" \"varying color aov_specular\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_specularcolor" + ".tif"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_specularcolor" + ".tif"
 			+ "\" \"file\" \"varying color aov_specularcolor\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_reflection"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_reflection"
 			+ ".tif" + "\" \"file\" \"varying color aov_reflection\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_refraction"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_refraction"
 			+ ".tif" + "\" \"file\" \"varying color aov_refraction\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_rimlighting" + ".tif"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_rimlighting" + ".tif"
 			+ "\" \"file\" \"varying color aov_rimlighting\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_scattering"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_scattering"
 			+ ".tif" + "\" \"file\" \"varying color aov_scattering\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_translucence"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_translucence"
 			+ ".tif" + "\" \"file\" \"varying color aov_translucence\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_shadows"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_shadows"
 			+ ".tif" + "\" \"file\" \"varying color aov_shadows\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_occlusion"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_occlusion"
 			+ ".tif" + "\" \"file\" \"varying float aov_occlusion\" "
 			+ "\"quantize\" [0 255 0 255]\n";
-		file << "Display \"+" + TempDir + "/" + "aov_opacity"
+		rib_file += "Display \"+" + TempDir + "/" + "aov_opacity"
 			+ ".tif" + "\" \"file\" \"varying color aov_opacity\" "
 			+ "\"quantize\" [0 255 0 255]\n";
 	}
 
-	file << "# User set root block RIB statements\n";
-	file << m_general_statements << "\n";
-	file << "# Preview scene\n";
-	file << "Format " << prefs.m_output_width << " " << prefs.m_output_height << " 1\n";
-	file << "PixelSamples " << prefs.m_samples_x << " " << prefs.m_samples_y << "\n";
-	file << "ShadingRate " << prefs.m_shading_rate << "\n";
-	file << "PixelFilter \"" << prefs.m_pixel_filter << "\" " << prefs.m_filter_width_s << " " << prefs.m_filter_width_t <<"\n";
-	file << "Exposure 1 1\n";
-	file << "Quantize \"rgba\" 255 0 255 0.5\n";
-	file << "ShadingInterpolation \"smooth\"\n";
-	file << "Clipping 0.01 100\n";
-	file << "\n";
-	file << scene_template << std::endl;
+	rib_file += "# User set root block RIB statements\n";
+	rib_file += m_general_statements + "\n";
+	rib_file += "# Preview scene\n";
+	rib_file += "Format " + string_cast (prefs.m_output_width) + " " + string_cast (prefs.m_output_height) + " 1\n";
+	rib_file += "PixelSamples " + string_cast (prefs.m_samples_x) + " " + string_cast (prefs.m_samples_y) + "\n";
+	rib_file += "ShadingRate " + string_cast (prefs.m_shading_rate) + "\n";
+	rib_file += "PixelFilter \"" + prefs.m_pixel_filter + "\" " + string_cast (prefs.m_filter_width_s) + " " + string_cast (prefs.m_filter_width_t) + "\n";
+	rib_file += "Exposure 1 1\n";
+	rib_file += "Quantize \"rgba\" 255 0 255 0.5\n";
+	rib_file += "ShadingInterpolation \"smooth\"\n";
+	rib_file += "Clipping 0.01 100\n";
+	rib_file += "\n";
+	rib_file += scene_template;
+	rib_file += "\n";
 
-	file.close();
+	// open file
+	m_system_functions->save_file (RIBFile, rib_file);
 }
 
 
@@ -1104,43 +1064,43 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	{
 		// RenderMan surface shader
 		surface_shader = "preview_surface";
-		export_shader (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
+		export_shader (SURFACE, surface_shader, Directory, surface_shader + ".sl");
 		CommandList.push_back( shader_compilation_command (surface_shader + ".sl", Directory, surface_shader, Directory, shader_path) );
 
 		// K-3D meta file
-		export_k3d_slmeta (SURFACE, surface_shader, Directory + '/' + surface_shader + ".sl");
+		export_k3d_slmeta (SURFACE, surface_shader, Directory, surface_shader + ".sl");
 	}
 
 	if (has_connected_parent ("P") || has_connected_parent ("N"))
 	{
 		// RenderMan displacement shader
 		displacement_shader = "preview_displacement";
-		export_shader (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
+		export_shader (DISPLACEMENT, displacement_shader, Directory, displacement_shader + ".sl");
 		CommandList.push_back( shader_compilation_command (displacement_shader + ".sl", Directory, displacement_shader, Directory, shader_path) );
 
 		// K-3D meta file
-		export_k3d_slmeta (DISPLACEMENT, displacement_shader, Directory + '/' + displacement_shader + ".sl");
+		export_k3d_slmeta (DISPLACEMENT, displacement_shader, Directory, displacement_shader + ".sl");
 	}
 
 	if (has_connected_parent ("Cl") || has_connected_parent ("Ol"))
 	{
 		// RenderMan light shader
 		light_shader = "preview_light";
-		export_shader (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
+		export_shader (LIGHT, light_shader, Directory, light_shader + ".sl");
 		CommandList.push_back( shader_compilation_command (light_shader + ".sl", Directory, light_shader, Directory, shader_path) );
 
 		// K-3D meta file
-		export_k3d_slmeta (LIGHT, light_shader, Directory + '/' + light_shader + ".sl");
+		export_k3d_slmeta (LIGHT, light_shader, Directory, light_shader + ".sl");
 	}
 
 	if (has_connected_parent ("Cv") || has_connected_parent ("Ov"))
 	{
 		// RenderMan atmosphere shader
 		atmosphere_shader = "preview_atmosphere";
-		export_shader (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
+		export_shader (VOLUME, atmosphere_shader, Directory, atmosphere_shader + ".sl");
 		CommandList.push_back( shader_compilation_command (atmosphere_shader + ".sl", Directory, atmosphere_shader, Directory, shader_path) );
 
-		export_k3d_slmeta (VOLUME, atmosphere_shader, Directory + '/' + atmosphere_shader + ".sl");
+		export_k3d_slmeta (VOLUME, atmosphere_shader, Directory, atmosphere_shader + ".sl");
 	}
 
 	// output scene
@@ -1190,16 +1150,15 @@ std::string rib_root_block::parse_scene_shader (const std::string& RIBscene, con
 }
 
 
-void rib_root_block::write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName) {
-
-	std::ofstream file (AbsoluteFileName.c_str());
-
-	for (command_list_t::const_iterator c = CommandList.begin(); c != CommandList.end(); ++c) {
-
-		file << *c << std::endl;
+void rib_root_block::write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName)
+{
+	std::string list = "";
+	for (command_list_t::const_iterator c = CommandList.begin(); c != CommandList.end(); ++c)
+	{
+		list += *c + "\n";
 	}
 
-	file.close();
+	m_system_functions->save_file (AbsoluteFileName, list);
 }
 
 

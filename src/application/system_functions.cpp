@@ -26,6 +26,7 @@
 #include <fltk/filename.h>
 
 #include <cstdlib>
+#include <fstream>
 #include <iostream>
 
 #if defined _WIN32
@@ -133,11 +134,55 @@ std::string system_functions::get_file_extension (const std::string& file)
 }
 
 
+void system_functions::save_file (const std::string& destination, const std::string& content)
+{
+	std::ofstream file (destination.c_str());
+	if (file.is_open())
+	{
+		file << content;
+		file.close();
+	}
+	else
+	{
+		log() << error << "Couldn't save file '" << destination << "'" << std::endl;
+	}
+}
+
+
 bool system_functions::execute_command (const std::string& Command)
 {
 	int status = system (Command.c_str());
 
 	return status > 0;
+
+/*
+	int pid = fork();
+	if(pid == -1)
+	{
+		std::cout << "Error creating new process\n";
+		//system(cleanup.c_str());
+	}
+	else if(pid == 0)
+	{
+		int status;
+		int pid2 = fork();
+		if(pid2 == -1)
+		{
+			std::cout << "Error creating new process\n";
+		}
+		else if(pid2 == 0)
+		{
+			std::cout << render_command << std::endl;
+			char* argv[4];
+			argv[0] = "sh";
+			argv[1] = "-c";
+			argv[2] = const_cast<char*>(render_command.c_str());
+			argv[3] = 0;
+			execve("/bin/sh", argv, environ);
+			//exit(127);
+		}
+	}
+*/
 }
 
 
