@@ -23,6 +23,9 @@
 
 #include "miscellaneous/logging.h"
 
+#include <fstream>
+
+
 services::services(i_system_functions* SystemFunctions) :
 	m_system_functions (SystemFunctions)
 {
@@ -30,6 +33,9 @@ services::services(i_system_functions* SystemFunctions) :
 
 	m_scene = new scene(SystemFunctions);
 	reset_scene();
+
+	// build XML documentation once scene has been initialized
+	build_xml_documentation();
 }
 
 
@@ -56,7 +62,8 @@ void services::reset_scene()
 }
 
 
-block_tree_node_t services::get_block_hierarchy() {
+block_tree_node_t services::get_block_hierarchy()
+{
 	return m_scene->get_block_hierarchy();
 }
 
@@ -451,6 +458,81 @@ void services::delete_selection()
 		m_scene->delete_group (*group_i);
 	}
 	m_group_selection.clear();
+}
+
+
+void services::build_xml_documentation()
+{
+	log() << aspect << "help file generation start" << std::endl;
+
+	// build XML documentation files with loaded blocks (help file)
+	std::string header = "<?xml-stylesheet type=\"text/xsl\" href=\"block.xsl\"?>\n";
+	std::string copyright = "<!-- Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>;\n";
+	copyright += "This file is part of Shrimp 2.\n";
+	copyright += "Shrimp 2 is free software: you can redistribute it and/or modify\n";
+	copyright += "it under the terms of the GNU General Public License as published by\n";
+	copyright += "the Free Software Foundation, either version 3 of the License, or\n";
+	copyright += "(at your option) any later version.\n";
+	copyright += "Shrimp 2 is distributed in the hope that it will be useful,\n";
+	copyright += "but WITHOUT ANY WARRANTY; without even the implied warranty of\n";
+	copyright += "MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\n";
+	copyright += "GNU General Public License for more details.\n";
+	copyright += "You should have received a copy of the GNU General Public License\n";
+	copyright += "along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.-->\n";
+
+	std::string index_xml = header + copyright + "<block>";
+	std::string content_xml = header + copyright + "<block>";
+
+	block_tree_node_t root = m_scene->get_block_hierarchy();
+	for (block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
+		tree_node != root.child_nodes.end(); ++tree_node)
+	{
+		build_xml_documentation_block (*tree_node, index_xml, content_xml);
+	}
+
+	index_xml += "</block>\n";
+	content_xml += "</block>\n";
+
+	if (m_system_functions->is_directory ("doc"))
+	{
+		std::string index_path = m_system_functions->combine_paths ("doc", "index.xml");
+		m_system_functions->save_file (index_path, index_xml);
+
+		std::string content_path = m_system_functions->combine_paths ("doc", "content.xml");
+		m_system_functions->save_file (content_path, content_xml);
+	}
+
+	log() << aspect << "help file generation end" << std::endl;
+}
+
+
+void services::build_xml_documentation_block (const block_tree_node_t& tree_node, std::string& index, std::string& content)
+{
+	std::string line;
+	std::string blockname;
+
+	// check whether the directory has children
+	for (block_tree_node_list_t::const_iterator sub_node = tree_node.child_nodes.begin();
+		sub_node != tree_node.child_nodes.end(); ++sub_node)
+	{
+		build_xml_documentation_block (*sub_node, index, content);
+	}
+
+	for (default_block_list_t::const_iterator block = tree_node.blocks.begin(); block != tree_node.blocks.end(); ++block)
+	{
+		//create index.xml file
+		std::ifstream file (block->path.c_str());
+		blockname = block->name;
+
+		while (!file.eof())
+		{
+			getline (file, line);
+			index += line + "\n";
+		}
+		file.close();
+
+		content += "<shrimp name=\"" + blockname  + "\"" + " path=" + "\"." + block->path.c_str() + "\"></shrimp>\n";
+	}
 }
 
 

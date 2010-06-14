@@ -32,6 +32,9 @@ class services
 {
 	i_system_functions* m_system_functions;
 
+	void build_xml_documentation();
+	void build_xml_documentation_block (const block_tree_node_t& tree_node, std::string& index, std::string& content);
+
 public:
 	// constructor/destructor
 	services(i_system_functions* SystemFunctions);
