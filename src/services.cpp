@@ -466,7 +466,6 @@ void services::build_xml_documentation()
 	log() << aspect << "help file generation start" << std::endl;
 
 	// build XML documentation files with loaded blocks (help file)
-	std::string header = "<?xml-stylesheet type=\"text/xsl\" href=\"block.xsl\"?>\n";
 	std::string copyright = "<!-- Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>;\n";
 	copyright += "This file is part of Shrimp 2.\n";
 	copyright += "Shrimp 2 is free software: you can redistribute it and/or modify\n";
@@ -480,8 +479,8 @@ void services::build_xml_documentation()
 	copyright += "You should have received a copy of the GNU General Public License\n";
 	copyright += "along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.-->\n";
 
-	std::string index_xml = header + copyright + "<block>";
-	std::string content_xml = header + copyright + "<block>";
+	std::string index_xml = "<?xml-stylesheet type=\"text/xsl\" href=\"block.xsl\"?>\n" + copyright + "<block>";
+	std::string content_xml = "<?xml-stylesheet type=\"text/xsl\" href=\"content.xsl\"?>\n" + copyright + "<block>";
 
 	block_tree_node_t root = m_scene->get_block_hierarchy();
 	for (block_tree_node_list_t::const_iterator tree_node = root.child_nodes.begin();
