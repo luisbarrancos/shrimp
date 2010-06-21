@@ -58,6 +58,11 @@ void drawGlText(const std::string Text, const float X, const float Y, const floa
 	fltk::gldrawtext (Text.c_str(), X, Y, Z);
 }
 
+#else
+void drawGlText(const std::string Text, const float X, const float Y, const float Z, const float Size, const bool Bold)
+{
+	// do nothing
+}
 #endif
 
 

@@ -815,7 +815,9 @@ void opengl_view::mouse_right_button_down()
 	if (m_active_property.first.size())
 	{
 		// mouse is over a block property, call the right-click popup menu
+#if defined(SHRIMP_FLTK)
 		m_shader_property_right_click_signal.emit (m_active_property);
+#endif
 
 		// clear other actions
 		m_mouse_click = 0;
@@ -828,13 +830,17 @@ void opengl_view::mouse_right_button_down()
 	{
 		// mouse is over a block (but not over a property)
 		std::string block_name = m_under_mouse_block->name();
+#if defined(SHRIMP_FLTK)
 		m_shader_block_right_click_signal.emit (block_name);
+#endif
 
 	}
 	else if (m_under_mouse_group)
 	{
 		// mouse is over a group
+#if defined(SHRIMP_FLTK)
 		m_block_group_right_click_signal.emit (m_under_mouse_group);
+#endif
 	}
 	else
 	{
@@ -850,7 +856,9 @@ void opengl_view::mouse_right_button_down()
 		// selection menu
 		if (m_services->selection_size() > 1)
 		{
+#if defined(SHRIMP_FLTK)
 			m_empty_right_click_signal.emit();
+#endif
 		}
 	}
 }
@@ -897,7 +905,7 @@ void opengl_view::mouse_left_button_drag(const int widget_width, const int widge
 	}
 	else
 	{
-		//Drawing of rectangle selection
+		// drawing of rectangle selection
 		m_box_selection = true;
 	}
 
