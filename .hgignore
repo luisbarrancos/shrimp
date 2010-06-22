@@ -1,7 +1,8 @@
 .*\.o$
 .*\.a$
+.qmake_temp
 .sconf_temp
 .sconsign.dblite
 config.log
 doc/.*\.xml
-shrimp
+shrimp$

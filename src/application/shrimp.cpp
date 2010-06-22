@@ -39,7 +39,7 @@ void init_fltk_theme();
 int fltk_frontend(int argc, char** argv, services* services_instance);
 
 // Launch FLTK and Shrimp's main window
-int main(int argc, char** argv)
+int main (int argc, char** argv)
 {
 	// set up log system
 	log_level_t level = ERROR;
@@ -94,7 +94,7 @@ int fltk_frontend (int argc, char** argv, services* services_instance)
 
 	// create main
 	log() << aspect << "shrimp: creating main window" << std::endl;
-	application_window* application = new application_window(services_instance, opengl_view_instance);
+	application_window* application = new application_window (services_instance, opengl_view_instance);
 
 	// if a scene name was given as a command-line parameter, try to load it
 	int nargs = 0;
