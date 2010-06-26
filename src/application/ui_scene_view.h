@@ -36,10 +36,11 @@
 
 class scene_view :
 	public fltk::GlWindow,
+	public opengl_view,
 	public sigc::trackable
 {
 public:
-	scene_view (services* services_instance, opengl_view* opengl_view_instance, int x, int y, int w, int h, const char* l = 0);
+	scene_view (services* services_instance, int x, int y, int w, int h, const char* l = 0);
 
 	// OpenGL widget draw() override
 	void draw();
@@ -47,7 +48,7 @@ public:
 	// OpenGL widget handle(int Event) override
 	int handle (int Event);
 
-	double fit_scene() { const double result = m_opengl_view->fit_scene (w(), h()); redraw(); return result; }
+	double fit_scene();
 
 	// texture handling
 	void load_texture(const char* filename, GLuint& texId);
@@ -58,10 +59,8 @@ public:
 	void block_group_right_click (int Group);
 	void empty_right_click();
 
-private:
-	services* m_services;
-	opengl_view* m_opengl_view;
 
+private:
 	// temporary storage
 	shader_block* m_active_block;
 	shrimp::io_t m_active_property;
@@ -104,6 +103,7 @@ private:
 	void on_disconnect_pad (fltk::Widget* W, void* Data);
 	static void cb_disconnect_pad (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_disconnect_pad (W, Data); }
 };
+
 
 #endif // _ui_scene_view_h_
 

@@ -36,15 +36,13 @@ class application_window : public QWidget
 	Q_OBJECT
 
 public:
-	application_window (services* services_instance, opengl_view* opengl_view_instance);
+	application_window (services* services_instance);
 
 private:
 	// shrimp services
 	services* m_services;
 
 	// OpenGL view of current scene
-	opengl_view* m_opengl_view;
-
 	scene_view* m_scene_view;
 };
 

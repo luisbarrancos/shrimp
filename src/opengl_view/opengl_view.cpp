@@ -62,6 +62,7 @@ opengl_view::opengl_view (services* services_instance) :
 	m_last_mouse_x (0),
 	m_last_mouse_y (0),
 	m_mouse_click (0),
+	m_box_selection (false),
 	m_projection_left (-10),
 	m_projection_right (10),
 	m_projection_bottom (-10),
@@ -104,7 +105,8 @@ double opengl_view::fit_scene(int window_width, int window_height)
 	double bottom = 0;
 	double top = 0;
 	shrimp::shader_blocks_t block_list = m_services->get_scene_blocks();
-	for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i) {
+	for (shrimp::shader_blocks_t::const_iterator block_i = block_list.begin(); block_i != block_list.end(); ++block_i)
+	{
 		shader_block* block = *block_i;
 
 		// the first block serves as reference

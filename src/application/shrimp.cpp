@@ -87,14 +87,13 @@ int fltk_frontend (int argc, char** argv, services* services_instance)
 	// initialize image handlers
 	initialize_fltk_image_handlers();
 
-	opengl_view* opengl_view_instance = new opengl_view (services_instance);
 
 	// initialize FLTK theme
 	init_fltk_theme();
 
 	// create main
 	log() << aspect << "shrimp: creating main window" << std::endl;
-	application_window* application = new application_window (services_instance, opengl_view_instance);
+	application_window* application = new application_window (services_instance);
 
 	// if a scene name was given as a command-line parameter, try to load it
 	int nargs = 0;

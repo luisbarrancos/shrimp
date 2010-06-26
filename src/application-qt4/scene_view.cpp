@@ -26,10 +26,9 @@
 #include "scene_view.h"
 
 
-scene_view::scene_view (QWidget* parent, services* services_instance, opengl_view* opengl_view_instance) :
-	QGLWidget (parent),
-	m_services (services_instance),
-	m_opengl_view (opengl_view_instance)
+scene_view::scene_view (services* services_instance) :
+	//QGLWidget (parent),
+	opengl_view (services_instance)
 {
 }
 
@@ -51,7 +50,7 @@ void scene_view::initializeGL()
 
 void scene_view::paintGL()
 {
-	m_opengl_view->draw_scene (true, 400, 400);
+	draw_scene (false, 400, 400);
 }
 
 

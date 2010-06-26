@@ -53,50 +53,58 @@
 #include <limits>
 
 
-scene_view::scene_view (services* services_instance, opengl_view* opengl_view_instance, int x, int y, int w, int h, const char* l) :
-	GlWindow (x,y,w,h,l),
-	m_services (services_instance),
-	m_opengl_view (opengl_view_instance)
+scene_view::scene_view (services* services_instance, int x, int y, int w, int h, const char* l) :
+	GlWindow (x, y, w, h, l),
+	opengl_view (services_instance)
 {
 	// connect signals
-	m_opengl_view->m_shader_property_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_property_right_click));
-	m_opengl_view->m_shader_block_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_block_right_click));
-	m_opengl_view->m_block_group_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::block_group_right_click));
-	m_opengl_view->m_empty_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::empty_right_click));
+	m_shader_property_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_property_right_click));
+	m_shader_block_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_block_right_click));
+	m_block_group_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::block_group_right_click));
+	m_empty_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::empty_right_click));
 }
 
 
 void scene_view::draw() {
 
-	m_opengl_view->draw_scene (valid(), w(), h());
+	draw_scene (valid(), w(), h());
 	redraw();
+}
+
+
+double scene_view::fit_scene()
+{
+	const double result = opengl_view::fit_scene (w(), h());
+	redraw();
+
+	return result;
 }
 
 
 void scene_view::on_select_block (fltk::Widget* W, void* Data)
 {
-	m_services->set_block_selection (m_opengl_view->get_active_block(), true);
+	m_services->set_block_selection (get_active_block(), true);
 	redraw();
 }
 
 
 void scene_view::on_deselect_block (fltk::Widget* W, void* Data)
 {
-	m_services->set_block_selection (m_opengl_view->get_active_block(), false);
+	m_services->set_block_selection (get_active_block(), false);
 	redraw();
 }
 
 
 void scene_view::on_roll_block (fltk::Widget* W, void* Data)
 {
-	m_services->set_block_rolled_state (m_opengl_view->get_active_block(), true);
+	m_services->set_block_rolled_state (get_active_block(), true);
 	redraw();
 }
 
 
 void scene_view::on_unroll_block (fltk::Widget* W, void* Data)
 {
-	m_services->set_block_rolled_state (m_opengl_view->get_active_block(), false);
+	m_services->set_block_rolled_state (get_active_block(), false);
 	redraw();
 }
 
@@ -363,7 +371,7 @@ int scene_view::handle (int Event)
 		case fltk::MOUSEWHEEL:
 		{
 			int wheel_move = fltk::event_dy();
-			m_opengl_view->mouse_wheel_update(static_cast<double>(wheel_move));
+			mouse_wheel_update(static_cast<double>(wheel_move));
 			redraw();
 		}
 		return 1;
@@ -371,7 +379,7 @@ int scene_view::handle (int Event)
 		// mouse move
 		case fltk::MOVE:
 		{
-			m_opengl_view->mouse_move(fltk::event_x(), fltk::event_y());
+			mouse_move(fltk::event_x(), fltk::event_y());
 			redraw();
 		}
 		return 1;
@@ -382,18 +390,18 @@ int scene_view::handle (int Event)
 		{
 			if ((fltk::event_button() == fltk::LeftButton) || (fltk::event_button() == fltk::RightButton)) {
 
-				m_opengl_view->mouse_any_button_down (fltk::event_x(), fltk::event_y());
+				mouse_any_button_down (fltk::event_x(), fltk::event_y());
 				redraw();
 
 				if (fltk::event_button() == fltk::LeftButton)
 				{
-					m_opengl_view->mouse_left_button_down(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL));
+					mouse_left_button_down(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL));
 					redraw();
 				}
 
 				if (fltk::event_button() == fltk::RightButton)
 				{
-					m_opengl_view->mouse_right_button_down();
+					mouse_right_button_down();
 					redraw();
 				}
 			}
@@ -403,11 +411,11 @@ int scene_view::handle (int Event)
 		// mouse drag
 		case fltk::DRAG:
 		{
-			m_opengl_view->mouse_any_button_drag(fltk::event_x(), fltk::event_y());
+			mouse_any_button_drag(fltk::event_x(), fltk::event_y());
 			redraw();
 
 			if (fltk::event_button() == fltk::LeftButton) {
-				m_opengl_view->mouse_left_button_drag(w(), h(), fltk::event_state (fltk::ALT));
+				mouse_left_button_drag(w(), h(), fltk::event_state (fltk::ALT));
 				redraw();
 			}
 
@@ -421,7 +429,7 @@ int scene_view::handle (int Event)
 //			m_active_group = select_group();
 			if (fltk::event_button() == fltk::LeftButton)
 			{
-				m_opengl_view->mouse_left_button_release(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL), fltk::event_state (fltk::ALT));
+				mouse_left_button_release(fltk::event_x(), fltk::event_y(), fltk::event_state (fltk::SHIFT), fltk::event_state (fltk::CTRL), fltk::event_state (fltk::ALT));
 				redraw();
 			}
 

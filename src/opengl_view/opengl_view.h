@@ -33,7 +33,7 @@ class opengl_view
 {
 public:
 	// constructor
-	opengl_view(services*);
+	opengl_view (services*);
 
 	// fits whole scene into window
 	double fit_scene(int window_width, int window_height);
@@ -75,10 +75,12 @@ public:
 #endif
 
 
-private:
+protected:
 	// store the scene being drawn
 	services* m_services;
 
+
+private:
 	// store active block
 	shader_block* m_under_mouse_block;
 	shrimp::io_t m_active_property;

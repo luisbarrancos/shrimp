@@ -24,11 +24,10 @@
 #include "scene_view.h"
 
 
-application_window::application_window (services* services_instance, opengl_view* opengl_view_instance) :
-	m_services (services_instance),
-	m_opengl_view (opengl_view_instance)
+application_window::application_window (services* services_instance) :
+	m_services (services_instance)
 {
-	m_scene_view = new scene_view (0, services_instance, opengl_view_instance);
+	m_scene_view = new scene_view (services_instance);
 
 	QHBoxLayout* mainLayout = new QHBoxLayout;
 	mainLayout->addWidget (m_scene_view);

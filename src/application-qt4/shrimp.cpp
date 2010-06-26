@@ -63,12 +63,11 @@ int main (int argc, char *argv[])
 
 int qt_frontend (int argc, char** argv, services* services_instance)
 {
-	opengl_view* opengl_view_instance = new opengl_view (services_instance);
-
-
 	QApplication app(argc, argv);
-	application_window window (services_instance, opengl_view_instance);
+
+	application_window window (services_instance);
 	window.show();
+
 	return app.exec();
 }
 

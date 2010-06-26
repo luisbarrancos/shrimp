@@ -28,15 +28,17 @@
 #include <QGLWidget>
 
 
-class scene_view : public QGLWidget
+class scene_view :
+	public QGLWidget,
+	public opengl_view
 {
+public:
 	Q_OBJECT
 
 	services* m_services;
-	opengl_view* m_opengl_view;
 
 public:
-	scene_view (QWidget* parent, services* services_instance, opengl_view* opengl_view_instance);
+	scene_view (services* services_instance);
 	~scene_view();
 
 	QSize sizeHint() const;

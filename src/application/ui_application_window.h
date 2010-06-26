@@ -40,15 +40,15 @@
 
 #include <fstream>
 #include <iostream>
-using namespace std;
+
 
 class application_window;
 static application_window* application_pointer = 0;
 
-class application_window : public fltk::Window {
-
+class application_window : public fltk::Window
+{
 public:
-	application_window(services* services_instance, opengl_view* opengl_view_instance);
+	application_window(services* services_instance);
 	~application_window();
 
 	bool load_scene (const std::string& File);
@@ -58,7 +58,6 @@ private:
 	services* m_services;
 
 	// OpenGL view of current scene
-	opengl_view* m_opengl_view;
 	scene_view* m_scene_view;
 
 	// scene zoom widget

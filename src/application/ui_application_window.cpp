@@ -52,10 +52,9 @@
 #include <iostream>
 
 
-application_window::application_window(services* services_instance, opengl_view* opengl_view_instance) :
+application_window::application_window(services* services_instance) :
 	Window (fltk::USEDEFAULT, fltk::USEDEFAULT, 800, 600, "Scene", true),
 	m_services (services_instance),
-	m_opengl_view (opengl_view_instance),
 	m_zoom_slider (80, 575, 400, 19, "Zoom"),
 	m_block_menu (20, 22, 90, 24, "Add block")
 {
@@ -272,18 +271,18 @@ application_window::application_window(services* services_instance, opengl_view*
 		fit_button->tooltip ("Click to fit the block scene to the current view");
 
 		// OpenGL view
-				fltk::Group* main_view = new fltk::Group (2, 48, 796, 520);
-				main_view->begin();
+		fltk::Group* main_view = new fltk::Group (2, 48, 796, 520);
+		main_view->begin();
 
-					fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 796, 520);
-					frame->box (fltk::DOWN_BOX);
-					frame->color ((fltk::Color) (56));
-					frame->selection_color ((fltk::Color) (69));
+			fltk::InvisibleBox* frame = new fltk::InvisibleBox (0, 0, 796, 520);
+			frame->box (fltk::DOWN_BOX);
+			frame->color ((fltk::Color) (56));
+			frame->selection_color ((fltk::Color) (69));
 
-					m_scene_view = new scene_view (m_services, m_opengl_view, 2, 2, 792, 518);
+			m_scene_view = new scene_view (m_services, 2, 2, 792, 518);
 
-				main_view->end();
-				resizable (main_view);
+		main_view->end();
+		resizable (main_view);
 
 	end();
 
@@ -448,13 +447,13 @@ void application_window::on_menu_file_quit (fltk::Widget*, void*)
 //Edit menu : Copy selection
 void application_window::on_menu_edit_copy (fltk::Widget*)
 {
-	m_services->copy_selected_blocks(m_opengl_view->get_active_block());
+	m_services->copy_selected_blocks(m_scene_view->get_active_block());
 }
 
 //Edit menu : Paste selection
 void application_window::on_menu_edit_paste (fltk::Widget*)
 {
-	m_services->paste(m_opengl_view->get_active_block());
+	m_services->paste(m_scene_view->get_active_block());
 
 	// refresh view
 	m_scene_view->redraw();
@@ -465,7 +464,7 @@ void application_window::on_menu_edit_cut (fltk::Widget*)
 {
 	if (m_services->selection_size() >= 1)
 	{
-		m_services->cut_selection(m_opengl_view->get_active_block());
+		m_services->cut_selection(m_scene_view->get_active_block());
 
 		// refresh
 		m_scene_view->redraw();
@@ -487,7 +486,7 @@ void application_window::on_menu_edit_group (fltk::Widget*)
 //Edit menu : Ungroup selection
 void application_window::on_menu_edit_ungroup (fltk::Widget*)
 {
-	const int m_select_group = m_opengl_view->get_selected_group();
+	const int m_select_group = m_scene_view->get_selected_group();
 	if (m_select_group)
 	{
 		m_services->ungroup(m_select_group);
@@ -511,7 +510,7 @@ void application_window::on_menu_edit_edit (fltk::Widget*)
 {
 	if (m_services->selection_size() == 1)
 	{
-		shader_block* block = m_opengl_view->get_active_block();
+		shader_block* block = m_scene_view->get_active_block();
 		if (block)
 		{
 			edit_code::dialog d;
@@ -527,7 +526,7 @@ void application_window::on_menu_edit_edit (fltk::Widget*)
 void application_window::on_menu_view_toggle_grid (fltk::Widget*)
 {
 	const bool grid_state = m_menu_show_grid->state();
-	m_opengl_view->set_grid_state (grid_state);
+	m_scene_view->set_grid_state (grid_state);
 
 	m_scene_view->redraw();
 }
@@ -535,7 +534,7 @@ void application_window::on_menu_view_toggle_grid (fltk::Widget*)
 void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*)
 {
 	const bool snap_to_grid_state = m_menu_snap_to_grid->state();
-	m_opengl_view->set_snap_to_grid_state (snap_to_grid_state);
+	m_scene_view->set_snap_to_grid_state (snap_to_grid_state);
 
 	m_scene_view->redraw();
 }
@@ -543,7 +542,7 @@ void application_window::on_menu_view_toggle_grid_snap (fltk::Widget*)
 void application_window::on_menu_view_toggle_overview (fltk::Widget*)
 {
 	const bool overview_state = m_menu_overview->state();
-	m_opengl_view->set_overview_state (overview_state);
+	m_scene_view->set_overview_state (overview_state);
 
 	m_scene_view->redraw();
 }
@@ -571,7 +570,7 @@ void application_window::on_menu_help_help (fltk::Widget*)
 
 void application_window::on_zoom (fltk::Slider* o, void*)
 {
-	m_opengl_view->set_size ((double)o->value());
+	m_scene_view->set_size ((double)o->value());
 	m_scene_view->redraw();
 }
 
@@ -589,7 +588,7 @@ void application_window::on_custom_block()
 	shader_block* new_block = m_services->add_custom_block();
 
 	// put it in the middle of the view
-	m_opengl_view->move_block_to_view_center (new_block);
+	m_scene_view->move_block_to_view_center (new_block);
 
 	// refresh
 	m_scene_view->redraw();
@@ -697,7 +696,7 @@ void application_window::block_menu_action (fltk::Widget* w, void*)
 		// add block
 		shader_block* new_block = m_services->add_predefined_block (item->label());
 		// put it in the view center
-		m_opengl_view->move_block_to_view_center (new_block);
+		m_scene_view->move_block_to_view_center (new_block);
 
 		// refresh
 		m_scene_view->redraw();
@@ -814,7 +813,7 @@ void application_window::set_scene_chooser_value (const std::string Scene) {
 int application_window::handle (int event) {
 
 	// update the zoom slider if necessary
-	m_zoom_slider.value (m_opengl_view->get_size());
+	m_zoom_slider.value (m_scene_view->get_size());
 
 	// do overriden function's work
 	return fltk::Window::handle (event);
