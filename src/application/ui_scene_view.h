@@ -36,8 +36,7 @@
 
 class scene_view :
 	public fltk::GlWindow,
-	public opengl_view,
-	public sigc::trackable
+	public opengl_view
 {
 public:
 	scene_view (services* services_instance, int x, int y, int w, int h, const char* l = 0);

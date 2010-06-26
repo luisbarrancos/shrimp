@@ -13,7 +13,6 @@ vars.Add(PathVariable('fltk_lib_path', 'Point to the fltk library files', '', Pa
 env = Environment(variables = vars)
 
 env.ParseConfig("fltk2-config --cxxflags --ldflags")
-env.ParseConfig( 'pkg-config --cflags --libs sigc++-2.0' )
 
 
 # Linked libraries
@@ -44,11 +43,6 @@ if not conf.CheckCHeader('gl.h') or not conf.CheckCHeader('glu.h'):
 # Check FLTK 2 headers
 if not conf.CheckCXXHeader('fltk/run.h'):
 	print 'Shrimp requires FLTK 2'
-	Exit(1)
-
-# Check for libsigc++
-if not conf.TryAction('pkg-config --exists sigc++-2.0')[0]:
-	print 'Shrimp requires libsigc++ 2.x'
 	Exit(1)
 
 # Check for libtiff

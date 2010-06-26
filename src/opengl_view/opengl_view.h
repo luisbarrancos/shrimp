@@ -25,10 +25,6 @@
 #include "../services.h"
 
 
-#if defined(SHRIMP_FLTK)
-#include <sigc++/signal.h>
-#endif
-
 class opengl_view
 {
 public:
@@ -67,12 +63,10 @@ public:
 	void mouse_left_button_release(const int mouse_x, const int mouse_y, const bool shift_key_down, const bool ctrl_key_down, const bool alt_key_down);
 
 	// GUI events
-#if defined(SHRIMP_FLTK)
-	sigc::signal<void, shrimp::io_t&> m_shader_property_right_click_signal;
-	sigc::signal<void, std::string&> m_shader_block_right_click_signal;
-	sigc::signal<void, int> m_block_group_right_click_signal;
-	sigc::signal<void> m_empty_right_click_signal;
-#endif
+	virtual void shader_property_right_click (shrimp::io_t&) {}
+	virtual void shader_block_right_click (std::string&) {}
+	virtual void block_group_right_click (int) {}
+	virtual void empty_right_click() {}
 
 
 protected:

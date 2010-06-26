@@ -57,16 +57,11 @@ scene_view::scene_view (services* services_instance, int x, int y, int w, int h,
 	GlWindow (x, y, w, h, l),
 	opengl_view (services_instance)
 {
-	// connect signals
-	m_shader_property_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_property_right_click));
-	m_shader_block_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::shader_block_right_click));
-	m_block_group_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::block_group_right_click));
-	m_empty_right_click_signal.connect (sigc::mem_fun(*this, &scene_view::empty_right_click));
 }
 
 
-void scene_view::draw() {
-
+void scene_view::draw()
+{
 	draw_scene (valid(), w(), h());
 	redraw();
 }
