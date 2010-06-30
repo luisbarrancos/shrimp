@@ -1,39 +1,45 @@
-/*
-    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
-
-    This file is part of Shrimp 2.
-
-    Shrimp 2 is free software: you can redistribute it and/or modify
-    it under the terms of the GNU General Public License as published by
-    the Free Software Foundation, either version 3 of the License, or
-    (at your option) any later version.
-
-    Shrimp 2 is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU General Public License for more details.
-
-    You should have received a copy of the GNU General Public License
-    along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
-*/
-
-
-#include <QtGui>
-
 #include "application_window.h"
-#include "scene_view.h"
+#include "ui_application_window.h"
 
+#include "src/services.h"
+#include "src/application-qt4/system_functions.h"
+#include "src/miscellaneous/logging.h"
 
-application_window::application_window (services* services_instance) :
-	m_services (services_instance)
+#include <memory>
+
+application_window::application_window(QWidget *parent) :
+    QMainWindow(parent),
+    ui(new Ui::application_window)
 {
-	m_scene_view = new scene_view (services_instance);
+    ui->setupUi(this);
 
-	QHBoxLayout* mainLayout = new QHBoxLayout;
-	mainLayout->addWidget (m_scene_view);
-	setLayout (mainLayout);
+    // initialize Shrimp
+    log_level_t level = ERROR;
+    std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
-	setWindowTitle(tr("Shrimp"));
+    /*
+            log() << error << "LOG = ERROR" << std::endl;
+            log() << warning << "LOG = WARNING" << std::endl;
+            log() << info << "LOG = INFO" << std::endl;
+            log() << debug << "LOG = DEBUG" << std::endl;
+            log() << aspect << "LOG = ASPECT" << std::endl;
+    */
+
+    log() << aspect << "Starting Shrimp" << std::endl;
+
+    // create system function instance (FLTK dependent)
+    i_system_functions* system_instance = new system_functions();
+
+    // create service
+    services* service_instance = new services(system_instance);
+
+
+    // add the QGLWidget scene_view to the main window
+    ui_scene_view = new scene_view(service_instance);
+    ui->verticalLayout->addWidget(ui_scene_view);
 }
 
-
+application_window::~application_window()
+{
+    delete ui;
+}
