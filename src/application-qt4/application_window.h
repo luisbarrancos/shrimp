@@ -19,6 +19,7 @@ public:
 
 public slots:
     void openSceneFile();
+    void changeZoom(int zoom);
 
 private:
     Ui::application_window *ui;

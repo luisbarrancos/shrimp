@@ -42,6 +42,10 @@ QSize scene_view::sizeHint() const
 	return QSize (500, 500);
 }
 
+void scene_view::redraw()
+{
+    updateGL();
+}
 
 void scene_view::initializeGL()
 {

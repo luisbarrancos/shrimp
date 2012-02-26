@@ -42,6 +42,7 @@ public:
 	~scene_view();
 
 	QSize sizeHint() const;
+        void redraw();
 
 protected:
 	void initializeGL();

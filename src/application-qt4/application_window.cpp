@@ -43,6 +43,8 @@ application_window::application_window(QWidget *parent) :
 
     // connect events
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
+
+    QObject::connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
 }
 
 void application_window::openSceneFile()
@@ -74,6 +76,14 @@ void application_window::openSceneFile()
     //label (m_services->get_scene_name().c_str());
 
     //return true;
+}
+
+void application_window::changeZoom(int zoom)
+{
+    double value = static_cast<double>(zoom) / 20.0d;
+
+    ui_scene_view->set_size(value);
+    ui_scene_view->redraw();
 }
 
 application_window::~application_window()
