@@ -147,12 +147,11 @@ void system_functions::save_file (const std::string& destination, const std::str
 	{
 		file << content;
 		file.close();
-	}
-	else
+        }
+        else*/
 	{
 		log() << error << "Couldn't save file '" << destination << "'" << std::endl;
 	}
-*/
 }
 
 

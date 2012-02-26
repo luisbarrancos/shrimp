@@ -3,6 +3,7 @@
 
 #include <QMainWindow>
 #include "src/application-qt4/scene_view.h"
+#include "src/services.h"
 
 namespace Ui {
     class application_window;
@@ -16,9 +17,13 @@ public:
     explicit application_window(QWidget *parent = 0);
     ~application_window();
 
+public slots:
+    void openSceneFile();
+
 private:
     Ui::application_window *ui;
     scene_view* ui_scene_view;
+    services* shrimp_services;
 };
 
 #endif // MAINWINDOW_H
