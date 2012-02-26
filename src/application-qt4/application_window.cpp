@@ -44,7 +44,7 @@ application_window::application_window(QWidget *parent) :
     // connect events
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
 
-    QObject::connect(ui->horizontalSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+    QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
 }
 
 void application_window::openSceneFile()
