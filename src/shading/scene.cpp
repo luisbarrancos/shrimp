@@ -168,7 +168,7 @@ void scene::load_default_blocks (block_tree_node_t& RootNode, unsigned long& Blo
 		else
 		{
 			const std::string extension = m_system_functions->get_file_extension (file);
-			if (extension == ".xml")
+                        if (extension == "xml")
 			{
 				// save XML file
 				block_paths.push_back (file_path);

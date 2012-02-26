@@ -24,6 +24,7 @@
 #include "../miscellaneous/logging.h"
 
 #include <QDir>
+#include <QFileInfo>
 
 #include <cstdlib>
 #include <fstream>
@@ -131,10 +132,10 @@ std::string system_functions::combine_paths (const std::string& path1, const std
 
 std::string system_functions::get_file_extension (const std::string& file)
 {
-/*
-	return std::string (fltk::filename_ext (file.c_str()));
-*/
-	return std::string();
+    QString q_file = QString::fromStdString(file);
+    QFileInfo info = QFileInfo(q_file);
+
+    return info.suffix().toStdString();
 }
 
 
