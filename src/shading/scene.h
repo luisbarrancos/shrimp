@@ -51,7 +51,7 @@ public:
 
 	//////////// Functions
 
-	scene(i_system_functions* SystemFunctions);
+        scene(i_system_functions* SystemFunctions, const std::string block_path);
 	~scene();
 
 	// get and set name, description

@@ -31,7 +31,7 @@
 #include <iostream>
 
 
-scene::scene(i_system_functions* SystemFunctions) :
+scene::scene(i_system_functions* SystemFunctions, const std::string block_path) :
 	m_system_functions (SystemFunctions)
 {
 	log() << aspect << "scene: constructor" << std::endl;
@@ -40,7 +40,7 @@ scene::scene(i_system_functions* SystemFunctions) :
 
 	block_tree_node_t root_node;
 	root_node.node_name = "blocks";
-	root_node.node_path = "./blocks";
+        root_node.node_path = block_path;
 	m_block_classification = root_node;
 
 	log() << aspect << "Loading default Shrimp blocks." << std::endl;

@@ -26,12 +26,12 @@
 #include <fstream>
 
 
-services::services(i_system_functions* SystemFunctions) :
+services::services(i_system_functions* SystemFunctions, const std::string block_path) :
 	m_system_functions (SystemFunctions)
 {
 	log() << aspect << "services: constructor" << std::endl;
 
-	m_scene = new scene(SystemFunctions);
+        m_scene = new scene(SystemFunctions, block_path);
 	reset_scene();
 
 	// build XML documentation once scene has been initialized

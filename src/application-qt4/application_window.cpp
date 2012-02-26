@@ -14,7 +14,7 @@ application_window::application_window(QWidget *parent) :
     ui->setupUi(this);
 
     // initialize Shrimp
-    log_level_t level = ERROR;
+    log_level_t level = ASPECT;
     std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
     /*
@@ -28,10 +28,11 @@ application_window::application_window(QWidget *parent) :
     log() << aspect << "Starting Shrimp" << std::endl;
 
     // create system function instance (FLTK dependent)
+    std::string block_path = "../blocks";
     i_system_functions* system_instance = new system_functions();
 
     // create service
-    services* service_instance = new services(system_instance);
+    services* service_instance = new services(system_instance, block_path);
 
 
     // add the QGLWidget scene_view to the main window

@@ -37,7 +37,7 @@ class services
 
 public:
 	// constructor/destructor
-	services(i_system_functions* SystemFunctions);
+        services(i_system_functions* SystemFunctions, const std::string block_path);
 	~services();
 
 	i_system_functions* system_function_instance();
