@@ -6,3 +6,4 @@
 config.log
 doc/.*\.xml
 shrimp$
+Makefile
