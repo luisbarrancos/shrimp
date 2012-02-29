@@ -28,7 +28,8 @@
 
 scene_view::scene_view (services* services_instance) :
 	//QGLWidget (parent),
-	opengl_view (services_instance)
+        opengl_view (services_instance),
+    currentSize(500, 500)
 {
 }
 
@@ -54,12 +55,14 @@ void scene_view::initializeGL()
 
 void scene_view::paintGL()
 {
-	draw_scene (false, 400, 400);
+        draw_scene (false, currentSize.rwidth(), currentSize.rheight());
 }
 
 
 void scene_view::resizeGL (int width, int height)
 {
+    currentSize = QSize(width, height);
+    draw_scene(false, width, height);
 }
 
 
