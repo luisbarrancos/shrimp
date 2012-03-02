@@ -38,36 +38,6 @@
 
 
 
-
-// FLTK specific includes and functions
-#if defined(SHRIMP_FLTK)
-#include <fltk/GlWindow.h>
-#include <fltk/gl.h>
-
-void drawGlText(const std::string Text, const float X, const float Y, const float Z, const float Size, const bool Bold)
-{
-	if (Bold)
-	{
-		glsetfont (fltk::HELVETICA_BOLD, Size);
-	}
-	else
-	{
-		glsetfont (fltk::HELVETICA, Size);
-	}
-
-	fltk::gldrawtext (Text.c_str(), X, Y, Z);
-}
-
-#else
-void drawGlText(const std::string Text, const float X, const float Y, const float Z, const float Size, const bool Bold)
-{
-	// do nothing
-}
-#endif
-
-
-
-
 void opengl_view::draw_grid()
 {
 	glShadeModel (GL_FLAT);

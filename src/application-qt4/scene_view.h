@@ -39,7 +39,7 @@ public:
 
 public:
 	scene_view (services* services_instance);
-	~scene_view();
+        ~scene_view();
 
 	QSize sizeHint() const;
         void redraw();
@@ -50,8 +50,10 @@ protected:
 	void resizeGL (int width, int height);
 	void mousePressEvent (QMouseEvent * event);
 	void mouseMoveEvent (QMouseEvent * event);
+        void drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
 
         QSize currentSize;
+        QFont currentFont;
 };
 
 

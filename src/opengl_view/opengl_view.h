@@ -51,6 +51,7 @@ public:
 
 	// draw scene
 	void draw_scene(bool valid, int window_width, int window_height);
+        virtual void drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold) {}
 
 	// event functions
 	void mouse_wheel_update(double move);

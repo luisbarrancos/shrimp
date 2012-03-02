@@ -23,13 +23,16 @@
 
 #include <math.h>
 
+#include "src/miscellaneous/logging.h"
+
 #include "scene_view.h"
 
 
 scene_view::scene_view (services* services_instance) :
 	//QGLWidget (parent),
         opengl_view (services_instance),
-    currentSize(500, 500)
+    currentSize(500, 500),
+    currentFont()
 {
 }
 
@@ -76,3 +79,8 @@ void scene_view::mouseMoveEvent (QMouseEvent * event)
 }
 
 
+void scene_view::drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold)
+{
+    currentFont.setPointSizeF(Size);
+    renderText(X, Y, Z, QString::fromStdString(Text), currentFont);
+}
