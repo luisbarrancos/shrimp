@@ -69,18 +69,68 @@ void scene_view::resizeGL (int width, int height)
 }
 
 
-void scene_view::mousePressEvent (QMouseEvent * event)
-{
-}
-
-
-void scene_view::mouseMoveEvent (QMouseEvent * event)
-{
-}
-
-
 void scene_view::drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold)
 {
     currentFont.setPointSizeF(Size);
     renderText(X, Y, Z, QString::fromStdString(Text), currentFont);
 }
+
+
+void scene_view::mousePressEvent (QMouseEvent * event)
+{
+    log() << aspect << "mousePressEvent" << std::endl;
+
+    if ((event->button() & Qt::LeftButton) || (event->button() & Qt::RightButton))
+    {
+        mouse_any_button_down(event->x(), event->y());
+
+        if (event->button() & Qt::LeftButton)
+        {
+            mouse_left_button_down(event->x(), event->y(), event->modifiers() & Qt::SHIFT, event->modifiers() & Qt::CTRL);
+        }
+        if (event->button() & Qt::RightButton)
+        {
+            mouse_right_button_down();
+        }
+
+        redraw();
+    }
+}
+
+
+void scene_view::mouseMoveEvent (QMouseEvent * event)
+{
+    log() << aspect << "mouseMoveEvent" << std::endl;
+
+    mouse_any_button_drag(event->x(), event->y());
+
+    if (event->button() & Qt::LeftButton)
+    {
+        //TODO: deltaX, deltaY instead of x, y
+        mouse_left_button_drag(event->x(), event->y(), event->modifiers() & Qt::ALT);
+    }
+
+    redraw();
+}
+
+
+void scene_view::mouseReleaseEvent(QMouseEvent * event)
+{
+    log() << aspect << "mouseReleaseEvent" << std::endl;
+
+    if (event->button() & Qt::LeftButton)
+    {
+        mouse_left_button_release(event->x(), event->y(), event->modifiers() & Qt::SHIFT, event->modifiers() & Qt::CTRL, event->modifiers() & Qt::ALT);
+    }
+
+    redraw();
+}
+
+
+void scene_view::wheelEvent(QWheelEvent * event)
+{
+    int wheel_move = event->delta();
+    mouse_wheel_update(static_cast<double>(wheel_move) / 100);
+    redraw();
+}
+

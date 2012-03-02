@@ -48,9 +48,12 @@ protected:
 	void initializeGL();
 	void paintGL();
 	void resizeGL (int width, int height);
-	void mousePressEvent (QMouseEvent * event);
-	void mouseMoveEvent (QMouseEvent * event);
         void drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
+
+        void mousePressEvent (QMouseEvent *);
+        void mouseMoveEvent (QMouseEvent *);
+        void mouseReleaseEvent(QMouseEvent *);
+        void wheelEvent(QWheelEvent *);
 
         QSize currentSize;
         QFont currentFont;
