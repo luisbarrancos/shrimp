@@ -51,6 +51,16 @@ void scene_view::redraw()
     updateGL();
 }
 
+
+double scene_view::fit_scene()
+{
+    const double size = opengl_view::fit_scene(currentSize.rwidth(), currentSize.rheight());
+    redraw();
+
+    return size;
+}
+
+
 void scene_view::initializeGL()
 {
 }

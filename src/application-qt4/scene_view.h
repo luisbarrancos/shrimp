@@ -44,6 +44,8 @@ public:
 	QSize sizeHint() const;
         void redraw();
 
+        double fit_scene();
+
 protected:
 	void initializeGL();
 	void paintGL();
