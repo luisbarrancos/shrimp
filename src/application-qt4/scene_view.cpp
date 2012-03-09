@@ -90,15 +90,15 @@ void scene_view::mousePressEvent (QMouseEvent * event)
 {
     log() << aspect << "mousePressEvent" << std::endl;
 
-    if ((event->button() & Qt::LeftButton) || (event->button() & Qt::RightButton))
+    if ((event->buttons() & Qt::LeftButton) || (event->buttons() & Qt::RightButton))
     {
         mouse_any_button_down(event->x(), event->y());
 
-        if (event->button() & Qt::LeftButton)
+        if (event->buttons() & Qt::LeftButton)
         {
             mouse_left_button_down(event->x(), event->y(), event->modifiers() & Qt::SHIFT, event->modifiers() & Qt::CTRL);
         }
-        if (event->button() & Qt::RightButton)
+        if (event->buttons() & Qt::RightButton)
         {
             mouse_right_button_down();
         }
@@ -114,10 +114,9 @@ void scene_view::mouseMoveEvent (QMouseEvent * event)
 
     mouse_any_button_drag(event->x(), event->y());
 
-    if (event->button() & Qt::LeftButton)
+    if (event->buttons() & Qt::LeftButton)
     {
-        //TODO: deltaX, deltaY instead of x, y
-        mouse_left_button_drag(event->x(), event->y(), event->modifiers() & Qt::ALT);
+        mouse_left_button_drag(currentSize.width(), currentSize.height(), event->modifiers() & Qt::ALT);
     }
 
     redraw();
@@ -128,7 +127,7 @@ void scene_view::mouseReleaseEvent(QMouseEvent * event)
 {
     log() << aspect << "mouseReleaseEvent" << std::endl;
 
-    if (event->button() & Qt::LeftButton)
+    if (event->buttons() & Qt::LeftButton)
     {
         mouse_left_button_release(event->x(), event->y(), event->modifiers() & Qt::SHIFT, event->modifiers() & Qt::CTRL, event->modifiers() & Qt::ALT);
     }
