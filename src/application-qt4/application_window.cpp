@@ -7,6 +7,7 @@
 #include <QFileDialog>
 #include <QMessageBox>
 #include <QContextMenuEvent>
+#include <QSignalMapper>
 
 #include <memory>
 
@@ -52,6 +53,7 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
+    QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
     QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
 }
 
@@ -75,7 +77,6 @@ void application_window::buildBlockSubmenu(const block_tree_node_t& treeNode, co
     {
         // add menu item
         QAction* blockAction = new QAction(QString::fromStdString(block->name), this);
-        //connect(blockAction, SIGNAL(triggered()), this, SLOT(blockPopupMenu(QWidget*)));
 
         menuBlock blockInfo;
         blockInfo.action = blockAction;
@@ -115,6 +116,18 @@ void application_window::openSceneFile()
     //return true;
 }
 
+
+void application_window::newBlockPopup()
+{
+    QMenu menu(this);
+
+    buildContextMenuFromBlock(menu, std::string("Root"));
+
+    QPoint localPos = ui->addBlockButton->pos();
+    menu.exec(ui->addBlockButton->mapToGlobal(localPos));
+}
+
+
 void application_window::changeZoom(int zoom)
 {
     double value = static_cast<double>(zoom) / 20.0d;
@@ -124,20 +137,24 @@ void application_window::changeZoom(int zoom)
 }
 
 
-void application_window::blockPopupMenu(QWidget* parent)
+void application_window::blockPopupMenu(QString blockName)
 {
+    log() << aspect << "Adding new block: " << blockName.toStdString() << std::endl;
 
+    shader_block* newBlock = shrimp_services->add_predefined_block(blockName.toStdString());
+    ui_scene_view->move_block_to_view_center(newBlock);
+    ui_scene_view->redraw();
 }
 
 
-void application_window::contextMenuEvent(QContextMenuEvent *event)
+/*void application_window::contextMenuEvent(QContextMenuEvent *event)
 {
     QMenu menu(this);
 
     buildContextMenuFromBlock(menu, std::string("Root"));
 
     menu.exec(event->globalPos());
-}
+}*/
 
 
 void application_window::buildContextMenuFromBlock(QMenu& menu, const std::string menuName)
@@ -152,11 +169,16 @@ void application_window::buildContextMenuFromBlock(QMenu& menu, const std::strin
         buildContextMenuFromBlock(*newSubMenu, subDirName);
     }
 
+    QSignalMapper* signalMapper = new QSignalMapper(this);
     for (std::vector<menuBlock>::iterator entry = node.actionList.begin();
         entry != node.actionList.end(); ++entry)
     {
-        menu.addAction(entry->action);
+        QAction* newAction = menu.addAction(QString::fromStdString(entry->block.name));
+        connect(newAction, SIGNAL(triggered()), signalMapper, SLOT(map()));
+        signalMapper->setMapping(newAction, QString::fromStdString(entry->block.name));
     }
+
+    connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(blockPopupMenu(QString)));
 }
 
 

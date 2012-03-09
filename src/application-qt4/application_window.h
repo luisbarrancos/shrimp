@@ -37,11 +37,13 @@ public:
 
 public slots:
     void openSceneFile();
+
+    void newBlockPopup();
     void changeZoom(int zoom);
-    void blockPopupMenu(QWidget*);
+    void blockPopupMenu(QString);
 
 protected:
-    void contextMenuEvent(QContextMenuEvent *event);
+    //void contextMenuEvent(QContextMenuEvent *event);
     void buildContextMenuFromBlock(QMenu&, const std::string);
 
 private:
