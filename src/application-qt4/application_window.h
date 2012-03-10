@@ -40,6 +40,7 @@ public slots:
 
     void newBlockPopup();
     void changeZoom(int zoom);
+    void updateSceneZoom(const double);
     void blockPopupMenu(QString);
 
 protected:

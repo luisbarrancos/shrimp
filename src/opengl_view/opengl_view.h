@@ -35,7 +35,7 @@ public:
 	double fit_scene(int window_width, int window_height);
 
 	// sets scene scale
-	void set_size (double Size);
+        void set_size (const double);
 	double get_size() { return m_size; }
 
 	shader_block* get_active_block() {return m_under_mouse_block;}
@@ -69,6 +69,7 @@ public:
 	virtual void block_group_right_click (int) {}
 	virtual void empty_right_click() {}
 
+        virtual void updateSceneZoom(const double) {}
 
 protected:
 	// store the scene being drawn

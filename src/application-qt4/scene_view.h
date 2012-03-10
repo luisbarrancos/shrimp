@@ -57,6 +57,12 @@ protected:
         void mouseReleaseEvent(QMouseEvent *);
         void wheelEvent(QWheelEvent *);
 
+        void updateSceneZoom(const double);
+
+signals:
+        void setSceneZoom(const double);
+
+private:
         QSize currentSize;
         QFont currentFont;
 };

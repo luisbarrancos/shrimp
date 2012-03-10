@@ -143,3 +143,9 @@ void scene_view::wheelEvent(QWheelEvent * event)
     redraw();
 }
 
+
+void scene_view::updateSceneZoom(const double newZoom)
+{
+    emit setSceneZoom(newZoom);
+}
+

@@ -80,9 +80,9 @@ opengl_view::opengl_view (services* services_instance) :
 }
 
 
-void opengl_view::set_size (const double Size)
+void opengl_view::set_size (const double newSize)
 {
-	m_size = Size;
+        m_size = newSize;
 
 	// set min and max
 	if (m_size < 0.1) {
@@ -91,6 +91,8 @@ void opengl_view::set_size (const double Size)
 	if (m_size > 5) {
 		m_size = 5;
 	}
+
+        updateSceneZoom(m_size);
 }
 
 
@@ -131,11 +133,11 @@ double opengl_view::fit_scene(int window_width, int window_height)
 	if (std::fabs (scene_ratio) > std::fabs (view_ratio)) {
 		// fit the width
 		const double width = m_projection_right - m_projection_left;
-		set_size (width / (1.2 * std::fabs (right - left)));
+                set_size (width / (1.2 * std::fabs (right - left)));
 	} else {
 		// fit the height
 		const double height = m_projection_top - m_projection_bottom;
-		set_size (height / (1.2 * std::fabs (bottom - top)));
+                set_size (height / (1.2 * std::fabs (bottom - top)));
 	}
 
 	// resize the bounding box position to the scene size
@@ -716,7 +718,7 @@ void opengl_view::mouse_wheel_update(double move)
 
 	double change = - 0.3 * move;
 
-	set_size (m_size + change);
+        set_size (m_size + change);
 }
 
 

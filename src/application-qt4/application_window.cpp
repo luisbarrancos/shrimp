@@ -55,6 +55,8 @@ application_window::application_window(QWidget *parent) :
 
     QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
     QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+
+    QObject::connect(ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
 }
 
 
@@ -179,6 +181,12 @@ void application_window::buildContextMenuFromBlock(QMenu& menu, const std::strin
     }
 
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(blockPopupMenu(QString)));
+}
+
+
+void application_window::updateSceneZoom(const double newZoom)
+{
+    ui->zoomSlider->setValue(static_cast<int>(newZoom * 20.0d));
 }
 
 
