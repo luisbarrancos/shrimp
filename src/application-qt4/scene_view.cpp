@@ -34,6 +34,8 @@ scene_view::scene_view (services* services_instance) :
     currentSize(500, 500),
     currentFont()
 {
+    // mouseMoveEvent emitted even when no mouse button is pressed
+    setMouseTracking(true);
 }
 
 scene_view::~scene_view()
@@ -88,7 +90,7 @@ void scene_view::drawGlText(const std::string Text, const double X, const double
 
 void scene_view::mousePressEvent (QMouseEvent * event)
 {
-    log() << aspect << "mousePressEvent" << std::endl;
+    log() << aspect << "mousePressEvent, buttons = " << event->buttons() << std::endl;
 
     if ((event->buttons() & Qt::LeftButton) || (event->buttons() & Qt::RightButton))
     {
@@ -110,13 +112,20 @@ void scene_view::mousePressEvent (QMouseEvent * event)
 
 void scene_view::mouseMoveEvent (QMouseEvent * event)
 {
-    log() << aspect << "mouseMoveEvent" << std::endl;
+    log() << aspect << "mouseMoveEvent, buttons = " << event->buttons() << std::endl;
 
-    mouse_any_button_drag(event->x(), event->y());
-
-    if (event->buttons() & Qt::LeftButton)
+    if (event->buttons() == Qt::NoButton)
     {
-        mouse_left_button_drag(currentSize.width(), currentSize.height(), event->modifiers() & Qt::ALT);
+        mouse_move(event->x(), event->y());
+    }
+    else
+    {
+        mouse_any_button_drag(event->x(), event->y());
+
+        if (event->buttons() & Qt::LeftButton)
+        {
+            mouse_left_button_drag(currentSize.width(), currentSize.height(), event->modifiers() & Qt::ALT);
+        }
     }
 
     redraw();
@@ -125,9 +134,9 @@ void scene_view::mouseMoveEvent (QMouseEvent * event)
 
 void scene_view::mouseReleaseEvent(QMouseEvent * event)
 {
-    log() << aspect << "mouseReleaseEvent" << std::endl;
+    log() << aspect << "mouseReleaseEvent, released button = " << event->button() << std::endl;
 
-    if (event->buttons() & Qt::LeftButton)
+    if (event->button() == Qt::LeftButton)
     {
         mouse_left_button_release(event->x(), event->y(), event->modifiers() & Qt::SHIFT, event->modifiers() & Qt::CTRL, event->modifiers() & Qt::ALT);
     }
