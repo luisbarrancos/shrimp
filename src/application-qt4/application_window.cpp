@@ -50,7 +50,10 @@ application_window::application_window(QWidget *parent) :
     buildBlockSubmenu(rootNode, "Root");
 
     // connect events
+    QObject::connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
+    QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
+    QObject::connect(ui->actionSave_As, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
@@ -88,6 +91,13 @@ void application_window::buildBlockSubmenu(const block_tree_node_t& treeNode, co
 }
 
 
+void application_window::newScene()
+{
+    shrimp_services->reset_scene();
+    ui_scene_view->fit_scene();
+}
+
+
 void application_window::openSceneFile()
 {
     QString path = QFileDialog::getOpenFileName(this, "Find scene file", QString(), QString());
@@ -96,7 +106,8 @@ void application_window::openSceneFile()
     std::string std_path = path.toStdString();
 
     bool success = shrimp_services->load(std_path);
-    if (!success) {
+    if (!success)
+    {
         std::string message = "Could not open scene file '" + std_path + "'";
         log() << ERROR << message << std::endl;
 
@@ -109,13 +120,60 @@ void application_window::openSceneFile()
         //return false;
     }
 
-    const double new_size = ui_scene_view->fit_scene();
-    ui->zoomSlider->setValue(static_cast<int>(new_size * 100.0d));
+    ui_scene_view->fit_scene();
 
     // Set scene name as window's title
     //label (m_services->get_scene_name().c_str());
 
     //return true;
+}
+
+
+void application_window::saveScene()
+{
+    if (!shrimp_services->save())
+    {
+        saveSceneAsFile();
+    }
+}
+
+
+void application_window::saveSceneAsFile()
+{
+    QString path = QFileDialog::getSaveFileName(this, "Save scene as...", QString(), "Shrimp file (*.xml)");
+    log() << INFO << "File save: " << path.toStdString() << std::endl;
+
+    if (path.isEmpty())
+    {
+        // No file selected
+        return;
+    }
+
+    // automatically add file extension
+    if (!path.endsWith(".xml"))
+    {
+        path.append(".xml");
+    }
+
+    // check whether file already exists
+    QFile saveFile(path);
+    if (saveFile.exists())
+    {
+        QMessageBox msgBox;
+        msgBox.setText("The file already exists.");
+        msgBox.setInformativeText("Do you want to overwrite it?");
+        msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+        msgBox.setDefaultButton(QMessageBox::Cancel);
+        int answer = msgBox.exec();
+
+        if (answer == QMessageBox::Cancel)
+        {
+            // File save cancelled
+            return;
+        }
+    }
+
+    shrimp_services->save_as(path.toStdString());
 }
 
 

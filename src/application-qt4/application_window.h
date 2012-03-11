@@ -36,7 +36,10 @@ public:
     ~application_window();
 
 public slots:
+    void newScene();
     void openSceneFile();
+    void saveScene();
+    void saveSceneAsFile();
 
     void newBlockPopup();
     void changeZoom(int zoom);
