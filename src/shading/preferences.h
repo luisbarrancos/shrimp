@@ -103,7 +103,8 @@ public:
 	std::string m_scene;
 
 public:
-	general_options(i_system_functions* SystemFunctions);
+        general_options();
+        void initialize(i_system_functions* SystemFunctions);
 
 	const std::string renderer_file() const;
 	const std::string rib_scene_dir() const;

@@ -155,7 +155,7 @@ void services::set_block_rolled_state (shader_block* Block, const bool Rolled)
 {
 	log() << aspect << "services: set_block_rolled_state of " << Block->name() << " with " << Rolled << std::endl;
 
-	m_scene->set_block_rolled_state (Block, Rolled);
+        m_scene->set_block_rolled_state (Block, Rolled);
 }
 
 

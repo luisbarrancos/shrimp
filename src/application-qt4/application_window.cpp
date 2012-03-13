@@ -38,6 +38,12 @@ application_window::application_window(QWidget *parent) :
     // create service
     shrimp_services = new services(system_instance, block_path);
 
+    // load preferences
+    preferences.initialize(shrimp_services->system_function_instance());
+    renderers = preferences.get_renderer_list();
+    scenes = preferences.get_scene_list();
+
+    setupRendererCombo();
 
     // add the QGLWidget scene_view to the main window
     ui_scene_view = new scene_view(shrimp_services);
@@ -53,11 +59,23 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
-    QObject::connect(ui->actionSave_As, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
+    QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+
+    QObject::connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
+    QObject::connect(ui->actionPaste, SIGNAL(triggered()), this, SLOT(paste()));
+    QObject::connect(ui->actionCut, SIGNAL(triggered()), this, SLOT(cut()));
+    QObject::connect(ui->actionGroup, SIGNAL(triggered()), this, SLOT(group()));
+    QObject::connect(ui->actionUngroup, SIGNAL(triggered()), this, SLOT(ungroup()));
+    QObject::connect(ui->actionEditBlock, SIGNAL(triggered()), this, SLOT(editBlock()));
+    QObject::connect(ui->actionDeleteBlocks, SIGNAL(triggered()), this, SLOT(deleteBlocks()));
+
+    QObject::connect(ui->actionShowGrid, SIGNAL(toggled(bool)), this, SLOT(toggleGrid(bool)));
+    QObject::connect(ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
 
     QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
     QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+    QObject::connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
 
     QObject::connect(ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
 }
@@ -88,6 +106,48 @@ void application_window::buildBlockSubmenu(const block_tree_node_t& treeNode, co
         blockInfo.block = *block;
         blockPopupMenuTree[menuNodeName].actionList.push_back(blockInfo);
     }
+}
+
+
+void application_window::setupRendererCombo()
+{
+    const std::string selectedRenderer = preferences.m_renderer_code;
+
+    unsigned long rendererMenuNumber = 0;
+    unsigned long currentMenuNumber = 0;
+
+    for (general_options::renderers_t::iterator renderer = renderers.begin(); renderer != renderers.end(); ++renderer, ++currentMenuNumber)
+    {
+        if (renderer->first == _3delight)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == air)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == aqsis)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == entropy)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == pixie)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == prman)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+        else if (renderer->first == renderdotc)
+        {
+            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+        }
+    }
+
 }
 
 
@@ -123,7 +183,7 @@ void application_window::openSceneFile()
     ui_scene_view->fit_scene();
 
     // Set scene name as window's title
-    //label (m_services->get_scene_name().c_str());
+    setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
 
     //return true;
 }
@@ -177,6 +237,88 @@ void application_window::saveSceneAsFile()
 }
 
 
+void application_window::copy()
+{
+    shrimp_services->copy_selected_blocks(ui_scene_view->get_active_block());
+}
+
+
+void application_window::paste()
+{
+    shrimp_services->paste(ui_scene_view->get_active_block());
+    ui_scene_view->redraw();
+}
+
+
+void application_window::cut()
+{
+    if (shrimp_services->selection_size() >= 1)
+    {
+        shrimp_services->cut_selection(ui_scene_view->get_active_block());
+        ui_scene_view->redraw();
+    }
+}
+
+
+void application_window::group()
+{
+    if (shrimp_services->selection_size() >= 1)
+    {
+        shrimp_services->group_selection();
+        ui_scene_view->redraw();
+    }
+}
+
+
+void application_window::ungroup()
+{
+    const int selectedGroup = ui_scene_view->get_selected_group();
+    if (selectedGroup)
+    {
+        shrimp_services->ungroup(selectedGroup);
+        ui_scene_view->redraw();
+    }
+}
+
+
+void application_window::editBlock()
+{
+    if (shrimp_services->selection_size() == 1)
+    {
+        shader_block* block = ui_scene_view->get_active_block();
+        if (block)
+        {
+            //TODO: open Edit dialog
+
+            // toggle block selection
+            shrimp_services->clear_selection();
+            shrimp_services->set_block_selection(block, !shrimp_services->is_selected(block));
+        }
+    }
+}
+
+
+void application_window::deleteBlocks()
+{
+    shrimp_services->delete_selection();
+    ui_scene_view->redraw();
+}
+
+
+void application_window::toggleGrid(bool checked)
+{
+    ui_scene_view->set_grid_state(checked);
+    ui_scene_view->redraw();
+}
+
+
+void application_window::toggleGridSnap(bool checked)
+{
+    ui_scene_view->set_snap_to_grid_state(checked);
+    ui_scene_view->redraw();
+}
+
+
 void application_window::newBlockPopup()
 {
     QMenu menu(this);
@@ -194,6 +336,12 @@ void application_window::changeZoom(int zoom)
 
     ui_scene_view->set_size(value);
     ui_scene_view->redraw();
+}
+
+
+void application_window::fitScene()
+{
+    ui_scene_view->fit_scene();
 }
 
 

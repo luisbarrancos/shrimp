@@ -148,7 +148,7 @@ void scene_view::mouseReleaseEvent(QMouseEvent * event)
 void scene_view::wheelEvent(QWheelEvent * event)
 {
     int wheel_move = event->delta();
-    mouse_wheel_update(static_cast<double>(wheel_move) / 100);
+    mouse_wheel_update(static_cast<double>(wheel_move) / 150);
     redraw();
 }
 

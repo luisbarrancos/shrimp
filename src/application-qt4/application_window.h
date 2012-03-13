@@ -4,6 +4,7 @@
 #include <QMainWindow>
 #include "src/application-qt4/scene_view.h"
 #include "src/services.h"
+#include "src/shading/preferences.h"
 
 namespace Ui {
     class application_window;
@@ -36,13 +37,28 @@ public:
     ~application_window();
 
 public slots:
+    // File menu
     void newScene();
     void openSceneFile();
     void saveScene();
     void saveSceneAsFile();
 
+    // Edit menu
+    void copy();
+    void paste();
+    void cut();
+    void group();
+    void ungroup();
+    void editBlock();
+    void deleteBlocks();
+
+    // View menu
+    void toggleGrid(bool);
+    void toggleGridSnap(bool);
+
     void newBlockPopup();
     void changeZoom(int zoom);
+    void fitScene();
     void updateSceneZoom(const double);
     void blockPopupMenu(QString);
 
@@ -55,9 +71,15 @@ private:
     scene_view* ui_scene_view;
     services* shrimp_services;
 
+    general_options preferences;
+    general_options::renderers_t renderers;
+    general_options::scenes_t scenes;
+
     void buildBlockSubmenu(const block_tree_node_t&, const std::string& menuNodeName);
     typedef std::map<std::string, menuNode> blockPopupMenuTree_t;
     blockPopupMenuTree_t blockPopupMenuTree;
+
+    void setupRendererCombo();
 };
 
 #endif // MAINWINDOW_H

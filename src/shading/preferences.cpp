@@ -22,14 +22,19 @@
 #include "preferences.h"
 
 
-general_options::general_options(i_system_functions* SystemFunctions) :
-	m_system_functions (SystemFunctions),
-	m_preferences_file ("preferences.xml"),
-	m_rib_renderer_file ("./data/rib/renderers.xml"),
-	m_rib_scene_dir ("./data/rib/scenes")
+general_options::general_options() :
+    m_preferences_file ("preferences.xml"),
+    m_rib_renderer_file ("../data/rib/renderers.xml"),
+    m_rib_scene_dir ("../data/rib/scenes")
 {
-	load_renderer_list();
-	load_scene_list();
+}
+
+
+void general_options::initialize(i_system_functions* systemFunctions)
+{
+    m_system_functions = systemFunctions;
+    load_renderer_list();
+    load_scene_list();
 }
 
 
