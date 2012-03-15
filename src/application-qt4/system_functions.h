@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -47,7 +47,7 @@ public:
 	// combine paths and files (add '/' or '\')
 	std::string combine_paths (const std::string& path1, const std::string& path2);
 
-	// return file extension
+        // return file extension ("test.xml" returns "xml")
 	std::string get_file_extension (const std::string& file);
 
 	// save text to a file

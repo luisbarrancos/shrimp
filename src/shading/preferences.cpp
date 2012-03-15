@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -282,7 +282,7 @@ std::string general_options::get_RIB_scene()
 		if (!m_system_functions->is_directory (file_path))
 		{
 			const std::string extension = m_system_functions->get_file_extension (file);
-			if (extension == ".rib")
+                        if (extension == "rib")
 			{
 				const std::string name (file.begin(), file.end() - 4);
 				if (name == m_scene)
@@ -454,33 +454,29 @@ void general_options::load_scene_list()
 	// load scene list
 	std::vector<std::string> scene_files = m_system_functions->list_directory (m_rib_scene_dir);
 
-	if (scene_files.size() > 0)
-	{
-		typedef std::vector<std::string> names_t;
-		names_t scene_paths;
-		for (unsigned int f = 0; f < scene_files.size(); ++f)
-		{
-			const std::string file = scene_files[f];
-			const std::string file_path = m_system_functions->combine_paths (rib_scene_dir(), file);
-			if (!m_system_functions->is_directory (file_path))
-			{
-				const std::string extension = m_system_functions->get_file_extension (file);
-				if (extension == ".rib")
-				{
-					// save XML file
-					const std::string name (file.begin(), file.end() - 4);
+        log() << aspect << "Loading " << scene_files.size() << " scene files from " << m_rib_scene_dir << std::endl;
+        for (unsigned int f = 0; f < scene_files.size(); ++f)
+        {
+                const std::string file = scene_files[f];
+                const std::string file_path = m_system_functions->combine_paths (rib_scene_dir(), file);
+                if (!m_system_functions->is_directory (file_path))
+                {
+                        const std::string extension = m_system_functions->get_file_extension (file);
+                        if (extension == "rib")
+                        {
+                                // save XML file
+                                const std::string name (file.begin(), file.end() - 4);
 
-					// add scene to the list
-					scene_t new_scene;
+                                // add scene to the list
+                                scene_t new_scene;
 
-					new_scene.name = name;
-					new_scene.file = file_path;
+                                new_scene.name = name;
+                                new_scene.file = file_path;
 
-					m_scenes.push_back (new_scene);
-				}
-			}
-		}
-	}
+                                m_scenes.push_back (new_scene);
+                        }
+                }
+        }
 }
 
 

@@ -1,3 +1,24 @@
+
+/*
+    Copyright 2010-2012, Romain Behar <romainbehar@users.sourceforge.net>
+
+    This file is part of Shrimp 2.
+
+    Shrimp 2 is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Shrimp 2 is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+
 #include "application_window.h"
 #include "ui_application_window.h"
 
@@ -43,7 +64,8 @@ application_window::application_window(QWidget *parent) :
     renderers = preferences.get_renderer_list();
     scenes = preferences.get_scene_list();
 
-    setupRendererCombo();
+    setupRendererCombo("Aqsis");
+    setupSceneCombo();
 
     // add the QGLWidget scene_view to the main window
     ui_scene_view = new scene_view(shrimp_services);
@@ -74,6 +96,8 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
 
     QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
+    QObject::connect(ui->rendererCombo, SIGNAL(activated(QString)), this, SLOT(changeRenderer(QString)));
+
     QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
     QObject::connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
 
@@ -109,43 +133,51 @@ void application_window::buildBlockSubmenu(const block_tree_node_t& treeNode, co
 }
 
 
-void application_window::setupRendererCombo()
+void application_window::setupRendererCombo(const std::string& rendererName)
 {
-    const std::string selectedRenderer = preferences.m_renderer_code;
-
-    unsigned long rendererMenuNumber = 0;
     unsigned long currentMenuNumber = 0;
+    unsigned long rendererIndex = 0;
 
     for (general_options::renderers_t::iterator renderer = renderers.begin(); renderer != renderers.end(); ++renderer, ++currentMenuNumber)
     {
-        if (renderer->first == _3delight)
+        ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+
+        log() << error << "first: " << renderer->first << ", second: " << renderer->second.name << std::endl;
+        if (renderer->second.name == rendererName)
         {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+            rendererIndex = currentMenuNumber;
         }
-        else if (renderer->first == air)
+    }
+
+    // select renderer and corresponding display list
+    ui->rendererCombo->setCurrentIndex(rendererIndex);
+    setupDisplayCombo(rendererName);
+}
+
+
+void application_window::setupDisplayCombo(const std::string& renderer)
+{
+    for (general_options::renderers_t::iterator r = renderers.begin(); r != renderers.end(); ++r)
+    {
+        if (r->second.name == renderer)
         {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
+            ui->displayCombo->clear();
+            for (general_options::displays_t::const_iterator currentDisplay = r->second.displays.begin(); currentDisplay != r->second.displays.end(); ++currentDisplay)
+            {
+                ui->displayCombo->addItem(QString::fromStdString(*currentDisplay));
+            }
         }
-        else if (renderer->first == aqsis)
-        {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
-        }
-        else if (renderer->first == entropy)
-        {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
-        }
-        else if (renderer->first == pixie)
-        {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
-        }
-        else if (renderer->first == prman)
-        {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
-        }
-        else if (renderer->first == renderdotc)
-        {
-            ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
-        }
+    }
+}
+
+
+void application_window::setupSceneCombo()
+{
+    ui->sceneCombo->clear();
+    log() << error << "Scenes " << scenes.size() << std::endl;
+    for (general_options::scenes_t::iterator scene = scenes.begin(); scene != scenes.end(); ++scene)
+    {
+        ui->sceneCombo->addItem(QString::fromStdString(scene->name));
     }
 
 }
@@ -327,6 +359,32 @@ void application_window::newBlockPopup()
 
     QPoint localPos = ui->addBlockButton->pos();
     menu.exec(ui->addBlockButton->mapToGlobal(localPos));
+}
+
+
+void application_window::changeRenderer(const QString& rendererName)
+{
+    log() << aspect << "Change renderer to " << rendererName.toStdString() << std::endl;
+
+    setupDisplayCombo(rendererName.toStdString());
+}
+
+
+void application_window::changeDisplay(const QString& displayName)
+{
+    log() << aspect << "Change display to " << displayName.toStdString() << std::endl;
+}
+
+
+void application_window::changeRenderScene(const QString& sceneName)
+{
+
+}
+
+
+void application_window::renderScene()
+{
+
 }
 
 
