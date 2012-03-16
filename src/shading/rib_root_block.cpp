@@ -950,7 +950,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	// write the RIB file
 	std::string rib_file = "# Shrimp preview scene\n";
 	rib_file += "\n";
-	rib_file += "Option \"searchpath\" \"string resource\" [\"@:./:./data/rib/scenes:$HOME/.shrimp/temp:&\"]\n";
+        rib_file += "Option \"searchpath\" \"string resource\" [\"@:./:" + preferences.rib_scene_dir() + ":$HOME/.shrimp/temp:&\"]\n";
 	rib_file += "\n";
 	rib_file += "Display \"outputimage.tif\" \"" + display + "\" \"rgba\"\n";
 	if (AOV)
@@ -1028,7 +1028,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 
 void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList)
 {
-	const std::string shader_path = m_system_functions->get_absolute_path("./data/rib/shaders");
+        const std::string shader_path = m_system_functions->get_absolute_path (preferences.getRibShaderDirectory());
 
 	// compile the shaders from the template scene
         std::string scene_template (preferences.get_RIB_scene());
@@ -1039,8 +1039,8 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
 
 	// build the default shaders
-	CommandList.push_back( shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path) );
-	CommandList.push_back( shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path) );
+        CommandList.push_back (shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path));
+        CommandList.push_back (shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path));
 
 	// build Shrimp generated shaders
 	std::string surface_shader ("");

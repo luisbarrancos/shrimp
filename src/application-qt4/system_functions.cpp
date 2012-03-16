@@ -150,7 +150,7 @@ bool system_functions::execute_command (const std::string& command)
     log() << aspect << "Executing command: " << command << std::endl;
 
     QProcess console;
-    console.start (QString::fromStdString (command));
+    console.startDetached (QString::fromStdString (command));
 
     return 1;
 /*

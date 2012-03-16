@@ -54,13 +54,32 @@ application_window::application_window(QWidget *parent) :
 
     // create system function instance (FLTK dependent)
     std::string block_path = "../blocks";
-    i_system_functions* system_instance = new system_functions();
+    i_system_functions* systemInstance = new system_functions();
 
     // load preferences
-    preferences.initialize(system_instance);
+    QString currentPath = QDir().currentPath();
+    std::string dataPath = systemInstance->combine_paths (currentPath.toStdString(), "data");
+    if (systemInstance->is_directory (dataPath))
+    {
+        log() << info << "Shrimp data path found in: " << dataPath << std::endl;
+    }
+    else
+    {
+        dataPath = systemInstance->combine_paths (currentPath.toStdString(), "../data");
+        if (systemInstance->is_directory (dataPath))
+        {
+            log() << info << "Shrimp data path found in: " << dataPath << std::endl;
+        }
+        else
+        {
+            log() << error << "Shrimp data path not found" << std::endl;
+        }
+    }
+
+    preferences.initialize(systemInstance, dataPath);
 
     // create service
-    shrimp_services = new services(system_instance, preferences, block_path);
+    shrimp_services = new services(systemInstance, preferences, block_path);
 
     // initialize renderer
     renderers = preferences.get_renderer_list();

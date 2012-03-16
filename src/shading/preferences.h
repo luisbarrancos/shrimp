@@ -47,8 +47,9 @@ class general_options
 	i_system_functions* m_system_functions;
 
 	const std::string m_preferences_file;
-	const std::string m_rib_renderer_file;
-	const std::string m_rib_scene_dir;
+        std::string m_rib_renderer_file;
+        std::string m_rib_scene_dir;
+        std::string ribShaderDir;
 
 public:
 	// renderer list
@@ -104,10 +105,11 @@ public:
 
 public:
         general_options();
-        void initialize(i_system_functions* SystemFunctions);
+        void initialize(i_system_functions* SystemFunctions, const std::string& dataPath);
 
-	const std::string renderer_file() const;
-	const std::string rib_scene_dir() const;
+        std::string renderer_file() const;
+        std::string rib_scene_dir() const;
+        std::string getRibShaderDirectory() const;
 
 	bool load();
 	bool save();

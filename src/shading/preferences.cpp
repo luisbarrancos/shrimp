@@ -23,30 +23,38 @@
 
 
 general_options::general_options() :
-    m_preferences_file ("preferences.xml"),
-    m_rib_renderer_file ("../data/rib/renderers.xml"),
-    m_rib_scene_dir ("../data/rib/scenes")
+    m_preferences_file ("preferences.xml")
 {
 }
 
 
-void general_options::initialize(i_system_functions* systemFunctions)
+void general_options::initialize(i_system_functions* systemFunctions, const std::string& dataPath)
 {
     m_system_functions = systemFunctions;
+    m_rib_renderer_file = systemFunctions->combine_paths (dataPath, "rib/renderers.xml");
+    m_rib_scene_dir = systemFunctions->combine_paths (dataPath, "rib/scenes");
+    ribShaderDir = systemFunctions->combine_paths (dataPath, "rib/shaders");
+
     load_renderer_list();
     load_scene_list();
 }
 
 
-const std::string general_options::renderer_file() const
+std::string general_options::renderer_file() const
 {
 	return m_rib_renderer_file;
 }
 
 
-const std::string general_options::rib_scene_dir() const
+std::string general_options::rib_scene_dir() const
 {
 	return m_rib_scene_dir;
+}
+
+
+std::string general_options::getRibShaderDirectory() const
+{
+    return ribShaderDir;
 }
 
 
