@@ -56,11 +56,13 @@ application_window::application_window(QWidget *parent) :
     std::string block_path = "../blocks";
     i_system_functions* system_instance = new system_functions();
 
-    // create service
-    shrimp_services = new services(system_instance, block_path);
-
     // load preferences
-    preferences.initialize(shrimp_services->system_function_instance());
+    preferences.initialize(system_instance);
+
+    // create service
+    shrimp_services = new services(system_instance, preferences, block_path);
+
+    // initialize renderer
     renderers = preferences.get_renderer_list();
     scenes = preferences.get_scene_list();
 

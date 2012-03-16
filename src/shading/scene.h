@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -22,6 +22,7 @@
 #ifndef _scene_h_
 #define _scene_h_
 
+#include "preferences.h"
 #include "shader_block.h"
 #include "shrimp_public_structures.h"
 
@@ -39,6 +40,7 @@
 class scene
 {
 	i_system_functions* m_system_functions;
+        general_options& preferences;
 
 public:
 
@@ -51,7 +53,7 @@ public:
 
 	//////////// Functions
 
-        scene(i_system_functions* SystemFunctions, const std::string block_path);
+        scene(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path);
 	~scene();
 
 	// get and set name, description

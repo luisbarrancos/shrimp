@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -141,7 +141,7 @@ bool scene::load (const std::string& Scene)
 				new_block = new shader_block (id, "");
 			} else {
 				//if (root_value == "RIB") {
-					m_rib_root_block = new rib_root_block (id, this, m_system_functions);
+                                        m_rib_root_block = new rib_root_block (id, this, m_system_functions, preferences);
 					new_block = m_rib_root_block;
 
 					for (TiXmlNode* c = e->FirstChild(); c; c = c->NextSibling()) {

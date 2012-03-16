@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -26,12 +26,13 @@
 #include <fstream>
 
 
-services::services(i_system_functions* SystemFunctions, const std::string block_path) :
-	m_system_functions (SystemFunctions)
+services::services(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path) :
+        m_system_functions (SystemFunctions),
+    preferences (prefs)
 {
 	log() << aspect << "services: constructor" << std::endl;
 
-        m_scene = new scene(SystemFunctions, block_path);
+        m_scene = new scene(SystemFunctions, preferences, block_path);
 	reset_scene();
 
 	// build XML documentation once scene has been initialized

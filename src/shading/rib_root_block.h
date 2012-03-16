@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -22,6 +22,7 @@
 #ifndef _rib_root_block_h_
 #define _rib_root_block_h_
 
+#include "preferences.h"
 #include "shader_block.h"
 #include "scene.h"
 
@@ -31,6 +32,7 @@
 class rib_root_block : public shader_block
 {
 	i_system_functions* m_system_functions;
+        general_options& preferences;
 
 	// the type of root block (constant: RIB)
 	const std::string root_type;
@@ -41,7 +43,7 @@ class rib_root_block : public shader_block
 	bool m_AOV;
 
 public:
-	rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions);
+	rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions, general_options& preferences);
 
 	std::string show_code();
 

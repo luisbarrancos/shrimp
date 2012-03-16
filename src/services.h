@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -21,6 +21,7 @@
 #ifndef _services_h_
 #define _services_h_
 
+#include "shading/preferences.h"
 #include "shading/scene.h"
 #include "shading/shrimp_public_structures.h"
 
@@ -31,13 +32,14 @@
 class services
 {
 	i_system_functions* m_system_functions;
+        general_options& preferences;
 
 	void build_xml_documentation();
 	void build_xml_documentation_block (const block_tree_node_t& tree_node, std::string& index, std::string& content);
 
 public:
 	// constructor/destructor
-        services(i_system_functions* SystemFunctions, const std::string block_path);
+        services(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path);
 	~services();
 
 	i_system_functions* system_function_instance();

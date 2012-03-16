@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -31,8 +31,9 @@
 #include <iostream>
 
 
-scene::scene(i_system_functions* SystemFunctions, const std::string block_path) :
-	m_system_functions (SystemFunctions)
+scene::scene(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path) :
+        m_system_functions (SystemFunctions),
+    preferences(prefs)
 {
 	log() << aspect << "scene: constructor" << std::endl;
 
@@ -123,7 +124,7 @@ void scene::new_scene() {
 
 	// create RIB root block
 	const std::string unique_name = get_unique_block_name ("Root block");
-	m_rib_root_block = new rib_root_block (unique_name, this, m_system_functions);
+        m_rib_root_block = new rib_root_block (unique_name, this, m_system_functions, preferences);
 	m_blocks.insert (std::make_pair (unique_name, m_rib_root_block));
 }
 

@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -29,9 +29,10 @@
 #include "../miscellaneous/misc_string_functions.h"
 
 
-rib_root_block::rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions) :
+rib_root_block::rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions, general_options& prefs) :
 	shader_block (Name, "", true),
 	m_system_functions (SystemFunctions),
+    preferences(prefs),
 	root_type ("RIB"),
 	m_scene (Scene),
 	m_AOV (true)
@@ -519,10 +520,7 @@ std::string rib_root_block::build_shader_file (const shader_t ShaderType, const 
 		+ "*/\n\n";
 
 	// initialize Shrimp's renderer constants with integer values
-        general_options prefs;
-        prefs.initialize(m_system_functions);
-	prefs.load();
-	general_options::renderers_t m_renderers = prefs.get_renderer_list();
+        general_options::renderers_t m_renderers = preferences.get_renderer_list();
 	unsigned long renderer_number = 1001;
 
 	shader_code += "/* Renderer constants */\n";
@@ -841,17 +839,13 @@ void rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::st
 }
 
 
-std::string rib_root_block::shader_compilation_command (const std::string& Shader, const std::string& ShaderPath, const std::string& DestinationName, const std::string& DestinationPath, const std::string& IncludePath) {
+std::string rib_root_block::shader_compilation_command (const std::string& Shader, const std::string& ShaderPath, const std::string& DestinationName, const std::string& DestinationPath, const std::string& IncludePath)
+{
+        //std::string compiled_shader = change_file_extension(Shader, preferences.m_compiled_shader_extension);
+        std::string compiled_shader = DestinationName + '.' + preferences.m_compiled_shader_extension;
 
-        general_options prefs;
-        prefs.initialize(m_system_functions);
-	prefs.load();
-
-	//std::string compiled_shader = change_file_extension(Shader, prefs.m_compiled_shader_extension);
-	std::string compiled_shader = DestinationName + '.' + prefs.m_compiled_shader_extension;
-
-	std::string command = prefs.m_shader_compiler;
-	replace_variable (command, "%r", prefs.m_renderer_code);
+        std::string command = preferences.m_shader_compiler;
+        replace_variable (command, "%r", preferences.m_renderer_code);
 	replace_variable (command, "%i", IncludePath);
 	replace_variable (command, "%s", ShaderPath + '/' + Shader);
 	replace_variable (command, "%o", DestinationPath + '/' + compiled_shader);
@@ -861,13 +855,9 @@ std::string rib_root_block::shader_compilation_command (const std::string& Shade
 	return command;
 }
 
-std::string rib_root_block::scene_rendering_command (const std::string& RIBFile, const std::string& ShaderPath) {
-
-        general_options prefs;
-        prefs.initialize(m_system_functions);
-	prefs.load();
-
-	std::string command = prefs.m_renderer;
+std::string rib_root_block::scene_rendering_command (const std::string& RIBFile, const std::string& ShaderPath)
+{
+        std::string command = preferences.m_renderer;
 	replace_variable(command, "%i", ShaderPath);
 	replace_variable(command, "%s", RIBFile);
 
@@ -879,13 +869,8 @@ std::string rib_root_block::scene_rendering_command (const std::string& RIBFile,
 
 void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName, const std::string& DisplacementName, const std::string& LightName, const std::string& AtmosphereName, const std::string& ImagerName)
 {
-	// options
-        general_options prefs;
-        prefs.initialize(m_system_functions);
-	prefs.load();
-
 	// get the scene template
-	std::string scene_template (prefs.get_RIB_scene());
+        std::string scene_template (preferences.get_RIB_scene());
 
 
 	// create the shader statements
@@ -952,7 +937,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	replace_variable (scene_template, "$(shaders)", all_other_shaders);
 
 	// prepare display (defaults to "framebuffer")
-	std::string display = prefs.m_renderer_display;
+        std::string display = preferences.m_renderer_display;
 	if (display.empty())
 	{
 		display = "framebuffer";
@@ -1024,10 +1009,10 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	rib_file += "# User set root block RIB statements\n";
 	rib_file += m_general_statements + "\n";
 	rib_file += "# Preview scene\n";
-	rib_file += "Format " + string_cast (prefs.m_output_width) + " " + string_cast (prefs.m_output_height) + " 1\n";
-	rib_file += "PixelSamples " + string_cast (prefs.m_samples_x) + " " + string_cast (prefs.m_samples_y) + "\n";
-	rib_file += "ShadingRate " + string_cast (prefs.m_shading_rate) + "\n";
-	rib_file += "PixelFilter \"" + prefs.m_pixel_filter + "\" " + string_cast (prefs.m_filter_width_s) + " " + string_cast (prefs.m_filter_width_t) + "\n";
+        rib_file += "Format " + string_cast (preferences.m_output_width) + " " + string_cast (preferences.m_output_height) + " 1\n";
+        rib_file += "PixelSamples " + string_cast (preferences.m_samples_x) + " " + string_cast (preferences.m_samples_y) + "\n";
+        rib_file += "ShadingRate " + string_cast (preferences.m_shading_rate) + "\n";
+        rib_file += "PixelFilter \"" + preferences.m_pixel_filter + "\" " + string_cast (preferences.m_filter_width_s) + " " + string_cast (preferences.m_filter_width_t) + "\n";
 	rib_file += "Exposure 1 1\n";
 	rib_file += "Quantize \"rgba\" 255 0 255 0.5\n";
 	rib_file += "ShadingInterpolation \"smooth\"\n";
@@ -1046,10 +1031,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 	const std::string shader_path = m_system_functions->get_absolute_path("./data/rib/shaders");
 
 	// compile the shaders from the template scene
-        general_options prefs;
-        prefs.initialize(m_system_functions);
-	prefs.load();
-	std::string scene_template (prefs.get_RIB_scene());
+        std::string scene_template (preferences.get_RIB_scene());
 
 	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
 	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
