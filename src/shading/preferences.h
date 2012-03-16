@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2008-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2008-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -122,8 +122,10 @@ public:
 	scenes_t get_scene_list();
 
 	void set_renderer (const std::string& RendererCode);
-	void set_display (const std::string& RendererDisplay);
-	void set_scene (const std::string& Scene);
+        void set_renderer_name (const std::string& rendererName);
+        void set_display (const std::string& RendererDisplay);
+        void set_display_name (const std::string& displayName);
+        void set_scene (const std::string& Scene);
 	void set_pixelfilter (const std::string& Pixel_filter);
 	void set_help (const std::string& Help);
 

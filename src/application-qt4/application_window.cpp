@@ -97,6 +97,9 @@ application_window::application_window(QWidget *parent) :
 
     QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
     QObject::connect(ui->rendererCombo, SIGNAL(activated(QString)), this, SLOT(changeRenderer(QString)));
+    QObject::connect(ui->displayCombo, SIGNAL(activated(QString)), SLOT(changeDisplay(QString)));
+    QObject::connect(ui->sceneCombo, SIGNAL(activated(QString)), SLOT(changeRenderScene(QString)));
+    QObject::connect(ui->renderButton, SIGNAL(clicked()), this, SLOT(renderScene()));
 
     QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
     QObject::connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
@@ -367,12 +370,20 @@ void application_window::changeRenderer(const QString& rendererName)
     log() << aspect << "Change renderer to " << rendererName.toStdString() << std::endl;
 
     setupDisplayCombo(rendererName.toStdString());
+
+    // save new renderer to preferences
+    preferences.set_renderer_name (rendererName.toStdString());
+    preferences.save();
 }
 
 
 void application_window::changeDisplay(const QString& displayName)
 {
     log() << aspect << "Change display to " << displayName.toStdString() << std::endl;
+
+    // save new display to preferences
+    preferences.set_display_name (displayName.toStdString());
+    preferences.save();
 }
 
 
@@ -384,7 +395,8 @@ void application_window::changeRenderScene(const QString& sceneName)
 
 void application_window::renderScene()
 {
-
+    std::string tempDir = shrimp_services->system_function_instance()->get_temp_directory();
+    shrimp_services->show_preview(tempDir);
 }
 
 

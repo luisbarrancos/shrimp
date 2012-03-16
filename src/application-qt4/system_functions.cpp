@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -25,15 +25,8 @@
 
 #include <QDir>
 #include <QFileInfo>
-
-#include <cstdlib>
-#include <fstream>
-#include <iostream>
-
-#if defined _WIN32
-#else
-# include <sys/stat.h>
-#endif
+#include <QProcess>
+#include <QTextStream>
 
 
 std::string system_functions::get_user_directory()
@@ -56,37 +49,34 @@ std::string system_functions::get_user_directory()
 
 std::string system_functions::get_temp_directory()
 {
-/*
 	// get .shrimp directory
 	std::string shrimp = get_user_directory();
 
 	// check for temp directory
-	std::string temp = shrimp + "/temp";
-	if (!fltk::filename_isdir(temp.c_str()))
+        QString temp = QString::fromStdString(shrimp) + QDir().separator() + QString::fromStdString("temp");
+        if (!QDir().exists (temp))
 	{
-#if defined _WIN32
-		mkdir(temp.c_str());
-#else
-		mkdir(temp.c_str(), 0777);
-#endif
+            QDir().mkdir (temp);
 	}
 
-	return temp;
-*/
-	return std::string();
+        return temp.toStdString();
 }
 
 
-std::string system_functions::get_absolute_path (const std::string& Path)
+std::string system_functions::get_absolute_path (const std::string& path)
 {
-/*
-	// get user's home
-	char home[1024];
-	fltk::filename_absolute (home, 1024, Path.c_str());
+    QDir absolute = QString::fromStdString(path);
+    if (absolute.isAbsolute())
+    {
+        if (!absolute.makeAbsolute())
+        {
+            log() << error << "Error while converting path to absolute: " << path << std::endl;
+        }
+    }
 
-	return std::string (home);
-*/
-	return std::string();
+    QString newPath = absolute.absolutePath();
+
+    return newPath.toStdString();
 }
 
 
@@ -141,26 +131,28 @@ std::string system_functions::get_file_extension (const std::string& file)
 
 void system_functions::save_file (const std::string& destination, const std::string& content)
 {
-/*
-	std::ofstream file (destination.c_str());
-	if (file.is_open())
-	{
-		file << content;
-		file.close();
-        }
-        else*/
-	{
-		log() << error << "Couldn't save file '" << destination << "'" << std::endl;
-	}
+    QFile file (QString::fromStdString (destination));
+    if (file.open (QIODevice::WriteOnly | QIODevice::Text))
+    {
+        QTextStream out(&file);
+        out << QString::fromStdString (content);
+        file.close();
+    }
+    else
+    {
+        log() << error << "Couldn't save file '" << destination << "'" << std::endl;
+    }
 }
 
 
-bool system_functions::execute_command (const std::string& Command)
+bool system_functions::execute_command (const std::string& command)
 {
-	int status = system (Command.c_str());
+    log() << aspect << "Executing command: " << command << std::endl;
 
-	return status > 0;
+    QProcess console;
+    console.start (QString::fromStdString (command));
 
+    return 1;
 /*
 	int pid = fork();
 	if(pid == -1)

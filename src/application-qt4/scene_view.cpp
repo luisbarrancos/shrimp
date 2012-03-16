@@ -1,5 +1,6 @@
+
 /*
-    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -112,7 +113,7 @@ void scene_view::mousePressEvent (QMouseEvent * event)
 
 void scene_view::mouseMoveEvent (QMouseEvent * event)
 {
-    log() << aspect << "mouseMoveEvent, buttons = " << event->buttons() << std::endl;
+    //log() << aspect << "mouseMoveEvent, buttons = " << event->buttons() << std::endl;
 
     if (event->buttons() == Qt::NoButton)
     {

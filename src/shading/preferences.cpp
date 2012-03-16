@@ -80,7 +80,7 @@ bool general_options::load()
 					const std::string name (a->Name());
 					if (name == "code") {
 
-						m_renderer_code = trim (a->Value());
+                                                m_renderer_code = trim (a->Value());
 					}
 				}
 			}
@@ -101,8 +101,8 @@ bool general_options::load()
 				for (TiXmlAttribute* a = c->ToElement()->FirstAttribute(); a; a = a->Next()) {
 
 					const std::string name (a->Name());
-					if (name == "display") {
-						m_renderer_display = trim (a->Value());
+                                        if (name == "display") {
+                                                m_renderer_display = trim (a->Value());
 					}
 				}
 
@@ -506,9 +506,40 @@ void general_options::set_renderer (const std::string& RendererCode)
 }
 
 
+void general_options::set_renderer_name(const std::string& rendererName)
+{
+    for (renderers_t::const_iterator r = m_renderers.begin(); r != m_renderers.end(); ++r)
+    {
+        if (r->second.name == rendererName)
+        {
+            m_renderer_code = r->first;
+            m_shader_compiler = r->second.shader_compiler;
+            m_compiled_shader_extension = r->second.compiled_shader_extension;
+            m_renderer = r->second.renderer_command;
+        }
+    }
+}
+
+
 void general_options::set_display (const std::string& RendererDisplay)
 {
 	m_renderer_display = RendererDisplay;
+}
+
+
+void general_options::set_display_name (const std::string& displayName)
+{
+    renderers_t::const_iterator renderer = m_renderers.find (m_renderer_code);
+    if (renderer == m_renderers.end())
+    {
+            log() << error << "No renderer set for display: " << displayName << std::endl;
+            return;
+    }
+
+    for (general_options::displays_t::const_iterator currentDisplay = renderer->second.displays.begin(); currentDisplay != renderer->second.displays.end(); ++currentDisplay)
+    {
+        m_renderer_display = *currentDisplay;
+    }
 }
 
 

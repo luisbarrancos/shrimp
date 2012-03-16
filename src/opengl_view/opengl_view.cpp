@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2009-2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2009-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -455,7 +455,7 @@ void opengl_view::update_projection(int window_width, int window_height)
 
 shader_block* opengl_view::get_under_mouse_block(const int mouse_x, const int mouse_y)
 {
-	log() << aspect << "opengl_view: get_under_mouse_block" << std::endl;
+        //log() << aspect << "opengl_view: get_under_mouse_block" << std::endl;
 
 	// get current viewport
 	GLint viewport[4];
@@ -724,7 +724,7 @@ void opengl_view::mouse_wheel_update(double move)
 
 void opengl_view::mouse_move(int mouse_x, int mouse_y)
 {
-	log() << aspect << "opengl_view: mouse_move" << std::endl;
+        //log() << aspect << "opengl_view: mouse_move" << std::endl;
 
 	// mouse move
 	m_active_property = get_under_mouse_property(mouse_x, mouse_y);
