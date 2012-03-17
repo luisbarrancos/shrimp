@@ -95,12 +95,14 @@ protected:
 private:
     Ui::application_window *ui;
     scene_view* ui_scene_view;
+    i_system_functions* systemFunctions;
     services* shrimp_services;
 
     general_options preferences;
     general_options::renderers_t renderers;
     general_options::scenes_t scenes;
 
+    std::string findDataDirectory(const std::string& directoryName);
     void buildBlockSubmenu(const block_tree_node_t&, const std::string& menuNodeName);
     typedef std::map<std::string, menuNode> blockPopupMenuTree_t;
     blockPopupMenuTree_t blockPopupMenuTree;

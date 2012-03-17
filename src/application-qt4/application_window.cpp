@@ -38,7 +38,7 @@ application_window::application_window(QWidget *parent) :
 {
     ui->setupUi(this);
 
-    // initialize Shrimp
+    // initialize logging
     log_level_t level = ASPECT;
     std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
@@ -52,34 +52,16 @@ application_window::application_window(QWidget *parent) :
 
     log() << aspect << "Starting Shrimp" << std::endl;
 
-    // create system function instance (FLTK dependent)
-    std::string block_path = "../blocks";
-    i_system_functions* systemInstance = new system_functions();
+    // initialize system functions
+    systemFunctions = new system_functions();
 
     // load preferences
-    QString currentPath = QDir().currentPath();
-    std::string dataPath = systemInstance->combine_paths (currentPath.toStdString(), "data");
-    if (systemInstance->is_directory (dataPath))
-    {
-        log() << info << "Shrimp data path found in: " << dataPath << std::endl;
-    }
-    else
-    {
-        dataPath = systemInstance->combine_paths (currentPath.toStdString(), "../data");
-        if (systemInstance->is_directory (dataPath))
-        {
-            log() << info << "Shrimp data path found in: " << dataPath << std::endl;
-        }
-        else
-        {
-            log() << error << "Shrimp data path not found" << std::endl;
-        }
-    }
-
-    preferences.initialize(systemInstance, dataPath);
+    std::string dataPath = findDataDirectory("data");
+    preferences.initialize(systemFunctions, dataPath);
 
     // create service
-    shrimp_services = new services(systemInstance, preferences, block_path);
+    std::string blockPath = findDataDirectory("blocks");
+    shrimp_services = new services(systemFunctions, preferences, blockPath);
 
     // initialize renderer
     renderers = preferences.get_renderer_list();
@@ -126,6 +108,31 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
 
     QObject::connect(ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
+}
+
+
+std::string application_window::findDataDirectory(const std::string &directoryName)
+{
+    // find the given directory on system: in current path
+    QString currentPath = QDir().currentPath();
+    std::string dataPath = systemFunctions->combine_paths (currentPath.toStdString(), directoryName);
+    if (systemFunctions->is_directory (dataPath))
+    {
+        log() << info << directoryName << " found in: " << dataPath << std::endl;
+        return dataPath;
+    }
+
+    // in parent path
+    dataPath = systemFunctions->combine_paths (currentPath.toStdString(), "..");
+    dataPath = systemFunctions->combine_paths (dataPath, directoryName);
+    if (systemFunctions->is_directory (dataPath))
+    {
+        log() << info << directoryName << " found in: " << dataPath << std::endl;
+        return dataPath;
+    }
+
+    // not found
+    log() << error << "Shrimp '" << directoryName << "' path not found" << std::endl;
 }
 
 
@@ -414,7 +421,7 @@ void application_window::changeRenderScene(const QString& sceneName)
 
 void application_window::renderScene()
 {
-    std::string tempDir = shrimp_services->system_function_instance()->get_temp_directory();
+    std::string tempDir = systemFunctions->get_temp_directory();
     shrimp_services->show_preview(tempDir);
 }
 
