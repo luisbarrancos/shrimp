@@ -166,7 +166,6 @@ void application_window::setupRendererCombo(const std::string& rendererName)
     {
         ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
 
-        log() << error << "first: " << renderer->first << ", second: " << renderer->second.name << std::endl;
         if (renderer->second.name == rendererName)
         {
             rendererIndex = currentMenuNumber;
@@ -198,12 +197,11 @@ void application_window::setupDisplayCombo(const std::string& renderer)
 void application_window::setupSceneCombo()
 {
     ui->sceneCombo->clear();
-    log() << error << "Scenes " << scenes.size() << std::endl;
+
     for (general_options::scenes_t::iterator scene = scenes.begin(); scene != scenes.end(); ++scene)
     {
         ui->sceneCombo->addItem(QString::fromStdString(scene->name));
     }
-
 }
 
 

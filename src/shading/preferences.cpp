@@ -254,25 +254,46 @@ bool general_options::save() {
 }
 
 
-void general_options::set_defaults() {
+void general_options::set_defaults()
+{
+    if (m_renderers.size() > 0)
+    {
+        renderers_t::const_iterator renderer = m_renderers.find("aqsis");
+        if (renderer == m_renderers.end())
+        {
+            renderer = m_renderers.begin();
+        }
 
-	m_shader_compiler = "aqsl -I%i %s -o %o";
+        m_renderer_code = renderer->first;
+        m_shader_compiler = renderer->second.shader_compiler;
+        m_compiled_shader_extension = renderer->second.compiled_shader_extension;
+        m_renderer = renderer->second.renderer_command;
+        m_renderer_display = "";
+        if (renderer->second.displays.size() > 0)
+        {
+            m_renderer_display = renderer->second.displays.front();
+        }
+    }
+    else
+    {
+        m_shader_compiler = "aqsl -DRENDERER=%r -I%i %s -o %o";
 	m_compiled_shader_extension = "slx";
 	m_renderer_code = "aqsis";
-	m_renderer = "aqsis -DRENDERER=%r %s -shaders=%i";
+        m_renderer = "aqsis %s -shaders=%i";
 	m_renderer_display = "framebuffer";
+    }
 
-	m_output_width = 256;
-	m_output_height = 256;
-	m_shading_rate = 1;
-	m_samples_x = 1;
-	m_samples_y = 1;
-	m_filter_width_s = 8;
-	m_filter_width_t = 8;
-	m_pixel_filter = "sinc";
+    m_output_width = 256;
+    m_output_height = 256;
+    m_shading_rate = 1;
+    m_samples_x = 1;
+    m_samples_y = 1;
+    m_filter_width_s = 8;
+    m_filter_width_t = 8;
+    m_pixel_filter = "sinc";
 
-	m_help_reader =( "firefox \"./doc/index.html\"&");
-	m_splash_screen = true;
+    m_help_reader =( "firefox \"./doc/index.html\"&");
+    m_splash_screen = true;
 }
 
 
