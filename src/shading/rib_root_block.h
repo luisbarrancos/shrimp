@@ -31,7 +31,7 @@
 
 class rib_root_block : public shader_block
 {
-	i_system_functions* m_system_functions;
+        i_system_functions* systemFunctions;
         general_options& preferences;
 
 	// the type of root block (constant: RIB)
@@ -88,11 +88,16 @@ private:
 	std::string parse_scene_shader (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType);
 
 	// outputs scene and shader files, returns rendering command list
-	typedef std::vector <std::string> command_list_t;
-	void write_scene_and_shaders (const std::string& SceneDirectory, command_list_t& CommandList);
+    struct renderingCommands
+    {
+        std::vector<std::string> shaderCompilations;
+        std::string rendererCommand;
+    };
+
+    void write_scene_and_shaders (const std::string& SceneDirectory, renderingCommands& CommandList);
 
 	// outputs rendering command list
-	void write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName);
+        void write_command_list (const renderingCommands& CommandList, const std::string& AbsoluteFileName);
 
 	// export a shader to a RSL file
 	void export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName);

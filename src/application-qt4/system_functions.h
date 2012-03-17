@@ -24,38 +24,53 @@
 
 #include "../interfaces/i_system_functions.h"
 
+#include <QProcess>
+
 #include <string>
 
-class system_functions : public i_system_functions
+class system_functions : public QObject, public i_system_functions
 {
+    Q_OBJECT
+
 public:
-	// return user's data directory (home)
-	std::string get_user_directory();
+    system_functions();
 
-	// return temporary directory
-	std::string get_temp_directory();
+    // return user's data directory (home)
+    std::string get_user_directory();
 
-	// return absolute system path
-	std::string get_absolute_path (const std::string& Path);
+    // return temporary directory
+    std::string get_temp_directory();
 
-	// return the content of a directory (directories and files)
-	std::vector<std::string> list_directory (const std::string& directory);
+    // return absolute system path
+    std::string get_absolute_path (const std::string& Path);
 
-	// return true when the path is a directory
-	bool is_directory (const std::string& path);
+    // return the content of a directory (directories and files)
+    std::vector<std::string> list_directory (const std::string& directory);
 
-	// combine paths and files (add '/' or '\')
-	std::string combine_paths (const std::string& path1, const std::string& path2);
+    // return true when the path is a directory
+    bool is_directory (const std::string& path);
 
-        // return file extension ("test.xml" returns "xml")
-	std::string get_file_extension (const std::string& file);
+    // combine paths and files (add '/' or '\')
+    std::string combine_paths (const std::string& path1, const std::string& path2);
 
-	// save text to a file
-	void save_file (const std::string& destination, const std::string& content);
+    // return file extension ("test.xml" returns "xml")
+    std::string get_file_extension (const std::string& file);
 
-	// execute a command
-	bool execute_command (const std::string& Command);
+    // save text to a file
+    void save_file (const std::string& destination, const std::string& content);
 
+    // execute a command
+    void execute_synchronous_command (const std::string& command);
+
+    // execute and detach a command
+    void execute_asynchronous_command (const std::string& command);
+
+private:
+    QProcess* runningProcess;
+
+private slots:
+    void processError(QProcess::ProcessError error);
+    void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // _system_functions_h_

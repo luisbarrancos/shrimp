@@ -25,8 +25,13 @@
 
 #include <QDir>
 #include <QFileInfo>
-#include <QProcess>
 #include <QTextStream>
+
+
+system_functions::system_functions() :
+    runningProcess(0)
+{
+}
 
 
 std::string system_functions::get_user_directory()
@@ -145,42 +150,52 @@ void system_functions::save_file (const std::string& destination, const std::str
 }
 
 
-bool system_functions::execute_command (const std::string& command)
+void system_functions::execute_synchronous_command (const std::string& command)
 {
-    log() << aspect << "Executing command: " << command << std::endl;
+    log() << aspect << "Executing synchronous command: " << command << std::endl;
 
-    QProcess console;
-    console.startDetached (QString::fromStdString (command));
+    runningProcess = new QProcess();
+    QObject::connect(runningProcess, SIGNAL(error(QProcess::ProcessError)), this, SLOT(processError(QProcess::ProcessError)));
+    QObject::connect(runningProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
 
-    return 1;
-/*
-	int pid = fork();
-	if(pid == -1)
-	{
-		std::cout << "Error creating new process\n";
-		//system(cleanup.c_str());
-	}
-	else if(pid == 0)
-	{
-		int status;
-		int pid2 = fork();
-		if(pid2 == -1)
-		{
-			std::cout << "Error creating new process\n";
-		}
-		else if(pid2 == 0)
-		{
-			std::cout << render_command << std::endl;
-			char* argv[4];
-			argv[0] = "sh";
-			argv[1] = "-c";
-			argv[2] = const_cast<char*>(render_command.c_str());
-			argv[3] = 0;
-			execve("/bin/sh", argv, environ);
-			//exit(127);
-		}
-	}
-*/
+    runningProcess->start (QString::fromStdString (command));
+
+    // always wait for the process to finish before starting a new one (all shaders must be compiled before rendering)
+    if (!runningProcess->waitForFinished())
+    {
+        log() << error << "Synchronous process failed" << std::endl;
+    }
+    else
+    {
+        QByteArray output = runningProcess->readAll();
+        log() << error << "OUTPUT = " << QString(output).toStdString() << std::endl;
+    }
+
+    delete runningProcess;
+    runningProcess = 0;
 }
 
+
+void system_functions::execute_asynchronous_command (const std::string& command)
+{
+    log() << aspect << "Executing and detaching command: " << command << std::endl;
+
+    QProcess detachedCommand;
+    if (!detachedCommand.startDetached (QString::fromStdString (command)))
+    {
+        log() << error << "Command launch failed" << std::endl;
+    }
+}
+
+
+void system_functions::processError(QProcess::ProcessError error)
+{
+    log() << error << "Process error = " << error << std::endl;
+}
+
+
+void system_functions::processFinished(int exitCode, QProcess::ExitStatus exitStatus)
+{
+    log() << aspect << "Process finished with code " << exitCode << std::endl;
+}
 

@@ -1,6 +1,6 @@
 
 /*
-    Copyright 2010, Romain Behar <romainbehar@users.sourceforge.net>
+    Copyright 2010-2012, Romain Behar <romainbehar@users.sourceforge.net>
 
     This file is part of Shrimp 2.
 
@@ -52,8 +52,11 @@ public:
 	// save text to a file
 	virtual void save_file (const std::string&, const std::string&) {}
 
-	// execute a system command
-	virtual bool execute_command (const std::string&) { return false; }
+    // execute a system command synchronously
+    virtual void execute_synchronous_command (const std::string& command) {}
+
+    // execute a command asynchronously
+    virtual void execute_asynchronous_command (const std::string& command) {}
 };
 
 

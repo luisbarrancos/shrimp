@@ -31,7 +31,7 @@
 
 rib_root_block::rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions, general_options& prefs) :
 	shader_block (Name, "", true),
-	m_system_functions (SystemFunctions),
+        systemFunctions (SystemFunctions),
     preferences(prefs),
 	root_type ("RIB"),
 	m_scene (Scene),
@@ -72,25 +72,28 @@ std::string rib_root_block::show_code()
 
 void rib_root_block::show_preview (const std::string& SceneDirectory)
 {
-	command_list_t commands;
+        renderingCommands commands;
 	write_scene_and_shaders (SceneDirectory, commands);
 
 	// output commands in a file for debugging purposes
 	const std::string command_file (SceneDirectory + '/' + "command_debug.txt");
 	write_command_list (commands, command_file);
 
-	// execute commands
-	for (command_list_t::const_iterator c = commands.begin(); c != commands.end(); ++c)
+        // compile shaders
+        for (std::vector<std::string>::const_iterator c = commands.shaderCompilations.begin(); c != commands.shaderCompilations.end(); ++c)
 	{
-		m_system_functions->execute_command (*c);
+                systemFunctions->execute_synchronous_command (*c);
 	}
+
+        // run renderer
+        systemFunctions->execute_asynchronous_command (commands.rendererCommand);
 }
 
 
 void rib_root_block::export_scene (const std::string& SceneDirectory)
 {
 	// output scene, get commmand list
-	command_list_t commands;
+        renderingCommands commands;
 	write_scene_and_shaders (SceneDirectory, commands);
 
 	// write command file
@@ -825,8 +828,8 @@ void rib_root_block::export_shader (const shader_t ShaderType, const std::string
 {
 	const std::string surface = build_shader_file (ShaderType, ShaderName);
 
-	std::string destination = m_system_functions->combine_paths (Directory, FileName);
-	m_system_functions->save_file (destination, surface);
+        std::string destination = systemFunctions->combine_paths (Directory, FileName);
+        systemFunctions->save_file (destination, surface);
 }
 
 
@@ -834,8 +837,8 @@ void rib_root_block::export_k3d_slmeta (const shader_t ShaderType, const std::st
 {
 	const std::string surface = build_k3d_meta_file (ShaderType, ShaderName);
 
-	std::string destination = m_system_functions->combine_paths (Directory, FileName + "meta");
-	m_system_functions->save_file (destination, surface);
+        std::string destination = systemFunctions->combine_paths (Directory, FileName + "meta");
+        systemFunctions->save_file (destination, surface);
 }
 
 
@@ -1022,25 +1025,25 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
 	rib_file += "\n";
 
 	// open file
-	m_system_functions->save_file (RIBFile, rib_file);
+        systemFunctions->save_file (RIBFile, rib_file);
 }
 
 
-void rib_root_block::write_scene_and_shaders (const std::string& Directory, command_list_t& CommandList)
+void rib_root_block::write_scene_and_shaders (const std::string& Directory, renderingCommands& commandList)
 {
-        const std::string shader_path = m_system_functions->get_absolute_path (preferences.getRibShaderDirectory());
+        const std::string shader_path = systemFunctions->get_absolute_path (preferences.getRibShaderDirectory());
 
 	// compile the shaders from the template scene
         std::string scene_template (preferences.get_RIB_scene());
 
-	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
-	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
-	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "LightSource") );
-	CommandList.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
+        commandList.shaderCompilations.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Surface") );
+        commandList.shaderCompilations.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Displacement") );
+        commandList.shaderCompilations.push_back (parse_scene_shader (scene_template, shader_path, Directory, "LightSource") );
+        commandList.shaderCompilations.push_back (parse_scene_shader (scene_template, shader_path, Directory, "Atmosphere") );
 
 	// build the default shaders
-        CommandList.push_back (shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path));
-        CommandList.push_back (shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path));
+        commandList.shaderCompilations.push_back (shader_compilation_command("ambientlight.sl", shader_path, "ambientlight", Directory, shader_path));
+        commandList.shaderCompilations.push_back (shader_compilation_command("distantlight.sl", shader_path, "distantlight", Directory, shader_path));
 
 	// build Shrimp generated shaders
 	std::string surface_shader ("");
@@ -1053,7 +1056,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		// RenderMan surface shader
 		surface_shader = "preview_surface";
 		export_shader (SURFACE, surface_shader, Directory, surface_shader + ".sl");
-		CommandList.push_back( shader_compilation_command (surface_shader + ".sl", Directory, surface_shader, Directory, shader_path) );
+                commandList.shaderCompilations.push_back( shader_compilation_command (surface_shader + ".sl", Directory, surface_shader, Directory, shader_path) );
 
 		// K-3D meta file
 		export_k3d_slmeta (SURFACE, surface_shader, Directory, surface_shader + ".sl");
@@ -1064,7 +1067,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		// RenderMan displacement shader
 		displacement_shader = "preview_displacement";
 		export_shader (DISPLACEMENT, displacement_shader, Directory, displacement_shader + ".sl");
-		CommandList.push_back( shader_compilation_command (displacement_shader + ".sl", Directory, displacement_shader, Directory, shader_path) );
+                commandList.shaderCompilations.push_back( shader_compilation_command (displacement_shader + ".sl", Directory, displacement_shader, Directory, shader_path) );
 
 		// K-3D meta file
 		export_k3d_slmeta (DISPLACEMENT, displacement_shader, Directory, displacement_shader + ".sl");
@@ -1075,7 +1078,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		// RenderMan light shader
 		light_shader = "preview_light";
 		export_shader (LIGHT, light_shader, Directory, light_shader + ".sl");
-		CommandList.push_back( shader_compilation_command (light_shader + ".sl", Directory, light_shader, Directory, shader_path) );
+                commandList.shaderCompilations.push_back( shader_compilation_command (light_shader + ".sl", Directory, light_shader, Directory, shader_path) );
 
 		// K-3D meta file
 		export_k3d_slmeta (LIGHT, light_shader, Directory, light_shader + ".sl");
@@ -1086,7 +1089,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 		// RenderMan atmosphere shader
 		atmosphere_shader = "preview_atmosphere";
 		export_shader (VOLUME, atmosphere_shader, Directory, atmosphere_shader + ".sl");
-		CommandList.push_back( shader_compilation_command (atmosphere_shader + ".sl", Directory, atmosphere_shader, Directory, shader_path) );
+                commandList.shaderCompilations.push_back( shader_compilation_command (atmosphere_shader + ".sl", Directory, atmosphere_shader, Directory, shader_path) );
 
 		export_k3d_slmeta (VOLUME, atmosphere_shader, Directory, atmosphere_shader + ".sl");
 	}
@@ -1096,7 +1099,7 @@ void rib_root_block::write_scene_and_shaders (const std::string& Directory, comm
 
 	write_RIB (rib_preview, Directory, surface_shader, displacement_shader, light_shader, atmosphere_shader);
 
-	CommandList.push_back( scene_rendering_command (rib_preview, Directory) );
+        commandList.rendererCommand = scene_rendering_command (rib_preview, Directory);
 }
 
 
@@ -1138,15 +1141,17 @@ std::string rib_root_block::parse_scene_shader (const std::string& RIBscene, con
 }
 
 
-void rib_root_block::write_command_list (const command_list_t& CommandList, const std::string& AbsoluteFileName)
+void rib_root_block::write_command_list (const renderingCommands& commandList, const std::string& absoluteFileName)
 {
 	std::string list = "";
-	for (command_list_t::const_iterator c = CommandList.begin(); c != CommandList.end(); ++c)
+        for (std::vector<std::string>::const_iterator c = commandList.shaderCompilations.begin(); c != commandList.shaderCompilations.end(); ++c)
 	{
 		list += *c + "\n";
 	}
 
-	m_system_functions->save_file (AbsoluteFileName, list);
+        list += commandList.rendererCommand + "\n";
+
+        systemFunctions->save_file (absoluteFileName, list);
 }
 
 
