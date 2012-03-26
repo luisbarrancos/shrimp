@@ -13,6 +13,9 @@
   <property name="windowTitle">
    <string>application_window</string>
   </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: black;</string>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
@@ -22,6 +25,15 @@
         <property name="toolTip">
          <string>Add a predefined block to the scene</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+ }</string>
+        </property>
         <property name="text">
          <string>Add Block</string>
         </property>
@@ -29,6 +41,9 @@
       </item>
       <item row="0" column="2">
        <widget class="QLabel" name="label">
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
         <property name="text">
          <string>Renderer</string>
         </property>
@@ -39,10 +54,28 @@
         <property name="toolTip">
          <string>Choose an installed RenderMan engine</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }
+</string>
+        </property>
        </widget>
       </item>
       <item row="0" column="5">
        <widget class="QLabel" name="label_2">
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
         <property name="text">
          <string>Display</string>
         </property>
@@ -53,10 +86,27 @@
         <property name="toolTip">
          <string>Select one of the renderer's displays</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }</string>
+        </property>
        </widget>
       </item>
       <item row="0" column="8">
        <widget class="QLabel" name="label_3">
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
         <property name="text">
          <string>Scene</string>
         </property>
@@ -67,12 +117,35 @@
         <property name="toolTip">
          <string>Choose a 3D scene for preview</string>
         </property>
+        <property name="styleSheet">
+         <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }</string>
+        </property>
        </widget>
       </item>
       <item row="0" column="11">
        <widget class="QPushButton" name="renderButton">
         <property name="toolTip">
          <string>Click to preview the shader using selected renderer and display</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+ }</string>
         </property>
         <property name="text">
          <string>Render</string>
@@ -81,6 +154,9 @@
       </item>
       <item row="2" column="1">
        <widget class="QLabel" name="label_4">
+        <property name="styleSheet">
+         <string notr="true">color: white;</string>
+        </property>
         <property name="text">
          <string>Zoom</string>
         </property>
@@ -90,6 +166,20 @@
        <widget class="QSlider" name="zoomSlider">
         <property name="toolTip">
          <string>Drag to zoom in or out</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true"> QSlider::groove:horizontal {
+     border: 1px solid white;
+     height: 14px;
+     background: black;
+     margin: 2px 0;
+ }
+ QSlider::handle:horizontal {
+     width: 16px;
+     background: orange;
+     margin: 0 0;
+     border-radius: 4px
+ }</string>
         </property>
         <property name="minimum">
          <number>1</number>
@@ -115,6 +205,15 @@
        <widget class="QPushButton" name="fitSceneButton">
         <property name="toolTip">
          <string>Click to fit the block scene to the current view</string>
+        </property>
+        <property name="styleSheet">
+         <string notr="true">QPushButton {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+ }</string>
         </property>
         <property name="text">
          <string>Fit Scene</string>
