@@ -21,6 +21,7 @@
 
 #include "application_window.h"
 #include "ui_application_window.h"
+#include "shader_properties.h"
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
@@ -85,6 +86,7 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
     QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
+    QObject::connect(ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     QObject::connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
@@ -298,6 +300,13 @@ void application_window::saveSceneAsFile()
 }
 
 
+void application_window::shaderPropertiesDialog()
+{
+    shader_properties properties(this);
+    properties.exec();
+}
+
+
 void application_window::copy()
 {
     shrimp_services->copy_selected_blocks(ui_scene_view->get_active_block());
@@ -385,6 +394,8 @@ void application_window::newBlockPopup()
     QMenu menu(this);
 
     buildContextMenuFromBlock(menu, std::string("Root"));
+
+    menu.setStyleSheet(QString("QMenu::item:selected { background-color: orange }"));
 
     QPoint localPos = ui->addBlockButton->pos();
     menu.exec(ui->addBlockButton->mapToGlobal(localPos));

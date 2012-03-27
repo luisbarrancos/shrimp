@@ -32,6 +32,7 @@
   border-style: outset;
   border-width: 1px;
   border-color: gray;
+ min-width: 90px;
  }</string>
         </property>
         <property name="text">
@@ -145,6 +146,7 @@
   border-style: outset;
   border-width: 1px;
   border-color: gray;
+  min-width: 70px;
  }</string>
         </property>
         <property name="text">
@@ -281,7 +283,33 @@
      <height>25</height>
     </rect>
    </property>
+   <property name="styleSheet">
+    <string notr="true">QMenuBar {
+  background-color: black;
+}
+
+ QMenuBar::item:selected {
+     background: orange;
+ }
+
+ QMenuBar::item:pressed {
+     background: orange;
+ }</string>
+   </property>
    <widget class="QMenu" name="menuFile">
+    <property name="styleSheet">
+     <string notr="true">QMenu {
+  background-color: black;
+}
+
+ QMenu::item:selected {
+     background: orange;
+ }
+
+ QMenu::item:pressed {
+     background: orange;
+ }</string>
+    </property>
     <property name="title">
      <string>File</string>
     </property>
@@ -300,6 +328,19 @@
     <addaction name="actionQuit"/>
    </widget>
    <widget class="QMenu" name="menuEdit">
+    <property name="styleSheet">
+     <string notr="true">QMenu {
+  background-color: black;
+}
+
+ QMenu::item:selected {
+  background: orange;
+ }
+
+ QMenu::item:pressed {
+  background: orange;
+ }</string>
+    </property>
     <property name="title">
      <string>Edit</string>
     </property>
@@ -312,6 +353,19 @@
     <addaction name="actionDeleteBlocks"/>
    </widget>
    <widget class="QMenu" name="menuView">
+    <property name="styleSheet">
+     <string notr="true">QMenu {
+  background-color: black;
+}
+
+QMenu::item:selected {
+  background: orange;
+ }
+
+QMenu::item:pressed {
+  background: orange;
+ }</string>
+    </property>
     <property name="title">
      <string>View</string>
     </property>
