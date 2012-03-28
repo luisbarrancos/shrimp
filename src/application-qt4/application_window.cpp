@@ -22,6 +22,7 @@
 #include "application_window.h"
 #include "ui_application_window.h"
 #include "shader_properties.h"
+#include "code_preview.h"
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
@@ -87,6 +88,7 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
     QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
     QObject::connect(ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
+    QObject::connect(ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     QObject::connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
@@ -135,6 +137,7 @@ std::string application_window::findDataDirectory(const std::string &directoryNa
 
     // not found
     log() << error << "Shrimp '" << directoryName << "' path not found" << std::endl;
+    return "";
 }
 
 
@@ -306,6 +309,13 @@ void application_window::shaderPropertiesDialog()
     properties.exec();
 
     setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
+}
+
+
+void application_window::codePreviewDialog()
+{
+    code_preview preview (this, shrimp_services);
+    preview.exec();
 }
 
 

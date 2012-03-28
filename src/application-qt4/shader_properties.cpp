@@ -70,3 +70,4 @@ void shader_properties::okButton()
 
     close();
 }
+

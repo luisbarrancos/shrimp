@@ -27,7 +27,7 @@
    </property>
    <layout class="QGridLayout" name="gridLayout" rowstretch="2,0,6,0,2,0,2" columnstretch="1,3,0,1,0">
     <property name="sizeConstraint">
-     <enum>QLayout::SetMaximumSize</enum>
+     <enum>QLayout::SetDefaultConstraint</enum>
     </property>
     <property name="margin">
      <number>9</number>
@@ -145,6 +145,9 @@
      <widget class="QTextEdit" name="descriptionTextEdit">
       <property name="styleSheet">
        <string notr="true">color: white;</string>
+      </property>
+      <property name="acceptRichText">
+       <bool>false</bool>
       </property>
      </widget>
     </item>

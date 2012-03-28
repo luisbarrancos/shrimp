@@ -64,6 +64,7 @@ public slots:
     void saveScene();
     void saveSceneAsFile();
     void shaderPropertiesDialog();
+    void codePreviewDialog();
 
     // Edit menu
     void copy();

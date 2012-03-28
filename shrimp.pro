@@ -15,13 +15,16 @@ OBJECTS_DIR = .qmake_temp
 
 
 FORMS    += src/application-qt4/application_window.ui \
-    src/application-qt4/shader_properties.ui
+    src/application-qt4/shader_properties.ui \
+    src/application-qt4/code_preview.ui
 
 
 HEADERS += src/application-qt4/scene_view.h src/application-qt4/application_window.h src/application-qt4/system_functions.h \
-    src/application-qt4/shader_properties.h
+    src/application-qt4/shader_properties.h \
+    src/application-qt4/code_preview.h
 SOURCES += src/application-qt4/scene_view.cpp src/application-qt4/shrimp.cpp src/application-qt4/application_window.cpp src/application-qt4/system_functions.cpp \
-    src/application-qt4/shader_properties.cpp
+    src/application-qt4/shader_properties.cpp \
+    src/application-qt4/code_preview.cpp
 
 HEADERS += src/miscellaneous/tinyxml/tinystr.h src/miscellaneous/tinyxml/tinyxml.h
 SOURCES += src/miscellaneous/tinyxml/tinystr.cpp src/miscellaneous/tinyxml/tinyxml.cpp src/miscellaneous/tinyxml/tinyxmlerror.cpp src/miscellaneous/tinyxml/tinyxmlparser.cpp
