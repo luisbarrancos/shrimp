@@ -302,8 +302,10 @@ void application_window::saveSceneAsFile()
 
 void application_window::shaderPropertiesDialog()
 {
-    shader_properties properties(this);
+    shader_properties properties(this, shrimp_services);
     properties.exec();
+
+    setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
 }
 
 

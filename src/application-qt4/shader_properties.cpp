@@ -24,16 +24,49 @@
 
 #include "src/miscellaneous/logging.h"
 
-shader_properties::shader_properties(QWidget *parent) :
-    QDialog(parent),
-    ui(new Ui::shaderPropertiesDialog)
+shader_properties::shader_properties(QWidget *parent, services* shrimpServicesInstance) :
+    QDialog (parent),
+    ui (new Ui::shaderPropertiesDialog),
+    shrimpServices (shrimpServicesInstance)
 {
     ui->setupUi(this);
 
     log() << aspect << "Shader Properties dialog" << std::endl;
+
+    // set values
+    ui->nameLineEdit->setText(QString::fromStdString(shrimpServices->get_scene_name()));
+    ui->descriptionTextEdit->setText(QString::fromStdString(shrimpServices->get_scene_description()));
+    ui->authorsLineEdit->setText(QString::fromStdString(shrimpServices->get_scene_authors()));
+
+    // connect events
+    QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
+    QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
+
 
 shader_properties::~shader_properties()
 {
 
+}
+
+
+void shader_properties::cancelButton()
+{
+    close();
+}
+
+
+void shader_properties::okButton()
+{
+    log() << aspect << "Save shader properties" << std::endl;
+
+    QString name = ui->nameLineEdit->text();
+    QString description = ui->descriptionTextEdit->toPlainText();
+    QString authors = ui->authorsLineEdit->text();
+
+    shrimpServices->set_scene_name(name.toStdString());
+    shrimpServices->set_scene_description(description.toStdString());
+    shrimpServices->set_scene_authors(authors.toStdString());
+
+    close();
 }

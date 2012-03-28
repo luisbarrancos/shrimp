@@ -22,6 +22,8 @@
 #ifndef SHADER_PROPERTIES_H
 #define SHADER_PROPERTIES_H
 
+#include "src/services.h"
+
 #include <QDialog>
 
 namespace Ui {
@@ -34,11 +36,16 @@ class shader_properties: public QDialog
     Q_OBJECT
 
 public:
-    explicit shader_properties(QWidget *parent = 0);
+    explicit shader_properties (QWidget *parent, services* shrimpServicesInstance);
     ~shader_properties();
+
+public slots:
+    void cancelButton();
+    void okButton();
 
 private:
     Ui::shaderPropertiesDialog *ui;
+    services* shrimpServices;
 };
 
 #endif // SHADER_PROPERTIES_H
