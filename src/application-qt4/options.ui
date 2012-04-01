@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>optionsDialog</class>
+ <widget class="QDialog" name="optionsDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>562</width>
+    <height>514</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Options</string>
+  </property>
+  <property name="styleSheet">
+   <string notr="true">background-color: black;</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="17" column="7">
+    <widget class="QPushButton" name="cancelButton">
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  min-width: 60px;
+ }</string>
+     </property>
+     <property name="text">
+      <string>Cancel</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="7">
+    <widget class="QCheckBox" name="splashScreenCheckBox">
+     <property name="styleSheet">
+      <string notr="true">QCheckBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+ }
+</string>
+     </property>
+     <property name="text">
+      <string>Splash Screen</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="1" colspan="6">
+    <spacer name="horizontalSpacer">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="1">
+    <widget class="QLabel" name="label">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Renderer</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="1">
+    <spacer name="horizontalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="17" column="6">
+    <spacer name="horizontalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="17" column="2">
+    <spacer name="horizontalSpacer_4">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="1" column="2" colspan="2">
+    <widget class="QComboBox" name="rendererComboBox">
+     <property name="styleSheet">
+      <string notr="true">QComboBox {
+  color: white;
+  selection-color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable: {
+  color: white;
+  background: orange;
+ }
+</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="5" colspan="2">
+    <widget class="QLineEdit" name="rendererCodeLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3">
+    <widget class="QLabel" name="label_2">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>renderer code</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1" colspan="2">
+    <spacer name="horizontalSpacer_5">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="4" column="3">
+    <widget class="QLabel" name="label_3">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>shader extension</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="5" colspan="2">
+    <widget class="QLineEdit" name="shaderExtensionLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="5" colspan="3">
+    <widget class="QLineEdit" name="renderingCommandLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="3">
+    <widget class="QLabel" name="label_4">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>rendering command</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="5" colspan="2">
+    <widget class="QComboBox" name="displayComboBox">
+     <property name="styleSheet">
+      <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="3">
+    <widget class="QLabel" name="label_5">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>display</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="5" colspan="3">
+    <widget class="QLineEdit" name="shaderCompilationLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3">
+    <widget class="QLabel" name="label_6">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>shader compilation</string>
+     </property>
+    </widget>
+   </item>
+   <item row="17" column="4">
+    <spacer name="horizontalSpacer_7">
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>40</width>
+       <height>20</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="17" column="5">
+    <widget class="QPushButton" name="okButton">
+     <property name="styleSheet">
+      <string notr="true">QPushButton {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  min-width: 60px;
+ }</string>
+     </property>
+     <property name="text">
+      <string>OK</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="3">
+    <widget class="QComboBox" name="sceneComboBox">
+     <property name="styleSheet">
+      <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }</string>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="3">
+    <widget class="QLineEdit" name="renderWidthLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="3">
+    <widget class="QLineEdit" name="shadingRateLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="3">
+    <widget class="QLineEdit" name="pixelSamplesXLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="6" colspan="2">
+    <widget class="QLineEdit" name="pixelSamplesYLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="3">
+    <widget class="QComboBox" name="pixelFilterComboBox">
+     <property name="styleSheet">
+      <string notr="true">QComboBox {
+  color: white;
+  background-color: black;
+  border-style: outset;
+  border-width: 1px;
+  border-color: gray;
+  selection-background-color: orange;
+ }
+ QComboBox:editable {
+  color: white;
+  background: orange;
+ }</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="3">
+    <widget class="QLineEdit" name="filterWidthSLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="6" colspan="2">
+    <widget class="QLineEdit" name="filterWidthTLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="4" colspan="4">
+    <widget class="QLineEdit" name="helpReaderLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="1" colspan="2">
+    <widget class="QLabel" name="label_7">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Scene</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="1" colspan="2">
+    <widget class="QLabel" name="label_8">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Render width</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="10" column="1" colspan="2">
+    <widget class="QLabel" name="label_9">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Shading rate</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="9" column="5">
+    <widget class="QLabel" name="label_10">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Render height</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="5">
+    <widget class="QLabel" name="label_11">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Pixels samples y</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="5">
+    <widget class="QLabel" name="label_12">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Filter width t</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="11" column="1" colspan="2">
+    <widget class="QLabel" name="label_13">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Pixel samples x</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="12" column="1" colspan="2">
+    <widget class="QLabel" name="label_14">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Pixel filter</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="13" column="1" colspan="2">
+    <widget class="QLabel" name="label_15">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Filter width s</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="15" column="1" colspan="3">
+    <widget class="QLabel" name="label_16">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+     <property name="text">
+      <string>Help reader command</string>
+     </property>
+     <property name="alignment">
+      <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="3">
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="14" column="3">
+    <spacer name="verticalSpacer_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="16" column="4">
+    <spacer name="verticalSpacer_3">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item row="9" column="6" colspan="2">
+    <widget class="QLineEdit" name="renderHeightLineEdit">
+     <property name="styleSheet">
+      <string notr="true">color: white;</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

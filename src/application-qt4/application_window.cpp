@@ -23,6 +23,7 @@
 #include "ui_application_window.h"
 #include "shader_properties.h"
 #include "code_preview.h"
+#include "options.h"
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
@@ -34,11 +35,11 @@
 
 #include <memory>
 
-application_window::application_window(QWidget *parent) :
-    QMainWindow(parent),
-    ui(new Ui::application_window)
+application_window::application_window (QWidget* parent) :
+    QMainWindow (parent),
+    ui (new Ui::application_window)
 {
-    ui->setupUi(this);
+    ui->setupUi (this);
 
     // initialize logging
     log_level_t level = ASPECT;
@@ -89,6 +90,7 @@ application_window::application_window(QWidget *parent) :
     QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
     QObject::connect(ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
     QObject::connect(ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
+    QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
     QObject::connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
@@ -316,6 +318,13 @@ void application_window::codePreviewDialog()
 {
     code_preview preview (this, shrimp_services);
     preview.exec();
+}
+
+
+void application_window::optionsDialog()
+{
+    options editPreferences (this, shrimp_services, preferences);
+    editPreferences.exec();
 }
 
 

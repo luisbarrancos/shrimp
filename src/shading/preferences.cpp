@@ -37,6 +37,8 @@ void general_options::initialize(i_system_functions* systemFunctions, const std:
 
     load_renderer_list();
     load_scene_list();
+
+    load();
 }
 
 
