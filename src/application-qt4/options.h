@@ -40,6 +40,7 @@ public:
     ~options();
 
 public slots:
+    void changeRenderer (const QString& rendererName);
     void cancelButton();
     void okButton();
 
@@ -48,10 +49,12 @@ private:
     services* shrimpServices;
     general_options& preferences;
 
-    void setupRendererCombo();
-    void setupDisplayCombo();
+    void setupRendererCombo (const std::string& rendererCode);
+    void setupDisplayCombo (const std::string& rendererCode, const std::string& rendererDisplay);
     void setupSceneCombo();
-    void setupPixelFilterCombo();
+    void setupPixelFilterCombo (const std::string& rendererCode, const std::string& pixelFilter);
+
+    bool isDouble (const QString& textValue, const QString& fieldName);
 };
 
 #endif // OPTIONS_H

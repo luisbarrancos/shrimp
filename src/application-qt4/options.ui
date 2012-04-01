@@ -135,8 +135,23 @@
    </item>
    <item row="2" column="5" colspan="2">
     <widget class="QLineEdit" name="rendererCodeLineEdit">
+     <property name="cursor">
+      <cursorShape>BlankCursor</cursorShape>
+     </property>
+     <property name="mouseTracking">
+      <bool>false</bool>
+     </property>
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
+     <property name="acceptDrops">
+      <bool>false</bool>
+     </property>
      <property name="styleSheet">
       <string notr="true">color: white;</string>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
