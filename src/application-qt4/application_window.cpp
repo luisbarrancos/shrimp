@@ -70,7 +70,7 @@ application_window::application_window (QWidget* parent) :
     renderers = preferences.get_renderer_list();
     scenes = preferences.get_scene_list();
 
-    setupRendererCombo("Aqsis");
+    setupRendererCombo ("Aqsis");
     setupSceneCombo();
 
     // add the QGLWidget scene_view to the main window
@@ -90,6 +90,7 @@ application_window::application_window (QWidget* parent) :
     QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
     QObject::connect(ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
     QObject::connect(ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
+    QObject::connect(ui->actionExportScene, SIGNAL(triggered()), this, SLOT(exportScene()));
     QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
     QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
@@ -245,15 +246,13 @@ void application_window::openSceneFile()
         msgBox.setStandardButtons(QMessageBox::Ok);
         msgBox.exec();
 
-        //return false;
+        return;
     }
 
     ui_scene_view->fit_scene();
 
     // Set scene name as window's title
     setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
-
-    //return true;
 }
 
 
@@ -318,6 +317,21 @@ void application_window::codePreviewDialog()
 {
     code_preview preview (this, shrimp_services);
     preview.exec();
+}
+
+
+void application_window::exportScene()
+{
+    QString path = QFileDialog::getExistingDirectory(this, "Export scene to...", QString());
+    if (path.isEmpty())
+    {
+        // No directory selected
+        return;
+    }
+
+    // export
+    log() << INFO << "Exporting file to: " << path.toStdString() << std::endl;
+    shrimp_services->export_scene (path.toStdString());
 }
 
 
