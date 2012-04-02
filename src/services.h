@@ -106,7 +106,7 @@ public:
 	/////////// Group handling
 
 	shrimp::group_set_t group_list() { return m_scene->group_list(); }
-	shrimp::group_set_t get_selected_groups() { return m_group_selection; }
+        shrimp::group_set_t get_selected_groups();
 	void group_selection();
 	void add_to_group (const std::string& Block, const int Group) { m_scene->add_to_group (Block, Group); }
 	int get_block_group (const shader_block* Block) { return m_scene->get_block_group (Block); }

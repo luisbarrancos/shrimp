@@ -69,6 +69,12 @@ block_tree_node_t services::get_block_hierarchy()
 }
 
 
+shrimp::group_set_t services::get_selected_groups()
+{
+    return m_group_selection;
+}
+
+
 // turn current selection into a group
 void services::group_selection()
 {
@@ -305,26 +311,21 @@ void services::paste_blocks()
 void services::copy_selected_blocks(shader_block* block)
 {
 	int total = selection_size();
-	if (total < 1)
+        if (total == 0 && !block)
 	{
-		return;
+            log() << error << "no active block not found." << std::endl;
+            return;
 	}
 
 	int group_total = group_selection_size();
 	clear_copy_selection();
 	m_copy_buffer.clear();
 
-	if (!block){
-		log() << error << "no active block not found." << std::endl;
-		return;
-	}
-
 	std::string block_name;
 
-	//copy block
-	//If multi selection
-	if (total>1)
+        if (total > 1)
 	{
+            // multi-selection
 		for (shrimp::shader_blocks_t::const_iterator block_i = m_block_selection.begin(); block_i != m_block_selection.end(); ++block_i)
 		{
 			shader_block* block_copy = *block_i;
@@ -338,17 +339,25 @@ void services::copy_selected_blocks(shader_block* block)
 		}
 	}
 
-	//If single selection no parsing grab m_active_block
-	else if (total<2)
+        else if (total == 1)
 	{
-		block_name = block->name();
-		copy_blocks(block_name, 0);
+            // single selection
+            if (block)
+            {
+                block_name = block->name();
+            }
+            else
+            {
+                shader_block* onlyBlock = *m_block_selection.begin();
+                block_name = onlyBlock->name();
+            }
 
+            copy_blocks (block_name, 0);
 	}
-	//copy group as well
 
 	if (group_total>=1)
 	{
+            // copy selected groups as well
 		copy_selected_groups();
 	}
 }
@@ -435,11 +444,14 @@ void services::cut_selection (shader_block* active_block)
 		clear_copy_selection();
 	}
 	else if (selection_size() == 1)
-	{
-		m_scene->delete_block(active_block->name());
-		m_copy_buffer.clear();
-		clear_selection();
-		clear_copy_selection();
+        {
+            copy_block_t onlyCopy = m_copy_buffer.begin()->first;
+            shader_block* block = onlyCopy.second;
+
+            m_scene->delete_block (block->name());
+            m_copy_buffer.clear();
+            clear_selection();
+            clear_copy_selection();
 	}
 }
 

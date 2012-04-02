@@ -383,6 +383,16 @@ void application_window::ungroup()
         shrimp_services->ungroup(selectedGroup);
         ui_scene_view->redraw();
     }
+    else if (shrimp_services->group_selection_size() > 0)
+    {
+        shrimp::group_set_t selectedGroups = shrimp_services->get_selected_groups();
+        for (shrimp::group_set_t::const_iterator g = selectedGroups.begin(); g != selectedGroups.end(); ++g)
+        {
+            shrimp_services->ungroup (*g);
+        }
+
+        ui_scene_view->redraw();
+    }
 }
 
 
