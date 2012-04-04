@@ -27,6 +27,7 @@
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
+#include "src/shading/rib_root_block.h"
 
 #include <QFileDialog>
 #include <QMessageBox>
@@ -83,38 +84,48 @@ application_window::application_window (QWidget* parent) :
     const block_tree_node_t rootNode = shrimp_services->get_block_hierarchy();
     buildBlockSubmenu(rootNode, "Root");
 
+    // initiliaze variables
+    activeBlock = 0;
+
     // connect events
-    QObject::connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
-    QObject::connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
-    QObject::connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
-    QObject::connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
-    QObject::connect(ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
-    QObject::connect(ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
-    QObject::connect(ui->actionExportScene, SIGNAL(triggered()), this, SLOT(exportScene()));
-    QObject::connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
-    QObject::connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+    connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
+    connect (ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
+    connect (ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
+    connect (ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
+    connect (ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
+    connect (ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
+    connect (ui->actionExportScene, SIGNAL(triggered()), this, SLOT(exportScene()));
+    connect (ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
+    connect (ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
-    QObject::connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
-    QObject::connect(ui->actionPaste, SIGNAL(triggered()), this, SLOT(paste()));
-    QObject::connect(ui->actionCut, SIGNAL(triggered()), this, SLOT(cut()));
-    QObject::connect(ui->actionGroup, SIGNAL(triggered()), this, SLOT(group()));
-    QObject::connect(ui->actionUngroup, SIGNAL(triggered()), this, SLOT(ungroup()));
-    QObject::connect(ui->actionEditBlock, SIGNAL(triggered()), this, SLOT(editBlock()));
-    QObject::connect(ui->actionDeleteBlocks, SIGNAL(triggered()), this, SLOT(deleteBlocks()));
+    connect (ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
+    connect (ui->actionPaste, SIGNAL(triggered()), this, SLOT(paste()));
+    connect (ui->actionCut, SIGNAL(triggered()), this, SLOT(cut()));
+    connect (ui->actionGroup, SIGNAL(triggered()), this, SLOT(group()));
+    connect (ui->actionUngroup, SIGNAL(triggered()), this, SLOT(ungroup()));
+    connect (ui->actionEditBlock, SIGNAL(triggered()), this, SLOT(editBlock()));
+    connect (ui->actionDeleteBlocks, SIGNAL(triggered()), this, SLOT(deleteBlocks()));
 
-    QObject::connect(ui->actionShowGrid, SIGNAL(toggled(bool)), this, SLOT(toggleGrid(bool)));
-    QObject::connect(ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
+    connect (ui->actionShowGrid, SIGNAL(toggled(bool)), this, SLOT(toggleGrid(bool)));
+    connect (ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
 
-    QObject::connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
-    QObject::connect(ui->rendererCombo, SIGNAL(activated(QString)), this, SLOT(changeRenderer(QString)));
-    QObject::connect(ui->displayCombo, SIGNAL(activated(QString)), SLOT(changeDisplay(QString)));
-    QObject::connect(ui->sceneCombo, SIGNAL(activated(QString)), SLOT(changeRenderScene(QString)));
-    QObject::connect(ui->renderButton, SIGNAL(clicked()), this, SLOT(renderScene()));
+    connect (ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
+    connect (ui->rendererCombo, SIGNAL(activated(QString)), this, SLOT(changeRenderer(QString)));
+    connect (ui->displayCombo, SIGNAL(activated(QString)), SLOT(changeDisplay(QString)));
+    connect (ui->sceneCombo, SIGNAL(activated(QString)), SLOT(changeRenderScene(QString)));
+    connect (ui->renderButton, SIGNAL(clicked()), this, SLOT(renderScene()));
 
-    QObject::connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
-    QObject::connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
+    connect (ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+    connect (ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
 
-    QObject::connect(ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
+    connect (ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
+    connect (ui_scene_view, SIGNAL(shaderBlockRightClick(const std::string)), this, SLOT(blockRightClick(const std::string)));
+}
+
+
+application_window::~application_window()
+{
+    delete ui;
 }
 
 
@@ -548,7 +559,169 @@ void application_window::updateSceneZoom(const double newZoom)
 }
 
 
-application_window::~application_window()
+void application_window::blockRightClick (const std::string& blockName)
 {
-    delete ui;
+    activeBlock = shrimp_services->get_block (blockName);
+    if (!activeBlock)
+    {
+        return;
+    }
+
+    const bool isRoot = activeBlock->m_root_block;
+
+    QMenu menu (this);
+    menu.setStyleSheet ("QMenu::item:selected { background-color: orange }");
+    menu.setTitle ("Block");
+
+    if (!isRoot)
+    {
+        if (shrimp_services->is_selected (activeBlock))
+        {
+            QAction* deselectMenuItem = menu.addAction ("Deselect");
+            connect (deselectMenuItem, SIGNAL(triggered()), this, SLOT(deselectActiveBlock()));
+        }
+        else
+        {
+            QAction* selectMenuItem = menu.addAction ("Select");
+            connect (selectMenuItem, SIGNAL(triggered()), this, SLOT(selectActiveBlock()));
+        }
+
+        if (shrimp_services->selection_size() > 1)
+        {
+            QAction* groupSelectionItem = menu.addAction ("Group selection");
+            connect (groupSelectionItem, SIGNAL(triggered()), this, SLOT(groupSelection()));
+        }
+
+        if (shrimp_services->is_rolled (activeBlock))
+        {
+            QAction* unrollItem = menu.addAction ("Unroll");
+            connect (unrollItem, SIGNAL(triggered()), this, SLOT(unrollActiveBlock()));
+        }
+        else
+        {
+            QAction* rollItem = menu.addAction ("Roll");
+            connect (rollItem, SIGNAL(triggered()), this, SLOT(rollActiveBlock()));
+        }
+    }
+
+    QAction* infoItem = menu.addAction ("Info");
+    connect (infoItem, SIGNAL(triggered()), this, SLOT(activeBlockInfo()));
+
+    QAction* renameItem = menu.addAction ("Rename");
+    connect (renameItem, SIGNAL(triggered()), this, SLOT(renameActiveBlock()));
+
+    if (!isRoot)
+    {
+        QAction* addInputItem = menu.addAction ("Add input");
+        connect (addInputItem, SIGNAL(triggered()), this, SLOT(addInput()));
+        QAction* addOutputItem = menu.addAction ("Add output");
+        connect (addOutputItem, SIGNAL(triggered()), this, SLOT(addOutput()));
+        QAction* editCodeItem = menu.addAction ("Edit code");
+        connect (editCodeItem, SIGNAL(triggered()), this, SLOT(editBlock()));
+        QAction* deleteItem = menu.addAction ("Delete");
+        connect (deleteItem, SIGNAL(triggered()), this, SLOT(deleteActiveBlock()));
+    }
+    else
+    {
+        // RIB root block functions
+        rib_root_block* rib = dynamic_cast<rib_root_block*> (activeBlock);
+        if (rib)
+        {
+            QAction* editRibItem = menu.addAction ("Edit RIB");
+            connect (editRibItem, SIGNAL(triggered()), this, SLOT(editRibBlock()));
+        }
+    }
+
+    menu.exec(QCursor::pos());
 }
+
+
+void application_window::selectActiveBlock()
+{
+    shrimp_services->set_block_selection (activeBlock, true);
+    ui_scene_view->redraw();
+}
+
+
+void application_window::deselectActiveBlock()
+{
+    shrimp_services->set_block_selection (activeBlock, false);
+    ui_scene_view->redraw();
+}
+
+
+void application_window::groupSelection()
+{
+    shrimp_services->group_selection();
+    ui_scene_view->redraw();
+}
+
+
+void application_window::rollActiveBlock()
+{
+    shrimp_services->set_block_rolled_state (activeBlock, true);
+    ui_scene_view->redraw();
+}
+
+
+void application_window::unrollActiveBlock()
+{
+    shrimp_services->set_block_rolled_state (activeBlock, false);
+    ui_scene_view->redraw();
+}
+
+
+void application_window::activeBlockInfo()
+{
+
+}
+
+
+void application_window::renameActiveBlock()
+{
+
+}
+
+
+void application_window::addInput()
+{
+
+}
+
+
+void application_window::addOutput()
+{
+
+}
+
+
+void application_window::editCode()
+{
+
+}
+
+
+void application_window::deleteActiveBlock()
+{
+    QMessageBox msgBox (this);
+    msgBox.setInformativeText (QString::fromStdString ("Do you really want to delete '" + activeBlock->name() + "' block?"));
+    msgBox.setStandardButtons (QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton (QMessageBox::Cancel);
+
+    int answer = msgBox.exec();
+
+    if (answer == QMessageBox::Cancel)
+    {
+        // Delete cancelled
+        return;
+    }
+
+    shrimp_services->delete_block (activeBlock->name());
+}
+
+
+void application_window::editRibBlock()
+{
+
+}
+

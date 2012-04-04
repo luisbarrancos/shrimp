@@ -92,6 +92,21 @@ public slots:
     void updateSceneZoom(const double);
     void blockPopupMenu(QString);
 
+    void blockRightClick (const std::string& blockName);
+    void selectActiveBlock();
+    void deselectActiveBlock();
+    void groupSelection();
+    void rollActiveBlock();
+    void unrollActiveBlock();
+    void activeBlockInfo();
+    void renameActiveBlock();
+    void addInput();
+    void addOutput();
+    void editCode();
+    void deleteActiveBlock();
+    void editRibBlock();
+
+
 protected:
     //void contextMenuEvent(QContextMenuEvent *event);
     void buildContextMenuFromBlock(QMenu&, const std::string);
@@ -110,6 +125,8 @@ private:
     void buildBlockSubmenu(const block_tree_node_t&, const std::string& menuNodeName);
     typedef std::map<std::string, menuNode> blockPopupMenuTree_t;
     blockPopupMenuTree_t blockPopupMenuTree;
+
+    shader_block* activeBlock;
 
     void setupRendererCombo(const std::string&);
     void setupDisplayCombo(const std::string&);

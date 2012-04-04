@@ -829,7 +829,7 @@ void opengl_view::mouse_right_button_down()
 		m_connection_start = std::make_pair ("", "");
 	}
 	else if (m_under_mouse_block)
-	{
+        {
 		// mouse is over a block (but not over a property)
 		std::string block_name = m_under_mouse_block->name();
 		shader_block_right_click (block_name);
@@ -841,7 +841,7 @@ void opengl_view::mouse_right_button_down()
 	}
 	else
 	{
-		// mouse's over nothing...
+                // mouse's over nothing...
 
 		// clear current actions
 		m_mouse_click = 0;

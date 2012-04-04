@@ -50,17 +50,24 @@ protected:
 	void initializeGL();
 	void paintGL();
 	void resizeGL (int width, int height);
-        void drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
+        void drawGlText (const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
 
         void mousePressEvent (QMouseEvent *);
         void mouseMoveEvent (QMouseEvent *);
-        void mouseReleaseEvent(QMouseEvent *);
-        void wheelEvent(QWheelEvent *);
+        void mouseReleaseEvent (QMouseEvent *);
+        void wheelEvent (QWheelEvent *);
 
         void updateSceneZoom(const double);
 
+        // callbacks
+        void shader_property_right_click (shrimp::io_t& Property);
+        void shader_block_right_click (std::string& Block);
+        void block_group_right_click (int Group);
+        void empty_right_click();
+
 signals:
-        void setSceneZoom(const double);
+        void setSceneZoom (const double);
+        void shaderBlockRightClick (const std::string blockName);
 
 private:
         QSize currentSize;

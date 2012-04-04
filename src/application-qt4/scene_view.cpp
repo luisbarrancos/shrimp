@@ -159,3 +159,27 @@ void scene_view::updateSceneZoom(const double newZoom)
     emit setSceneZoom(newZoom);
 }
 
+
+void scene_view::shader_property_right_click (shrimp::io_t& property)
+{
+
+}
+
+
+void scene_view::shader_block_right_click (std::string& block)
+{
+    emit shaderBlockRightClick (block);
+}
+
+
+void scene_view::block_group_right_click (int group)
+{
+
+}
+
+
+void scene_view::empty_right_click()
+{
+
+}
+
