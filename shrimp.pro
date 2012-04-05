@@ -17,17 +17,32 @@ OBJECTS_DIR = .qmake_temp
 FORMS    += src/application-qt4/application_window.ui \
     src/application-qt4/shader_properties.ui \
     src/application-qt4/code_preview.ui \
-    src/application-qt4/options.ui
+    src/application-qt4/options.ui \
+    src/application-qt4/block_info.ui \
+    src/application-qt4/block_name.ui \
+    src/application-qt4/block_code.ui \
+    src/application-qt4/block_input_output.ui \
+    src/application-qt4/rib_block.ui
 
 
 HEADERS += src/application-qt4/scene_view.h src/application-qt4/application_window.h src/application-qt4/system_functions.h \
     src/application-qt4/shader_properties.h \
     src/application-qt4/code_preview.h \
-    src/application-qt4/options.h
+    src/application-qt4/options.h \
+    src/application-qt4/block_code.h \
+    src/application-qt4/block_info.h \
+    src/application-qt4/block_input_output.h \
+    src/application-qt4/block_name.h \
+    src/application-qt4/rib_block.h
 SOURCES += src/application-qt4/scene_view.cpp src/application-qt4/shrimp.cpp src/application-qt4/application_window.cpp src/application-qt4/system_functions.cpp \
     src/application-qt4/shader_properties.cpp \
     src/application-qt4/code_preview.cpp \
-    src/application-qt4/options.cpp
+    src/application-qt4/options.cpp \
+    src/application-qt4/block_code.cpp \
+    src/application-qt4/block_info.cpp \
+    src/application-qt4/block_input_output.cpp \
+    src/application-qt4/block_name.cpp \
+    src/application-qt4/rib_block.cpp
 
 HEADERS += src/miscellaneous/tinyxml/tinystr.h src/miscellaneous/tinyxml/tinyxml.h
 SOURCES += src/miscellaneous/tinyxml/tinystr.cpp src/miscellaneous/tinyxml/tinyxml.cpp src/miscellaneous/tinyxml/tinyxmlerror.cpp src/miscellaneous/tinyxml/tinyxmlparser.cpp

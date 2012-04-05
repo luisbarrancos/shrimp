@@ -21,9 +21,14 @@
 
 #include "application_window.h"
 #include "ui_application_window.h"
-#include "shader_properties.h"
+#include "block_code.h"
+#include "block_info.h"
+#include "block_input_output.h"
+#include "block_name.h"
 #include "code_preview.h"
 #include "options.h"
+#include "rib_block.h"
+#include "shader_properties.h"
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
@@ -414,7 +419,8 @@ void application_window::editBlock()
         shader_block* block = ui_scene_view->get_active_block();
         if (block)
         {
-            //TODO: open Edit dialog
+            block_code editCode (this, shrimp_services);
+            editCode.exec();
 
             // toggle block selection
             shrimp_services->clear_selection();
@@ -617,7 +623,7 @@ void application_window::blockRightClick (const std::string& blockName)
         QAction* addOutputItem = menu.addAction ("Add output");
         connect (addOutputItem, SIGNAL(triggered()), this, SLOT(addOutput()));
         QAction* editCodeItem = menu.addAction ("Edit code");
-        connect (editCodeItem, SIGNAL(triggered()), this, SLOT(editBlock()));
+        connect (editCodeItem, SIGNAL(triggered()), this, SLOT(editCode()));
         QAction* deleteItem = menu.addAction ("Delete");
         connect (deleteItem, SIGNAL(triggered()), this, SLOT(deleteActiveBlock()));
     }
@@ -673,31 +679,46 @@ void application_window::unrollActiveBlock()
 
 void application_window::activeBlockInfo()
 {
+    log() << aspect << "Edit block info" << std::endl;
 
+    block_info editInfo (this, shrimp_services);
+    editInfo.exec();
 }
 
 
 void application_window::renameActiveBlock()
 {
+    log() << aspect << "Edit block name" << std::endl;
 
+    block_name editName (this, shrimp_services);
+    editName.exec();
 }
 
 
 void application_window::addInput()
 {
+    log() << aspect << "Edit block input" << std::endl;
 
+    block_input_output editInput (this, shrimp_services);
+    editInput.exec();
 }
 
 
 void application_window::addOutput()
 {
+    log() << aspect << "Edit block output" << std::endl;
 
+    block_input_output editOutput (this, shrimp_services);
+    editOutput.exec();
 }
 
 
 void application_window::editCode()
 {
+    log() << aspect << "Edit block code" << std::endl;
 
+    block_code editCode (this, shrimp_services);
+    editCode.exec();
 }
 
 
@@ -722,6 +743,9 @@ void application_window::deleteActiveBlock()
 
 void application_window::editRibBlock()
 {
+    log() << aspect << "Edit RIB block" << std::endl;
 
+    rib_block editRIB (this, shrimp_services);
+    editRIB.exec();
 }
 
