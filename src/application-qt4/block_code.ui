@@ -6,17 +6,17 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>400</width>
-    <height>300</height>
+    <width>600</width>
+    <height>400</height>
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>Block Code</string>
   </property>
   <property name="styleSheet">
    <string notr="true">background-color: black;</string>
   </property>
-  <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,0">
+  <layout class="QGridLayout" name="gridLayout" rowstretch="1,4,0" columnstretch="0,3,1,0,1">
    <item row="2" column="4">
     <widget class="QPushButton" name="cancelButton">
      <property name="styleSheet">
@@ -62,6 +62,9 @@
      <property name="text">
       <string>OK</string>
      </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="2" column="1">
@@ -92,6 +95,9 @@
    </item>
    <item row="0" column="1" colspan="4">
     <widget class="QPlainTextEdit" name="ioTextEdit">
+     <property name="focusPolicy">
+      <enum>Qt::NoFocus</enum>
+     </property>
      <property name="styleSheet">
       <string notr="true">color: white;</string>
      </property>
@@ -129,6 +135,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>codeTextEdit</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

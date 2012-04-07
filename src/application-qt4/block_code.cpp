@@ -24,26 +24,28 @@
 
 #include "src/miscellaneous/logging.h"
 
-block_code::block_code(QWidget* parent, services* shrimpServicesInstance) :
+block_code::block_code(QWidget* parent, services* shrimpServicesInstance, shader_block* block) :
     QDialog (parent),
     ui (new Ui::blockCodeDialog),
-    shrimpServices (shrimpServicesInstance)
+    shrimpServices (shrimpServicesInstance),
+    editedBlock (block)
 {
     ui->setupUi(this);
 
     log() << aspect << "Block Code dialog" << std::endl;
 
     // set values
+    ui->ioTextEdit->setPlainText (QString::fromStdString (buildInfo()));
+    ui->codeTextEdit->setPlainText (QString::fromStdString (block->get_code()));
 
     // connect events
-    QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
-    QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
+    connect (ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
+    connect (ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
 
 block_code::~block_code()
 {
-
 }
 
 
@@ -57,6 +59,41 @@ void block_code::okButton()
 {
     log() << aspect << "Save block code" << std::endl;
 
+    // save code
+    editedBlock->set_code (ui->codeTextEdit->toPlainText().toStdString());
+
     close();
+}
+
+
+std::string block_code::buildInfo()
+{
+    // get block content
+    std::string inputs ("");
+    for (shader_block::properties_t::const_iterator input = editedBlock->m_inputs.begin(); input != editedBlock->m_inputs.end(); ++input)
+    {
+        if (!inputs.empty())
+        {
+            inputs += ", ";
+        }
+
+        inputs += input->m_name;
+    }
+
+    std::string outputs ("");
+    for (shader_block::properties_t::const_iterator output = editedBlock->m_outputs.begin(); output != editedBlock->m_outputs.end(); ++output)
+    {
+        if (!outputs.empty())
+        {
+            outputs += ", ";
+        }
+
+        outputs += output->m_name;
+    }
+
+    std::string info = "inputs: " + inputs + "\n"
+            + "outputs: " + outputs;
+
+    return info;
 }
 

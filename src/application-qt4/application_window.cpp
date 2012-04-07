@@ -419,7 +419,7 @@ void application_window::editBlock()
         shader_block* block = ui_scene_view->get_active_block();
         if (block)
         {
-            block_code editCode (this, shrimp_services);
+            block_code editCode (this, shrimp_services, activeBlock);
             editCode.exec();
 
             // toggle block selection
@@ -576,7 +576,8 @@ void application_window::blockRightClick (const std::string& blockName)
     const bool isRoot = activeBlock->m_root_block;
 
     QMenu menu (this);
-    menu.setStyleSheet ("QMenu::item:selected { background-color: orange }");
+    menu.setStyleSheet ("QMenu::item:selected { background-color: orange }"
+                        "QMenu::separator { height: 1px; background: grey; margin-left: 10px; margin-right: 10px }");
     menu.setTitle ("Block");
 
     if (!isRoot)
@@ -610,20 +611,25 @@ void application_window::blockRightClick (const std::string& blockName)
         }
     }
 
-    QAction* infoItem = menu.addAction ("Info");
+    menu.addSeparator();
+
+    QAction* infoItem = menu.addAction ("Edit Info");
     connect (infoItem, SIGNAL(triggered()), this, SLOT(activeBlockInfo()));
 
-    QAction* renameItem = menu.addAction ("Rename");
-    connect (renameItem, SIGNAL(triggered()), this, SLOT(renameActiveBlock()));
+    //QAction* renameItem = menu.addAction ("Rename");
+    //connect (renameItem, SIGNAL(triggered()), this, SLOT(renameActiveBlock()));
 
     if (!isRoot)
     {
-        QAction* addInputItem = menu.addAction ("Add input");
+        QAction* addInputItem = menu.addAction ("Add Input");
         connect (addInputItem, SIGNAL(triggered()), this, SLOT(addInput()));
-        QAction* addOutputItem = menu.addAction ("Add output");
+        QAction* addOutputItem = menu.addAction ("Add Output");
         connect (addOutputItem, SIGNAL(triggered()), this, SLOT(addOutput()));
-        QAction* editCodeItem = menu.addAction ("Edit code");
+        QAction* editCodeItem = menu.addAction ("Edit Code");
         connect (editCodeItem, SIGNAL(triggered()), this, SLOT(editCode()));
+
+        menu.addSeparator();
+
         QAction* deleteItem = menu.addAction ("Delete");
         connect (deleteItem, SIGNAL(triggered()), this, SLOT(deleteActiveBlock()));
     }
@@ -681,7 +687,7 @@ void application_window::activeBlockInfo()
 {
     log() << aspect << "Edit block info" << std::endl;
 
-    block_info editInfo (this, shrimp_services);
+    block_info editInfo (this, shrimp_services, activeBlock);
     editInfo.exec();
 }
 
@@ -690,7 +696,7 @@ void application_window::renameActiveBlock()
 {
     log() << aspect << "Edit block name" << std::endl;
 
-    block_name editName (this, shrimp_services);
+    block_name editName (this, shrimp_services, activeBlock);
     editName.exec();
 }
 
@@ -717,7 +723,7 @@ void application_window::editCode()
 {
     log() << aspect << "Edit block code" << std::endl;
 
-    block_code editCode (this, shrimp_services);
+    block_code editCode (this, shrimp_services, activeBlock);
     editCode.exec();
 }
 

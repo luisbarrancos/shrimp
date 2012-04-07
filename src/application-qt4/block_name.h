@@ -35,7 +35,7 @@ class block_name: public QDialog
     Q_OBJECT
 
 public:
-    explicit block_name (QWidget *parent, services* shrimpServicesInstance);
+    explicit block_name (QWidget *parent, services* shrimpServicesInstance, shader_block* block);
     ~block_name();
 
 public slots:
@@ -45,6 +45,8 @@ public slots:
 private:
     Ui::blockNameDialog *ui;
     services* shrimpServices;
+
+    shader_block* editedBlock;
 };
 
 #endif // BLOCK_NAME_H

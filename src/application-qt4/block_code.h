@@ -36,7 +36,7 @@ class block_code: public QDialog
     Q_OBJECT
 
 public:
-    explicit block_code (QWidget *parent, services* shrimpServicesInstance);
+    explicit block_code (QWidget *parent, services* shrimpServicesInstance, shader_block* block);
     ~block_code();
 
 public slots:
@@ -46,6 +46,10 @@ public slots:
 private:
     Ui::blockCodeDialog *ui;
     services* shrimpServices;
+
+    shader_block* editedBlock;
+
+    std::string buildInfo();
 };
 
 #endif // BLOCK_CODE_H

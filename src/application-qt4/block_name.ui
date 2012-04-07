@@ -32,6 +32,9 @@
      <property name="text">
       <string>Cancel</string>
      </property>
+     <property name="autoDefault">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="1" column="2">
@@ -48,6 +51,9 @@
      </property>
      <property name="text">
       <string>OK</string>
+     </property>
+     <property name="default">
+      <bool>true</bool>
      </property>
     </widget>
    </item>
@@ -109,6 +115,11 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>blockNameLineEdit</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

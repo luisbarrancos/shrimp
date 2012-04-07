@@ -49,6 +49,9 @@
      <property name="text">
       <string>OK</string>
      </property>
+     <property name="default">
+      <bool>true</bool>
+     </property>
     </widget>
    </item>
    <item row="4" column="3">
@@ -160,6 +163,14 @@
    </item>
   </layout>
  </widget>
+ <tabstops>
+  <tabstop>nameLineEdit</tabstop>
+  <tabstop>descriptionTextEdit</tabstop>
+  <tabstop>usageTextEdit</tabstop>
+  <tabstop>authorsLineEdit</tabstop>
+  <tabstop>okButton</tabstop>
+  <tabstop>cancelButton</tabstop>
+ </tabstops>
  <resources/>
  <connections/>
 </ui>

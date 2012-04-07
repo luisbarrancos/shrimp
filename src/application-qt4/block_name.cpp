@@ -24,16 +24,20 @@
 
 #include "src/miscellaneous/logging.h"
 
-block_name::block_name(QWidget* parent, services* shrimpServicesInstance) :
+#include <QMessageBox>
+
+block_name::block_name(QWidget* parent, services* shrimpServicesInstance, shader_block* block) :
     QDialog (parent),
     ui (new Ui::blockNameDialog),
-    shrimpServices (shrimpServicesInstance)
+    shrimpServices (shrimpServicesInstance),
+    editedBlock (block)
 {
     ui->setupUi(this);
 
     log() << aspect << "Block Name dialog" << std::endl;
 
     // set values
+    ui->blockNameLineEdit->setText (QString::fromStdString (block->name()));
 
     // connect events
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
@@ -56,6 +60,46 @@ void block_name::cancelButton()
 void block_name::okButton()
 {
     log() << aspect << "Save block name" << std::endl;
+
+    QString newName = ui->blockNameLineEdit->text();
+    if (newName.toStdString() == editedBlock->name())
+    {
+        // name didn't change
+    }
+    else if (newName.isEmpty())
+    {
+        // can't rename to an empty string
+        QMessageBox msgBox (this);
+        msgBox.setInformativeText (QString::fromStdString ("New name cannot be empty!"));
+        msgBox.setStandardButtons (QMessageBox::Ok);
+        msgBox.setDefaultButton (QMessageBox::Ok);
+        msgBox.exec();
+
+        // try again
+        return;
+    }
+    else
+    {
+        // check whether the name already exists
+        const std::string uniqueName = shrimpServices->get_unique_block_name (newName.toStdString());
+        if (uniqueName == newName.toStdString())
+        {
+            // new name is unique, save it
+            shrimpServices->set_block_name (editedBlock, newName.toStdString());
+        }
+        else
+        {
+            QMessageBox msgBox (this);
+            msgBox.setInformativeText (QString::fromStdString ("This name already exists."));
+            msgBox.setStandardButtons (QMessageBox::Ok);
+            msgBox.setDefaultButton (QMessageBox::Ok);
+            msgBox.exec();
+
+            // suggest new name
+            ui->blockNameLineEdit->setText (QString::fromStdString (uniqueName));
+            return;
+        }
+    }
 
     close();
 }

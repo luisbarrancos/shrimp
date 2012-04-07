@@ -21,6 +21,7 @@
 
 #ifndef BLOCK_INFO_H
 #define BLOCK_INFO_H
+
 #include "src/services.h"
 
 #include <QDialog>
@@ -35,7 +36,7 @@ class block_info: public QDialog
     Q_OBJECT
 
 public:
-    explicit block_info (QWidget *parent, services* shrimpServicesInstance);
+    explicit block_info (QWidget *parent, services* shrimpServicesInstance, shader_block* block);
     ~block_info();
 
 public slots:
@@ -45,6 +46,8 @@ public slots:
 private:
     Ui::blockInfoDialog *ui;
     services* shrimpServices;
+
+    shader_block* editedBlock;
 };
 
 #endif // BLOCK_INFO_H
