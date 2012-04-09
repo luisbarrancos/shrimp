@@ -64,6 +64,7 @@
   border-color: gray;
   selection-background-color: orange;
  }
+
  QComboBox:editable {
   color: white;
   background: orange;

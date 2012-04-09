@@ -91,6 +91,8 @@ application_window::application_window (QWidget* parent) :
 
     // initiliaze variables
     activeBlock = 0;
+    popupStylesheet = "QMenu::item:selected { background-color: orange }"
+            "QMenu::separator { height: 1px; background: grey; margin-left: 10px; margin-right: 10px }";
 
     // connect events
     connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
@@ -125,6 +127,8 @@ application_window::application_window (QWidget* parent) :
 
     connect (ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
     connect (ui_scene_view, SIGNAL(shaderBlockRightClick(const std::string)), this, SLOT(blockRightClick(const std::string)));
+    connect (ui_scene_view, SIGNAL(shaderPropertyRightClick(shrimp::io_t)), this, SLOT(propertyRightClick(shrimp::io_t)));
+    connect (ui_scene_view, SIGNAL(blockGroupRightClick(int)), this, SLOT(groupRightClick(const int)));
 }
 
 
@@ -488,7 +492,11 @@ void application_window::changeDisplay(const QString& displayName)
 
 void application_window::changeRenderScene(const QString& sceneName)
 {
+    log() << aspect << "Change render scene to " << sceneName.toStdString() << std::endl;
 
+    // save new scene to preferences
+    preferences.set_scene (sceneName.toStdString());
+    preferences.save();
 }
 
 
@@ -576,8 +584,7 @@ void application_window::blockRightClick (const std::string& blockName)
     const bool isRoot = activeBlock->m_root_block;
 
     QMenu menu (this);
-    menu.setStyleSheet ("QMenu::item:selected { background-color: orange }"
-                        "QMenu::separator { height: 1px; background: grey; margin-left: 10px; margin-right: 10px }");
+    menu.setStyleSheet (popupStylesheet);
     menu.setTitle ("Block");
 
     if (!isRoot)
@@ -705,8 +712,10 @@ void application_window::addInput()
 {
     log() << aspect << "Edit block input" << std::endl;
 
-    block_input_output editInput (this, shrimp_services);
-    editInput.exec();
+    block_input_output addInput (this, shrimp_services, "addInput", activeBlock);
+    addInput.exec();
+
+    ui_scene_view->redraw();
 }
 
 
@@ -714,8 +723,10 @@ void application_window::addOutput()
 {
     log() << aspect << "Edit block output" << std::endl;
 
-    block_input_output editOutput (this, shrimp_services);
-    editOutput.exec();
+    block_input_output addOutput (this, shrimp_services, "addOutput", activeBlock);
+    addOutput.exec();
+
+    ui_scene_view->redraw();
 }
 
 
@@ -753,5 +764,120 @@ void application_window::editRibBlock()
 
     rib_block editRIB (this, shrimp_services);
     editRIB.exec();
+}
+
+
+void application_window::propertyRightClick (const shrimp::io_t& property)
+{
+    activeProperty = property;
+    activeBlock = shrimp_services->get_block (property.first);
+    if (!activeBlock)
+    {
+        return;
+    }
+
+    const bool isRoot = activeBlock->m_root_block;
+
+    QMenu menu (this);
+    menu.setStyleSheet (popupStylesheet);
+    menu.setTitle ("Pad");
+
+    int itemCount = 0;
+
+    if (!isRoot)
+    {
+        // add 'Edit'
+        QAction* editPad = menu.addAction ("Edit");
+        connect (editPad, SIGNAL(triggered()), this, SLOT(editProperty()));
+
+        ++itemCount;
+    }
+
+    // if the block has a parent:
+    std::string foo;
+    if (shrimp_services->get_parent (property.first, property.second, foo))
+    {
+        // add 'Disconnect'
+        QAction* disconnectPad = menu.addAction ("Disconnect");
+        connect (disconnectPad, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+
+        ++itemCount;
+    }
+
+    if (itemCount > 0)
+    {
+        menu.exec(QCursor::pos());
+    }
+}
+
+
+void application_window::editProperty()
+{
+    log() << error << "Edit block property" << std::endl;
+
+    const std::string propertyName = activeProperty.second;
+
+    if (activeBlock && activeBlock->is_input (propertyName))
+    {
+        log() << aspect << "Edit selected input" << std::endl;
+
+        block_input_output editInput (this, shrimp_services, "editInput", activeBlock, propertyName);
+        editInput.exec();
+
+        ui_scene_view->redraw();
+    }
+    else if (activeBlock && activeBlock->is_output (propertyName))
+    {
+        log() << aspect << "Edit selected output" << std::endl;
+
+        block_input_output editOutput (this, shrimp_services, "editOutput", activeBlock, propertyName);
+        editOutput.exec();
+
+        ui_scene_view->redraw();
+    }
+}
+
+
+void application_window::disconnectProperty()
+{
+    log() << error << "Disconnect property" << std::endl;
+}
+
+
+void application_window::groupRightClick (const int group)
+{
+    activeGroup = group;
+
+    QMenu menu (this);
+    menu.setStyleSheet (popupStylesheet);
+    menu.setTitle ("Group");
+
+    // add 'Renamme'
+    QAction* renameGroup = menu.addAction ("Rename group");
+    connect (renameGroup, SIGNAL(triggered()), this, SLOT(editProperty()));
+
+    // add 'Disconnect'
+    QAction* ungroup = menu.addAction ("Ungroup");
+    connect (ungroup, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+
+    menu.exec(QCursor::pos());
+}
+
+
+void application_window::emptyRightClick()
+{
+    QMenu menu (this);
+    menu.setStyleSheet (popupStylesheet);
+    menu.setTitle ("Group");
+
+    // add 'Group selection'
+    QAction* groupSelection = menu.addAction ("Group selection");
+    connect (groupSelection, SIGNAL(triggered()), this, SLOT(editProperty()));
+
+    // add 'Disconnect'
+    QAction* clearSelection = menu.addAction ("Clear selection");
+    connect (clearSelection, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+
+    menu.exec(QCursor::pos());
 }
 

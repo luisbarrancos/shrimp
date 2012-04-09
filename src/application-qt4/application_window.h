@@ -106,6 +106,13 @@ public slots:
     void deleteActiveBlock();
     void editRibBlock();
 
+    void propertyRightClick (const shrimp::io_t& property);
+    void editProperty();
+    void disconnectProperty();
+
+    void groupRightClick (const int group);
+
+    void emptyRightClick();
 
 protected:
     //void contextMenuEvent(QContextMenuEvent *event);
@@ -117,6 +124,8 @@ private:
     i_system_functions* systemFunctions;
     services* shrimp_services;
 
+    QString popupStylesheet;
+
     general_options preferences;
     general_options::renderers_t renderers;
     general_options::scenes_t scenes;
@@ -127,6 +136,8 @@ private:
     blockPopupMenuTree_t blockPopupMenuTree;
 
     shader_block* activeBlock;
+    shrimp::io_t activeProperty;
+    int activeGroup;
 
     void setupRendererCombo(const std::string&);
     void setupDisplayCombo(const std::string&);

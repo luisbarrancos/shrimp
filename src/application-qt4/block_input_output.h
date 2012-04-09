@@ -36,15 +36,23 @@ class block_input_output: public QDialog
     Q_OBJECT
 
 public:
-    explicit block_input_output (QWidget *parent, services* shrimpServicesInstance);
+    explicit block_input_output (QWidget *parent, services* shrimpServicesInstance, const std::string dialogType, shader_block* block, const std::string property = "");
     ~block_input_output();
 
 public slots:
+    void typeChange(const QString typeName);
     void cancelButton();
     void okButton();
 
 private:
     Ui::blockInputOutputDialog *ui;
     services* shrimpServices;
+
+    const std::string ioDialogType;
+    shader_block* editedBlock;
+    const std::string editedProperty;
+
+    void setValues(const std::string name, const std::string storageTypeName, const std::string typeName, const std::string arrayTypeName, const int arraySize, const bool shaderParameterOutput, const std::string description);
 };
+
 #endif // BLOCK_INPUT_OUTPUT_H

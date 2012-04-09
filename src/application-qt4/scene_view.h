@@ -68,6 +68,9 @@ protected:
 signals:
         void setSceneZoom (const double);
         void shaderBlockRightClick (const std::string blockName);
+        void shaderPropertyRightClick (const shrimp::io_t property);
+        void blockGroupRightClick (const int group);
+        void emptyRightClick();
 
 private:
         QSize currentSize;

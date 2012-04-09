@@ -162,7 +162,7 @@ void scene_view::updateSceneZoom(const double newZoom)
 
 void scene_view::shader_property_right_click (shrimp::io_t& property)
 {
-
+    emit shaderPropertyRightClick (property);
 }
 
 
@@ -174,12 +174,12 @@ void scene_view::shader_block_right_click (std::string& block)
 
 void scene_view::block_group_right_click (int group)
 {
-
+    emit blockGroupRightClick (group);
 }
 
 
 void scene_view::empty_right_click()
 {
-
+    emit emptyRightClick();
 }
 
