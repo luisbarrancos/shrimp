@@ -83,6 +83,9 @@ public:
 	void set_type_parent (const std::string& Parent);
 	std::string get_type_parent() const;
 
+        void setDescription (const std::string& description);
+        std::string getDescription() const;
+
 private:
 	// variable type
 	variable_t m_current_type;
@@ -189,7 +192,10 @@ public:
 	void set_input_type_parent (const std::string& Name, const std::string& Parent);
 	//std::string get_input_type_parent (const std::string& Name) const;
 
-	bool set_output_type (const std::string& Name, const std::string& Type);
+        bool set_input_description (const std::string& name, const std::string& description);
+        std::string get_input_description (const std::string& name);
+
+        bool set_output_type (const std::string& Name, const std::string& Type);
 	std::string get_output_type (const std::string& Name) const;
 
 	bool set_output_type_extension (const std::string& Name, const std::string& TypeExtension);
@@ -198,6 +204,9 @@ public:
 
 	bool set_output_storage (const std::string& Name, const std::string& Type);
 	std::string get_output_storage (const std::string& Name) const;
+
+        bool set_output_description (const std::string& name, const std::string& description);
+        std::string get_output_description (const std::string& name);
 
 	bool is_shader_output (const std::string& Name) const;
 	void set_shader_output (const std::string& Name, const bool State);

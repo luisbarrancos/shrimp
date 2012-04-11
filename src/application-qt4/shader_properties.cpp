@@ -34,13 +34,13 @@ shader_properties::shader_properties(QWidget *parent, services* shrimpServicesIn
     log() << aspect << "Shader Properties dialog" << std::endl;
 
     // set values
-    ui->nameLineEdit->setText(QString::fromStdString(shrimpServices->get_scene_name()));
-    ui->descriptionTextEdit->setText(QString::fromStdString(shrimpServices->get_scene_description()));
-    ui->authorsLineEdit->setText(QString::fromStdString(shrimpServices->get_scene_authors()));
+    ui->nameLineEdit->setText (QString::fromStdString (shrimpServices->get_scene_name()));
+    ui->descriptionTextEdit->setText (QString::fromStdString (shrimpServices->get_scene_description()));
+    ui->authorsLineEdit->setText (QString::fromStdString (shrimpServices->get_scene_authors()));
 
     // connect events
-    QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
-    QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
+    connect (ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
+    connect (ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
 

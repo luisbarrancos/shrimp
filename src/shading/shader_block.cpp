@@ -438,6 +438,18 @@ std::string property::get_type_parent() const {
 }
 
 
+void property::setDescription (const std::string& description)
+{
+    m_description = description;
+}
+
+
+std::string property::getDescription() const
+{
+    return m_description;
+}
+
+
 types_t get_property_types() {
 
 	types_t list;
@@ -903,6 +915,37 @@ void shader_block::set_input_type_parent (const std::string& Name, const std::st
 }
 
 
+bool shader_block::set_input_description (const std::string& name, const std::string& description)
+{
+    for (properties_t::iterator i = m_inputs.begin(); i != m_inputs.end(); ++i)
+    {
+        if (i->m_name == name)
+        {
+            i->setDescription (description);
+            return true;
+        }
+    }
+
+    log() << error << "unmatched shader block input '" << name << "' in " << this->name() << std::endl;
+    return false;
+}
+
+
+std::string shader_block::get_input_description (const std::string& name)
+{
+    for (properties_t::const_iterator i = m_inputs.begin(); i != m_inputs.end(); ++i)
+    {
+        if (i->m_name == name)
+        {
+            return i->getDescription();
+        }
+    }
+
+    log() << error << "unmatched shader block input '" << name << "' in " << this->name() << std::endl;
+    return "";
+}
+
+
 bool shader_block::set_output_type (const std::string& Name, const std::string& Type) {
 
 	bool answer = true;
@@ -1037,6 +1080,39 @@ std::string shader_block::get_output_storage (const std::string& Name) const {
 
 	return "";
 }
+
+
+bool shader_block::set_output_description (const std::string& name, const std::string& description)
+{
+    for (properties_t::iterator i = m_outputs.begin(); i != m_outputs.end(); ++i)
+    {
+        if (i->m_name == name)
+        {
+            i->setDescription (description);
+            return true;
+        }
+    }
+
+    log() << error << "unmatched shader block output '" << name << "' in " << this->name() << std::endl;
+    return false;
+}
+
+
+std::string shader_block::get_output_description (const std::string& name)
+{
+    for (properties_t::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i)
+    {
+        if (i->m_name == name)
+        {
+            return i->getDescription();
+        }
+    }
+
+    log() << error << "unmatched shader block output '" << name << "' in " << this->name() << std::endl;
+    return "";
+}
+
+
 bool shader_block::is_shader_output (const std::string& Name) const {
 
 	for (properties_t::const_iterator i = m_outputs.begin(); i != m_outputs.end(); ++i) {

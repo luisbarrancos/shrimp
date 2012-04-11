@@ -68,6 +68,9 @@ block_input_output::block_input_output(QWidget* parent, services* shrimpServices
     {
         setWindowTitle ("Edit Input");
 
+        // set name as read-only
+        ui->nameLineEdit->setReadOnly(true);
+
         // change label
         ui->defaultValueLabel->setText ("Value");
 
@@ -77,6 +80,9 @@ block_input_output::block_input_output(QWidget* parent, services* shrimpServices
     else if (ioDialogType == "editOutput")
     {
         setWindowTitle ("Edit Output");
+
+        // set name as read-only
+        ui->nameLineEdit->setReadOnly(true);
 
         // change button
         ui->okButton->setText ("Save");
@@ -118,12 +124,9 @@ block_input_output::block_input_output(QWidget* parent, services* shrimpServices
                    editedBlock->get_input_type_extension (editedProperty),
                    editedBlock->get_input_type_extension_size (editedProperty),
                    editedBlock->is_shader_parameter (editedProperty),
-                   "");
+                   editedBlock->get_input_description (editedProperty));
 
-        if (ioDialogType == "editInput")
-        {
-            ui->defaultValueLineEdit->setText (QString::fromStdString (editedBlock->get_input_value (editedProperty)));
-        }
+        ui->defaultValueLineEdit->setText (QString::fromStdString (editedBlock->get_input_value (editedProperty)));
     }
     else if (ioDialogType == "editOutput")
     {
@@ -133,7 +136,7 @@ block_input_output::block_input_output(QWidget* parent, services* shrimpServices
                    editedBlock->get_output_type_extension (editedProperty),
                    editedBlock->get_output_type_extension_size (editedProperty),
                    editedBlock->is_shader_output (editedProperty),
-                   "");
+                   editedBlock->get_output_description (editedProperty));
     }
 
     // connect events
@@ -175,10 +178,10 @@ void block_input_output::okButton()
     log() << aspect << "Add block input/output" << std::endl;
 
     QString name = ui->nameLineEdit->text();
-    QString storageName = ui->storageTypeComboBox->itemData (ui->storageTypeComboBox->currentIndex()).toString();
-    QString typeName = ui->typeComboBox->itemData (ui->typeComboBox->currentIndex()).toString();
+    QString storageName = ui->storageTypeComboBox->itemText (ui->storageTypeComboBox->currentIndex());
+    QString typeName = ui->typeComboBox->itemText (ui->typeComboBox->currentIndex());
     int arraySize = ui->arraySizeSpinBox->value();
-    QString arrayType = ui->arrayTypeComboBox->itemData (ui->arrayTypeComboBox->currentIndex()).toString();
+    QString arrayType = ui->arrayTypeComboBox->itemText (ui->arrayTypeComboBox->currentIndex());
     QString defaultValue = ui->defaultValueLineEdit->text();
     bool shaderParameterOutput = ui->shaderParameterCheckBox->checkState();
     QString description = ui->descriptionTextEdit->toPlainText();
@@ -187,34 +190,37 @@ void block_input_output::okButton()
 
     //TODO: check that the default value matches the input type
 
-    QString errorMessage;
-    if (name.isEmpty())
+    if (ioDialogType == "addInput" || ioDialogType == "addOutput")
     {
-        // forbid empty names
-        QString padType = (ioDialogType == "AddInput") ? "Input" : ((ioDialogType == "AddOutput") ? "Output" : "");
-        errorMessage = QString ("The " + padType + " name cannot be empty!");
-    }
-    else if (editedBlock->is_input (name.toStdString()))
-    {
-        // an input with the same name already exists
-        errorMessage = QString ("An input with this name already exists!");
-    }
-    else if (editedBlock->is_output (name.toStdString()))
-    {
-        // an input with the same name already exists
-        errorMessage = QString ("An output with this name already exists!");
-    }
+        QString errorMessage;
+        if (name.isEmpty())
+        {
+            // forbid empty names
+            QString padType = (ioDialogType == "AddInput") ? "Input" : ((ioDialogType == "AddOutput") ? "Output" : "");
+            errorMessage = QString ("The " + padType + " name cannot be empty!");
+        }
+        else if (editedBlock->is_input (name.toStdString()))
+        {
+            // an input with the same name already exists
+            errorMessage = QString ("An input with this name already exists!");
+        }
+        else if (editedBlock->is_output (name.toStdString()))
+        {
+            // an input with the same name already exists
+            errorMessage = QString ("An output with this name already exists!");
+        }
 
-    if (!errorMessage.isEmpty())
-    {
-        QMessageBox msgBox (this);
-        msgBox.setInformativeText (errorMessage);
-        msgBox.setStandardButtons (QMessageBox::Ok);
-        msgBox.setDefaultButton (QMessageBox::Ok);
-        msgBox.exec();
+        if (!errorMessage.isEmpty())
+        {
+            QMessageBox msgBox (this);
+            msgBox.setInformativeText (errorMessage);
+            msgBox.setStandardButtons (QMessageBox::Ok);
+            msgBox.setDefaultButton (QMessageBox::Ok);
+            msgBox.exec();
 
-        // try again
-        return;
+            // try again
+            return;
+        }
     }
 
     // add
@@ -240,6 +246,27 @@ void block_input_output::okButton()
                                  description.toStdString(),
                                  shaderParameterOutput);
     }
+    else if (ioDialogType == "editInput")
+    {
+        log() << aspect << "Save input: " << name.toStdString() << std::endl;
+
+        editedBlock->set_input_value (name.toStdString(), defaultValue.toStdString());
+        editedBlock->set_input_storage (name.toStdString(), storageName.toStdString());
+        editedBlock->set_input_type (name.toStdString(), typeName.toStdString());
+        editedBlock->set_input_type_extension (name.toStdString(), typeExtension.toStdString());
+        editedBlock->set_shader_parameter (name.toStdString(), shaderParameterOutput);
+        editedBlock->set_input_description (name.toStdString(), description.toStdString());
+    }
+    else if (ioDialogType == "editOutput")
+    {
+        log() << error << "Save output: " << name.toStdString() << std::endl;
+
+        editedBlock->set_output_storage (name.toStdString(), storageName.toStdString());
+        editedBlock->set_output_type (name.toStdString(), typeName.toStdString());
+        editedBlock->set_output_type_extension (name.toStdString(), typeExtension.toStdString());
+        editedBlock->set_shader_output (name.toStdString(), shaderParameterOutput);
+        editedBlock->set_output_description (name.toStdString(), description.toStdString());
+    }
     else
     {
         log() << error << "Unknown io type: " << ioDialogType << std::endl;
@@ -253,13 +280,13 @@ void block_input_output::setValues (const std::string name, const std::string st
 {
     ui->nameLineEdit->setText (QString::fromStdString (name));
 
-    int storageTypeIndex = ui->storageTypeComboBox->findData (QString::fromStdString (storageTypeName));
+    int storageTypeIndex = ui->storageTypeComboBox->findText (QString::fromStdString (storageTypeName));
     if (storageTypeIndex != -1)
     {
         ui->storageTypeComboBox->setCurrentIndex (storageTypeIndex);
     }
 
-    int typeIndex = ui->typeComboBox->findData (QString::fromStdString (typeName));
+    int typeIndex = ui->typeComboBox->findText (QString::fromStdString (typeName));
     if (typeIndex != -1)
     {
         ui->typeComboBox->setCurrentIndex (typeIndex);
@@ -271,7 +298,7 @@ void block_input_output::setValues (const std::string name, const std::string st
 
             ui->arraySizeSpinBox->setValue (arraySize);
 
-            int arrayTypeIndex = ui->arrayTypeComboBox->findData (QString::fromStdString (arrayTypeName));
+            int arrayTypeIndex = ui->arrayTypeComboBox->findText (QString::fromStdString (arrayTypeName));
             if (arrayTypeIndex != -1)
             {
                 ui->arrayTypeComboBox->setCurrentIndex (arrayTypeIndex);

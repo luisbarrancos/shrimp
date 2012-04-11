@@ -22,6 +22,8 @@
 #ifndef RIB_BLOCK_H
 #define RIB_BLOCK_H
 
+#include "src/shading/rib_root_block.h"
+
 #include "src/services.h"
 
 #include <QDialog>
@@ -36,7 +38,7 @@ class rib_block: public QDialog
     Q_OBJECT
 
 public:
-    explicit rib_block (QWidget *parent, services* shrimpServicesInstance);
+    explicit rib_block (QWidget *parent, services* shrimpServicesInstance, rib_root_block* block);
     ~rib_block();
 
 public slots:
@@ -46,6 +48,7 @@ public slots:
 private:
     Ui::ribBlockDialog *ui;
     services* shrimpServices;
+    rib_root_block* editedBlock;
 };
 
 #endif // RIB_BLOCK_H

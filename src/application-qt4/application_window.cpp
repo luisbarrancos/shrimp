@@ -762,8 +762,16 @@ void application_window::editRibBlock()
 {
     log() << aspect << "Edit RIB block" << std::endl;
 
-    rib_block editRIB (this, shrimp_services);
-    editRIB.exec();
+    rib_root_block* rootBlock = dynamic_cast<rib_root_block*> (activeBlock);
+    if (rootBlock)
+    {
+        rib_block editRIB (this, shrimp_services, rootBlock);
+        editRIB.exec();
+    }
+    else
+    {
+        log() << error << "Trying to edit a non-RIB block as RIB block" << std::endl;
+    }
 }
 
 
