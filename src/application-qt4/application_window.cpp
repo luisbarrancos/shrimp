@@ -47,6 +47,9 @@ application_window::application_window (QWidget* parent) :
 {
     ui->setupUi (this);
 
+    // set default window title
+    setWindowTitle ("Shrimp");
+
     // initialize logging
     log_level_t level = ASPECT;
     std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
@@ -853,7 +856,11 @@ void application_window::editProperty()
 
 void application_window::disconnectProperty()
 {
-    log() << error << "Disconnect property" << std::endl;
+    log() << aspect << "Disconnect property" << std::endl;
+
+    shrimp_services->disconnect (activeProperty);
+
+    ui_scene_view->redraw();
 }
 
 
