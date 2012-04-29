@@ -64,13 +64,24 @@ application_window::application_window (QWidget* parent) :
     // initialize system functions
     systemFunctions = new system_functions();
 
+    // load stylesheet
+    std::string qtPath = findDataDirectory ("qt");
+    qtPath = systemFunctions->combine_paths (qtPath, "stylesheet.qss");
+
+    QFile styleSheetFile (QString::fromStdString (qtPath));
+    styleSheetFile.open (QFile::ReadOnly);
+    QString styleSheet = QLatin1String (styleSheetFile.readAll());
+    styleSheetFile.close();
+
+    setStyleSheet (styleSheet);
+
     // load preferences
-    std::string dataPath = findDataDirectory("data");
-    preferences.initialize(systemFunctions, dataPath);
+    std::string dataPath = findDataDirectory ("data");
+    preferences.initialize (systemFunctions, dataPath);
 
     // create service
-    std::string blockPath = findDataDirectory("blocks");
-    shrimp_services = new services(systemFunctions, preferences, blockPath);
+    std::string blockPath = findDataDirectory ("blocks");
+    shrimp_services = new services (systemFunctions, preferences, blockPath);
 
     // initialize renderer
     renderers = preferences.get_renderer_list();
@@ -91,8 +102,6 @@ application_window::application_window (QWidget* parent) :
 
     // initiliaze variables
     activeBlock = 0;
-    popupStylesheet = "QMenu::item:selected { background-color: orange }"
-            "QMenu::separator { height: 1px; background: grey; margin-left: 10px; margin-right: 10px }";
 
     // connect events
     connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
@@ -138,7 +147,7 @@ application_window::~application_window()
 }
 
 
-std::string application_window::findDataDirectory(const std::string &directoryName)
+std::string application_window::findDataDirectory(const std::string& directoryName)
 {
     // find the given directory on system: in current path
     QString currentPath = QDir().currentPath();
@@ -461,8 +470,6 @@ void application_window::newBlockPopup()
 
     buildContextMenuFromBlock(menu, std::string("Root"));
 
-    menu.setStyleSheet(QString("QMenu::item:selected { background-color: orange }"));
-
     QPoint localPos = ui->addBlockButton->pos();
     menu.exec(ui->addBlockButton->mapToGlobal(localPos));
 }
@@ -584,7 +591,6 @@ void application_window::blockRightClick (const std::string& blockName)
     const bool isRoot = activeBlock->m_root_block;
 
     QMenu menu (this);
-    menu.setStyleSheet (popupStylesheet);
     menu.setTitle ("Block");
 
     if (!isRoot)
@@ -787,7 +793,6 @@ void application_window::propertyRightClick (const shrimp::io_t& property)
     const bool isRoot = activeBlock->m_root_block;
 
     QMenu menu (this);
-    menu.setStyleSheet (popupStylesheet);
     menu.setTitle ("Pad");
 
     int itemCount = 0;
@@ -857,7 +862,6 @@ void application_window::groupRightClick (const int group)
     activeGroup = group;
 
     QMenu menu (this);
-    menu.setStyleSheet (popupStylesheet);
     menu.setTitle ("Group");
 
     // add 'Renamme'
@@ -875,7 +879,6 @@ void application_window::groupRightClick (const int group)
 void application_window::emptyRightClick()
 {
     QMenu menu (this);
-    menu.setStyleSheet (popupStylesheet);
     menu.setTitle ("Group");
 
     // add 'Group selection'

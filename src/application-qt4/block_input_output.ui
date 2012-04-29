@@ -14,20 +14,13 @@
    <string>Dialog</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: black;</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout">
    <item row="6" column="4">
     <widget class="QPushButton" name="cancelButton">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  min-width: 60px;
- }</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Cancel</string>
@@ -63,14 +56,7 @@
    <item row="6" column="2">
     <widget class="QPushButton" name="okButton">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  min-width: 60px;
- }</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Add</string>
@@ -96,7 +82,7 @@
       <string>Input name</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -106,19 +92,7 @@
       <string>Input variable storage type</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">QComboBox {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  selection-background-color: orange;
- }
- QComboBox:editable {
-  color: white;
-  background: orange;
- }
-</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -128,19 +102,7 @@
       <string>Input type</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">QComboBox {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  selection-background-color: orange;
- }
- QComboBox:editable {
-  color: white;
-  background: orange;
- }
-</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -157,19 +119,7 @@
       <string>Array type</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">QComboBox {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  selection-background-color: orange;
- }
- QComboBox:editable {
-  color: white;
-  background: orange;
- }
-</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
@@ -179,7 +129,7 @@
       <string>Makes the input a shader parameter</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Shader parameter</string>
@@ -192,14 +142,14 @@
       <string>Input description</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Name</string>
@@ -209,7 +159,7 @@
    <item row="2" column="0">
     <widget class="QLabel" name="label_2">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Type</string>
@@ -219,7 +169,7 @@
    <item row="5" column="0">
     <widget class="QLabel" name="label_4">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Description</string>
@@ -232,14 +182,14 @@
       <string>Input default value</string>
      </property>
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
     </widget>
    </item>
    <item row="1" column="0">
     <widget class="QLabel" name="defaultValueLabel">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Default value</string>
@@ -249,14 +199,7 @@
    <item row="1" column="3">
     <widget class="QPushButton" name="colorButton">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
- min-width: 90px;
- }</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Color</string>
@@ -266,14 +209,7 @@
    <item row="1" column="4">
     <widget class="QPushButton" name="fileButton">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
- min-width: 90px;
- }</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>File</string>

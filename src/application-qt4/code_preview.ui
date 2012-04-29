@@ -20,20 +20,13 @@
    <string>Code Preview</string>
   </property>
   <property name="styleSheet">
-   <string notr="true">background-color: black;</string>
+   <string notr="true"/>
   </property>
   <layout class="QGridLayout" name="gridLayout_2" columnstretch="0,1,0">
    <item row="1" column="2">
     <widget class="QPushButton" name="okButton">
      <property name="styleSheet">
-      <string notr="true">QPushButton {
-  color: white;
-  background-color: black;
-  border-style: outset;
-  border-width: 1px;
-  border-color: gray;
-  min-width: 60px;
- }</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>OK</string>
@@ -43,7 +36,7 @@
    <item row="0" column="1" colspan="2">
     <widget class="QTextEdit" name="surfaceTextEdit">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="acceptRichText">
       <bool>false</bool>
@@ -56,7 +49,7 @@
    <item row="0" column="0">
     <widget class="QLabel" name="label">
      <property name="styleSheet">
-      <string notr="true">color: white;</string>
+      <string notr="true"/>
      </property>
      <property name="text">
       <string>Surface</string>

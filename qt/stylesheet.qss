@@ -1,0 +1,108 @@
+
+QDialog {
+  background-color: rgb(50,50,50);
+}
+
+QLabel {
+  color: white;
+}
+
+QPushButton {
+  color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: gray;
+}
+
+QPushButton#addBlockButton {
+  min-width: 90px;
+}
+
+QPushButton#renderButton {
+  min-width: 70px;
+}
+
+QPushButton#colorButton {
+  min-width: 90px;
+}
+
+QPushButton#fileButton {
+  min-width: 90px;
+}
+
+QPushButton#cancelButton {
+  min-width: 70px;
+}
+
+QPushButton#okButton {
+  min-width: 70px;
+}
+
+QComboBox {
+  color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: gray;
+  selection-background-color: rgb(20, 55, 255);
+}
+
+QComboBox:editable {
+  color: white;
+  background-color: rgb(40,40,40);
+}
+
+QSlider::groove:horizontal {
+  border: 1px solid rgb(20,20,20);
+  height: 12px;
+  border-radius: 4px ;
+  margin: 2px 0;
+}
+
+QSlider::handle:horizontal {
+  width: 16px;
+  background: rgb(20, 55, 255);
+  margin: 2 2;
+  border-radius: 4px ;
+}
+
+QLineEdit {
+  color: rgb(50,50,50);
+}
+
+QPlainTextEdit {
+  color: rgb(50,50,50);
+}
+
+QTextEdit {
+  color: rgb(50,50,50);
+}
+
+QCheckBox {
+  color: white;
+  border-style: solid;
+  border-width: 1px;
+  border-radius: 4px;
+  border-color: gray;
+}
+
+QCheckBox#splashScreenScheckBox {
+  min-width: 70px;
+}
+
+QSpinBox {
+  
+}
+
+QMenu::item:selected {
+  background-color: rgb(20, 55, 255);
+}
+
+QMenu::separator {
+  height: 1px;
+  background: grey;
+  margin-left: 10px;
+  margin-right: 10px;
+}
+

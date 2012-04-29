@@ -124,8 +124,6 @@ private:
     i_system_functions* systemFunctions;
     services* shrimp_services;
 
-    QString popupStylesheet;
-
     general_options preferences;
     general_options::renderers_t renderers;
     general_options::scenes_t scenes;
