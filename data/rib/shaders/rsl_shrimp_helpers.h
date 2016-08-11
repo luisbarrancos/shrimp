@@ -119,12 +119,12 @@ rotate2d( float x, y, theta, ox, oy;
 ////////////////////////////////////////////////////////////////////////////////
 /* The filterwidth macro takes a float and returns the approximate amount
  * that the float changes from pixel to adjacent pixel */
-#ifndef FILTERWIDTH
-#define FILTERWIDTH(X)	( max( abs(Du(X)*du) + abs(Dv(X)*dv), MINFILTWIDTH ))
+#ifndef filterwidth
+#define filterwidth(X)	( max( abs(Du(X)*du) + abs(Dv(X)*dv), MINFILTWIDTH ))
 #endif
 
-#ifndef FILTERWIDTHP
-#define FILTERWIDTHP(P)	( max( sqrt( area(P) ), MINFILTWIDTH ))
+#ifndef filterwidthp
+#define filterwidthp(P)	( max( sqrt( area(P) ), MINFILTWIDTH ))
 #endif
 
 #ifndef FADEOUT

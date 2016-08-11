@@ -552,7 +552,7 @@ oaktexture(
         )
 {
     extern float du, dv;
-    float dPP = FILTERWIDTH(PP);
+    float dPP = filterwidth(PP);
     
     /* We shade based on Pshad (PP), but we add several layers of warping: */
     /* Some general warping of the domain */
@@ -579,7 +579,7 @@ oaktexture(
     float inring = smoothpulsetrain( .1, .55, .7, .95, 1, r);
 
     point Pgrain = PP * grainfreq * vector( 1, 1, .05);
-    float dPgrain = FILTERWIDTH( Pgrain );
+    float dPgrain = filterwidth( Pgrain );
     float grain = 0;
     
     float amp = 1;

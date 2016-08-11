@@ -1152,7 +1152,7 @@
 			</input>
 			<output name="value" type="float" storage="varying" description="The union of A and B"/>
 			<rsl_code>
-		$(value) = union( $(A), $(B) );
+		$(value) = UNION( $(A), $(B) );
 																</rsl_code>
 			<rsl_include>rsl_shrimp_helpers.h															</rsl_include>
 			<usage>This block computes the logical OR of the two inputs.															</usage>
@@ -1166,7 +1166,7 @@
 			</input>
 			<output name="value" type="float" storage="varying" description="The union of A and B"/>
 			<rsl_code>
-		$(value) = union( $(A), $(B) );
+		$(value) = UNION( $(A), $(B) );
 																</rsl_code>
 			<rsl_include>rsl_shrimp_helpers.h															</rsl_include>
 			<usage>This block computes the logical OR of the two inputs.															</usage>
@@ -1180,7 +1180,7 @@
 			</input>
 			<output name="value" type="float" storage="varying" description="The union of A and B"/>
 			<rsl_code>
-		$(value) = union( $(A), $(B) );
+		$(value) = UNION( $(A), $(B) );
 																</rsl_code>
 			<rsl_include>rsl_shrimp_helpers.h															</rsl_include>
 			<usage>This block computes the logical OR of the two inputs.															</usage>
