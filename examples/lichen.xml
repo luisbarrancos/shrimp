@@ -1571,7 +1571,7 @@
 			</input>
 			<output name="value" type="float" storage="varying" description="Performs the logical operation A XOR B"/>
 			<rsl_code>
-		$(value) = exclusiveor( $(A), $(B) );
+		$(value) = EXCLUSIVEOR( $(A), $(B) );
 																</rsl_code>
 			<rsl_include>rsl_shrimp_helpers.h															</rsl_include>
 			<usage>This block computes the logical operation A XOR B.															</usage>
