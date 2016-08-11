@@ -4,7 +4,7 @@
 	<output name="value" description="The union of A and B" type="float"/>
 	<rsl_include>rsl_shrimp_helpers.h</rsl_include>
 	<rsl_code>
-		$(value) = union( $(A), $(B) );
+		$(value) = UNION( $(A), $(B) );
 	</rsl_code>
 	<usage>This block computes the logical OR of the two inputs.</usage>
 </shrimp>
