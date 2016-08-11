@@ -52,7 +52,7 @@ application_window::application_window (QWidget* parent) :
 
     // initialize logging
     log_level_t level = ASPECT;
-    std::auto_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
+    std::unique_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
 
     /*
             log() << error << "LOG = ERROR" << std::endl;
@@ -90,7 +90,7 @@ application_window::application_window (QWidget* parent) :
     renderers = preferences.get_renderer_list();
     scenes = preferences.get_scene_list();
 
-    setupRendererCombo ("Aqsis");
+    setupRendererCombo ("3Delight");
     setupSceneCombo();
 
     // add the QGLWidget scene_view to the main window
@@ -566,7 +566,7 @@ void application_window::buildContextMenuFromBlock(QMenu& menu, const std::strin
 
     QSignalMapper* signalMapper = new QSignalMapper(this);
     for (std::vector<menuBlock>::iterator entry = node.actionList.begin();
-        entry != node.actionList.end(); ++entry)
+         entry != node.actionList.end(); ++entry)
     {
         QAction* newAction = menu.addAction(QString::fromStdString(entry->block.name));
         connect(newAction, SIGNAL(triggered()), signalMapper, SLOT(map()));

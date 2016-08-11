@@ -1,6 +1,6 @@
 <renderers>
 	<_3delight name="3Delight">
-		<shader_compiler>shaderdl -DRENDERER=%r -w2 -O3 -I%i -d $HOME/.shrimp/temp %s</shader_compiler>
+		<shader_compiler>shaderdl -DRENDERER=%r -w2 -O3 -I%i -o %o %s</shader_compiler>
 		<compiled_shader_extension>sdl</compiled_shader_extension>
 		<renderer_command>renderdl -p 2 -id %s</renderer_command>
 		<displays>framebuffer bmp cineon dsm eps exr ghost idisplay iff maya_render_view null pic png psd radiance shadowmap tiff zfile</displays>

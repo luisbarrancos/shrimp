@@ -26,103 +26,103 @@
 
 shrimp::group_set_t scene::group_list() {
 
-	shrimp::group_set_t groups;
-	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
-		groups.insert(g->second);
-	}
+    shrimp::group_set_t groups;
+    for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+        groups.insert(g->second);
+    }
 
-	return groups;
+    return groups;
 }
 
 
 void scene::add_to_group (const std::string& Block, const int Group) {
 
-	if (Block.size() && Group)
-		m_groups.insert (std::make_pair(Block, Group));
+    if (Block.size() && Group)
+        m_groups.insert (std::make_pair(Block, Group));
 }
 
 
 int scene::get_block_group (const shader_block* Block) {
 
-	shrimp::groups_t::const_iterator g = m_groups.find(Block->name());
-	if(g == m_groups.end())
-		return 0;
+    shrimp::groups_t::const_iterator g = m_groups.find(Block->name());
+    if(g == m_groups.end())
+        return 0;
 
-	return g->second;
+    return g->second;
 }
 
 
 void scene::ungroup (const int Group) {
 
-	shrimp::groups_t groups2;
-	for (shrimp::groups_t::iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
+    shrimp::groups_t groups2;
+    for (shrimp::groups_t::iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
 
-		if (g->second != Group) {
+        if (g->second != Group) {
 
-			groups2.insert (*g);
-		}
-	}
+            groups2.insert (*g);
+        }
+    }
 
-	m_groups = groups2;
+    m_groups = groups2;
 
-	m_group_names.erase (Group);
+    m_group_names.erase (Group);
 }
 
 
 void scene::group_blocks (const shrimp::shader_blocks_t& Blocks)
 {
-	// find the next group number
-	int max = 0;
-	for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g)
-	{
-		if(g->second > max)
-			max = g->second;
-	}
-	++max;
+    // find the next group number
+    int max = 0;
+    for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g)
+    {
+        if(g->second > max)
+            max = g->second;
+    }
+    ++max;
 
-	// store new group
-	for (shrimp::shader_blocks_t::const_iterator block_i = Blocks.begin(); block_i != Blocks.end(); ++block_i)
-	{
-		m_groups.insert(std::make_pair((*block_i)->name(), max));
-	}
+    // store new group
+    for (shrimp::shader_blocks_t::const_iterator block_i = Blocks.begin(); block_i != Blocks.end(); ++block_i)
+    {
+        m_groups.insert(std::make_pair((*block_i)->name(), max));
+    }
 }
 
 
 shrimp::shader_blocks_t scene::get_group_blocks (const int Group)
 {
-	shrimp::shader_blocks_t blocks;
+    shrimp::shader_blocks_t blocks;
 
-	for (shrimp::groups_t::const_iterator block_i = m_groups.begin(); block_i != m_groups.end(); ++block_i)
-	{
-		if (block_i->second == Group)
-		{
-			blocks.insert (get_block (block_i->first));
-		}
-	}
+    for (shrimp::groups_t::const_iterator block_i = m_groups.begin(); block_i != m_groups.end(); ++block_i)
+    {
+        if (block_i->second == Group)
+        {
+            blocks.insert (get_block (block_i->first));
+        }
+    }
 
-	return blocks;
+    return blocks;
 }
 
 
 const std::string scene::get_group_name (const int Group) const {
 
-	group_names_t::const_iterator name = m_group_names.find(Group);
-	if (name == m_group_names.end())
-		return "Group " + string_cast(Group);
+    group_names_t::const_iterator name = m_group_names.find(Group);
+    if (name == m_group_names.end())
+        return "Group " + string_cast(Group);
 
-	return name->second;
+    return name->second;
 }
 
 
 void scene::set_group_name(const int Group, const std::string& Name) {
 
-	group_names_t::iterator g = m_group_names.find(Group);
-	if (g == m_group_names.end()) {
-		m_group_names.insert (std::make_pair(Group, Name));
-	} else {
-		// insert() does not erase an existing record
-		g->second = Name;
-	}
+    group_names_t::iterator g = m_group_names.find(Group);
+    if (g == m_group_names.end()) {
+        m_group_names.insert (std::make_pair(Group, Name));
+    } else {
+        // insert() does not erase an existing record
+        g->second = Name;
+    }
 }
 
 

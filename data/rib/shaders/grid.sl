@@ -23,6 +23,7 @@ surface grid(
 
 	aov_surfacecolor += (cvert * chori);
 	aov_diffuse += diffuse( faceforward( normalize(N), I));
+	aov_diffuse = 1;
 
 	/* get shadows pass */
 	getshadows(P);

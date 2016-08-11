@@ -29,26 +29,26 @@ namespace xml
 
 void get_attributes(TiXmlElement& Element, attributes_t& Attributes)
 {
-	for(TiXmlAttribute* a = Element.FirstAttribute(); a; a = a->Next())
-	{
-		std::string name(a->Name());
-		std::string value(a->Value());
-		Attributes.insert(std::make_pair(name, value));
-	}
+    for(TiXmlAttribute* a = Element.FirstAttribute(); a; a = a->Next())
+    {
+        std::string name(a->Name());
+        std::string value(a->Value());
+        Attributes.insert(std::make_pair(name, value));
+    }
 }
 
 bool get_attribute(TiXmlElement& Element, const std::string& Name, std::string& Value)
 {
-	for(TiXmlAttribute* a = Element.FirstAttribute(); a; a = a->Next())
-	{
-		if(Name != a->Name())
-			continue;
+    for(TiXmlAttribute* a = Element.FirstAttribute(); a; a = a->Next())
+    {
+        if(Name != a->Name())
+            continue;
 
-		Value = a->Value();
-		return true;
-	}
+        Value = a->Value();
+        return true;
+    }
 
-	return false;
+    return false;
 }
 
 void output_tree::output(const element& Element)

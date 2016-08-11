@@ -655,7 +655,7 @@
      <x>0</x>
      <y>0</y>
      <width>893</width>
-     <height>26</height>
+     <height>25</height>
     </rect>
    </property>
    <property name="palette">
@@ -1364,8 +1364,10 @@ QMenu::item:pressed {
     <addaction name="actionCopy"/>
     <addaction name="actionPaste"/>
     <addaction name="actionCut"/>
+    <addaction name="separator"/>
     <addaction name="actionGroup"/>
     <addaction name="actionUngroup"/>
+    <addaction name="separator"/>
     <addaction name="actionEditBlock"/>
     <addaction name="actionDeleteBlocks"/>
    </widget>
@@ -1402,6 +1404,7 @@ QMenu::item:pressed {
      <bool>false</bool>
     </property>
     <addaction name="actionShowGrid"/>
+    <addaction name="separator"/>
     <addaction name="actionSnapBlocks"/>
    </widget>
    <widget class="QMenu" name="menuAbout">

@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT += core gui
 QT += opengl
 
 TARGET = shrimp
@@ -12,6 +12,15 @@ TEMPLATE = app
 
 MOC_DIR = .qmake_temp
 OBJECTS_DIR = .qmake_temp
+
+QMAKE_CFLAGS += -fPIC -std=c++11
+QMAKE_CXXFLAGS += -fPIC -std=c++11
+QMAKE_LFLAGS += -L/usr/lib64 -lglut -fPIC
+
+LIBS += -L/usr/lib64 -L/usr/local/lib64 -lGL -lGLU -lglut
+QMAKE_LIBS += -L/usr/lib64 -lGL -lGLU -lglut
+
+DEFINES += QT_NO_PRINTER
 
 
 FORMS    += src/application-qt4/application_window.ui \

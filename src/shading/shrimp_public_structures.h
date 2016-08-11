@@ -32,25 +32,25 @@
 
 namespace shrimp
 {
-	// definition of a pad, as a pair of strings:
-	// the first is the block name, the second is the pad name
-	typedef std::pair <std::string, std::string> io_t;
-	// store connections as a directed acyclic graph, Output -> Input,
-	// in a map as <input, output>, an input receives only one output
-	typedef std::map <io_t, io_t> dag_t;
+    // definition of a pad, as a pair of strings:
+    // the first is the block name, the second is the pad name
+    typedef std::pair <std::string, std::string> io_t;
+    // store connections as a directed acyclic graph, Output -> Input,
+    // in a map as <input, output>, an input receives only one output
+    typedef std::map <io_t, io_t> dag_t;
 
-	typedef std::set<shader_block*> shader_blocks_t;
-	// group structures
-	typedef std::set<int> group_set_t;
-	typedef std::map<std::string, int> groups_t;
+    typedef std::set<shader_block*> shader_blocks_t;
+    // group structures
+    typedef std::set<int> group_set_t;
+    typedef std::map<std::string, int> groups_t;
 }
 
 
 // Shrimp block list
 struct default_block_t
 {
-	std::string name;
-	std::string path;
+    std::string name;
+    std::string path;
 };
 typedef std::vector<default_block_t> default_block_list_t;
 
@@ -61,11 +61,11 @@ typedef std::vector<block_tree_node_t> block_tree_node_list_t;
 
 struct block_tree_node_t
 {
-	std::string node_name;
-	std::string node_path;
-	block_tree_node_list_t child_nodes;
+    std::string node_name;
+    std::string node_path;
+    block_tree_node_list_t child_nodes;
 
-	default_block_list_t blocks;
+    default_block_list_t blocks;
 };
 
 

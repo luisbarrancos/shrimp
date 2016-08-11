@@ -29,52 +29,52 @@
 
 
 class scene_view :
-	public QGLWidget,
-	public opengl_view
+        public QGLWidget,
+        public opengl_view
 {
 public:
-	Q_OBJECT
+    Q_OBJECT
 
-	services* m_services;
+    services* m_services;
 
 public:
-	scene_view (services* services_instance);
-        ~scene_view();
+    scene_view (services* services_instance);
+    ~scene_view();
 
-	QSize sizeHint() const;
-        void redraw();
+    QSize sizeHint() const;
+    void redraw();
 
-        double fit_scene();
+    double fit_scene();
 
 protected:
-	void initializeGL();
-	void paintGL();
-	void resizeGL (int width, int height);
-        void drawGlText (const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
+    void initializeGL();
+    void paintGL();
+    void resizeGL (int width, int height);
+    void drawGlText (const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
 
-        void mousePressEvent (QMouseEvent *);
-        void mouseMoveEvent (QMouseEvent *);
-        void mouseReleaseEvent (QMouseEvent *);
-        void wheelEvent (QWheelEvent *);
+    void mousePressEvent (QMouseEvent *);
+    void mouseMoveEvent (QMouseEvent *);
+    void mouseReleaseEvent (QMouseEvent *);
+    void wheelEvent (QWheelEvent *);
 
-        void updateSceneZoom(const double);
+    void updateSceneZoom(const double);
 
-        // callbacks
-        void shader_property_right_click (shrimp::io_t& Property);
-        void shader_block_right_click (std::string& Block);
-        void block_group_right_click (int Group);
-        void empty_right_click();
+    // callbacks
+    void shader_property_right_click (shrimp::io_t& Property);
+    void shader_block_right_click (std::string& Block);
+    void block_group_right_click (int Group);
+    void empty_right_click();
 
 signals:
-        void setSceneZoom (const double);
-        void shaderBlockRightClick (const std::string blockName);
-        void shaderPropertyRightClick (const shrimp::io_t property);
-        void blockGroupRightClick (const int group);
-        void emptyRightClick();
+    void setSceneZoom (const double);
+    void shaderBlockRightClick (const std::string blockName);
+    void shaderPropertyRightClick (const shrimp::io_t property);
+    void blockGroupRightClick (const int group);
+    void emptyRightClick();
 
 private:
-        QSize currentSize;
-        QFont currentFont;
+    QSize currentSize;
+    QFont currentFont;
 };
 
 

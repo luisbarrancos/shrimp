@@ -36,35 +36,34 @@ system_functions::system_functions() :
 
 std::string system_functions::get_user_directory()
 {
-	log() << aspect << "system_functions::get_user_directory()" << std::endl;
+    log() << aspect << "system_functions::get_user_directory()" << std::endl;
 
-	// get user's home
-	QString home = QDir().homePath();
+    // get user's home
+    QString home = QDir().homePath();
 
-	// check for .shrimp directory, create it if not there
-	QString shrimp = home + QDir().separator() + ".shrimp";
-	if (!QDir().exists (shrimp))
-	{
-		QDir().mkdir (shrimp);
-	}
+    // check for .shrimp directory, create it if not there
+    QString shrimp = home + QDir().separator() + ".shrimp";
+    if (!QDir().exists (shrimp))
+    {
+        QDir().mkdir (shrimp);
+    }
 
-	return shrimp.toStdString();
+    return shrimp.toStdString();
 }
 
 
 std::string system_functions::get_temp_directory()
 {
-	// get .shrimp directory
-	std::string shrimp = get_user_directory();
+    // get .shrimp directory
+    std::string shrimp = get_user_directory();
 
-	// check for temp directory
-        QString temp = QString::fromStdString(shrimp) + QDir().separator() + QString::fromStdString("temp");
-        if (!QDir().exists (temp))
-	{
-            QDir().mkdir (temp);
-	}
-
-        return temp.toStdString();
+    // check for temp directory
+    QString temp = QString::fromStdString(shrimp) + QDir().separator() + QString::fromStdString("temp");
+    if (!QDir().exists (temp))
+    {
+        QDir().mkdir (temp);
+    }
+    return temp.toStdString();
 }
 
 
@@ -87,41 +86,41 @@ std::string system_functions::get_absolute_path (const std::string& path)
 
 std::vector<std::string> system_functions::list_directory (const std::string& directory)
 {
-	std::vector<std::string> list;
+    std::vector<std::string> list;
 
-	QString qdirectory = QString::fromStdString (directory);
-	QDir dir_info (qdirectory);
-	QStringList directory_items = dir_info.entryList();
+    QString qdirectory = QString::fromStdString (directory);
+    QDir dir_info (qdirectory);
+    QStringList directory_items = dir_info.entryList();
 
-	if (directory_items.count() <= 0)
-	{
-		log() << error << "Couldn't list the content of directory '" << directory << "'" << std::endl;
-	}
-	else
-	{
-		for (QStringList::const_iterator i = directory_items.constBegin(); i != directory_items.constEnd(); ++i)
-		{
-			list.push_back (i->toStdString());
-		}
-	}
+    if (directory_items.count() <= 0)
+    {
+        log() << error << "Couldn't list the content of directory '" << directory << "'" << std::endl;
+    }
+    else
+    {
+        for (QStringList::const_iterator i = directory_items.constBegin(); i != directory_items.constEnd(); ++i)
+        {
+            list.push_back (i->toStdString());
+        }
+    }
 
-	return list;
+    return list;
 }
 
 
 bool system_functions::is_directory (const std::string& path)
 {
-	const QString qpath = QString::fromStdString (path);
-	QDir dir = QDir (qpath);
+    const QString qpath = QString::fromStdString (path);
+    QDir dir = QDir (qpath);
 
-	return dir.exists();
+    return dir.exists();
 }
 
 
 std::string system_functions::combine_paths (const std::string& path1, const std::string& path2)
 {
-	QString new_path = QString::fromStdString (path1) + QDir().separator() + QString::fromStdString (path2);
-	return new_path.toStdString();
+    QString new_path = QString::fromStdString (path1) + QDir().separator() + QString::fromStdString (path2);
+    return new_path.toStdString();
 }
 
 
@@ -159,9 +158,11 @@ void system_functions::execute_synchronous_command (const std::string& command)
     QObject::connect(runningProcess, SIGNAL(finished(int, QProcess::ExitStatus)), this, SLOT(processFinished(int, QProcess::ExitStatus)));
 
     runningProcess->start (QString::fromStdString (command));
+    runningProcess->waitForStarted();
+
 
     // always wait for the process to finish before starting a new one (all shaders must be compiled before rendering)
-    if (!runningProcess->waitForFinished())
+    if ( !runningProcess->waitForFinished() )
     {
         log() << error << "Synchronous process failed" << std::endl;
     }

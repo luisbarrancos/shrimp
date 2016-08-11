@@ -39,32 +39,32 @@ bool get_attribute(TiXmlElement& Element, const std::string& Name, std::string& 
 // XML output
 struct attribute
 {
-	attribute(const std::string& Name, const std::string& Value) : name(Name), value(Value) {}
+    attribute(const std::string& Name, const std::string& Value) : name(Name), value(Value) {}
 
-	std::string name;
-	std::string value;
+    std::string name;
+    std::string value;
 };
 
 class element
 {
 public:
-	element(const std::string& Name) : name(Name) {}
+    element(const std::string& Name) : name(Name) {}
 
-	void set_text(const std::string& Value) { text = Value; }
+    void set_text(const std::string& Value) { text = Value; }
 
-	void push_attribute(const std::string& Name, const std::string& Value) { attributes.push_back(attribute(Name, Value)); }
-	template<typename T>
-	void push_attribute(const std::string& Name, const T& Value) { push_attribute(Name, string_cast(Value)); }
+    void push_attribute(const std::string& Name, const std::string& Value) { attributes.push_back(attribute(Name, Value)); }
+    template<typename T>
+    void push_attribute(const std::string& Name, const T& Value) { push_attribute(Name, string_cast(Value)); }
 
-	void push_child(const element& Value) { children.push_back(Value); }
+    void push_child(const element& Value) { children.push_back(Value); }
 
-	std::string name;
-	std::string text;
+    std::string name;
+    std::string text;
 
-	typedef std::vector<attribute> attributes_t;
-	attributes_t attributes;
-	typedef std::vector<element> elements_t;
-	elements_t children;
+    typedef std::vector<attribute> attributes_t;
+    attributes_t attributes;
+    typedef std::vector<element> elements_t;
+    elements_t children;
 };
 
 class output_tree
@@ -72,7 +72,7 @@ class output_tree
 public:
     output_tree (element& Element, std::ostream& Stream) :
         m_stream(Stream),
-	m_indentation(0)
+        m_indentation(0)
     {
         output(Element);
     }
