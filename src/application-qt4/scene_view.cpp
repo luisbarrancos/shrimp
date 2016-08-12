@@ -148,8 +148,9 @@ void scene_view::mouseReleaseEvent(QMouseEvent * event)
 
 void scene_view::wheelEvent(QWheelEvent * event)
 {
-    int wheel_move = event->delta();
-    mouse_wheel_update(static_cast<double>(wheel_move) / 150);
+    int numDegrees = event->delta() / 8;
+    int numSteps   = numDegrees / 15 ;
+    mouse_wheel_update( numSteps );
     redraw();
 }
 

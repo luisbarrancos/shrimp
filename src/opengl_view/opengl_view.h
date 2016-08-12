@@ -54,7 +54,7 @@ public:
     virtual void drawGlText(const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold) {}
 
     // event functions
-    void mouse_wheel_update(double move);
+    void mouse_wheel_update(int move);
     void mouse_move(int mouse_x, int mouse_y);
     void mouse_any_button_down(int mouse_x, int mouse_y);
     void mouse_left_button_down(const int mouse_x, const int mouse_y, const bool shift_key_down, const bool ctrl_key_down);

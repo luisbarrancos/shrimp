@@ -712,7 +712,7 @@ void opengl_view::snap_position (double& X, double& Y)
 }
 
 
-void opengl_view::mouse_wheel_update(double move)
+void opengl_view::mouse_wheel_update(int move)
 {
     log() << aspect << "opengl_view: mouse_wheel_update, move=" << move << std::endl;
 

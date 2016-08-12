@@ -366,7 +366,7 @@ int scene_view::handle (int Event)
 		case fltk::MOUSEWHEEL:
 		{
 			int wheel_move = fltk::event_dy();
-			mouse_wheel_update(static_cast<double>(wheel_move));
+			mouse_wheel_update(wheel_move);
 			redraw();
 		}
 		return 1;
