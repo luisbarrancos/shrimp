@@ -132,3 +132,9 @@ QSpinBox {
   
 }
 
+QToolTip {
+  color: rgb(250,250,250);
+  background-color: rgb(40,45,50);
+  border: none;
+}
+
