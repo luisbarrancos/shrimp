@@ -1,4 +1,4 @@
-<shrimp name="dpdv" type="function" description="Surface derivative along V" author="rconstruct">
+<shrimp name="dPdv" type="function" description="Surface derivative along V" author="rconstruct">
 	<output name="value" description="Surface derivative of point P along V" type="vector"/>
 	<rsl_code>
 		$(value) = dPdv;

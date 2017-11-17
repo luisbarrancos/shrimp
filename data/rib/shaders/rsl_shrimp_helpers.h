@@ -20,6 +20,7 @@
 #define S_PI		3.141592653589793	/* PI */
 #define S_PI_2		1.570796326794896	/* PI/2 */
 #define S_2PI		6.283185307179586	/* 2*PI */
+#define S_SQRT_2PI	2.506628274631000	/* sqrt(2*PI) */
 #define S_1_PI		0.318309886183790	/* 1/PI */
 #define S_PHI		1.618033988749894	/* Golden ratio */
 #define S_SIN36		0.587785252292473	/* sin(radians(36)) */

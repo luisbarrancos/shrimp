@@ -270,6 +270,7 @@ cylindrical2spherical(	point in;
 // shader by Larry Gritz, from:  ///////////////////////////////////////////////
 // http://forums.nvidia.com/index.php?showtopic=23197&hl=tangent ///////////////
 ////////////////////////////////////////////////////////////////////////////////
+// TODO: replace this by TBN matrix using dPds and dPdt
 normal
 tangent2object(
 				uniform string tangenttex;

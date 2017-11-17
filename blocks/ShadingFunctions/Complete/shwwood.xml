@@ -7,6 +7,7 @@
     <input name="roughness" description="Specular roughness" type="float" default="0.2"/>
     <input name="fiberAxis" description="Fiber axis" type="vector" default="vector( 1, 0, 0)"/>
     <input name="I" description="Viewer vector" storage="varying" type="vector" default="normalize(I)"/>
+	<input name="xdir" description="Surface tangent along X" storage="varying" type="vector" default="dPdu"/>
     <input name="N" description="Surface normal" storage="varying" type="vector normal" default="normalize(N)"/>
     <input name="surfacecolor" description="Diffuse color" type="color" default="color( .45, .3, .12)"/>
     <input name="fibercolor" description="Fiber color" type="color" default="color(1, .6, .4)"/>
@@ -16,7 +17,7 @@
 	<rsl_code>
         $(Ci) = woodreflectance(	$(ior), $(width), $(roughness),
 									$(Ka), $(Kd), $(Ks),
-									$(fiberAxis), $(I), $(N),
+									$(fiberAxis), $(I), $(xdir), $(N),
 									$(surfacecolor), $(fibercolor),
 									$(category),
 									DECLARE_AOV_PARAMETERS );

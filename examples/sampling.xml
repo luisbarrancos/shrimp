@@ -1,0 +1,77 @@
+<shrimp name="new_scene" authors="">
+	<about/>
+	<network>
+		<block id="Root block" position_x="6.93687361059217" position_y="6.13335860404005" author="" root="RIB">
+			<rib_statements>Attribute &quot;visibility&quot; &quot;integer diffuse&quot; [ 1 ]
+Attribute &quot;visibility&quot; &quot;integer specular&quot; [ 1 ]
+Attribute &quot;visibility&quot; &quot;integer transmission&quot; [ 1 ]
+Attribute &quot;cull&quot; &quot;integer hidden&quot; [ 0 ]
+Attribute &quot;cull&quot; &quot;integer backfacing&quot; [ 0 ]
+
+
+Attribute &quot;visibility&quot; &quot;integer camera&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer trace&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer diffuse&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer specular&quot; [1]
+Attribute &quot;visibility&quot; &quot;integer transmission&quot; [1]
+Attribute &quot;visibility&quot; &quot;string transmission&quot; [&quot;shader&quot;]
+Attribute &quot;shade&quot; &quot;string diffusehitmode&quot; [&quot;shader&quot;]
+Attribute &quot;shade&quot; &quot;string specularhitmode&quot; [&quot;shader&quot;]
+Attribute &quot;shade&quot; &quot;string transmissionhitmode&quot; [&quot;shader&quot;]
+
+Option &quot;trace&quot; &quot;integer maxdepth&quot; [2]
+Option &quot;trace&quot; &quot;float approximation&quot; [100]
+			</rib_statements>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="WardPDF" output="Ci"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<rsl_code/>
+			<rsl_include/>
+			<usage/>
+		</block>
+		<block id="WardPDF" position_x="3.83923478489277" position_y="6.81112324855839" author="rconstruct">
+			<input name="ax" type="float" storage="varying" value="0.1" description="Roughness on X direction"/>
+			<input name="ay" type="float" storage="varying" value="0.1" description="Roughness on Y direction"/>
+			<input name="samples" type="float" storage="uniform" value="32" description="Number of samples"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="The surface normal"/>
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="The viewer vector"/>
+			<input name="udir" type="vector" storage="varying" value="normalize(dPdu)" description="Anisotropy direction"/>
+			<input name="label" type="string" storage="uniform" value="&quot;&quot;" description="Ray label"/>
+			<input name="subset" type="string" storage="uniform" value="&quot;&quot;" description="Geometry group for ray intersection"/>
+			<input name="hitmode" type="string" storage="uniform" value="&quot;default&quot;" description="Override for shading mode"/>
+			<input name="bias" type="float" storage="uniform" value="0.01" description="Ray bias"/>
+			<input name="maxdist" type="float" storage="uniform" value="1e+38" description="Maximum ray distance"/>
+			<input name="envmap" type="string" storage="uniform" value="&quot;&quot;" description="Environment map to use with no ray hits"/>
+			<input name="envspace" type="string" storage="uniform" value="&quot;camera&quot;" description="Environment space"/>
+			<input name="filter" type="string" storage="uniform" value="&quot;gaussian&quot;" description="Environment filter"/>
+			<input name="width" type="float" storage="uniform" value="1" description="Environment filter width"/>
+			<input name="envsamples" type="float" storage="uniform" value="4" description="Environment lookup samples"/>
+			<input name="envblur" type="float" storage="varying" value="0" description="Environment lookup blur"/>
+			<output name="Ci" type="color" storage="varying" description="The amount of diffuse light"/>
+			<rsl_code>
+		// This block deals with both isotropic and anisotropic Ward PDF
+		// according to values of ax/ay (nu/nv)
+		$(Ci) = samplepdf(	0, $(samples), $(ax), $(ay),
+							0,0,0, /* unused roughness/exponent/isotropy*/
+							$(I), $(udir), $(N),
+							$(label), $(subset), $(hitmode), $(bias),
+							$(maxdist), $(envmap), $(envspace), $(filter),
+							$(width), $(envsamples), $(envblur) );
+		aov_reflection += $(Ci);
+							</rsl_code>
+			<rsl_include>rsl_shrimp_sampling.h						</rsl_include>
+			<usage>This block generates a distribution of rays according to the Ward PDF. If the values of &quot;ax&quot; and &quot;ay&quot; (the apparent surface roughness along the X and Y directions respectively) are identical, then isotropic Ward distribution is used, otherwise, the anisotropic Ward distribution is used instead. The variable &quot;samples&quot; specifies the number of rays to generate, and since this increases the number of loop iterations, increasing the number of rays, increases also the render times (but reduces noise). The &quot;envmap&quot; variable contains the environment map to use when there are no ray intersections.The variables &quot;envspace&quot; controls the space transformation for the ray used for the environment lookup, while &quot;filter&quot;, &quot;envsamples&quot;, &quot;width&quot;, &quot;envblur&quot; control the environment lookup respectively.						</usage>
+		</block>
+	</network>
+</shrimp>

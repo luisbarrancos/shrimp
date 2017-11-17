@@ -1,0 +1,9 @@
+<shrimp type="function" name="dPdt" description="Surface derivative along T" author="rconstruct">
+	<output name="dPdt" description="Surface derivative of point P along T" type="vector"/>
+	<rsl_code>
+		$(dPdt) = vector( (Dv(P)*Du(s) - Du(P)*Dv(s)) /
+					( Du(s)*Dv(t) - Dv(s)*Du(t)) );
+	</rsl_code>
+	<usage>Surface derivative of point &quot;P&quot; along direction &quot;S&quot; texture coordinate. Based on &quot;Computing dP/dt Accurately in PRMan&quot; by Brent Burley, Walt Disney Feature Animation, May 2006, from the SIGGRAPH 2006 course notes, and Julian Fong post 16936 in the RenderMan forums, under the thread &quot;Subdivision surfaces &amp; vertex winding order&quot;.</usage>
+</shrimp>
+
