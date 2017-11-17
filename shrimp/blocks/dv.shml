@@ -1,0 +1,7 @@
+<shrimp type="function" name="Dv" description="Compute Derivative in v direction">
+	<input name="p" description="Value to compute derivative at" type="float color vector point"/>
+	<output name="val" description="Derivative of p with respect to v" type="float color vector point"/>
+	<code>
+	$(val) = Dv( $(p) );
+	</code>
+</shrimp>

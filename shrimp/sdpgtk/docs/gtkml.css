@@ -1,0 +1,15 @@
+BODY, H1, H2, H3, H4, H5, H6, P, TABLE, TR, TD { font-family: "Arial", sans-serif; color: black }
+PRE { font-family: "Courier", monospace }
+BODY { background-color: white }
+
+A:link { color: blue }
+A:visited { color: blue }
+A:active { color: blue }
+ 
+.BOX { text-align: left; color: white; font-weight: bold }
+
+
+A:link { color: #EE7700 }
+A:visited { color: #EE7700 }
+A:active { color: #EE7700 }
+.BOX { background-color: #FF8800 }

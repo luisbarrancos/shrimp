@@ -1,0 +1,8 @@
+<shrimp type="function" name="Output" description="Outputs to Imager Shader">
+	<input name="Ci" description="Output pixel colour" type="color" default="0"/>
+	<input name="Oi" description="Output pixel opacity" type="color" default="1"/>
+	<code>
+	Ci = $(Ci);
+	Oi = $(Oi);
+	</code>
+</shrimp>

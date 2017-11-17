@@ -1,0 +1,12 @@
+<shrimp type="function" name="Environment" description="Adds environment reflections at surface">
+	<input name="envMap" description="Environment Map" type="string" shadervar="true" default=""/>
+	<input name="R" description="Reflection vector" type="vector" default="reflect( Ng, I)"/>
+	<input name="blur" description="Reflection blur amount" type="float" shadervar="true" default="0.0"/>
+	<input name="filter" description="filter type" type="string" default="&quot;gaussian&quot;"/>
+	<input name="Kr" description="Reflection intensity" type="float" default="1.0"/>
+	<output name="col" description="Reflection output color" type="color" />
+	<usage>Enter a envlatl texture map, in .tex format, to the envMap input, and the reflection vector that can be computed with either a reflect or a fresnel node. You can blur the reflection map globally, using one of the following filters: "box", "triangle", "catmull-rom", "sinc", and "gaussian", being "gaussian" the default.</usage>
+	<code>
+	$(col) = $(Kr) * environment($(envMap), $(R), "blur", $(blur), "filter", $(filter));
+	</code>
+</shrimp>

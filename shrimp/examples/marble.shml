@@ -1,0 +1,143 @@
+<shrimp name="marble" type="surface">
+	<about>Author A.Gill
+
+Shrimp example shader. This is an implementation of the marble shader described by Darwyn Peachey in Texturing and Modelling by Ebert et al.
+	</about>
+	<circuit gridsize="57 36">
+		<block file="surface_output.shml" id="Output_2" position="50 9">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Plastic_2"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false" value="1"/>
+		</block>
+		<block file="plastic.shml" id="Plastic_2" position="44 9">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="0.5"/>
+			<input name="Ks" type="float" shadervar="true" value="0.5"/>
+			<input name="roughness" type="float" shadervar="true" value="0.1"/>
+			<input name="specularcolour" type="color" shadervar="false" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false" value="faceforward( normalize(N), I )"/>
+			<input name="V" type="vector" shadervar="false" value="-normalize( I )"/>
+			<input name="Cs" type="color" shadervar="false">
+				<connection outputname="val" outputparentid="Spline"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="1.0"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="fbm3d.shml" id="fBm3D" position="19 6">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale"/>
+			</input>
+			<input name="fwidth" type="float" shadervar="false">
+				<connection outputname="fwidth" outputparentid="FWidth_3"/>
+			</input>
+			<input name="octaves" type="float" shadervar="false" value="5"/>
+			<input name="lacunarity" type="float" shadervar="false" value="2.17"/>
+			<input name="gain" type="float" shadervar="false" value="0.5"/>
+			<input name="amplitude" type="float" shadervar="false" value="1.0"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="scale.shml" id="Scale" position="7 7">
+			<input name="a" type="point" shadervar="false">
+				<connection outputname="pp" outputparentid="Transform"/>
+			</input>
+			<input name="factor" type="float" shadervar="true" value="2.5"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="p.shml" id="p" position="1 2">
+			<output name="P" type="point"/>
+		</block>
+		<block file="fwidth.shml" id="FWidth_3" position="13 9">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale"/>
+			</input>
+			<output name="fwidth" type="float"/>
+		</block>
+		<block file="clamp.shml" id="Clamp" position="31 6">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Add"/>
+			</input>
+			<input name="min" type="float" shadervar="false" value="0"/>
+			<input name="max" type="float" shadervar="false" value="1.0"/>
+			<output name="out" type="float"/>
+		</block>
+		<block file="add.shml" id="Add" position="25 6">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="fBm3D"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" + " value="0.75"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="constant.shml" id="Constant" position="23 18">
+			<input name="in" type="color" shadervar="false" value="color( 0.35, 0.35, 0.45 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="constant.shml" id="Constant_2" position="23 22">
+			<input name="in" type="color" shadervar="false" value="color( 0.15, 0.15, 0.4 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="constant.shml" id="Constant_3" position="23 26">
+			<input name="in" type="color" shadervar="false" value="color( 0.12, 0.12, 0.3 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="constant.shml" id="Constant_4" position="23 30">
+			<input name="in" type="color" shadervar="false" value="color( 0.1, 0.1, 0.25 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="spline.shml" id="Spline" position="37 16">
+			<input name="basis" type="string" shadervar="false" value="&quot;catmull-rom&quot;"/>
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="out" outputparentid="Clamp"/>
+			</input>
+			<input name="cp1" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant"/>
+			</input>
+			<input name="cp2" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant"/>
+			</input>
+			<input name="cp3" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant_2"/>
+			</input>
+			<input name="cp4" type="color" shadervar="false" multi="true" separator=", ">
+				<connection outputname="out" outputparentid="Constant_2"/>
+			</input>
+			<input name="cp4_2" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_2"/>
+			</input>
+			<input name="cp4_3" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant"/>
+			</input>
+			<input name="cp4_4" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant"/>
+			</input>
+			<input name="cp4_5" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_3"/>
+			</input>
+			<input name="cp4_6" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_3"/>
+			</input>
+			<input name="cp4_7" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_4"/>
+			</input>
+			<input name="cp4_8" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_4"/>
+			</input>
+			<input name="cp4_9" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant"/>
+			</input>
+			<input name="cp4_10" type="color" shadervar="false" multi="true" separator=", " copy="true" basename="cp4">
+				<connection outputname="out" outputparentid="Constant_4"/>
+			</input>
+			<output name="val" type="color"/>
+		</block>
+		<block file="transform.shml" id="Transform" position="7 2">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="from_space" type="string" shadervar="false" value="&quot;current&quot;"/>
+			<input name="to_space" type="string" shadervar="false" value="&quot;shader&quot;"/>
+			<output name="pp" type="point"/>
+		</block>
+	</circuit>
+</shrimp>

@@ -1,0 +1,9 @@
+<shrimp type="function" name="Mix" description="Performs a linear blend between A and B">
+	<input name="alpha" description="The mixing factor" type="float"/>
+	<input name="A" description="1st Input" type="float color point vector normal"/>
+	<input name="B" description="2nd Input" type="float color point vector normal"/>
+	<output name="out" description="The resulting mix between A and B" type="float color point vector normal"/>
+	<code>
+	$(out) = mix( $(A), $(B), $(alpha) );
+	</code>
+</shrimp>

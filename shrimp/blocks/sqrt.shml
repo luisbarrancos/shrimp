@@ -1,0 +1,7 @@
+<shrimp type="function" name="Sqrt" description="Square root">
+	<input name="A" description="Input value"/>
+	<output name="val" description="val = sqrt( A )"/>
+	<code>
+	$(val) = sqrt( $(A) );
+	</code>
+</shrimp>

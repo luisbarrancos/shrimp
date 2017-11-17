@@ -1,0 +1,8 @@
+<shrimp type="function" name="Dot" description="Compute dot product">
+	<input name = "A" description="1st Input" type="vector point normal"/>
+	<input name = "B" description="2nd Input" type="vector point normal"/>
+	<output name="val" description="val = A . B"/>
+	<code>
+	$(val) = $(A).$(B);
+	</code>
+</shrimp>

@@ -1,0 +1,18 @@
+<gtkml>
+	<window name="window" title="Object Colour" show="false">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+			<colorselection name="colourselection"/>
+			<frame padding="10" fill="true" expand="true">
+			  <hbuttonbox>
+				<button expand="true" padding="4">OK
+					<event signal="clicked" name="onok"/>
+				</button>
+				<button expand="true" padding="4">Cancel
+					<event signal="clicked" name="oncancel"/>
+				</button>
+			  </hbuttonbox>
+			</frame>
+		</vbox>
+	</window>
+</gtkml>

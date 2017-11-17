@@ -1,0 +1,84 @@
+May 18 2005		version 0.4.2
+				fixed some bugs in blocks.
+				added wood block supplied by Luis Barrancos.
+
+May 17 2004		version 0.4.1
+				included ambientlight.sl and distantlight.sl,
+				they're compiled with preview shader.
+				Added patch to compile with GCC 3.3.
+				Code cleanup, little fixes.
+
+May 12 2004		version 0.4
+				included SDP libraries in Shrimp package.
+
+Feb 22 2001		version 0.3.4
+				now has a more flexible way of setting a pad's
+				value. 
+				should compile cleanly with newer compilers now.
+				
+Dec 3 2000		version 0.3.3
+				just a bug fix this time. it seems shrimp wasn't
+				creating the prefs file correctly and as a 
+				consequence the preview didn't work.
+				
+Oct 30 2000		version 0.3.2
+				moving a block can be initiated just by left-
+				clicking on it.
+				added a code preview so you can see the shader
+				code shrimp will generate, but be warned, it's
+				not pretty.
+				input pad values are now displayed in the 
+				status bar as the mouse moves over them.
+				added a stripe block and a checker example.
+
+Oct 6 2000		version 0.3.1
+				A few changes to the interface to make it faster
+				to use: added keyboard shortcuts to common 
+				functions, pads no longer need to be 
+				disconnected before connecting them to 
+				something else.
+				The preview now runs in a separate process.
+
+Oct 3 2000		version 0.3.0
+				This adds a proper preview, all done from
+				inside shrimp. A number of options can be set
+				via the new Render Options dialog. These are
+				not saved (maybe next release).
+				The shader properties dialog allows some notes
+				to be saved along with the circuit file. 
+
+Sep 29 2000		version 0.2.1
+				just a few more blocks in this one.
+				
+Sep 24 2000		version 0.2.0
+				blocks can have a variable number of inputs.
+				many new blocks written.
+				file related functions changed to be more
+				windoze friendly. 
+				The revision number moved up quite a lot to
+				more accuratly reflect the state of the project.
+
+Sep	16 2000		version 0.0.7
+				quite a few function blocks have been added
+				menus added to the interface for them.
+
+Sep 3 2000:		version 0.0.6
+				pad values and type can now be set via the
+				ioproperties dialog.
+				type mismatch is reported when trying to 
+				connect incompatible types. 
+				(but complains when eg connecting a vector to 
+				a normal. have to use a cast for the moment)
+
+Aug 30 2000:	version 0.0.5
+				loading and saving of circuits implemented
+				
+Aug 26 2000:	version 0.0.4
+				basic code generation working.
+
+Aug 24 2000: 	version 0.0.3
+				basic editing of blocks, loading, moving
+				deleting, connecting/disconnecting all
+				operational.
+				
+Aug 17 2000: 	work commences.

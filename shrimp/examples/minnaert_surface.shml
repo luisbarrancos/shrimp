@@ -1,0 +1,167 @@
+<shrimp name="minnaert_surface" type="surface">
+	<about>Built with Shrimp.</about>
+	<circuit gridsize="50 45">
+		<block file="surface_output.shml" id="Output_2" position="45 1">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="val" outputparentid="Add_3"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false">
+				<connection outputname="Oi" outputparentid="Minnaert"/>
+			</input>
+		</block>
+		<block file="minnaert.shml" id="Minnaert" position="36 1">
+			<input name="SurfaceColor" type="color" shadervar="true" value="color(0.35, 0.1, 0.09)"/>
+			<input name="Ka" type="float" shadervar="true" value="0.2 0.2 0.2"/>
+			<input name="Kd" type="float" shadervar="true" value="1 1 1"/>
+			<input name="k" type="float" shadervar="true">
+				<connection outputname="val" outputparentid="Add"/>
+			</input>
+			<input name="P" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="cminnaert" type="color" shadervar="true" value="color(0.2, 0.1, 0.8)"/>
+			<input name="Nf" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Bump"/>
+			</input>
+			<input name="Nn" type="normal" shadervar="false">
+				<connection outputname="val" outputparentid="Normalise"/>
+			</input>
+			<input name="V" type="vector" shadervar="false">
+				<connection outputname="val" outputparentid="Normalise_2"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="Os"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="p.shml" id="p" position="0 7">
+			<output name="P" type="point"/>
+		</block>
+		<block file="n.shml" id="N" position="0 11">
+			<output name="N" type="normal"/>
+		</block>
+		<block file="i.shml" id="I" position="0 15">
+			<output name="I" type="vector"/>
+		</block>
+		<block file="normalise.shml" id="Normalise" position="7 10">
+			<input name="A" type="normal" shadervar="false">
+				<connection outputname="N" outputparentid="N"/>
+			</input>
+			<output name="val" type="normal"/>
+		</block>
+		<block file="normalise.shml" id="Normalise_2" position="7 13">
+			<input name="A" type="vector" shadervar="false">
+				<connection outputname="I" outputparentid="I"/>
+			</input>
+			<output name="val" type="vector"/>
+		</block>
+		<block file="multiply.shml" id="Multiply" position="6 0">
+			<input name="A" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="B" type="point" shadervar="true" multi="true" separator=" * " value="5 5 5"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="ridged3d.shml" id="Ridged3D" position="12 0">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Multiply"/>
+			</input>
+			<input name="fwidth" type="float" shadervar="false" value="0 0 0"/>
+			<input name="octaves" type="float" shadervar="false" value="5 5 5"/>
+			<input name="lacunarity" type="float" shadervar="false" value="2.17 2.17 2.17"/>
+			<input name="gain" type="float" shadervar="false" value="0.5 0.5 0.5"/>
+			<input name="offset" type="float" shadervar="false" value="0.7 0.7 0.7"/>
+			<input name="amplitude" type="float" shadervar="false" value="1 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="add.shml" id="Add" position="25 0">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Ridged3D"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" + " value="1 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="bump.shml" id="Bump" position="25 4">
+			<input name="P" type="point" shadervar="false" value="P"/>
+			<input name="Dir" type="normal" shadervar="false" value="normalize(N)"/>
+			<input name="Scale" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale"/>
+			</input>
+			<output name="NN" type="normal"/>
+		</block>
+		<block file="scale.shml" id="Scale" position="19 2">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Ridged3D"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="0.1 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="reflect.shml" id="Reflect" position="32 15">
+			<input name="I" type="vector" shadervar="false">
+				<connection outputname="I" outputparentid="I"/>
+			</input>
+			<input name="N" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="FaceForward"/>
+			</input>
+			<output name="R" type="vector"/>
+		</block>
+		<block file="environment.shml" id="Environment" position="39 15">
+			<input name="envMap" type="string" shadervar="true" value="&quot;beachenv.tex&quot;"/>
+			<input name="R" type="vector" shadervar="false">
+				<connection outputname="pp" outputparentid="Transform"/>
+			</input>
+			<input name="blur" type="float" shadervar="true" value="0 0 0"/>
+			<input name="filter" type="string" shadervar="false" value="&quot;gaussian&quot;"/>
+			<input name="Kr" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Add_2"/>
+			</input>
+			<output name="col" type="color"/>
+		</block>
+		<block file="scale.shml" id="Scale_2" position="32 26">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Ridged3D"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="0.4 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="add.shml" id="Add_2" position="33 30">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" + " value="0.4 1 1"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="add.shml" id="Add_3" position="45 8">
+			<input name="A" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Minnaert"/>
+			</input>
+			<input name="B" type="color" shadervar="false" multi="true" separator=" + ">
+				<connection outputname="col" outputparentid="Environment"/>
+			</input>
+			<output name="val" type="color"/>
+		</block>
+		<block file="transform.shml" id="Transform" position="32 19">
+			<input name="p" type="vector" shadervar="false">
+				<connection outputname="R" outputparentid="Reflect"/>
+			</input>
+			<input name="from_space" type="string" shadervar="false" value="&quot;current&quot;"/>
+			<input name="to_space" type="string" shadervar="false" value="&quot;object&quot;"/>
+			<output name="pp" type="vector"/>
+		</block>
+		<block file="faceforward.shml" id="FaceForward" position="18 21">
+			<input name="N" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Bump"/>
+			</input>
+			<input name="I" type="vector" shadervar="false">
+				<connection outputname="I" outputparentid="I"/>
+			</input>
+			<input name="Nref" type="normal" shadervar="false">
+				<connection outputname="Ng" outputparentid="Ng"/>
+			</input>
+			<output name="NN" type="normal"/>
+		</block>
+		<block file="ng.shml" id="Ng" position="0 18">
+			<output name="Ng" type="normal"/>
+		</block>
+	</circuit>
+</shrimp>
+

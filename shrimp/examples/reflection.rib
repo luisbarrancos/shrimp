@@ -1,0 +1,27 @@
+#Shrimp test file
+Option "searchpath" "shader" [ "&" ]
+
+Format 512 512 1
+PixelSamples 1 1
+ShadingRate 2
+FrameBegin 1
+Display "reflection.tif" "tiff" "rgb"
+Projection "perspective" "fov" 40
+WorldBegin
+LightSource "ambientlight" 0 "intensity" [ 0.15 ] "lightcolor" [1 1 1]
+LightSource "distantlight" 1 "intensity" [ 1.3 ] "lightcolor" [ 1 1 1 ] "from" [ -1 1 -1 ] "to" [ 0 0 0 ]
+LightSource "distantlight" 2 "intensity" [ 0.65 ] "lightcolor" [ 1 1 1 ] "from" [ 1 1 1 ] "to" [ 0 0 0 ]
+LightSource "distantlight" 3 "intensity" [ 0.59 ] "lightcolor" [ 1 1 1 ] "from" [ 1 -1 -1 ] "to" [ 0 0 0 ]
+
+Declare "Mix_A" "color"
+Declare "Mix_B" "color"
+Declare "Environment_envMap" "string"
+Surface "reflection_surface" "Environment_envMap" "beachenv.tex" "Mix_A" [ .2 .3 .4 ] "Mix_B" [ .6 .65 .87 ]
+Displacement "reflection_displace"
+Attribute "displacementbound" "float sphere" [.5] "coordinatesystem" ["displacement"]
+Color [ 1 1 1 ]
+Translate 0 0 3
+Rotate -90 1 0 0
+Sphere 0.8 -0.8 0.8 360
+WorldEnd
+FrameEnd

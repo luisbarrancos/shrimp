@@ -1,0 +1,9 @@
+<shrimp type="function" name="Depth" description="Depth of point p.">
+	<input name = "p" description="point to test" type="point"/>
+	<output name="out" description="The depth of point p in Camera co-ordinates"/>
+	<code>
+	$(out) = depth( $(p) );
+	</code>
+	<usage>The output of this function is in normalised camera co-ordinates, so 0 corresponds to the near clip-plane, 1 the far clip-plane.
+	</usage>
+</shrimp>

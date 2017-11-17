@@ -1,0 +1,7 @@
+<shrimp type="function" name="Ceil" description="Return the smallest integer not smaller than a">
+	<input name="a" description="Input value"/>
+	<output name="out" description="The smallest integer not smaller than a"/>
+	<code>
+	$(out) = ceil( $(a) );
+	</code>
+</shrimp>

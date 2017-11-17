@@ -1,0 +1,8 @@
+<shrimp type="function" name="Deriv" description="Surface Derivitives">
+	<output name="dPdu" description="Derivitive of surface position along u" type="vector"/>
+	<output name="dPdv" description="Derivitive of surface position along v" type="vector"/>
+	<code>
+	$(dPdu) = dPdu;
+	$(dPdv) = dPdv;
+	</code>
+</shrimp>

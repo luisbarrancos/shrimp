@@ -1,0 +1,11 @@
+<shrimp type="function" name="Pnoise3D" description="3d periodic noise">
+	<input name="p" description="point to sample noise at" type="point"/>
+	<input name="period" description="period"/>
+	<input name="amplitude" description="Amplitude of noise"/>
+	<output name="val" description="Noise value at point p, in range 0 - 1" type="float color point vector"/>
+	<code>
+		$(val) = $(amplitude) * $(var_type) pnoise( $(p), $(period) );
+	</code>
+	<usage>3d periodic noise, similar to noise, with similar arguments. Period should be an integer value.
+	</usage>
+</shrimp>

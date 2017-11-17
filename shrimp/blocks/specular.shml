@@ -1,0 +1,10 @@
+<shrimp type="function" name="Specular" description="Computes specular light at surface">
+	<input name="norm" description="The surface normal" type="normal" default="N"/>
+	<input name="V" description="Direction of viewer" type="vector" default="-normalize( I )"/>
+	<input name="roughness" description="Surface roughness" shadervar="true" default="0.1"/>
+	<output name="col" description="The amount of specular light" type="color"/>
+	<code>
+	$(col) = specular( $(norm), $(V), $(roughness));
+	</code>
+</shrimp>
+

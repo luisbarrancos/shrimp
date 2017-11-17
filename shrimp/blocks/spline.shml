@@ -1,0 +1,15 @@
+<shrimp type="function" name="Spline" description="Fits a Spline to the given control points">
+	<input name="basis" description="The basis function" type="string" default="&quot;catmull-rom&quot;"/>
+	<input name="x" description="The value to test the spline at"/>
+	<input name="cp1" description="The 1st Control Point" type="float color point vector"/>
+	<input name="cp2" description="The 2nd Control Point" type="float color point vector"/>
+	<input name="cp3" description="The 3rd Control Point" type="float color point vector"/>
+	<input name="cp4" description="The 4th or subsequent Control Points" type="float color point vector" multi="true" separator=", "/>
+	<output name="val" description="The value of the spline at x" type="float color point vector"/>
+	<usage>The basis function can be "catmull-rom", "hermite", "bezier", "bspline" or "linear". The default is "catmull-rom".
+If x = 0, the value of cp2 will be returned, if x = 1, the value of the penultimate control point will be returned.  
+	</usage>
+	<code>
+	$(val) = spline( $(basis), $(x), $(cp1), $(cp2), $(cp3), $(cp4) );
+	</code>
+</shrimp>

@@ -1,0 +1,8 @@
+<shrimp type="function" name="Constant" description="Passes input to output unchanged">
+	<input name="in" description="Input" type="float color point vector normal string"/>
+	<output name="out" description="Output = Input" type="float color point vector normal string"/>
+	<code>
+	$(out) = $(in);
+	</code>
+	<usage>Useful for supplying multiple inputs with the same value</usage>
+</shrimp>

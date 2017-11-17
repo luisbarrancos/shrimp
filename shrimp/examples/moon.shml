@@ -1,0 +1,74 @@
+<shrimp name="moon" type="surface">
+	<about>Author: Andy Gill
+Date: 30 Sep 2000
+
+This shader uses a simple fBm bump map to simulate a moon-like surface.
+	</about>
+	<circuit gridsize="50 28">
+		<block file="surface_output.shml" id="Output_2" position="44 3">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Matte"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false" value="1"/>
+		</block>
+		<block file="matte.shml" id="Matte" position="36 3">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Bump"/>
+			</input>
+			<input name="Cs" type="color" shadervar="false" value="color( 0.6, 0.45, 0.2 )"/>
+			<input name="Os" type="color" shadervar="false" value="1.0"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="bump.shml" id="Bump" position="29 3">
+			<input name="P" type="point" shadervar="false" value="P"/>
+			<input name="Dir" type="normal" shadervar="false" value="normalize(N)"/>
+			<input name="Scale" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="fBm2D"/>
+			</input>
+			<output name="NN" type="normal"/>
+		</block>
+		<block file="st.shml" id="st" position="2 4">
+			<output name="s" type="float"/>
+			<output name="t" type="float"/>
+		</block>
+		<block file="fbm2d.shml" id="fBm2D" position="21 2">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale"/>
+			</input>
+			<input name="y" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="fwidth" type="float" shadervar="false">
+				<connection outputname="fwidth" outputparentid="FWidth"/>
+			</input>
+			<input name="octaves" type="float" shadervar="false" value="7"/>
+			<input name="lacunarity" type="float" shadervar="false" value="2.17"/>
+			<input name="gain" type="float" shadervar="false" value="0.5"/>
+			<input name="amplitude" type="float" shadervar="false" value="0.02"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="scale.shml" id="Scale" position="9 2">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="s" outputparentid="st"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="8"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="scale.shml" id="Scale_2" position="9 7">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="t" outputparentid="st"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="6"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="fwidth.shml" id="FWidth" position="15 9">
+			<input name="p" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<output name="fwidth" type="float"/>
+		</block>
+	</circuit>
+</shrimp>

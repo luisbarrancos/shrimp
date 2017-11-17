@@ -1,0 +1,7 @@
+<shrimp type="function" name="Radians" description="Convert degrees to radians">
+	<input name="deg" description="Input angle in degrees"/>
+	<output name="rad" description="Angle converted to radians"/>
+	<code>
+	$(rad) = radians( $(deg) );
+	</code>
+</shrimp>

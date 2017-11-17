@@ -1,0 +1,56 @@
+<shrimp name="noisedisplace" type="displacement">
+	<about>Shrimp example displacement shader.
+	</about>
+	<circuit gridsize="45 10">
+		<block file="displacement_output.shml" id="Output_2" position="40 1">
+			<input name="P" type="point" shadervar="false">
+				<connection outputname="PP" outputparentid="Displace_2"/>
+			</input>
+			<input name="N" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Displace_2"/>
+			</input>
+		</block>
+		<block file="noise3d.shml" id="Noise3D_2" position="14 1">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale"/>
+			</input>
+			<input name="amplitude" type="float" shadervar="false" value="1.0"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="p.shml" id="p_2" position="2 2">
+			<output name="P" type="point"/>
+		</block>
+		<block file="scale.shml" id="Scale" position="8 1">
+			<input name="a" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p_2"/>
+			</input>
+			<input name="factor" type="float" shadervar="true" value="6.0"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="multiply.shml" id="Multiply_2" position="21 1">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Noise3D_2"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" * ">
+				<connection outputname="val" outputparentid="Noise3D_2"/>
+			</input>
+			<output name="val" type="float"/>
+		</block>
+		<block file="scale.shml" id="Scale_4" position="27 1">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Multiply_2"/>
+			</input>
+			<input name="factor" type="float" shadervar="true" value="0.25"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="displace.shml" id="Displace_2" position="34 1">
+			<input name="P" type="point" shadervar="false" value="P"/>
+			<input name="Dir" type="vector" shadervar="false" value="normalize(N)"/>
+			<input name="Scale" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_4"/>
+			</input>
+			<output name="PP" type="point"/>
+			<output name="NN" type="normal"/>
+		</block>
+	</circuit>
+</shrimp>

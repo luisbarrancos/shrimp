@@ -1,0 +1,30 @@
+<gtkml>
+	<window name="window" show="false" size="350 400">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+          <scrolledwindow fill="true" expand="true">
+            <viewport>
+              <vbox homogeneous="false">
+            	<frame padding="10" name="general">
+            		<label name="generaltext"/>
+				</frame>	
+            	<frame padding="10">Inputs
+            		<label name="inputtext"/>
+           		</frame>	
+            	<frame padding="10">Outputs
+            		<label name="outputtext"/>
+           		</frame>	
+            	<frame padding="10">Usage
+            		<label name="usagetext"/>
+           		</frame>
+			  </vbox>	
+            </viewport>
+          </scrolledwindow>
+          	<hbuttonbox>
+			  <button expand="true" padding="4">OK
+				<event signal="clicked" name="onok"/>
+			  </button>
+			</hbuttonbox>
+		</vbox>
+	</window>
+</gtkml>

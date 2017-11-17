@@ -1,0 +1,11 @@
+<shrimp type="function" name="SmoothStep" description="Smooth step function">
+	<input name="x" description="value to test"/>
+	<input name="min" description="position of bottom of step" default="0"/>
+	<input name="max" description="position of top of step" default="1"/>
+	<output name="val" description="value of smoothstep function at x"/>
+	<code>
+	$(val) = smoothstep( $(min), $(max), $(x) );
+	</code>
+	<usage>val is zero if x is less than min, one if x is greater than max, otherwise it is interpolated between zero and one with a smooth hermite curve.
+	</usage>
+</shrimp>

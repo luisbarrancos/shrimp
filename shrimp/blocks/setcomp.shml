@@ -1,0 +1,9 @@
+<shrimp type="function" name="SetComp" description="Set the components of a point, vector or normal">
+	<input name="x" description="x component"/>
+	<input name="y" description="y component"/>
+	<input name="z" description="z component"/>
+	<output name="out" description="point, vector or normal with the specified components" type="point vector normal"/>
+	<code>
+	$(out) = $(var_type) ( $(x), $(y), $(z) ); 
+	</code>
+</shrimp>

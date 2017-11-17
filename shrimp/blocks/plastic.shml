@@ -1,0 +1,19 @@
+<shrimp name="Plastic" type="function" description="Standard plastic shader">
+	<input name="Ka" description="Ambient coefficient" shadervar="true" default="1"/>
+	<input name="Kd" description="Diffuse coefficient" shadervar="true" default="0.5"/>
+	<input name="Ks" description="Specular coefficient" shadervar="true" default="0.5"/>
+	<input name="roughness" description="Surface roughness" shadervar="true" default="0.1"/>
+	<input name="specularcolour" description="Colour of specular highlight" 
+		shadervar="true" default="1 1 1" type="color"/>
+	<input name="Nf" description="Surface normal" type="normal" default="faceforward( normalize(N), I )"/>
+	<input name="V" description="Direction of viewer" type="vector" default="-normalize( I )"/>
+	<input name="Cs" description="Surface colour" type="color" default="Cs"/>
+	<input name="Os" description="Surface opacity" type="color" default="Os"/>
+	<output name="Ci" description="Shaded colour" type="color"/>
+	<output name="Oi" description="Output opacity" type="color"/>
+	<code>	
+	$(Ci) = $(Os) * ( $(Cs) * ($(Ka)*ambient() + $(Kd)*diffuse( $(Nf) )) +
+	$(specularcolour) * $(Ks)*specular( $(Nf),$(V),$(roughness) ) );
+	$(Oi) = $(Os);
+	</code>
+</shrimp>

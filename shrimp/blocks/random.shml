@@ -1,0 +1,8 @@
+<shrimp type="function" name="Random" description="A Random value">
+	<input name="min" description="minimum value" default="0.0"/>
+	<input name="max" description="maximum value" default="1.0"/>
+	<output name="val" description="A random value between min and max" type="float color point"/>
+	<code>
+	$(val) = ($(max)-$(min))*( $(var_type) random() ) + $(min);
+	</code>
+</shrimp>

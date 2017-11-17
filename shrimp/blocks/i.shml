@@ -1,0 +1,6 @@
+<shrimp type="function" name="I" description="Incident ray direction">
+	<output name="I" description="Incident ray direction" type="vector"/>
+	<code>
+	$(I) = I;
+	</code>
+</shrimp>

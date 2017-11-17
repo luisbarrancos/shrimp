@@ -1,0 +1,7 @@
+<shrimp type="function" name="Du" description="Compute Derivative in u direction">
+	<input name="p" description="Value to compute derivative at" type="float color vector point"/>
+	<output name="val" description="Derivative of p with respect to u" type="float color vector point"/>
+	<code>
+	$(val) = Du( $(p) );
+	</code>
+</shrimp>

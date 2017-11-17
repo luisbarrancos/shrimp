@@ -1,0 +1,155 @@
+Shrimp.
+
+A graphical shader generator for creating renderman compliant 
+shaders.
+
+v0.4.1
+
+**Installation**
+
+cd shrimp-0.4.1
+./configure
+make
+
+This should build everything ok.
+
+You can run the program with "src/shrimp" or read on
+to run it from any other directory.
+
+Now define the environment variable SHRIMP_BASE_PATH
+This should point to the main dir where the directories
+blocks/, dialog_templates/ etc are.
+
+# using BASH
+export SHRIMP_BASE_PATH=/home/me/shrimp-0.4.1
+
+
+**Usage**
+
+Ok, the best way to learn is of course to experiment, load
+up one of the examples and have a look. Add blocks from the
+menus on the left, connect them by clicking on one pad and 
+then on another ( the pads are the small light grey squares
+down the sides of the block ).
+The status bar should give a running comentary.
+In the case of a block that supports a variable number of
+inputs, connecting to a block with a V on it will create
+a new input if it is already connected. You can do this
+explicity by selecting the menu operation Add New Pad.
+
+left-click on a block to move it.  
+
+right mouse cancels the current action (such as add, move 
+etc) or brings up a context sensitive menu.
+
+right mouse over a pad brings up a small menu and you can
+disconnect the pad if it is an input (and connected) or 
+bring up a properties dialog to edit the default values and 
+set other things. some pads allow the type to be one of a 
+selection and that can be set here, but note that if the
+pad is connected or a dependent one on the same block is
+the type won't change. Shader var makes the (input) pad a
+parameter of the shader. The default value only applies
+when the pad is not connected and can be any string, it is
+simply inserted into the code directly. for example it could
+be a number, say "0.25" or somthing more complicated such as
+"-normalize(I)".
+
+right mouse over the rest of the block and you can move,copy 
+or delete the block. Help brings up a dialog detailing the
+inputs/outputs and any words of wisdom on how to use the block.
+
+right mouse over a blank area of grid and you get the File
+menu. Load, Save blocks here.
+Resize resizes the grid unless doing so would chop out 
+existing blocks.
+
+Preview now saves the shader to a tempory location, compiles
+and renders it. You can set the details of this and a few
+other things in the Render Options dialog. The render is 
+performed in a separate process so you can carry on editing
+while it works.
+
+Save Code pops up a file requester and saves the shader code
+to that file.
+Once the code has been written you'll need to call slc to
+compile it. The file may well require one or more of the 
+headers in the directory shaders, so either add that to the
+header search path or simply cd into shaders before running 
+slc. 
+
+The pads of each block are drawn differently depending on
+its properties to help you get a quick idea of what's what.
+In case you were wondering what all the different styles 
+mean, here's a quick list:
+
+blank: a float
+2 horizontal lines: a point, vector, or normal
+3 colours: a color
+2 vertical lines: a string.
+a blue square in the middle means this is a shader variable.
+a V means this pad can be duplicated.
+the pads all turn slightly darker when they are connected.  	
+
+
+That's basically it.
+
+Render Dot C have a nice page of links to all the renderman
+compliant renderers known to man. If you need one, take a 
+look.
+
+
+**Aqsis Commands**
+
+aqsl -I/home/me/shrimp-0.4/shaders %s
+aqsis -type=framebuffer -shaders=/tmp %s
+
+
+**Example Shaders**
+
+Please bear in mind that these might not be good examples
+of writing shaders, I don't know how there'll look on 
+animated objects and they don't all antialiase themselves
+as much as they could. 
+If you write any good shaders that you think show off a 
+valuable technique or that might be of interest to others 
+then drop me a line and I'll include them either in the 
+next release or directly on the site.
+
+
+
+**Writing your own blocks**
+
+I hope to have a proper tutorial on this pretty soon 
+( no really I will ), as it's quite an important area. 
+New blocks can be written and added to the interface without 
+any recompilation so you can add or modify functions to do 
+whatever you like.
+It's quite a straight forward xml format, and if you want
+to try, just take a look at any of the existing blocks.
+I'm adding blocks all the time so keep checking the site
+for new releases if you don't want to write any yourself.
+Drop me a line if there's any particular function you think
+would be especially useful.
+
+
+**Credits**
+
+Some of the shader header files distributed with Shrimp
+contain code that is based on stuff by Larry Gritz. The 
+original code comes with BMRT if you need it. See 
+www.bmrt.org. Thanks to Larry for letting me use it.
+
+The SDP libs are part of the work being done on K-3D.
+They're no longer part of K-3D and have been included
+in Shrimp package.
+
+If you need a Renderman modeler then K-3D is well worth a
+look too. Check it out at http://www.k-3d.org/
+
+
+That's it for now, happy experimenting. 
+
+Comments/Questions welcome at 
+billybobjimboy@users.sourceforge.net
+

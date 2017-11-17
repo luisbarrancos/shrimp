@@ -1,0 +1,11 @@
+<shrimp type="function" name="GetComp" description="Get the components of a point, vector or normal">
+	<output name="x" description="x component"/>
+	<output name="y" description="y component"/>
+	<output name="z" description="z component"/>
+	<input name="in" description="point, vector or normal to split into components" type="point vector normal"/>
+	<code>
+	$(x) = xcomp( $(var_type) $(in) );
+	$(y) = ycomp( $(var_type) $(in) );
+	$(z) = zcomp( $(var_type) $(in) );
+	</code>
+</shrimp>

@@ -1,0 +1,22 @@
+<gtkml>
+	<window name="window" show="false" type="popup">
+		<frame shadowtype="out">
+			<table rows="15" columns="15">
+				<frame tableposition="1 14 1 11">
+					<vbox homogeneous="false">
+						<label labelpadding="5">Shrimp Shader Creator</label>
+						<label labelpadding="5" name="version">Version 0.4.1</label>
+						<label labelpadding="5">By Andy Gill.
+http://shrimp.sourceforge.net
+Copyright 2000-2004 A.Gill
+						</label>
+					</vbox>
+				</frame>
+				<button tableposition="6 9 12 14">OK
+					<event signal="clicked" name="onok"/>
+				</button>
+		 	</table>
+		 </frame>
+		<event signal="destroy" name="ondestroy"/>
+	</window>
+</gtkml>

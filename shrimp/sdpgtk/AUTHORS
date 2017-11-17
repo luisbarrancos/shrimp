@@ -1,0 +1,10 @@
+Authors page for the SDPGTK Library
+
+* 1999 - Created SDPGTK - Timothy M. Shead <tshead@k-3d.com>
+* 1999 - Encouragement, Makefiles, CVS server space, and keeping me honest - Eric Plaster <laster@imageman.com>
+* 2000 - Created sdpGtkOpenGLContext, which borrows heavily from GtkGL, AOSASA Shigeru <ozasa@sakuranet.or.jp>
+* 2000 - Maintainance of Win32 project files / builds - Paul Gregory <gregory@aqsis.com>
+* 2000 - Improved flexibility / standardized behaviour for sdpgtk-config - Lukas Schroeder <ukas@azzit.de>
+
+
+ 

@@ -1,0 +1,17 @@
+<shrimp type="function" name="Rect" description="Returns 1 if in the Rectangle, otherwise 0">
+	<input name="x" description="x,y give the point to be tested"/>
+	<input name="y" description="x,y give the point to be tested"/>
+	<input name="x0" description="x0, y0 give the top left of the rectangle" default="0.0"/>
+	<input name="y0" description="x0, y0 give the top left of the rectangle" default="0.0"/>
+	<input name="width" description="The width of the rectangle"/>
+	<input name="height" description="The height of the rectangle"/>
+	<input name="blur" description="The amount the edge is to be blurred" default="0.0"/>
+	<output name="out" description="returns 1 if x,y lies within the rectangle"/>
+	<include>shapes.h</include>
+	<code>
+	$(out) = shRect( $(x0),$(y0),$(x),$(y),$(width),$(height),$(blur) );
+	</code>
+	<usage>Tests whether a 2d point lies inside a 2d Rectangle.
+Blur can be used to control the antialiasing. The output varies smoothly between 0 and 1 in the blurred region.
+	</usage>
+</shrimp>

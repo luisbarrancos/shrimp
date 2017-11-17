@@ -1,0 +1,85 @@
+<gtkml>
+  <window title="I/O Pad Properties" show="false">
+	<event signal="destroy" name="ondestroy"/>
+	<vbox homogeneous="false">
+		 <vbox homogeneous="false">
+			<label labelpadding="5" name="name"/>
+			<label labelpadding="5" name="desc"/>
+		  </vbox>
+		<hseparator padding="10"/>
+		  <hbox homogeneous="false">
+			<label padding="10">Pad Type</label>
+			<optionmenu tooltip="Set the Pad type" name="typemenu">
+				<menu>
+					<menuitem name="float">float
+						<event signal="activate" name="ontypefloat"/>
+					</menuitem>
+					<menuitem name="point">point
+						<event signal="activate" name="ontypepoint"/>
+					</menuitem>
+					<menuitem name="vector">vector
+						<event signal="activate" name="ontypevector"/>
+					</menuitem>
+					<menuitem name="normal">normal
+						<event signal="activate" name="ontypenormal"/>
+					</menuitem>
+					<menuitem name="color">color
+						<event signal="activate" name="ontypecolor"/>
+					</menuitem>
+					<menuitem name="string">string
+						<event signal="activate" name="ontypestring"/>
+					</menuitem>
+				</menu>
+			</optionmenu>
+		  </hbox>
+		<vbox name="inputonly" homogeneous="false">
+			<checkbutton name="shadervar" padding="4" tooltip="Make the Input a Shader Variable">Shader Variable</checkbutton>
+			<checkbutton name="usesstring" padding="4" tooltip="Use a string to declare the pad value">Use String Value
+				<event signal="toggled" name="onusestringtoggle"/>
+			</checkbutton>
+			<entry name="stringval" tooltip="Default/Constant value for this Input" />
+			<vbox name="decodedval" homogeneous="false">
+				<vbox name="vectorvalue">
+					<table name="xinput" columns="4">
+						<label labelpadding="6" tableposition="0 1 0 1">X Value</label>
+						<spinbutton name="xvalue" digits="5" tableposition="1 4 0 1">
+							<adjustment stepincrement="0.05" range="-10000000 10000000"/>
+						</spinbutton>
+					</table>
+					<table name="yinput" columns="4">
+						<label labelpadding="6" tableposition="0 1 0 1">Y Value</label>
+						<spinbutton name="yvalue" digits="5" tableposition="1 4 0 1">
+							<adjustment stepincrement="0.05" range="-10000000 10000000"/>
+						</spinbutton>
+					</table>
+					<table name="zinput" columns="4">
+						<label labelpadding="6" tableposition="0 1 0 1">Z Value</label>
+						<spinbutton name="zvalue" digits="5" tableposition="1 4 0 1">
+							<adjustment stepincrement="0.05" range="-10000000 10000000"/>
+						</spinbutton>
+					</table>
+				</vbox>
+				<hbox padding="10" name="colourinput" show="false">
+					<label>Colour</label>
+					<frame shadowtype="out">
+						<drawingarea name="colour" size="64 32">
+							<event signal="button-press-event" name="oncolourpressevent"/>
+							<event signal="configure-event" name="oncolourconfigureevent"/>
+							<event signal="expose-event" name="oncolourexposeevent"/>
+						</drawingarea>
+					</frame>
+				</hbox>
+			</vbox>	
+		</vbox>
+		<hseparator padding="10"/>
+		<hbox>
+			<button expand="true" fill="true" padding="4">OK
+				<event signal="clicked" name="onok"/>
+			</button>
+			<button expand="true" fill="true" padding="4">Cancel
+				<event signal="clicked" name="oncancel"/>
+			</button>
+		</hbox>
+	</vbox>
+  </window>
+</gtkml>

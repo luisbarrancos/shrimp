@@ -1,0 +1,9 @@
+<shrimp type="function" name="Step" description="Step function">
+	<input name="x" description="value to test"/>
+	<input name="min" description="position of step"/>
+	<output name="val" description="value of step function at x"/>
+	<code>
+	$(val) = step( $(min), $(x) );
+	</code>
+	<usage>val is zero if x is less than min, otherwise it is one.</usage>
+</shrimp>

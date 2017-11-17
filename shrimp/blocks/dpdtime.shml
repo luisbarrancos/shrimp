@@ -1,0 +1,6 @@
+<shrimp type="function" name="dPdTime" description="How the surface position P is changing per unit time">
+	<output name="dPdtime" description="How the surface position P is changing per unit time" type="vector"/>
+	<code>
+	$(dPdtime) = dPdtime;
+	</code>
+</shrimp>

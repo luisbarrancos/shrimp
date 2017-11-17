@@ -1,0 +1,9 @@
+<shrimp type="function" name="Noise4D" description="4 dimensional perlin noise function">
+	<input name="p" description="point to sample noise at" type="point"/>
+	<input name="t" description="4th dimension value"/>
+	<input name="amplitude" description="Amplitude of noise"/>
+	<output name="val" description="Noise value at point (p,t), in range 0 - 1" type="float color point vector"/>
+	<code>
+	$(val) = $(amplitude) * $(var_type) noise( $(p), $(t) );
+	</code>
+</shrimp>

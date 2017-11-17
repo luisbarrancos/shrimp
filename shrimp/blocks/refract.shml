@@ -1,0 +1,11 @@
+<shrimp type="function" name="Refract" description="Transmitted vector">
+	<input name="I" description="Incident vector" type="vector"/>
+	<input name="N" description="Surface normal" type="normal vector" default="Ng"/>
+	<input name="eta" description="The relative index of refraction"/>
+	<output name="T" description="The transmitted vector" type="vector"/>
+	<code>
+	$(T) = refract( $(I), $(N), $(eta) );
+	</code>
+	<usage>eta is the ratio of the index of refraction in the volume containing the incident vector to that of the volume being entered.
+	</usage>
+</shrimp>

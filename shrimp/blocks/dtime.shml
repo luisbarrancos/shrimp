@@ -1,0 +1,6 @@
+<shrimp type="function" name="dTime" description="The amount of time covered ny this shading sample">
+	<output name="dtime" description="The amount of time covered ny this shading sample" type="float"/>
+	<code>
+	$(dtime) = dtime;
+	</code>
+</shrimp>

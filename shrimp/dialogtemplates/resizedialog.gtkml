@@ -1,0 +1,34 @@
+<gtkml>
+	<window title="Set new grid size" show="false" size="200 150">
+		<event signal="destroy" name="ondestroy"/>
+		<vbox homogeneous="false">
+			<frame name="frame" padding="10" expand="true" fill="true">
+				<vbox>
+					<hbox>
+						<label>Width
+						</label>
+						<spinbutton name="width">
+							<adjustment stepincrement="1" range="1 2000"/>
+						</spinbutton>
+					</hbox>
+					<hbox>
+						<label>Height
+						</label>
+						<spinbutton name="height">
+							<adjustment stepincrement="1" range="1 2000"/>
+						</spinbutton>
+					</hbox>
+				</vbox>
+			</frame>
+			<hseparator padding="10"/>
+			<hbox>
+				<button expand="true" fill="true" padding="4">OK
+					<event signal="clicked" name="onok"/>
+				</button>
+				<button expand="true" fill="true" padding="4">Cancel
+					<event signal="clicked" name="oncancel"/>
+				</button>
+			</hbox>
+		</vbox>
+	</window>
+</gtkml>

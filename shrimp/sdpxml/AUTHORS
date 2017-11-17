@@ -1,0 +1,11 @@
+Authors page for the SDPXML Library
+
+* 1999 - Created SDPXML - Timothy M. Shead <tshead@k-3d.com>
+* 1999 - Encouragement, Makefiles, CVS server space, and keeping me honest - Eric Plaster <plaster@imageman.com>
+* 2000 - Rewrote SDPXML, dropping the Flex scanner and replacing it with libxml, by Daniel Veillard <Daniel.Veillard@w3.org>
+* 2000 - Maintainance of Win32 project files / builds - Paul Gregory <pgregory@aqsis.com>
+* 2000 - Improved flexibility / standardized behaviour for sdpxml-config - Lukas Schroeder <lukas@azzit.de>
+* 2002 - Autoconf/Automake improvements - Josh Moline <jdmoline@attbi.com>
+
+
+ 

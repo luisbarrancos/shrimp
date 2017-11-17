@@ -1,0 +1,7 @@
+<shrimp type="function" name="Exp" description="Raise e to the power x">
+	<input name="x" description="Power"/>
+	<output name="val" description="val = e to the power x"/>
+	<code>
+	$(val) = exp( $(x) );
+	</code>
+</shrimp>

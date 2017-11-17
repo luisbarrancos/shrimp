@@ -1,0 +1,8 @@
+<shrimp type="function" name="Triangle" description="Generates a Triangle wave">
+	<input name = "x" description="Value to sample the wave at"/>
+	<input name = "amp" description="Amplitude of the wave"/>
+	<output name="val" description="Value of the wave at x"/>
+	<code>
+	$(val) = $(amp) * 2*abs( 0.5 - mod( $(x), 1 ) );
+	</code>
+</shrimp>

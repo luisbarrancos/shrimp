@@ -1,0 +1,4 @@
+
+aqsl minnaert_surface.sl -I. -I../shaders
+aqsis minnaert.rib
+

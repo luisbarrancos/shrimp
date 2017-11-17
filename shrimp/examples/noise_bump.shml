@@ -1,0 +1,78 @@
+<shrimp name="noisebump" type="surface">
+	<about>Author: A Gill.
+
+Shrimp example shader showing bump mapping.
+	</about>
+	<circuit gridsize="53 12">
+		<block file="surface_output.shml" id="Output" position="47 0">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Plastic"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false">
+				<connection outputname="Oi" outputparentid="Plastic"/>
+			</input>
+		</block>
+		<block file="plastic.shml" id="Plastic" position="41 0">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="0.5"/>
+			<input name="Ks" type="float" shadervar="true" value="0.5"/>
+			<input name="roughness" type="float" shadervar="true" value="0.1"/>
+			<input name="specularcolour" type="color" shadervar="true" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false">
+				<connection outputname="NN" outputparentid="Displace"/>
+			</input>
+			<input name="V" type="vector" shadervar="false" value="-normalize( I )"/>
+			<input name="Cs" type="color" shadervar="false">
+				<connection outputname="Cs" outputparentid="Cs"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="1.0"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="displace.shml" id="Displace" position="34 4">
+			<input name="P" type="point" shadervar="false" value="P"/>
+			<input name="Dir" type="vector" shadervar="false" value="normalize(N)"/>
+			<input name="Scale" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_3"/>
+			</input>
+			<output name="PP" type="point"/>
+			<output name="NN" type="normal"/>
+		</block>
+		<block file="cs.shml" id="Cs" position="34 9">
+			<output name="Cs" type="color"/>
+		</block>
+		<block file="p.shml" id="p" position="0 5">
+			<output name="P" type="point"/>
+		</block>
+		<block file="scale.shml" id="Scale_2" position="7 4">
+			<input name="a" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="factor" type="float" shadervar="true" value="15"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="noise3d.shml" id="Noise3D" position="13 4">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="amplitude" type="float" shadervar="false" value="1.0"/>
+			<output name="val" type="float"/>
+		</block>
+		<block file="multiply.shml" id="Multiply" position="19 4">
+			<input name="A" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Noise3D"/>
+			</input>
+			<input name="B" type="float" shadervar="false" multi="true" separator=" * ">
+				<connection outputname="val" outputparentid="Noise3D"/>
+			</input>
+			<output name="val" type="float"/>
+		</block>
+		<block file="scale.shml" id="Scale_3" position="26 4">
+			<input name="a" type="float" shadervar="false">
+				<connection outputname="val" outputparentid="Multiply"/>
+			</input>
+			<input name="factor" type="float" shadervar="true" value="0.1"/>
+			<output name="val" type="float"/>
+		</block>
+	</circuit>
+</shrimp>

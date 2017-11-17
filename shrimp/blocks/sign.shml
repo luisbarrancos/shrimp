@@ -1,0 +1,7 @@
+<shrimp type="function" name="Sign" description="Test the sign of a">
+	<input name="a" description="Input value"/>
+	<output name="val" description="-1 if a<0, 0 if a=0, 1 if a>0"/>
+	<code>
+	$(val) = sign( $(a) );
+	</code>
+</shrimp>

@@ -1,0 +1,135 @@
+<shrimp name="marble2" type="surface">
+	<about>Author: Andy Gill
+Date: 30 Sep 2000
+
+This shader simulates marble by peturbing stripes with a little fBm. 
+	</about>
+	<circuit gridsize="57 36">
+		<block file="surface_output.shml" id="Output" position="50 16">
+			<input name="Ci" type="color" shadervar="false">
+				<connection outputname="Ci" outputparentid="Plastic"/>
+			</input>
+			<input name="Oi" type="color" shadervar="false" value="1"/>
+		</block>
+		<block file="plastic.shml" id="Plastic" position="44 16">
+			<input name="Ka" type="float" shadervar="true" value="1.0"/>
+			<input name="Kd" type="float" shadervar="true" value="0.5"/>
+			<input name="Ks" type="float" shadervar="true" value="0.5"/>
+			<input name="roughness" type="float" shadervar="true" value="0.02"/>
+			<input name="specularcolour" type="color" shadervar="false" value="1.0"/>
+			<input name="Nf" type="normal" shadervar="false" value="faceforward( normalize(N), I )"/>
+			<input name="V" type="vector" shadervar="false" value="-normalize( I )"/>
+			<input name="Cs" type="color" shadervar="false">
+				<connection outputname="val" outputparentid="Spline_2"/>
+			</input>
+			<input name="Os" type="color" shadervar="false" value="1.0"/>
+			<output name="Ci" type="color"/>
+			<output name="Oi" type="color"/>
+		</block>
+		<block file="spline.shml" id="Spline_2" position="38 23">
+			<input name="basis" type="string" shadervar="false" value="&quot;catmull-rom&quot;"/>
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="out" outputparentid="Rect"/>
+			</input>
+			<input name="cp1" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant_6"/>
+			</input>
+			<input name="cp2" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant_6"/>
+			</input>
+			<input name="cp3" type="color" shadervar="false">
+				<connection outputname="out" outputparentid="Constant_5"/>
+			</input>
+			<input name="cp4" type="color" shadervar="false" multi="true" separator=", ">
+				<connection outputname="out" outputparentid="Constant_5"/>
+			</input>
+			<output name="val" type="color"/>
+		</block>
+		<block file="tile.shml" id="Tile" position="16 17">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="x" outputparentid="GetComp"/>
+			</input>
+			<input name="y" type="float" shadervar="false" value="1.0"/>
+			<input name="xfreq" type="float" shadervar="false" value="1"/>
+			<input name="yfreq" type="float" shadervar="false" value="1.0"/>
+			<output name="xt" type="float"/>
+			<output name="yt" type="float"/>
+			<output name="column" type="float"/>
+			<output name="row" type="float"/>
+		</block>
+		<block file="constant.shml" id="Constant_5" position="29 28">
+			<input name="in" type="color" shadervar="false" value="color( 0.2, 0.2, 0.4 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="constant.shml" id="Constant_6" position="29 25">
+			<input name="in" type="color" shadervar="false" value="color( 0.7, 0.7, 0.85 )"/>
+			<output name="out" type="color"/>
+		</block>
+		<block file="rectangle.shml" id="Rect" position="22 13">
+			<input name="x" type="float" shadervar="false">
+				<connection outputname="xt" outputparentid="Tile"/>
+			</input>
+			<input name="y" type="float" shadervar="false" value="0.5"/>
+			<input name="x0" type="float" shadervar="false" value="0.1"/>
+			<input name="y0" type="float" shadervar="false" value="0.2"/>
+			<input name="width" type="float" shadervar="false" value="0.8"/>
+			<input name="height" type="float" shadervar="false" value="1.0"/>
+			<input name="blur" type="float" shadervar="false" value="0.2"/>
+			<output name="out" type="float"/>
+		</block>
+		<block file="p.shml" id="p" position="1 2">
+			<output name="P" type="point"/>
+		</block>
+		<block file="transform.shml" id="Transform_2" position="7 2">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="P" outputparentid="p"/>
+			</input>
+			<input name="from_space" type="string" shadervar="false" value="&quot;current&quot;"/>
+			<input name="to_space" type="string" shadervar="false" value="&quot;shader&quot;"/>
+			<output name="pp" type="point"/>
+		</block>
+		<block file="scale.shml" id="Scale_2" position="13 2">
+			<input name="a" type="point" shadervar="false">
+				<connection outputname="pp" outputparentid="Transform_2"/>
+			</input>
+			<input name="factor" type="float" shadervar="false" value="3"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="fwidth.shml" id="FWidth_2" position="20 4">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<output name="fwidth" type="float"/>
+		</block>
+		<block file="fbm3d.shml" id="fBm3D_2" position="27 2">
+			<input name="p" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="fwidth" type="float" shadervar="false">
+				<connection outputname="fwidth" outputparentid="FWidth_2"/>
+			</input>
+			<input name="octaves" type="float" shadervar="false" value="5"/>
+			<input name="lacunarity" type="float" shadervar="false" value="2.17"/>
+			<input name="gain" type="float" shadervar="false" value="0.5"/>
+			<input name="amplitude" type="float" shadervar="false" value="0.8"/>
+			<output name="val" type="point"/>
+		</block>
+		<block file="getcomp.shml" id="GetComp" position="8 17">
+			<input name="in" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Add_2"/>
+			</input>
+			<output name="x" type="float"/>
+			<output name="y" type="float"/>
+			<output name="z" type="float"/>
+		</block>
+		<block file="add.shml" id="Add_2" position="2 17">
+			<input name="A" type="point" shadervar="false">
+				<connection outputname="val" outputparentid="Scale_2"/>
+			</input>
+			<input name="B" type="point" shadervar="false" multi="true" separator=" + ">
+				<connection outputname="val" outputparentid="fBm3D_2"/>
+			</input>
+			<output name="val" type="point"/>
+		</block>
+	</circuit>
+</shrimp>

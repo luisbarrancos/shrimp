@@ -1,0 +1,18 @@
+<shrimp type="function" name="Transform" description="Transform to a different co-ordinate system">
+	<input name="p" description="point, vector or normal to transform" type="point vector normal"/>
+	<input name="from_space" description="The co-ordinate system to transform from" type="string" default="&quot;current&quot;"/>
+	<input name="to_space" description="The co-ordinate system to transform into" type="string" default="&quot;shader&quot;"/>
+	<output name="pp" description="The transformed point, vector or normal" type="point vector normal"/>
+	<code>
+	#define $(p)_$(var_type)
+	#ifdef $(p)_point
+		$(pp) = transform( $(from_space), $(to_space), $(p) );
+	#else
+	#ifdef $(p)_vector
+		$(pp) = vtransform( $(from_space), $(to_space), $(p) );
+	#else
+		$(pp) = ntransform( $(from_space), $(to_space), $(p) );
+	#endif
+	#endif
+	</code>
+</shrimp>

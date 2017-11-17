@@ -1,0 +1,8 @@
+<shrimp type="function" name="uv" description="Surface Parameters">
+	<output name="u" description="u parameter"/>
+	<output name="v" description="v parameter"/>
+	<code>
+	$(u) = u;
+	$(v) = v;
+	</code>
+</shrimp>

@@ -1,0 +1,16 @@
+<shrimp type="function" name="Ridged3D" description="3 dimensional Ridged multi-fractal.">
+	<input name="p" description="point to sample fractal at" type="point"/>
+	<input name="fwidth" description="Filter width for antialiasing" default="0"/>
+	<input name="octaves" description="Maximum octaves of noise" default="5"/>
+	<input name="lacunarity" description="Controls the smoothness of the fractal" default="2.17"/>
+	<input name="gain" description="Controls the contrast of the fractal" default="0.5"/>
+	<input name="offset" description="Controls the multifractality" default="0.7"/>
+	<input name="amplitude" description="Amplitude of fractal"/>
+	<output name="val" description="fractal value at p" type="float"/>
+	<include>fractal.h</include>
+	<code>
+		$(val) = $(amplitude) *  Ridged( $(p), $(fwidth), $(octaves), $(lacunarity),$(gain), $(offset) );		
+	</code>
+	<usage>This is Ken Musgrave's Ridged Multi-fractal function. Note that offset can change the scale of the output drastically.
+	</usage> 
+</shrimp>

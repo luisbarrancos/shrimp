@@ -1,0 +1,11 @@
+<shrimp type="function" name="SetCol" description="Set the components of a colour">
+	<input name="r" description="red component"/>
+	<input name="g" description="green component"/>
+	<input name="b" description="blue component"/>
+	<output name="col" description="colour made up of the given components" type="color"/>
+	<code>
+	setcomp( $(col), 0, $(r) );
+	setcomp( $(col), 1, $(g) );
+	setcomp( $(col), 2, $(b) );
+	</code>
+</shrimp>

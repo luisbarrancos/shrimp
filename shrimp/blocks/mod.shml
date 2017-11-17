@@ -1,0 +1,8 @@
+<shrimp type="function" name="Mod" description="Return the positive remainder of a/b">
+	<input name="a" description="numerator"/>
+	<input name="b" description="denominator"/>
+	<output name="val" description="The positive remainder of a/b"/>
+	<code>
+	$(val) = mod( $(a), $(b) );
+	</code>
+</shrimp>

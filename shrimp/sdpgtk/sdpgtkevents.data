@@ -1,0 +1,157 @@
+sdpGtkEventAdjustmentChanged	changed	void	GtkAdjustment*	Adjustment
+sdpGtkEventAdjustmentValueChanged	value-changed	void	GtkAdjustment*	Adjustment
+sdpGtkEventButtonClicked	clicked	void	GtkButton*	Button
+sdpGtkEventButtonEnter	enter	void	GtkButton*	Button
+sdpGtkEventButtonLeave	leave	void	GtkButton*	Button
+sdpGtkEventButtonPressed	pressed	void	GtkButton*	Button
+sdpGtkEventButtonReleased	released	void	GtkButton*	Button
+sdpGtkEventCalendarDaySelected	day-selected	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarDaySelectedDoubleClick	day-selected-gdouble-click	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarMonthChanged	month-changed	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarNextMonth	next-month	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarNextYear	next-year	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarPrevMonth	prev-month	void	GtkCalendar*	Calendar
+sdpGtkEventCalendarPrevYear	prev-year	void	GtkCalendar*	Calendar
+sdpGtkEventCheckMenuItemToggled	toggled	void	GtkCheckMenuItem*	MenuItem
+sdpGtkEventCListAbortColumnResize	abort-column-resize	void	GtkCList*	List
+sdpGtkEventCListClickColumn	click-column	void	GtkCList*	List	gint	Column				
+sdpGtkEventCListEndSelection	end-selection	void	GtkCList*	List						
+sdpGtkEventCListExtendSelection	extend-selection	void	GtkCList*	List	GtkScrollType	ScrollType	gfloat	Position	gboolean	AutoStartSelection
+sdpGtkEventCListResizeColumn	resize-column	void	GtkCList*	List	gint	Column	gint	Width		
+sdpGtkEventCListRowMove	row-move	void	GtkCList*	List	gint	SourceRow	gint	DestinationRow		
+sdpGtkEventCListScrollHorizontal	scroll-horizontal	void	GtkCList*	List	GtkScrollType	ScrollType	gfloat	Position		
+sdpGtkEventCListScrollVertical	scroll-vertical	void	GtkCList*	List	GtkScrollType	ScrollType	gfloat	Position		
+sdpGtkEventCListSelectAll	select-all	void	GtkCList*	List						
+sdpGtkEventCListSelectRow	select-row	void	GtkCList*	List	gint	Row	gint	Column	GdkEvent*	Event
+sdpGtkEventCListStartSelection	start-selection	void	GtkCList*	List						
+sdpGtkEventCListToggleAddMode	toggle-add-mode	void	GtkCList*	List						
+sdpGtkEventCListToggleFocusRow	toggle-focus-row	void	GtkCList*	List						
+sdpGtkEventCListUndoSelection	undo-selection	void	GtkCList*	List						
+sdpGtkEventCListUnselectAll	unselect-all	void	GtkCList*	List						
+sdpGtkEventCListUnselectRow	unselect-row	void	GtkCList*	List	gint	Row	gint	Column	GdkEvent*	Event
+sdpGtkEventColorSelectionColorChanged	color-changed	void	GtkColorSelection*	ColorSelection						
+sdpGtkEventContainerAdd	add	void	GtkContainer*	Container	GtkWidget*	Widget				
+sdpGtkEventContainerCheckResize	check-resize	void	GtkContainer*	Container						
+sdpGtkEventContainerFocus	focus	GtkDirectionType	GtkContainer*	Container	GtkDirectionType	DirectionType				
+sdpGtkEventContainerRemove	remove	void	GtkContainer*	Container	GtkWidget*	Widget				
+sdpGtkEventContainerSetFocusChild	set-focus-child	void	GtkContainer*	Container	GtkWidget*	Widget				
+sdpGtkEventCTreeChangeFocusRowExpansion	change-focus-row-expansion	void	GtkCTree*	Tree	GtkCTreeExpansionType	ExpansionType				
+sdpGtkEventCTreeTreeCollapse	tree-collapse	void	GtkCTree*	Tree	GtkCTreeNode*	Node				
+sdpGtkEventCTreeTreeExpand	tree-expand	void	GtkCTree*	Tree	GtkCTreeNode*	Node				
+sdpGtkEventCTreeTreeMove	tree-move	void	GtkCTree*	Tree	GtkCTreeNode*	Node	GtkCTreeNode*	NewParent	GtkCTreeNode*	NewSibling
+sdpGtkEventCTreeTreeSelectRow	tree-select-row	void	GtkCTree*	Tree	GtkCTreeNode*	Row	gint	Column		
+sdpGtkEventCTreeTreeUnselectRow	tree-unselect-row	void	GtkCTree*	Tree	GtkCTreeNode*	Row	gint	Column		
+sdpGtkEventCurveCurveTypeChanged	curve-type-changed	void	GtkCurve*	Curve						
+sdpGtkEventDataDisconnect	disconnect	void	GtkData*	Data						
+sdpGtkEventEditableActivate	activate	void	GtkEditable*	Editable						
+sdpGtkEventEditableChanged	changed	void	GtkEditable*	Editable						
+sdpGtkEventEditableCopyClipboard	copy-clipboard	void	GtkEditable*	Editable						
+sdpGtkEventEditableCutClipboard	cut-clipboard	void	GtkEditable*	Editable						
+sdpGtkEventEditableDeleteText	delete-text	void	GtkEditable*	Editable	gint	Start	gint	End		
+sdpGtkEventEditableInsertText	insert-text	void	GtkEditable*	Editable	gchar*	Text	gint	TextLength	gint*	Position
+sdpGtkEventEditableKillChar	kill-gchar	void	GtkEditable*	Editable	gint	Direction				
+sdpGtkEventEditableKillLine	kill-line	void	GtkEditable*	Editable	gint	Direction				
+sdpGtkEventEditableKillWord	kill-word	void	GtkEditable*	Editable	gint	Direction				
+sdpGtkEventEditableMoveCursor	move-cursor	void	GtkEditable*	Editable	gint	X	gint	Y		
+sdpGtkEventEditableMovePage	move-page	void	GtkEditable*	Editable	gint	X	gint	Y		
+sdpGtkEventEditableMoveToColumn	move-to-column	void	GtkEditable*	Editable	gint	Column				
+sdpGtkEventEditableMoveToRow	move-to-row	void	GtkEditable*	Editable	gint	Row				
+sdpGtkEventEditableMoveWord	move-word	void	GtkEditable*	Editable	gint	Direction				
+sdpGtkEventEditablePasteClipboard	paste-clipboard	void	GtkEditable*	Editable						
+sdpGtkEventEditableSetEditable	set-editable	void	GtkEditable*	Editable	gboolean	IsEditable				
+sdpGtkEventHandleBoxChildAttached	child-attached	void	GtkHandleBox*	HandleBox	GtkWidget*	Widget				
+sdpGtkEventHandleBoxChildDetached	child-detached	void	GtkHandleBox*	HandleBox	GtkWidget*	Widget				
+sdpGtkEventInputDialogDisableDevice	disable-device	void	GtkInputDialog*	InputDialog	guint32	DeviceID				
+sdpGtkEventInputDialogEnableDevice	enable-device	void	GtkInputDialog*	InputDialog	guint32	DeviceID				
+sdpGtkEventItemDeselect	deselect	void	GtkItem*	Item						
+sdpGtkEventItemSelect	select	void	GtkItem*	Item						
+sdpGtkEventItemToggle	toggle	void	GtkItem*	Item						
+sdpGtkEventListItemEndSelection	end-selection	void	GtkListItem*	ListItem						
+sdpGtkEventListItemExtendSelection	extend-selection	void	GtkListItem*	ListItem	GtkScrollType	ScrollType	gfloat	Position	gboolean	AutoStartSelection
+sdpGtkEventListItemScrollHorizontal	scroll-horizontal	void	GtkListItem*	ListItem	GtkScrollType	ScrollType	gfloat	Position		
+sdpGtkEventListItemScrollVertical	scroll-vertical	void	GtkListItem*	ListItem	GtkScrollType	ScrollType	gfloat	Position		
+sdpGtkEventListItemSelectAll	select-all	void	GtkListItem*	ListItem						
+sdpGtkEventListItemStartSelection	start-selection	void	GtkListItem*	ListItem						
+sdpGtkEventListItemToggleAddMode	toggle-add-mode	void	GtkListItem*	ListItem						
+sdpGtkEventListItemToggleFocusRow	toggle-focus-row	void	GtkListItem*	ListItem						
+sdpGtkEventListItemUndoSelection	undo-selection	void	GtkListItem*	ListItem						
+sdpGtkEventListItemUnselectAll	unselect-all	void	GtkListItem*	ListItem						
+sdpGtkEventListSelectChild	select-child	void	GtkList*	List	GtkWidget*	Widget				
+sdpGtkEventListSelectionChanged	selection-changed	void	GtkList*	List						
+sdpGtkEventListUnselectChild	unselect-child	void	GtkList*	List	GtkWidget*	Widget						
+sdpGtkEventMenuItemActivate	activate	void	GtkMenuItem*	MenuItem								
+sdpGtkEventMenuItemActivateItem	activate-item	void	GtkMenuItem*	MenuItem								
+sdpGtkEventMenuShellActivateCurrent	activate-current	void	GtkMenuShell*	MenuShell	gboolean	ForceHide						
+sdpGtkEventMenuShellCancel	cancel	void	GtkMenuShell*	MenuShell								
+sdpGtkEventMenuShellDeactivate	deactivate	void	GtkMenuShell*	MenuShell								
+sdpGtkEventMenuShellMoveCurrent	move-current	void	GtkMenuShell*	MenuShell	GtkMenuDirectionType	Direction						
+sdpGtkEventMenuShellSelectionDone	selection-done	void	GtkMenuShell*	MenuShell								
+sdpGtkEventNotebookSwitchPage	switch-page	void	GtkNotebook*	Notebook	GtkNotebookPage*	Page	guint	PageNumber				
+sdpGtkEventObjectDestroy	destroy	void	GtkObject*	Object								
+sdpGtkEventStatusbarTextPopped	text-popped	void	GtkStatusbar*	Statusbar	guint	ContextID	gchar*	Text				
+sdpGtkEventStatusbarTextPushed	text-pushed	void	GtkStatusbar*	Statusbar	guint	ContextID	gchar*	Text				
+sdpGtkEventTipsQueryStartQuery	start-query	void	GtkTipsQuery*	TipsQuery								
+sdpGtkEventTipsQueryStopQuery	stop-query	void	GtkTipsQuery*	TipsQuery								
+sdpGtkEventTipsQueryWidgetEntered	widget-entered	void	GtkTipsQuery*	TipsQuery	GtkWidget*	Widget	gchar*	TipText	gchar*	TipPrivate		
+sdpGtkEventTipsQueryWidgetSelected	widget-selected	gboolean	GtkTipsQuery*	TipsQuery	GtkWidget*	Widget	gchar*	TipText	gchar*	TipPrivate	GdkEvent*	Event
+sdpGtkEventToggleButtonToggled	toggled	void	GtkToggleButton*	ToggleButton										
+sdpGtkEventToolbarOrientationChanged	orientation-changed	void	GtkToolbar*	Toolbar	GtkOrientation	Orientation								
+sdpGtkEventToolbarStyleChanged	style-changed	void	GtkToolbar*	Toolbar	GtkToolbarStyle	Style								
+sdpGtkEventTreeItemCollapse	collapse	void	GtkTreeItem*	TreeItem										
+sdpGtkEventTreeItemExpand	expand	void	GtkTreeItem*	TreeItem										
+sdpGtkEventTreeSelectChild	select-child	void	GtkTree*	Tree	GtkWidget*	Widget								
+sdpGtkEventTreeSelectionChanged	selection-changed	void	GtkTree*	Tree										
+sdpGtkEventTreeUnselectChild	unselect-child	void	GtkTree*	Tree	GtkWidget*	Widget								
+sdpGtkEventWidgetAddAccelerator	add-accelerator	void	GtkWidget*	Widget	guint	SignalID	GtkAccelGroup*	Group	guint	Key	GdkModifierType	Modifier	GtkAccelFlags	Flags
+sdpGtkEventWidgetButtonPressEvent	button-press-event	gboolean	GtkWidget*	Widget	GdkEventButton*	Event								
+sdpGtkEventWidgetButtonReleaseEvent	button-release-event	gboolean	GtkWidget*	Widget	GdkEventButton*	Event								
+sdpGtkEventWidgetClientEvent	client-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event								
+sdpGtkEventWidgetConfigureEvent	configure-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event								
+sdpGtkEventWidgetDebugMsg	debug-msg	void	GtkWidget*	Widget	gchar*	String								
+sdpGtkEventWidgetDeleteEvent	delete-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event								
+sdpGtkEventWidgetDestroyEvent	destroy-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event								
+sdpGtkEventWidgetDragBegin	drag-begin	void	GtkWidget*	Widget	GdkDragContext*	DragContext										
+sdpGtkEventWidgetDragDataDelete	drag-data-delete	void	GtkWidget*	Widget	GdkDragContext*	DragContext										
+sdpGtkEventWidgetDragDataGet	drag-data-get	void	GtkWidget*	Widget	GdkDragContext*	DragContext	GtkSelectionData*	Selection	guint	MouseX	guint	MouseY				
+sdpGtkEventWidgetDragDataReceived	drag-data-received	void	GtkWidget*	Widget	GdkDragContext*	DragContext	gint	MouseX	gint	MouseY	GtkSelectionData*	Selection	guint	Info	guint	Time
+sdpGtkEventWidgetDragDrop	drag-drop	gboolean	GtkWidget*	Widget	GdkDragContext*	DragContext	gint	MouseX	gint	MouseY	guint	Time				
+sdpGtkEventWidgetDragEnd	drag-end	void	GtkWidget*	Widget	GdkDragContext*	DragContext										
+sdpGtkEventWidgetDragLeave	drag-leave	void	GtkWidget*	Widget	GdkDragContext*	DragContext	guint	Time								
+sdpGtkEventWidgetDragMotion	drag-motion	gboolean	GtkWidget*	Widget	GdkDragContext*	DragContext	gint	MouseX	gint	MouseY	guint	Time				
+sdpGtkEventWidgetDraw	draw	void	GtkWidget*	Widget	GdkRectangle*	Area										
+sdpGtkEventWidgetDrawDefault	draw-default	void	GtkWidget*	Widget												
+sdpGtkEventWidgetDrawFocus	draw-focus	void	GtkWidget*	Widget												
+sdpGtkEventWidgetEnterNotifyEvent	enter-notify-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event										
+sdpGtkEventWidgetEvent	event	gboolean	GtkWidget*	Widget	GdkEvent*	Event										
+sdpGtkEventWidgetExposeEvent	expose-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event										
+sdpGtkEventWidgetFocusInEvent	focus-in-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event										
+sdpGtkEventWidgetFocusOutEvent	focus-out-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event										
+sdpGtkEventWidgetHide	hide	void	GtkWidget*	Widget						
+sdpGtkEventWidgetKeyPressEvent	key-press-event	gboolean	GtkWidget*	Widget	GdkEventKey*	Event				
+sdpGtkEventWidgetKeyReleaseEvent	key-release-event	gboolean	GtkWidget*	Widget	GdkEventKey*	Event				
+sdpGtkEventWidgetLeaveNotifyEvent	leave-notify-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetMap	map	void	GtkWidget*	Widget						
+sdpGtkEventWidgetMapEvent	map-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetMotionNotifyEvent	motion-notify-event	gboolean	GtkWidget*	Widget	GdkEventMotion*	Event				
+sdpGtkEventWidgetNoExposeEvent	no-expose-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetParentSet	parent-set	void	GtkWidget*	Widget	GtkWidget*	PreviousParent				
+sdpGtkEventWidgetPropertyNotifyEvent	property-notify-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetProximityInEvent	proximity-in-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetProximityOutEvent	proximity-out-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetRealize	realize	void	GtkWidget*	Widget						
+sdpGtkEventWidgetRemoveAccelerator	remove-accelerator	void	GtkWidget*	Widget	GtkAccelGroup*	Group	guint	Key	GdkModifierType	Modifiers
+sdpGtkEventWidgetSelectionClearEvent	selection-clear-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event				
+sdpGtkEventWidgetSelectionGet	selection-get	void	GtkWidget*	Widget	GtkSelectionData*	Selection	guint	Info	guint	Time
+sdpGtkEventWidgetSelectionNotifyEvent	selection-notify-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event		
+sdpGtkEventWidgetSelectionReceived	selection-received	void	GtkWidget*	Widget	GtkSelectionData*	Selection	guint	Time
+sdpGtkEventWidgetSelectionRequestEvent	selection-request-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event		
+sdpGtkEventWidgetShow	show	void	GtkWidget*	Widget				
+sdpGtkEventWidgetSizeAllocate	size-allocate	void	GtkWidget*	Widget	GtkAllocation*	Allocation		
+sdpGtkEventWidgetSizeRequest	size-request	void	GtkWidget*	Widget	GtkRequisition*	Requisition		
+sdpGtkEventWidgetStateChanged	state-changed	void	GtkWidget*	Widget	GtkStateType	PreviousState		
+sdpGtkEventWidgetStyleSet	style-set	void	GtkWidget*	Widget	GtkStyle*	PreviousStyle		
+sdpGtkEventWidgetUnmap	unmap	void	GtkWidget*	Widget				
+sdpGtkEventWidgetUnmapEvent	unmap-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event		
+sdpGtkEventWidgetUnrealize	unrealize	void	GtkWidget*	Widget				
+sdpGtkEventWidgetVisibilityNotifyEvent	visibility-notify-event	gboolean	GtkWidget*	Widget	GdkEvent*	Event		
+sdpGtkEventWindowSetFocus	set-focus	void	GtkWindow*	Window	GtkWidget*	Focus		

@@ -1,0 +1,8 @@
+<shrimp type="function" name="Output" description="Outputs to Surface Shader">
+	<input name="Ci" description="Incident ray colour" type="color" default="0"/>
+	<input name="Oi" description="Incident ray opacity" type="color" default="1"/>
+	<code>
+	Ci = $(Ci);
+	Oi = $(Oi);
+	</code>
+</shrimp>
