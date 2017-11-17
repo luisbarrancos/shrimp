@@ -1,0 +1,29 @@
+sudo: required
+dist: trusty
+language: cpp
+compiler: gcc
+
+cache:
+    - apt
+
+branches:
+    only:
+    - master
+
+env:
+    - QT=4
+    - DEBUG=NO
+
+before_install:
+    - sudo apt-get update -qq
+    - if [ "$QT" = "4" ]; then sudo apt-get install -qq libqt4-dev qt4-qmake qt4-default; fi
+    - sudo apt-get install mesa-common-dev freeglut3-dev libxrandr-dev libxi-dev
+
+script:
+    - echo Using ${NPROC} processes
+    - qmake -qt=${QT} shrimp.pro
+    - make -j${NPROC}
+
+notifications:
+    email: false
+

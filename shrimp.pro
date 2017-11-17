@@ -13,8 +13,8 @@ TEMPLATE = app
 MOC_DIR = .qmake_temp
 OBJECTS_DIR = .qmake_temp
 
-QMAKE_CFLAGS += -fPIC -std=c++11
-QMAKE_CXXFLAGS += -fPIC -std=c++11
+QMAKE_CFLAGS += -fPIC -Wno-unused-parameter
+QMAKE_CXXFLAGS += -fPIC -std=c++11 -Wno-unused-parameter
 QMAKE_LFLAGS += -L/usr/lib64 -lglut -fPIC
 
 LIBS += -L/usr/lib64 -L/usr/local/lib64 -lGL -lGLU -lglut
