@@ -37,6 +37,7 @@ export DL_SHADERS_PATH=${HOME}/.shrimp/temp
 Start the application, and off you go, with a lovely dragon.
 
 ![Main UI Window](screenshots/shrimp_ui.jpg "Main UI window")
-![Stanford Dragon](screenshots/shrimp_dragon.jog "Stanford Dragon")
+
+![Stanford Dragon](screenshots/shrimp_dragon.jpg "Stanford Dragon")
 
 
