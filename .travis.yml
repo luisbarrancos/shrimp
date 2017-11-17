@@ -13,7 +13,6 @@ branches:
 env:
     - QT=4
     - DEBUG=NO
-    - FLAGS="CFLAGS=-Wno-unused-parameter CXXFLAGS=-Wno-unused-parameter"
 
 before_install:
     - sudo apt-get update -qq
@@ -23,7 +22,7 @@ before_install:
 script:
     - echo Using ${NPROC} processes
     - qmake -qt=${QT} shrimp.pro
-    - make ${FLAGS} -j${NPROC}
+    - make -j${NPROC}
 
 notifications:
     email: false
