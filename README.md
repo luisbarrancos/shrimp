@@ -12,7 +12,7 @@ This contains all the development history that was spread amongst the CVS, SVN a
 
 RSL was deprecated in the latest RenderMan versions, the code is provided as a learning/didactic resource.
 The latest version of [PRman](https://renderman.pixar.com/resources/RenderMan_20/home.html) to support RSL was version 20.0. 
-[3Delight](http://www.3delight.com/en/index.php?page=3DSP_overview) version (up to) 12.0 is also supported.
+[3Delight](http://www.3delight.com/en/index.php?page=3DSP_overview) version (up to) 12.5 is also supported.
 
 #### Building
 
