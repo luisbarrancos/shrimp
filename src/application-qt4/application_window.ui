@@ -331,7 +331,16 @@
    <layout class="QHBoxLayout" name="horizontalLayout">
     <item>
      <layout class="QGridLayout" name="gridLayout">
-      <property name="margin">
+      <property name="leftMargin">
+       <number>2</number>
+      </property>
+      <property name="topMargin">
+       <number>2</number>
+      </property>
+      <property name="rightMargin">
+       <number>2</number>
+      </property>
+      <property name="bottomMargin">
        <number>2</number>
       </property>
       <property name="spacing">
@@ -408,7 +417,12 @@
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -569,7 +583,12 @@
          <string>Choose a 3D scene for preview</string>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -620,7 +639,12 @@
          <bool>false</bool>
         </property>
         <property name="styleSheet">
-         <string notr="true"/>
+         <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -655,7 +679,7 @@
      <x>0</x>
      <y>0</y>
      <width>893</width>
-     <height>25</height>
+     <height>23</height>
     </rect>
    </property>
    <property name="palette">
