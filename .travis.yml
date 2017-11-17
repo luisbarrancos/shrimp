@@ -3,17 +3,22 @@ dist: trusty
 language: cpp
 compiler: gcc
 
+branches:
+    only:
+    - master
+
 env:
     - QT=4
+    - DEBUG=NO
 
 install:
     - sudo apt-get update -qq
     - if [ "$QT" = "4" ]; then sudo apt-get install -qq libqt4-dev qt4-qmake qt4-default; fi
 
 script:
-    - nproc
+    - echo Using ${NPROC} processes
     - qmake -v -qt=${QT} shrimp.pro
-    - make -j$(nproc)
+    - make -j${NPROC}
 
 notifications:
     email: false
