@@ -329,7 +329,12 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
      </property>
     </widget>
    </item>
@@ -501,7 +506,12 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
      </property>
     </widget>
    </item>
@@ -927,7 +937,12 @@
       <bool>false</bool>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
      </property>
     </widget>
    </item>
@@ -975,7 +990,12 @@
       </font>
      </property>
      <property name="styleSheet">
-      <string notr="true"/>
+      <string notr="true">QComboBox
+{
+    color:white;
+    background-color: rgba(40,40,40,100);
+    padding: 1px 0px 1px 3px; /*This makes text colour work*/
+}</string>
      </property>
     </widget>
    </item>
