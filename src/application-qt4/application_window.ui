@@ -424,6 +424,12 @@
     padding: 1px 0px 1px 3px; /*This makes text colour work*/
 }</string>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>16</number>
+        </property>
         <property name="frame">
          <bool>false</bool>
         </property>
@@ -588,7 +594,17 @@
     color:white;
     background-color: rgba(40,40,40,100);
     padding: 1px 0px 1px 3px; /*This makes text colour work*/
-}</string>
+}
+
+
+
+</string>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>16</number>
         </property>
         <property name="frame">
          <bool>false</bool>
@@ -646,6 +662,12 @@
     padding: 1px 0px 1px 3px; /*This makes text colour work*/
 }</string>
         </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QComboBox::AdjustToContents</enum>
+        </property>
+        <property name="minimumContentsLength">
+         <number>16</number>
+        </property>
         <property name="frame">
          <bool>false</bool>
         </property>
@@ -679,7 +701,7 @@
      <x>0</x>
      <y>0</y>
      <width>893</width>
-     <height>23</height>
+     <height>17</height>
     </rect>
    </property>
    <property name="palette">
@@ -854,9 +876,9 @@
       <colorrole role="WindowText">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
-         <red>106</red>
-         <green>104</green>
-         <blue>100</blue>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
         </color>
        </brush>
       </colorrole>
@@ -872,18 +894,18 @@
       <colorrole role="Text">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
-         <red>190</red>
-         <green>190</green>
-         <blue>190</blue>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
         </color>
        </brush>
       </colorrole>
       <colorrole role="ButtonText">
        <brush brushstyle="SolidPattern">
         <color alpha="255">
-         <red>106</red>
-         <green>104</green>
-         <blue>100</blue>
+         <red>255</red>
+         <green>255</green>
+         <blue>255</blue>
         </color>
        </brush>
       </colorrole>
@@ -947,18 +969,23 @@
    <property name="styleSheet">
     <string notr="true">QMenuBar {
     background-color: rgb(40,40,40);
-    border-radius: 4px;
-    border-style: flat;
-    border-width: 1px;
+	color: rgb(255,255,255);
 }
 
- QMenuBar::item:selected {
-     background: orange;
- }
+QMenuBar::item {
+    spacing: 3px; /* spacing between menu bar items */
+    padding: 1px 4px;
+    background: transparent;
+    border-radius: 4px;
+}
 
- QMenuBar::item:pressed {
-     background: orange;
- }</string>
+QMenuBar::item:selected { /* when selected using mouse or keyboard */
+    background: #a8a8a8;
+}
+
+QMenuBar::item:pressed {
+    background: #888888;
+}</string>
    </property>
    <property name="defaultUp">
     <bool>false</bool>
@@ -979,9 +1006,9 @@
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1006,18 +1033,18 @@
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1035,9 +1062,9 @@
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1062,18 +1089,18 @@
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1091,9 +1118,9 @@
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1118,18 +1145,18 @@
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>40</red>
-          <green>40</green>
-          <blue>40</blue>
+          <red>255</red>
+          <green>255</green>
+          <blue>255</blue>
          </color>
         </brush>
        </colorrole>
@@ -1146,20 +1173,7 @@
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true">QMenu {
-  background-color: rgb(40,40,40);
-	color: rgb(255, 255, 255);
-}
-
-QMenu::item:selected {
-  background: orange;
-	color: rgb(255, 255, 255);
- }
-
-QMenu::item:pressed {
-	color: rgb(200, 200, 200);
-  background: orange;
- }</string>
+     <string notr="true"/>
     </property>
     <property name="title">
      <string>File</string>
