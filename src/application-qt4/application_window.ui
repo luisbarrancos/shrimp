@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>893</width>
+    <width>935</width>
     <height>602</height>
    </rect>
   </property>
@@ -527,6 +527,12 @@
         <property name="orientation">
          <enum>Qt::Horizontal</enum>
         </property>
+        <property name="invertedControls">
+         <bool>false</bool>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::NoTicks</enum>
+        </property>
        </widget>
       </item>
       <item row="2" column="8" colspan="2">
@@ -700,7 +706,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>893</width>
+     <width>935</width>
      <height>17</height>
     </rect>
    </property>

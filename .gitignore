@@ -5,4 +5,10 @@ build
 .*~
 *~
 *.exe
+.qmake_temp/
+Makefile
+doc/content.xml
+doc/index.xml
+shrimp
+shrimp.pro.user*
 

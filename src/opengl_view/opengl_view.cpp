@@ -716,7 +716,7 @@ void opengl_view::mouse_wheel_update(int move)
 {
     log() << aspect << "opengl_view: mouse_wheel_update, move=" << move << std::endl;
 
-    double change = - 0.3 * move;
+    double change = 0.3 * move;
 
     set_size (m_size + change);
 }
