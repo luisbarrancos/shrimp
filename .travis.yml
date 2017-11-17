@@ -17,7 +17,7 @@ install:
 
 script:
     - echo Using ${NPROC} processes
-    - qmake -v -qt=${QT} shrimp.pro
+    - qmake -qt=${QT} shrimp.pro
     - make -j${NPROC}
 
 notifications:
