@@ -15,10 +15,10 @@ OBJECTS_DIR = .qmake_temp
 
 QMAKE_CFLAGS += -fPIC -Wno-unused-parameter
 QMAKE_CXXFLAGS += -fPIC -std=c++11 -Wno-unused-parameter
-QMAKE_LFLAGS += -L/usr/lib64 -lglut -fPIC
+QMAKE_LFLAGS += -L/usr/lib64  -fPIC
 
-LIBS += -L/usr/lib64 -L/usr/local/lib64 -lGL -lGLU -lglut
-QMAKE_LIBS += -L/usr/lib64 -lGL -lGLU -lglut
+LIBS += -L/usr/lib64 -L/usr/local/lib64 -lGL -lGLU
+QMAKE_LIBS += -L/usr/lib64 -lGL -lGLU
 
 DEFINES += QT_NO_PRINTER
 
