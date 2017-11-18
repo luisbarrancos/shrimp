@@ -99,6 +99,12 @@
     padding: 1px 0px 1px 3px; /*This makes text colour work*/
 }</string>
      </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
+     <property name="minimumContentsLength">
+      <number>6</number>
+     </property>
     </widget>
    </item>
    <item row="2" column="2">
@@ -113,6 +119,12 @@
     background-color: rgba(40,40,40,100);
     padding: 1px 0px 1px 3px; /*This makes text colour work*/
 }</string>
+     </property>
+     <property name="sizeAdjustPolicy">
+      <enum>QComboBox::AdjustToContents</enum>
+     </property>
+     <property name="minimumContentsLength">
+      <number>10</number>
      </property>
     </widget>
    </item>
