@@ -123,15 +123,28 @@ block_input_output::block_input_output(QWidget* parent, services* shrimpServices
     // set values
     if (ioDialogType == "editInput")
     {
+        const std::string& typeName (editedBlock->get_input_type (editedProperty));
         setValues (editedProperty,
                    editedBlock->get_input_storage (editedProperty),
-                   editedBlock->get_input_type (editedProperty),
+                   typeName,
                    editedBlock->get_input_type_extension (editedProperty),
                    editedBlock->get_input_type_extension_size (editedProperty),
                    editedBlock->is_shader_parameter (editedProperty),
                    editedBlock->get_input_description (editedProperty));
 
-        ui->defaultValueLineEdit->setText (QString::fromStdString (editedBlock->get_input_value (editedProperty)));
+        QString defaultValue(QString::fromStdString (editedBlock->get_input_value (editedProperty)));
+        if (typeName == std::string("string"))
+        {
+            if (defaultValue.startsWith ('"'))
+            {
+                defaultValue.remove (0, 1);
+            }
+            if (defaultValue.endsWith ('"'))
+            {
+                defaultValue.remove (defaultValue.length() - 1, 1);
+            }
+        }
+        ui->defaultValueLineEdit->setText (defaultValue);
     }
     else if (ioDialogType == "editOutput")
     {
@@ -194,6 +207,18 @@ void block_input_output::okButton()
     QString typeExtension = arrayType + ":" + QString::number(arraySize);
 
     //TODO: check that the default value matches the input type
+
+    if (typeName == "string")
+    {
+        if (!defaultValue.startsWith('"'))
+        {
+            defaultValue.push_front('"');
+        }
+        if (!defaultValue.endsWith('"'))
+        {
+            defaultValue.push_back('"');
+        }
+    }
 
     if (ioDialogType == "addInput" || ioDialogType == "addOutput")
     {
@@ -324,7 +349,12 @@ void block_input_output::on_fileButton_clicked()
         return;
     }
     ui->defaultValueLineEdit->setText(fileName);
-    ui->typeComboBox->setCurrentIndex(2);  /// "string"
+
+    int typeIndex = ui->typeComboBox->findText ("string");
+    if (typeIndex != -1)
+    {
+        ui->typeComboBox->setCurrentIndex(typeIndex);
+    }
 }
 
 void block_input_output::on_colorButton_clicked()
@@ -340,5 +370,10 @@ void block_input_output::on_colorButton_clicked()
                                      .arg(color.greenF())
                                      .arg(color.blueF()));
     ui->defaultValueLineEdit->setText(colorName);
-    ui->typeComboBox->setCurrentIndex(1);  /// "color"
+
+    int typeIndex = ui->typeComboBox->findText ("color");
+    if (typeIndex != -1)
+    {
+        ui->typeComboBox->setCurrentIndex(typeIndex);
+    }
 }
