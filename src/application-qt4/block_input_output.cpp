@@ -24,6 +24,11 @@
 
 #include "src/miscellaneous/logging.h"
 
+#include <QColorDialog>
+#include <QDebug>
+#include <QDir>
+#include <QFile>
+#include <QFileDialog>
 #include <QMessageBox>
 
 block_input_output::block_input_output(QWidget* parent, services* shrimpServicesInstance, const std::string dialogType, shader_block* block, const std::string property) :
@@ -310,3 +315,30 @@ void block_input_output::setValues (const std::string name, const std::string st
     ui->descriptionTextEdit->setPlainText (QString::fromStdString (description));
 }
 
+void block_input_output::on_fileButton_clicked()
+{
+    const QString& fileName(QFileDialog::getOpenFileName(
+        this, tr("Select Texture"), QDir::homePath(), tr("Image Files (*.exr *.tif);;All (*.*)")));
+    if (fileName.isEmpty() || !QFile::exists(fileName))
+    {
+        return;
+    }
+    ui->defaultValueLineEdit->setText(fileName);
+    ui->typeComboBox->setCurrentIndex(2);  /// "string"
+}
+
+void block_input_output::on_colorButton_clicked()
+{
+    const QColor& color(QColorDialog::getColor(Qt::gray, this));
+    if (!color.isValid())
+    {
+        return;
+    }
+
+    const QString& colorName(QString("color(%1, %2, %3)")
+                                     .arg(color.redF())
+                                     .arg(color.greenF())
+                                     .arg(color.blueF()));
+    ui->defaultValueLineEdit->setText(colorName);
+    ui->typeComboBox->setCurrentIndex(1);  /// "color"
+}
