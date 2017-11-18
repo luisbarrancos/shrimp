@@ -12,9 +12,9 @@ Rotate -109.444 0 1 0
 Translate 7.74643 -0 -4.70146
 
 Shader "gi_light" "gi_light" "int samples" [ 16 ]  "float maxdist" [ 1.0e+37 ]
-       "string envmap" [ "/home/cgwork/.shrimp/temp/test.tdl" ]
+       "string envmap" [ "~/.shrimp/temp/directsun.hdr" ]
        "string envspace" [ "world" ]
-       "color env_intensity" [ 10 10 10 ]
+       "color env_intensity" [ 1 1 1 ]
        
 WorldBegin
 

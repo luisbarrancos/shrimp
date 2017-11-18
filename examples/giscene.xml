@@ -1,13 +1,210 @@
 <shrimp name="new_scene" authors="">
 	<about/>
 	<network>
-		<block id="OrenNayar" position_x="2.10357142857143" position_y="0.642857142857143" author="rconstruct">
+		<block id="Add" position_x="5" position_y="5" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="value">
+				<connection parent="Multiply" output="value"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="+" value="1" description="2nd or subsequent inputs" type_parent="value">
+				<connection parent="CookTorrance" output="Ci"/>
+			</input>
+			<output name="value" type="color" storage="varying" description="val = A + B"/>
+			<rsl_code>
+		$(value) = $(A) + $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Adds 2 or more inputs. All the input pads will inherit the type of the output pad.			</usage>
+		</block>
+		<block id="AmbientLight" position_x="6.79658241758242" position_y="-0.315120879120877" author="rconstruct">
+			<input name="intensity" type="float" storage="varying" value="1" description="Light intensity"/>
+			<input name="lightcolor" type="color" storage="varying" value="color( 1, .93, .81 )" description="Light color"/>
+			<input name="category" type="string" storage="uniform" value="&quot;&quot;" description="Light category"/>
+			<output name="Cl" type="color" storage="varying" description="Light ray color"/>
+			<rsl_code>
+		__category = $(category);
+		$(Cl) = $(intensity) * $(lightcolor);
+		L = vector(0);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Ambient light shader.			</usage>
+		</block>
+		<block id="Clamp" position_x="1" position_y="11" author="rconstruct">
+			<input name="x" type="float" storage="varying" value="1" description="Input value" type_parent="value">
+				<connection parent="Schlick_Fresnel" output="Kr"/>
+			</input>
+			<input name="minimum" type="float" storage="varying" value="0.0" description="minimum value" type_parent="value"/>
+			<input name="maximum" type="float" storage="varying" value="1.0" description="maximum value" type_parent="value"/>
+			<output name="value" type="float" storage="varying" description="Clamp a between min and max"/>
+			<rsl_code>
+		$(value) = clamp( $(x), $(minimum), $(maximum) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Clamps the first argument between the minimum and maximum values provided.			</usage>
+		</block>
+		<block id="CookTorrance" position_x="2" position_y="4" author="rconstruct">
+			<input name="Cspec" type="color" storage="varying" value="color(1)" description="Specular color"/>
+			<input name="Ks" type="float" storage="varying" value="1.0" description="Specular light coefficient"/>
+			<input name="roughness" type="float" storage="varying" value="0.2" description="The apparent surface roughness."/>
+			<input name="distribution" type="float" storage="uniform" value="0" description="Microfacet distributions, see help."/>
+			<input name="attenuation" type="float" storage="uniform" value="0" description="Geometric attenuation, see help."/>
+			<input name="ior" type="float" storage="varying" value="15" description="Index of refraction">
+				<connection parent="IOR" output="value"/>
+			</input>
+			<input name="extinction" type="float" storage="varying" value="2" description="Extinction coefficient"/>
+			<input name="samples" type="float" storage="varying" value="64" description="Reflection samples"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize" output="value"/>
+			</input>
+			<input name="I" type="vector" storage="varying" value="I" description="Direction of viewer">
+				<connection parent="Normalize_2" output="value"/>
+			</input>
+			<input name="direction" type="vector" storage="varying" value="dPdv" description="Anisotropy direction"/>
+			<input name="category" type="string" storage="uniform" value="&quot;&quot;" description="Light categories accepted"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
+			<rsl_code>
+        aov_specularcolor = $(Cspec);
+
+        #if RENDERER==_3delight
+
+        uniform string raytype = &quot;&quot;;
+        rayinfo(&quot;type&quot;, raytype);
+
+        if (raytype != &quot;diffuse&quot;)
+        {
+            aov_specular += $(Ks) *
+                cooktorrance(
+                    $(N), $(I), $(direction),
+                    $(ior), $(extinction), $(roughness),
+                    $(distribution), $(attenuation), $(category));
+
+            shader $(blockname)_gi_light = getshader(&quot;gi_light&quot;);
+
+            uniform string $(blockname)_envmap = &quot;&quot;;
+            uniform string $(blockname)_envspace = &quot;&quot;;
+
+            if ($(blockname)_gi_light != null)
+            {
+                $(blockname)_envmap = $(blockname)_gi_light-&gt;envmap;
+                $(blockname)_envspace = $(blockname)_gi_light-&gt;envspace;
+            }
+
+            aov_reflection += $(Ks) *
+                trace(P, $(N), &quot;bsdf&quot;, &quot;cook-torrance&quot;,
+                    &quot;wo&quot;, -$(I), &quot;roughness&quot;, $(roughness),
+                    &quot;samples&quot;, $(samples), &quot;eta&quot;, $(ior),
+                    &quot;samplearealights&quot;, 1,
+                    &quot;weight&quot;, $(Cspec),
+                    &quot;environmentmap&quot;, $(blockname)_envmap,
+                    &quot;environmentspace&quot;, $(blockname)_envspace);
+        }
+
+        #else
+
+        uniform string raytype = &quot;&quot;;
+        rayinfo(&quot;type&quot;, raytype);
+
+        if (raytype != &quot;diffuse&quot;)
+        {
+            aov_specular += $(Ks) *
+                cooktorrance(
+                    $(N), $(I), $(direction),
+                    $(ior), $(extinction),
+                    $(roughness), $(distribution),
+                    $(attenuation), $(category));
+        }
+
+        #endif
+
+		$(Ci) = aov_specularcolor * (aov_specular + aov_reflection);
+
+				</rsl_code>
+			<rsl_include>rsl_shrimp_shadingmodels.h			</rsl_include>
+			<usage>Cook-Torrance specular term. The &quot;distribution&quot; variable controls the microfacet distribution function being used, being 0 = Beckmann (default), 1 = Ward, 2 = Trowbridge-Reitz, 3 = Heidrich-Seidel (anisotropic). The &quot;attenuation&quot; variable controls the geometric attenuation function being used, being 0 = the default shadowing/masking function proposed by Blinn for the Torrance-Sparrow model, 1 = the approximation suggested by Christophe Schlick for the first Smith shadowing/masking equation for a known microfacet normal, 2 = full Smith second equation for an averaged microfacet normal (as used in the He-Torrance model). In the case of the Heidrich-Seidel anisotropic distribution, some literature mentions adding an isotropic specular term, which is added here via &quot;specularbrdf&quot;, but the user might want to override this in the respective header - this distribution uses the anisotropy direction defined by &quot;direction&quot;, which defaults to the global variable &quot;dPdv&quot;. The specular color value is passed to &quot;aov_specularcolor&quot;, while the specular value is passed to the &quot;aov_specular&quot; AOV presets. The Fresnel term used is the complex Fresnel function, from the Odforce.net Odwiki, courtesy of Mario Marengo and the Odforce community, using the &quot;ior&quot; index of refraction, and the &quot;extinction&quot; extinction coefficient. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.			</usage>
+		</block>
+		<block id="I" position_x="-4" position_y="8" author="rconstruct">
+			<output name="I" type="vector" storage="varying" description="Incident ray direction"/>
+			<rsl_code>
+	$(I) = I;
+				</rsl_code>
+			<rsl_include/>
+			<usage>Incident ray direction. The availability of this global variable for the different shading contexts is renderer specific.			</usage>
+		</block>
+		<block id="IOR" position_x="-2" position_y="3" author="rconstruct">
+			<input name="in" type="float" storage="varying" value="2" description="Input" type_parent="value"/>
+			<output name="value" type="float" storage="varying" description="Output = Input"/>
+			<rsl_code>
+		$(value) = $(in);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Useful for supplying multiple inputs with the same value.			</usage>
+		</block>
+		<block id="Multiply" position_x="5" position_y="7" author="rconstruct">
+			<input name="A" type="color" storage="varying" value="1" description="1st input" type_parent="value">
+				<connection parent="OrenNayar" output="Ci"/>
+			</input>
+			<input name="B" type="color" storage="varying" multi="*" value="1" description="2nd or subsequent inputs" type_parent="value">
+				<connection parent="SetCol" output="Cout"/>
+			</input>
+			<output name="value" type="color" storage="varying" description="val = A * B"/>
+			<rsl_code>
+		$(value) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="Multiply_2" position_x="-2" position_y="9" author="rconstruct">
+			<input name="A" type="vector" storage="varying" value="1" description="1st input" type_parent="value">
+				<connection parent="Normalize_2" output="value"/>
+			</input>
+			<input name="B" type="vector" storage="varying" multi="*" value="-1" description="2nd or subsequent inputs" type_parent="value"/>
+			<output name="value" type="vector" storage="varying" description="val = A * B"/>
+			<rsl_code>
+		$(value) = $(A) * $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>All inputs must be of the same type. The operation is done in parallel for each component.			</usage>
+		</block>
+		<block id="N" position_x="-4" position_y="7" author="rconstruct">
+			<output name="N" type="normal" storage="varying" description="Surface shading normal"/>
+			<rsl_code>
+    $(N) = N;
+    			</rsl_code>
+			<rsl_include/>
+			<usage>Surface shading normal. The availability of this global variable in the different shading contexts is renderer specific. It&apos;s not available in imager shaders.			</usage>
+		</block>
+		<block id="Normalize" position_x="-2" position_y="7" author="rconstruct">
+			<input name="Vin" type="normal" storage="varying" value="N" description="Input vector" type_parent="value">
+				<connection parent="N" output="N"/>
+			</input>
+			<output name="value" type="normal" storage="varying" description="Output unit length vector"/>
+			<rsl_code>
+		$(value) = normalize( $(Vin) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (Vin/length(Vin)).			</usage>
+		</block>
+		<block id="Normalize_2" position_x="-2" position_y="8" author="rconstruct">
+			<input name="Vin" type="vector" storage="varying" value="N" description="Input vector">
+				<connection parent="I" output="I"/>
+			</input>
+			<output name="value" type="vector" storage="varying" description="Output unit length vector"/>
+			<rsl_code>
+		$(value) = normalize( $(Vin) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Returns a unit vector in the direction of input vector (Vin/length(Vin)).			</usage>
+		</block>
+		<block id="OrenNayar" position_x="2" position_y="7" author="rconstruct">
 			<input name="Cdiff" type="color" storage="varying" value="color(.5)" description="Diffuse color"/>
 			<input name="Kd" type="float" storage="varying" value="0.8" description="Diffuse light coefficient"/>
 			<input name="roughness" type="float" storage="varying" value="0.05" description="roughness"/>
 			<input name="qualitative" type="float" storage="uniform" value="1" description="Toggle qualitative or full model"/>
-			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal"/>
-			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize" output="value"/>
+			</input>
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer">
+				<connection parent="Normalize_2" output="value"/>
+			</input>
 			<input name="category" type="string" storage="uniform" value="&quot;&quot;" description="Light categories accepted"/>
 			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
 			<rsl_code>
@@ -71,11 +268,11 @@
 	#endif /* use_qualitative_$(qualitative) */
 	#undef use_qualitative_$(qualitative)
 	
-				</rsl_code>
-			<rsl_include>rsl_shrimp_shadingmodels.h			</rsl_include>
-			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables). The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.			</usage>
+													</rsl_code>
+			<rsl_include>rsl_shrimp_shadingmodels.h												</rsl_include>
+			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables). The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.												</usage>
 		</block>
-		<block id="Root block" position_x="5.52857142857143" position_y="0.6" author="" root="RIB" AOV_preview="1">
+		<block id="Root block" position_x="11" position_y="4" author="" root="RIB" AOV_preview="1">
 			<rib_statements>Hider &quot;raytrace&quot; &quot;int jitter&quot; [1]
 
 Option &quot;trace&quot; &quot;int maxdepth&quot; [10]
@@ -96,16 +293,18 @@ Attribute &quot;trace&quot; &quot;int specularmaxdepth&quot; [4]
 Attribute &quot;light&quot; &quot;string shadows&quot; [&quot;on&quot;]
 
 Attribute &quot;user&quot; &quot;int lightsamples&quot; [16] # arealights
-Attribute &quot;user&quot; &quot;int gi_light_samples&quot; [64] # GI
+Attribute &quot;user&quot; &quot;int gi_light_samples&quot; [128] # GI
 			</rib_statements>
 			<imager_statement/>
 			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
-				<connection parent="OrenNayar" output="Ci"/>
+				<connection parent="Add" output="value"/>
 			</input>
 			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
 			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
 			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
-			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour">
+				<connection parent="AmbientLight" output="Cl"/>
+			</input>
 			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
 			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
 			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
@@ -115,6 +314,54 @@ Attribute &quot;user&quot; &quot;int gi_light_samples&quot; [64] # GI
 			<rsl_code/>
 			<rsl_include/>
 			<usage/>
+		</block>
+		<block id="Schlick_Fresnel" position_x="1" position_y="9" author="rconstruct">
+			<input name="ior" type="float" storage="varying" value="1.5" description="Index of refraction">
+				<connection parent="IOR" output="value"/>
+			</input>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal">
+				<connection parent="Normalize" output="value"/>
+			</input>
+			<input name="V" type="vector" storage="varying" value="-normalize(I)" description="Direction of viewer">
+				<connection parent="Multiply_2" output="value"/>
+			</input>
+			<output name="Kr" type="float" storage="varying" description="Reflection amount"/>
+			<rsl_code>
+		$(Kr) = schlickfresnel( $(N), $(V), $(ior) );
+				</rsl_code>
+			<rsl_include>rsl_shrimp_helpers.h			</rsl_include>
+			<usage>Christophe Schlick&apos;s fast Fresnel approximation function. This function fails to model the reflectance when the ior of the medium in which the ray travels is higher than the ior of the medium the ray is about to refract into, and doesn&apos;t takes into account total internal reflection.			</usage>
+		</block>
+		<block id="SetCol" position_x="5" position_y="11" author="rconstruct">
+			<input name="x" type="float" storage="varying" value="0" description="1st component">
+				<connection parent="Subtract" output="value"/>
+			</input>
+			<input name="y" type="float" storage="varying" value="0" description="2nd component">
+				<connection parent="Subtract" output="value"/>
+			</input>
+			<input name="z" type="float" storage="varying" value="0" description="3rd component">
+				<connection parent="Subtract" output="value"/>
+			</input>
+			<output name="Cout" type="color" storage="varying" description="Color output"/>
+			<rsl_code>
+		setcomp( $(Cout), 0, $(x) );
+		setcomp( $(Cout), 1, $(y) );
+		setcomp( $(Cout), 2, $(z) );
+				</rsl_code>
+			<rsl_include/>
+			<usage>Sets the components of a color type variable.			</usage>
+		</block>
+		<block id="Subtract" position_x="3" position_y="11" author="rconstruct">
+			<input name="A" type="float" storage="varying" value="1" description="1st input" type_parent="value"/>
+			<input name="B" type="float" storage="varying" value="1" description="2nd input" type_parent="value">
+				<connection parent="Clamp" output="value"/>
+			</input>
+			<output name="value" type="float" storage="varying" description="val = A - B"/>
+			<rsl_code>
+		$(value) = $(A) - $(B);
+				</rsl_code>
+			<rsl_include/>
+			<usage>Note that unlike the operators in the Renderman shading language the result is always the same type as the inputs. Also both inputs must be of the same type. The operation is done in parallel for each component.			</usage>
 		</block>
 	</network>
 </shrimp>
