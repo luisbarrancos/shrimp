@@ -1012,9 +1012,9 @@ QMenuBar::item:pressed {
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1039,18 +1039,18 @@ QMenuBar::item:pressed {
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1068,9 +1068,9 @@ QMenuBar::item:pressed {
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1095,18 +1095,18 @@ QMenuBar::item:pressed {
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1124,9 +1124,9 @@ QMenuBar::item:pressed {
        <colorrole role="Button">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1151,18 +1151,18 @@ QMenuBar::item:pressed {
        <colorrole role="Base">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
        <colorrole role="Window">
         <brush brushstyle="SolidPattern">
          <color alpha="255">
-          <red>255</red>
-          <green>255</green>
-          <blue>255</blue>
+          <red>40</red>
+          <green>40</green>
+          <blue>40</blue>
          </color>
         </brush>
        </colorrole>
@@ -1179,7 +1179,20 @@ QMenuBar::item:pressed {
      <bool>false</bool>
     </property>
     <property name="styleSheet">
-     <string notr="true"/>
+     <string notr="true">QMenu {
+  background-color: rgb(40,40,40);
+	color: rgb(255, 255, 255);
+}
+
+QMenu::item:selected {
+  background: orange;
+	color: rgb(255, 255, 255);
+ }
+
+QMenu::item:pressed {
+	color: rgb(200, 200, 200);
+  background: orange;
+ }</string>
     </property>
     <property name="title">
      <string>File</string>
