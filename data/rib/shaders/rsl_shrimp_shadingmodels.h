@@ -436,6 +436,29 @@ OrenNayar(
                         "bsdf", "oren-nayar");
         }
     }
+
+    // trace area lights
+    // set RiAttribute "user" "int lightsamples" [x] in RIB
+
+    color areaLightC = 0;
+
+    float lightsamples = 0;
+    uniform float status = attribute("user:lightsamples", lightsamples);
+
+    #ifdef DEBUG
+    printf("status = %.0f, samples = %.3f\n", status, lightsamples);
+    #endif
+
+    trace(  P, Nf, "wo", -In,
+            "bsdf", "oren-nayar",
+            "roughness", roughness,
+            "type", "transmission",
+            "hitsides", "reversed", "samplearealights", 1,
+            "samples", lightsamples,
+            "arealightcontribution", areaLightC);
+
+    C += areaLightC;
+
 #else
 
 	vector Vf = -In, Ln;
@@ -534,7 +557,6 @@ LG_OrenNayar(
 {
 	normal Nf = faceforward( Nn, In );
     extern point P;
-    color C = color(0);
 
 	vector Vf = -In, Ln = vector(0);
 	// store preset quantites whenever possible
@@ -546,7 +568,7 @@ LG_OrenNayar(
 
 	uniform float nondiff;
 
-	color C = L1, L2;
+	color C = 0, L1, L2;
 
 	illuminance( category, P, Nf, S_PI_2 )
 	{
@@ -2091,7 +2113,7 @@ color
 LocIllumGranier(
 					normal Nn, N1; vector Vf;
 					float e0, e1, d;
-					float ior[3]; float lambda[3];
+                    vector ior, lambda;
 					color SurfaceColor;
 					float Kd, Ks;
 					uniform string category;

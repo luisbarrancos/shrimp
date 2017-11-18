@@ -25,18 +25,22 @@
         normal $(blockname)_Nf = faceforward( $(N) , $(I) );
         vector $(blockname)_Vf = -$(I);
 
-		float $(blockname)_drange[2] = { $(densitymin), $(densitymax) };
-		float $(blockname)_iorrgb[3] = {	xcomp( $(ior) ),
-											ycomp( $(ior) ),
-											zcomp( $(ior) ) };
-		float $(blockname)_spec[2] = { $(specmin), $(specmax) };
-		float $(blockname)_freq[2] = { $(freqmin), $(freqmax) };
+        vector $(blockname)_drange = vector( $(densitymin), $(densitymax), 0.0);
+        vector $(blockname)_iorrgb = vector(
+                                        xcomp( $(ior) ),
+                                        ycomp( $(ior) ),
+                                        zcomp( $(ior) ));
 
-		float $(blockname)_lambda[3] = { 645, 525, 445 }; /* wavelenght */
+        vector $(blockname)_spec = vector($(specmin), $(specmax), 0.0);
+        vector $(blockname)_freq = vector($(freqmin), $(freqmax), 0.0);
+
+        vector $(blockname)_lambda = vector(645, 525, 445);
 		
-		float $(blockname)_d = blend( $(blockname)_drange[0],
-						$(blockname)_drange[1], noise( $(s)
-						* $(blockname)_freq[0] + $(seed) + 1998122 ));
+		float $(blockname)_d = mix(
+                        $(blockname)_drange[0],
+						$(blockname)_drange[1],
+                        noise( $(s) * 
+                        $(blockname)_freq[0] + $(seed) + 1998122 ));
 
 		normal $(blockname)_Nl = normalize( normal( $(blockname)_Nf
 						+ $(deviation) * snoise2( $(s) * $(blockname)_freq[1]

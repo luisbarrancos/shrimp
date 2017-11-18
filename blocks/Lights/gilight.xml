@@ -1,0 +1,21 @@
+<shrimp type="function" name="GILight" description="GI light shader" author="rconstruct">
+	<input name="env_intensity" description="Light intensity" type="color" default="color(1)"/>
+	<input name="samples" description="Light samples" storage="uniform" type="float" default="4"/>
+	<input name="envmap" description="Environment map" storage="uniform" type="string" default="&quot;&quot;"/>
+    <input name="envspace" description="Environment space" storage="uniform" type="string" default="&quot;&quot;"/>
+    <input name="maxdist" description="Maximum ray distance" storage="uniform" type="float" default="1.0e+19"/>
+	<output name="Cl" description="Light ray color" type="color"/>
+	<rsl_include>rsl_shrimp_lights.h</rsl_include>
+	<rsl_code>
+
+        #if RENDERER==_3delight
+            ; // nothing to do here, just instantiate
+        #else
+
+            // some illuminate(), gather calls, etc
+            Cl = 0;
+        #endif
+
+	</rsl_code>
+	<usage>GI light shader. Presently only valid for 3Delight.</usage>
+</shrimp>

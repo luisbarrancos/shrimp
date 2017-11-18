@@ -10,16 +10,37 @@
 	<rsl_include>rsl_shrimp_shadingmodels.h</rsl_include>
 	<rsl_code>
 	#define use_qualitative_$(qualitative)
-		aov_surfacecolor += $(Cdiff);
+		aov_surfacecolor = $(Cdiff);
 	
 	#ifdef use_qualitative_1
 		/* Air&apos;s diffuse can take a roughness parameter, in which */
 		/* case behaves as the Oren-Nayar (qualitative?) model */
 		#if RENDERER == air
-			aov_diffuse += $(Kd) * diffuse( $(N), $(roughness) );
+			aov_diffuse = $(Kd) * diffuse( $(N), $(roughness) );
 		#else
-			aov_diffuse += $(Kd) * OrenNayar(	$(roughness), $(N), $(I),
+			aov_diffuse = $(Kd) * OrenNayar(	$(roughness), $(N), $(I),
 												$(category) );
+
+        #if RENDERER == _3delight
+
+            shader gi_light = getshader("gi_light");
+
+            if (gi_light != null)
+            {
+                color gi = gi_light->ComputeGI(
+                    P,
+                    normalize($(N)),
+                    normalize($(I)),
+                    $(roughness), 
+                    $(Cdiff));
+                
+                aov_indirectdiffuse = gi;
+            }
+
+            $(Ci) = aov_surfacecolor * (aov_diffuse + aov_indirectdiffuse);
+
+        #endif
+        
 		#endif /* RENDERER */
         $(Ci) = aov_surfacecolor * aov_diffuse;
 	#else
