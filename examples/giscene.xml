@@ -1,0 +1,120 @@
+<shrimp name="new_scene" authors="">
+	<about/>
+	<network>
+		<block id="OrenNayar" position_x="2.10357142857143" position_y="0.642857142857143" author="rconstruct">
+			<input name="Cdiff" type="color" storage="varying" value="color(.5)" description="Diffuse color"/>
+			<input name="Kd" type="float" storage="varying" value="0.8" description="Diffuse light coefficient"/>
+			<input name="roughness" type="float" storage="varying" value="0.05" description="roughness"/>
+			<input name="qualitative" type="float" storage="uniform" value="1" description="Toggle qualitative or full model"/>
+			<input name="N" type="normal" storage="varying" value="normalize(N)" description="Surface normal"/>
+			<input name="I" type="vector" storage="varying" value="normalize(I)" description="Direction of viewer"/>
+			<input name="category" type="string" storage="uniform" value="&quot;&quot;" description="Light categories accepted"/>
+			<output name="Ci" type="color" storage="varying" description="Shaded color"/>
+			<rsl_code>
+	#define use_qualitative_$(qualitative)
+		aov_surfacecolor = $(Cdiff);
+	
+	#ifdef use_qualitative_1
+		/* Air&apos;s diffuse can take a roughness parameter, in which */
+		/* case behaves as the Oren-Nayar (qualitative?) model */
+		#if RENDERER == air
+			aov_diffuse = $(Kd) * diffuse( $(N), $(roughness) );
+		#else
+			aov_diffuse = $(Kd) * OrenNayar(	$(roughness), $(N), $(I),
+												$(category) );
+
+        #if RENDERER == _3delight
+
+            shader gi_light = getshader(&quot;gi_light&quot;);
+
+            if (gi_light != null)
+            {
+                color gi = gi_light-&gt;computeGI(
+                    P,
+                    $(N),
+                    $(I),
+                    $(roughness), 
+                    $(Cdiff));
+                
+                aov_indirectdiffuse = gi;
+            }
+
+        #endif
+        
+		#endif /* RENDERER */
+
+        $(Ci) = aov_surfacecolor * (aov_diffuse + aov_indirectdiffuse);
+	#else
+		aov_diffuse = $(Kd) * LG_OrenNayar( $(Cdiff), $(roughness), $(N),
+												$(I), $(category) );
+
+        #if RENDERER == _3delight
+
+            shader gi_light = getshader(&quot;gi_light&quot;);
+
+            if (gi_light != null)
+            {
+                color gi = gi_light-&gt;computeGI(
+                    P,
+                    $(N),
+                    $(I),
+                    $(roughness), 
+                    $(Cdiff));
+                
+                aov_indirectdiffuse = gi;
+            }
+
+        #endif
+
+		$(Ci) = aov_diffuse + aov_surfacecolor * aov_indirectdiffuse;
+
+	#endif /* use_qualitative_$(qualitative) */
+	#undef use_qualitative_$(qualitative)
+	
+				</rsl_code>
+			<rsl_include>rsl_shrimp_shadingmodels.h			</rsl_include>
+			<usage>Oren-Nayar diffuse term. This block has both the &quot;qualitative&quot; model based on Szymon Rusinkiewicz&apos;s implementation, and the full model with inter-reflections, based on Larry Gritz&apos;s implementation, depending on the content of the qualitative variable in the block. The roughness parameter controls the standard deviation of angle orientations of the surface grooves, so when roughness = 0, the term is Lambertian. The diffuse color value is passed to the aov_surfacecolor, and the diffuse value to the aov_diffuse AOV presets, only for the qualitative model (see the header for the C3 coefficient and L1 and L2 variables). The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block. The &quot;category&quot; variable defines the light categories used for the &quot;illuminance&quot; construct of this block.			</usage>
+		</block>
+		<block id="Root block" position_x="5.52857142857143" position_y="0.6" author="" root="RIB" AOV_preview="1">
+			<rib_statements>Hider &quot;raytrace&quot; &quot;int jitter&quot; [1]
+
+Option &quot;trace&quot; &quot;int maxdepth&quot; [10]
+Option &quot;trace&quot; &quot;int diffuseraycache&quot; [1]
+
+Attribute &quot;visibility&quot; &quot;int trace&quot; [1]
+Attribute &quot;visibility&quot; &quot;int diffuse&quot; [1]
+Attribute &quot;visibility&quot; &quot;int specular&quot; [1]
+Attribute &quot;visibility&quot; &quot;int transmission&quot; [1]
+
+Attribute &quot;shade&quot; &quot;string diffusehitmode&quot; [&quot;shader&quot;]
+Attribute &quot;shade&quot; &quot;string specularhitmode&quot; [&quot;shader&quot;]
+Attribute &quot;shade&quot; &quot;string transmissionhitmode&quot; [&quot;shader&quot;]
+
+Attribute &quot;trace&quot; &quot;int diffusemaxdepth&quot; [4]
+Attribute &quot;trace&quot; &quot;int specularmaxdepth&quot; [4]
+
+Attribute &quot;light&quot; &quot;string shadows&quot; [&quot;on&quot;]
+
+Attribute &quot;user&quot; &quot;int lightsamples&quot; [16] # arealights
+Attribute &quot;user&quot; &quot;int gi_light_samples&quot; [64] # GI
+			</rib_statements>
+			<imager_statement/>
+			<input name="Ci" type="color" storage="varying" shader_parameter="1" value="0" description="Incident ray colour">
+				<connection parent="OrenNayar" output="Ci"/>
+			</input>
+			<input name="Oi" type="color" storage="varying" shader_parameter="1" value="1" description="Incident ray opacity"/>
+			<input name="P" type="point" storage="varying" shader_parameter="1" value="P" description="Displaced surface position"/>
+			<input name="N" type="normal" storage="varying" shader_parameter="1" value="N" description="Displaced surface shading normal"/>
+			<input name="Cl" type="color" storage="varying" shader_parameter="1" value="0" description="Outgoing light ray colour"/>
+			<input name="Ol" type="color" storage="varying" shader_parameter="1" value="1" description="Outgoing light ray opacity"/>
+			<input name="Cv" type="color" storage="varying" shader_parameter="1" value="0" description="Attenuated ray colour"/>
+			<input name="Ov" type="color" storage="varying" shader_parameter="1" value="1" description="Attenuated ray opacity"/>
+			<input name="Cm" type="color" storage="varying" shader_parameter="1" value="0" description="Output pixel colour"/>
+			<input name="Om" type="color" storage="varying" shader_parameter="1" value="1" description="Output pixel opacity"/>
+			<input name="AOV" type="color" storage="varying" shader_parameter="1" value="1" description="AOV preview output"/>
+			<rsl_code/>
+			<rsl_include/>
+			<usage/>
+		</block>
+	</network>
+</shrimp>

@@ -7,18 +7,17 @@ surface diffuse_3dl(
 {
     vector In = normalize(I);
     normal Nn = normalize(N);
-    normal Nf = faceforward(Nn, In);
 
     float nondiff = 0.0;
     color C = color(0);
 
-    illuminance("", P, Nf, PI/2,
+    illuminance("", P, Nn, PI/2,
                 "light:__nondiffuse", nondiff)
     {
         if (Cl != 0 && nondiff < 1.0)
         {
             C += (1.0 - nondiff) * PI *
-                bsdf(   normalize(L), Nf,
+                bsdf(   normalize(L), Nn,
                         "wo", -In, "roughness", roughness,
                         "bsdf", "oren-nayar");
         }
@@ -29,7 +28,7 @@ surface diffuse_3dl(
 
     color areaLightC = color(0);
     
-    trace(  P, Nf, "wo", -In, "bsdf", "oren-nayar",
+    trace(  P, Nn, "wo", -In, "bsdf", "oren-nayar",
             "roughness", roughness, "type", "transmission",
             "hitsides", "reversed", "samplearealights", 1,
             "samples", lightsamples,
@@ -41,7 +40,7 @@ surface diffuse_3dl(
 
     if (gi_light != null)
     {
-        color gi = gi_light->computeGI(P, Nf, In, roughness, Cd);
+        color gi = gi_light->computeGI(P, Nn, In, roughness, Cd);
         C += gi;
     }
 

@@ -23,30 +23,49 @@
 
         #if RENDERER == _3delight
 
-            shader gi_light = getshader("gi_light");
+            shader $(blockname)_gi_light = getshader("gi_light");
 
-            if (gi_light != null)
+            if ($(blockname)_gi_light != null)
             {
-                color gi = gi_light->computeGI(
+                color gi = $(blockname)_gi_light->computeGI(
                     P,
-                    normalize($(N)),
-                    normalize($(I)),
+                    $(N),
+                    $(I),
                     $(roughness), 
                     $(Cdiff));
                 
                 aov_indirectdiffuse = gi;
             }
 
-            $(Ci) = aov_surfacecolor * (aov_diffuse + aov_indirectdiffuse);
-
         #endif
         
 		#endif /* RENDERER */
-        $(Ci) = aov_surfacecolor * aov_diffuse;
+
+        $(Ci) = aov_surfacecolor * (aov_diffuse + aov_indirectdiffuse);
 	#else
-		aov_diffuse += $(Kd) * LG_OrenNayar( $(Cdiff), $(roughness), $(N),
+		aov_diffuse = $(Kd) * LG_OrenNayar( $(Cdiff), $(roughness), $(N),
 												$(I), $(category) );
-		$(Ci) = aov_diffuse;
+
+        #if RENDERER == _3delight
+
+            shader $(blockname)_gi_light = getshader("gi_light");
+
+            if ($(blockname)_gi_light != null)
+            {
+                color gi = $(blockname)_gi_light->computeGI(
+                    P,
+                    $(N),
+                    $(I),
+                    $(roughness), 
+                    $(Cdiff));
+                
+                aov_indirectdiffuse = gi;
+            }
+
+        #endif
+
+		$(Ci) = aov_diffuse + aov_surfacecolor * aov_indirectdiffuse;
+
 	#endif /* use_qualitative_$(qualitative) */
 	#undef use_qualitative_$(qualitative)
 	

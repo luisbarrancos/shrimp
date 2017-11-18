@@ -20,14 +20,19 @@ class gi_light(
     {
         if (weight != 0)
         {
+            float gi_light_samples = samples;
+            attribute("user:gi_light_samples", gi_light_samples);
+
             color gi = trace(
-                Pp, Nn, "samples", samples, "bsdf", "oren-nayar",
+                Pp, Nn, "samples", gi_light_samples, "bsdf", "oren-nayar",
                 "wo", -In, "roughness", roughness,
                 "raytype", "diffuse", "maxdist", maxdist,
                 "weight", weight,
                 "environment:tint", env_intensity,
                 "environment:space", envspace,
                 "environment:map", envmap);
+
+            giColor = gi;
         }
     }
 

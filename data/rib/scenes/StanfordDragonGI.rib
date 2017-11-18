@@ -37,9 +37,9 @@ WorldBegin
 	AttributeBegin
 		Attribute "identifier" "string name" ["BackgroundBox"]
         Surface "diffuse_3dl" "float Kd" [ 1.0 ] "color Cd" [ 1.0 0.5 0.1 ] "float roughness" [ 0.0 ]
-		ReadArchive "archives/Box.rib.gz"
-
-        #PointsGeneralPolygons [ 1 ] [ 4 ] [ 0 1 3 2 ] "P" [ 25 25 0 -25 25 0 25 -25 -0 -25 -25 0 ] 		
+		#ReadArchive "archives/Box.rib.gz"
+        
+        PointsGeneralPolygons [ 1 ] [ 4 ] [ 0 1 3 2 ] "P" [ 25 25 0 -25 25 0 25 -25 -0 -25 -25 0 ] 		
 	AttributeEnd
 WorldEnd
 
