@@ -231,7 +231,7 @@ void options::okButton()
 bool options::isDouble(const QString& textValue, const QString& fieldName)
 {
     bool success = false;
-    double value = textValue.toDouble (&success);
+    textValue.toDouble (&success);
 
     if (!success)
     {
