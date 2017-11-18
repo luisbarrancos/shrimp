@@ -44,6 +44,9 @@ public slots:
     void cancelButton();
     void okButton();
 
+    void on_fileButton_clicked();
+    void on_colorButton_clicked();
+
 private:
     Ui::blockInputOutputDialog *ui;
     services* shrimpServices;
