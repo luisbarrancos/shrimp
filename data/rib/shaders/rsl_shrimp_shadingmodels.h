@@ -417,7 +417,27 @@ OrenNayar(
 			uniform string category;
         )
 {
+    color C = color(0);
+	extern point P;
 	vector Nf = faceforward (Nn, In);
+
+#if RENDERER==_3delight
+
+    float nondiff = 0.0;
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nondiffuse", nondiff)
+    {
+        if (Cl != 0 && nondiff < 1.0)
+        {
+            C += (1.0 - nondiff) * S_PI *
+                bsdf(   normalize(L), Nf,
+                        "wo", -In, "roughness", roughness,
+                        "bsdf", "oren-nayar");
+        }
+    }
+#else
+
 	vector Vf = -In, Ln;
 	
 	// surface roughness coefficients
@@ -433,9 +453,6 @@ OrenNayar(
 	float cos_theta_i, cos_phi_diff;
 	float theta_i, alpha, beta;
 	uniform float nondiff;
-
-	color C = color(0);
-	extern point P;
 	
 	illuminance( category, P, Nf, S_PI_2 )
 	{
@@ -456,6 +473,7 @@ OrenNayar(
 						cos_phi_diff ) * sin( alpha ) * tan( beta ) );
 		}
 	}
+#endif
 	return C;
 }
 
@@ -515,6 +533,9 @@ LG_OrenNayar(
 		)
 {
 	normal Nf = faceforward( Nn, In );
+    extern point P;
+    color C = color(0);
+
 	vector Vf = -In, Ln = vector(0);
 	// store preset quantites whenever possible
 	float cos_theta_r = Vf.Nf, cos_theta_i, cos_phi_diff;
@@ -525,8 +546,7 @@ LG_OrenNayar(
 
 	uniform float nondiff;
 
-	color C = color(0), L1, L2;
-	extern point P;
+	color C = L1, L2;
 
 	illuminance( category, P, Nf, S_PI_2 )
 	{
@@ -591,6 +611,8 @@ OrenNayarWolff(
 		)
 {
 	normal Nf = faceforward( Nn, In );
+    extern point P;
+    color C = color(0);
 	vector Vf = -In, Ln;
 
 	// store preset quantities whenever possible
@@ -601,8 +623,7 @@ OrenNayarWolff(
 
 	float eta = AIR/ior;
 	uniform float nondiff;
-	color C = color(0), L1, L2;
-	extern point P;
+	color L1, L2;
 	
 	illuminance( category, P, Nf, S_PI_2 )
 	{
@@ -737,12 +758,33 @@ color phong_blinn(
 					)
 {
 	normal Nf = faceforward(Nn, In);
+    extern point P;
+    color C = 0;
+
+#if RENDERER==_3delight
+
+    float m = sqrt(2.0 / (size + 2.0));
+
+    float nonspec = 0.0;
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nonspecular", nonspec)
+    {
+        if (Cl != 0 && nonspec < 1.0)
+        {
+            C += (1.0 - nonspec) * S_PI *
+                bsdf(   normalize(L), Nf, "wo", -In,
+                        "roughness", m,
+                        "bsdf", "blinn");
+        }
+    }
+
+#else
+        
 	vector Vf = -In, Ln, Hn;
 	
     uniform float nonspec;
 	float ndoth;
-	color C = color(0);
-	extern point P;
 	
     illuminance( category, P, Nf, S_PI_2 )
     {
@@ -760,6 +802,8 @@ color phong_blinn(
         	C += Cl * (1-nonspec) * pow( max( 0.0, ndoth), size) * (Nf.Ln);
 		}
     }
+#endif
+
     return C;
 }
 
@@ -827,6 +871,27 @@ Wardisotropy(
 		)
 {
     normal Nf = faceforward( Nn, In);
+    extern point P;
+    color C = color(0);
+
+#if RENDERER==_3delight
+
+    float nonspec = 0.0;
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nonspecular", nonspec)
+    {
+        if (Cl != 0 && nonspec < 1.0)
+        {
+            C += (1.0 - nonspec) * S_PI *
+                bsdf(   normalize(L), Nf, "wo", -In,
+                        "roughness", roughness,
+                        "bsdf", "ward");
+        }
+    }
+
+#else
+
     vector Vf = -In, Ln, Hn;
     float ndotv = Nf.Vf, ndotl, ndoth;
 	float m2 = SQR(roughness), c2, expfactor;
@@ -857,6 +922,7 @@ Wardisotropy(
 						4 * m2 * sqrt(ndotv) ) );
 		}
 	}
+#endif
 	return C;
 }
 
@@ -896,6 +962,31 @@ LocIllumWardAnisotropic(
 		)
 {
 	normal Nf = faceforward( Nn, In );
+    extern point P;
+    color C = color(0);
+
+#if RENDERER==_3delight
+
+    float nonspec = 0.0;
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nonspecular", nonspec)
+    {
+        if (Cl != 0 && nonspec < 1.0)
+        {
+            C += (1.0 - nonspec) * S_PI *
+                bsdf(   normalize(L), Nf, "wo", -In,
+                        "roughness", xroughness,
+                        "roughnessv", yroughness,
+                        "udir", xdir,
+                        "bsdf", "ward");
+        }
+    }
+
+    return C;
+
+#else
+
 	vector Vf = -In, Ln, Hn;
 
 	float cos_theta_r = clamp( Nf.Vf, EPS, 1), cos_theta_i, rho;
@@ -929,6 +1020,8 @@ LocIllumWardAnisotropic(
 		}
 	}
 	return C / (4 * xroughness * yroughness);
+#endif
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1080,15 +1173,33 @@ cooktorrance(
 		)
 {
 	normal Nf = faceforward( Nn, In );
+    extern point P;
+    color C = color(0);
+
+#if RENDERER==_3delight
+    float nonspec = 0.0;
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nonspecular", nonspec)
+    {
+        if (Cl != 0 && nonspec < 1.0)
+        {
+            C += (1.0 - nonspec) * S_PI *
+                bsdf(   normalize(L), Nf, "wo", -In,
+                        "roughness", roughness,
+                        "eta", ior,
+                        "bsdf", "cook-torrance");
+        }
+    }
+
+#else
+
 	vector Vf = -normalize(In), Ln, Hn;
 
 	float costheta = Nf.Vf, cosalpha, cospsi, cospsi2;
 	float D, G, F;
 	uniform float nonspec;
-	
-	color Ccook = color(0);
-	extern point P;
-	
+		
 	illuminance( category, P, Nf, S_PI_2 )
 	{
 		nonspec = 0;
@@ -1165,20 +1276,21 @@ cooktorrance(
 
 #if RENDERER == aqsis // cannot find a suitable cast for the expression
 			if (distmodel == 3) {
-				Ccook += Cl * (1-nonspec) * (D*G*F / costheta) +
+				C += Cl * (1-nonspec) * (D*G*F / costheta) +
 					specularbrdf( Ln, Nf, Vf, roughness*.5);
 			} else {
-				Ccook += Cl * (1-nonspec) * (D*G*F / costheta);
+				C += Cl * (1-nonspec) * (D*G*F / costheta);
 			}
 #else
-			Ccook += Cl * (1-nonspec) * (D*G*F / costheta) +
+			C += Cl * (1-nonspec) * (D*G*F / costheta) +
 				( (distmodel == 3) ?
 				  specularbrdf( Ln, Nf, Vf, roughness*.5) : color(0));
 #endif // Aqsis doesn't likes ternary operator?
 		}
 	}
+#endif
 	// NOTE: the values at high grazing angles seem to go up a lot
-	return clamp(Ccook, color(0), color(1));
+	return C;
 }
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -1223,6 +1335,35 @@ anisophongspec(
 				)
 {
 	normal Nf = faceforward( Nn, In);
+    extern point P;
+    color C = color(0);
+
+#if RENDERER==_3delight
+
+    float nonspec = 0.0;
+
+    float mx = sqrt(2.0 / (nu + 2.0));
+    float my = sqrt(2.0 / (nv + 2.0));
+
+    illuminance(category, P, Nf, S_PI_2,
+                "light:__nonspecular", nonspec)
+    {
+        if (Cl != 0 && nonspec < 1.0)
+        {
+            C += (1.0 - nonspec) * S_PI *
+                bsdf(   normalize(L), Nf, "wo", -In,
+                        "roughness", mx,
+                        "roughnessv", my,
+                        "udir", vu,
+                        "eta", ior,
+                        "bsdf", "ashikhmin-shirley");
+        }
+    }
+
+    return C;
+
+#else
+
 	vector Vf = -In, Ln, Hv;
 		
 	// preset quantities
@@ -1230,8 +1371,6 @@ anisophongspec(
 	float nu2, nv2, nunv, nh, nhmax;
 
 	uniform float nonspec;
-	color C = color(0);
-	extern point P;
 
     illuminance( category, P, Nf, S_PI_2 )
     {
@@ -1258,6 +1397,8 @@ anisophongspec(
 		}
     }
     return C * schlickfresnel( Nn, Vf, ior );
+#endif
+
 }
 
 ////////////////////////////////////////////////////////////////////////////////
