@@ -1,0 +1,47 @@
+##RenderMan RIB-Structure 1.0
+version 3.03
+
+
+FrameBegin 1
+$(imager_shader)
+
+Projection "perspective" "fov" 60
+Rotate -90 0 0 1
+Rotate 2.92407e-10 1 0 0
+Rotate -109.444 0 1 0
+Translate 7.74643 -0 -4.70146
+
+Shader "gi_light" "gi_light" "int samples" [ 16 ]  "float maxdist" [ 1.0e+37 ]
+       "string envmap" [ "/home/cgwork/.shrimp/temp/test.tdl" ]
+       "string envspace" [ "world" ]
+       "color env_intensity" [ 10 10 10 ]
+       
+WorldBegin
+
+	# there's still the area lights, interior/exterior/atmosphere issue
+    # $(light_shaders)
+	# $(volume_shaders)
+
+	Color [1 1 1]
+	Opacity [1 1 1]
+    
+	# Stanford Dragon
+	AttributeBegin
+		Attribute "identifier" "string name" ["StanfordDragon"]
+		$(surface_shaders)
+		$(displacement_shaders)
+		ReadArchive "archives/DragonArchive.rib.gz"
+	AttributeEnd
+
+	# Background Box
+	AttributeBegin
+		Attribute "identifier" "string name" ["BackgroundBox"]
+        Surface "diffuse_3dl" "float Kd" [ 1.0 ] "color Cd" [ 1.0 0.5 0.1 ] "float roughness" [ 0.0 ]
+		ReadArchive "archives/Box.rib.gz"
+
+        #PointsGeneralPolygons [ 1 ] [ 4 ] [ 0 1 3 2 ] "P" [ 25 25 0 -25 25 0 25 -25 -0 -25 -25 0 ] 		
+	AttributeEnd
+WorldEnd
+
+FrameEnd
+

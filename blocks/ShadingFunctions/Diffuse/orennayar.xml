@@ -27,7 +27,7 @@
 
             if (gi_light != null)
             {
-                color gi = gi_light->ComputeGI(
+                color gi = gi_light->computeGI(
                     P,
                     normalize($(N)),
                     normalize($(I)),

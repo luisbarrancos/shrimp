@@ -1,5 +1,4 @@
 
-#if RENDERER==_3delight
 
 class gi_light(
     float samples = 16;
@@ -10,6 +9,7 @@ class gi_light(
     )
 {
     varying float cached = 0;
+    public varying color giColor = color(0);
         
     void cacheGI(
         varying point Pp;
@@ -43,11 +43,11 @@ class gi_light(
             cacheGI(Pp, Nn, In, roughness, weight);
             cached = 1;
         }
-        return indirect_diffuse;
+        return giColor;
     }
 }
 
-#else
+/*
 
 light gi_light(
     float samples = 16;
@@ -69,5 +69,5 @@ light gi_light(
     surface("weight", weight);
 }
 
-#endif
+*/
 
