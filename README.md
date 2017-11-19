@@ -44,15 +44,17 @@ Start the application, and off you go.
 
 See some of the examples included
 
-![Lichen Network](screenshots/networks/lichen_network.png" "Lichen shader network")
+![Lichen Network](screenshots/networks/lichen_network.png "Lichen shader network")
 
 Which results in
 
 ![Stanford Dragon](screenshots/networks/lichen_dragon.jpg "Stanford Dragon")
+
 ![Standard Buddha](screenshots/networks/lichen_buddha.jpg "Lichen Stanford Buddha")
 
 More examples below:
 
 ![Stanford Buddha 2](screenshots/networks/wood_buddha.jpg "Wooden Stanford Buddha")
+
 ![Stanford Buddha 3](screenshots/networks/bronze_buddha.jpg "Bronze Stanford Buddha")
 
