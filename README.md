@@ -49,10 +49,22 @@ See some of the examples included
 Which results in
 
 ![Stanford Dragon](screenshots/networks/lichen_dragon.jpg "Stanford Dragon")
-![Standard Buddha](screenshots/networks/lichen_buddha.jpg "Lichen Stanford Buddha")
+![Standard Buddha](screenshots/networks/lichen_Buddha.jpg "Lichen Stanford Buddha")
 
 More examples below:
 
-![Stanford Buddha 2](screenshots/networks/wood_buddha.jpg "Wooden Stanford Buddha")
-![Stanford Buddha 3](screenshots/networks/bronze_buddha.jpg "Bronze Stanford Buddha")
+A solid wood block Stanford Buddha
+
+![Stanford Buddha 2](screenshots/networks/wood_Buddha.jpg "Wooden Stanford Buddha")
+
+Bronze with patine
+![Stanford Buddha 3](screenshots/networks/bronze_Buddha.jpg "Bronze Stanford Buddha")
+
+Coated red metallic paint
+
+![Stanford Buddha 4](screenshots/networks/christmas_ball_Buddha.jpg "Red Christmas Ball like paint")
+
+And a cobblestone displacement
+
+![Stanford Buddha 5](screenshots/networks/stone_Buddha.jpg "Cobblestone pattern")
 
