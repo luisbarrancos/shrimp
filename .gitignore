@@ -11,4 +11,9 @@ doc/content.xml
 doc/index.xml
 shrimp
 shrimp.pro.user*
+*.sdl
+*.slo
+*.slx
+*.sdr
+*.slb
 

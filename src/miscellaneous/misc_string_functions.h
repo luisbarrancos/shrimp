@@ -52,7 +52,7 @@ inline const std::string string_cast<bool>(const bool& Value)
 
 // Converts a string into any serializeable type
 template<typename type>
-const type from_string(const std::string& Value, const type& Default)
+type from_string(const std::string& Value, const type& Default)
 {
 	type result = Default;
 	std::istringstream stream(Value.c_str());
@@ -63,7 +63,7 @@ const type from_string(const std::string& Value, const type& Default)
 
 // Specialization of from_string for type bool
 template<>
-inline const bool from_string(const std::string& Value, const bool& Default)
+inline bool from_string(const std::string& Value, const bool& Default)
 {
 	if(Value == "true")
 		return true;
@@ -128,7 +128,6 @@ inline std::string remove_all_spaces (const std::string& String)
 	const char to_remove[] = " \t\n";
 
 	size_t found;
-	size_t pos = 0;
 
 	do
 	{
@@ -136,7 +135,6 @@ inline std::string remove_all_spaces (const std::string& String)
 		if (found != no_space.npos)
 		{
 			no_space.replace (found, 1, "");
-			pos = found;
 		}
 	}
 	while (found != no_space.npos);
