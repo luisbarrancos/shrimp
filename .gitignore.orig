@@ -15,5 +15,8 @@ shrimp.pro.user*
 *.slo
 *.slx
 *.sdr
+<<<<<<< HEAD
+=======
 *.slb
+>>>>>>> origin/master
 
