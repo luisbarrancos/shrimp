@@ -55,7 +55,7 @@ More examples below:
 
 A solid wood block Stanford Buddha
 
-![Stanford Buddha 2](screenshots/networks/wood_Buddha.jpg "Wooden Stanford Buddha")
+![Stanford Buddha 2](screenshots/networks/wooden_Buddha.jpg "Wooden Stanford Buddha")
 
 Bronze with patine
 ![Stanford Buddha 3](screenshots/networks/bronze_Buddha.jpg "Bronze Stanford Buddha")
