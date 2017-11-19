@@ -51,7 +51,7 @@ Which results in
 ![Stanford Dragon](screenshots/networks/lichen_dragon.jpg "Stanford Dragon")
 ![Standard Buddha](screenshots/networks/lichen_Buddha.jpg "Lichen Stanford Buddha")
 
-More examples below:
+#### More screenshots:
 
 A solid wood block Stanford Buddha
 
