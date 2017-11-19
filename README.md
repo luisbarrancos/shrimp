@@ -44,7 +44,7 @@ Start the application, and off you go.
 
 See some of the examples included
 
-![Lichen Network](screenshots/networks/lichen_network.png" "Lichen shader network")
+![Lichen Network](screenshots/networks/lichen_network.png "Lichen shader network")
 
 Which results in
 
