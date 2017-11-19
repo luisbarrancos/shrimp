@@ -3,13 +3,20 @@
 class gi_light(
     float samples = 16;
     float maxdist = 1.0e+19;
-    string envmap = "";
-    string envspace = "world";
     color env_intensity = 1.0;
     )
 {
     varying float cached = 0;
     public varying color giColor = color(0);
+
+    public constant string envmap, envspace;
+
+    public void construct()
+    {
+        envmap = envspace = "";
+        option("user:gi_light_envmap", envmap);
+        option("user:gi_light_envspace", envspace);
+    }
         
     void cacheGI(
         varying point Pp;
@@ -23,7 +30,7 @@ class gi_light(
             float gi_light_samples = samples;
             attribute("user:gi_light_samples", gi_light_samples);
 
-            color gi = trace(
+            color gi = env_intensity * trace(
                 Pp, Nn, "samples", gi_light_samples, "bsdf", "oren-nayar",
                 "wo", -In, "roughness", roughness,
                 "raytype", "diffuse", "maxdist", maxdist,

@@ -18,10 +18,10 @@
 
         #if RENDERER==_3delight
 
-        uniform string raytype = "";
-        rayinfo("type", raytype);
+        uniform string $(blockname)_raytype = "";
+        rayinfo("type", $(blockname)_raytype);
 
-        if (raytype != "diffuse")
+        if ($(blockname)_raytype != "diffuse")
         {
             aov_specular += $(Ks) *
                 cooktorrance(
@@ -52,10 +52,10 @@
 
         #else
 
-        uniform string raytype = "";
-        rayinfo("type", raytype);
+        uniform string $(blockname)_raytype = "";
+        rayinfo("type", $(blockname)_raytype);
 
-        if (raytype != "diffuse")
+        if ($(blockname)_raytype != "diffuse")
         {
             aov_specular += $(Ks) *
                 cooktorrance(

@@ -3,17 +3,16 @@ version 3.03
 
 Shader "gi_light" "gi_light" "int samples" [ 16 ]
         "float maxdist" [ 1.0e+37 ]
-        "color env_intensity" [ 1.5 1.5 1.5 ]
-                                               
+        "color env_intensity" [ 1.5 1.5 1.5 ]   
 
 FrameBegin 1
 $(imager_shader)
 
-Projection "perspective" "fov" 60
+Projection "perspective" "fov" 50
 Rotate -90 0 0 1
 Rotate 2.92407e-10 1 0 0
-Rotate -109.444 0 1 0
-Translate 7.74643 -0 -4.70146
+Rotate -90 0 1 0
+Translate 11.7 -7.4869e-18 -3.51934
 
 WorldBegin
 	Color [1 1 1]
@@ -23,12 +22,12 @@ WorldBegin
 	$(light_shaders)
 	$(volume_shaders)
 
-	# Stanford Dragon
+	# Stanford Buddha
 	AttributeBegin
-		Attribute "identifier" "string name" ["StanfordDragon"]
+		Attribute "identifier" "string name" ["StanfordBuddha"]
 		$(surface_shaders)
 		$(displacement_shaders)
-		ReadArchive "archives/DragonArchive.rib.gz"
+		ReadArchive "archives/BuddhaArchive.rib.gz"
 	AttributeEnd
 
 	# Background Box

@@ -1,10 +1,6 @@
 ##RenderMan RIB-Structure 1.0
 version 3.03
 
-Shader "gi_light" "gi_light" "int samples" [ 16 ]
-        "float maxdist" [ 1.0e+37 ]
-        "color env_intensity" [ 1.5 1.5 1.5 ]
-                                               
 
 FrameBegin 1
 $(imager_shader)
@@ -15,14 +11,22 @@ Rotate 2.92407e-10 1 0 0
 Rotate -109.444 0 1 0
 Translate 7.74643 -0 -4.70146
 
+Option "user" "gi_light_envmap" [ "~/.shrimp/temp/directsun.hdr" ]
+Option "user" "gi_light_envspace" [ "envspace" ]
+
+Shader "gi_light" "gi_light" "int samples" [ 16 ]
+        "float maxdist" [ 1.0e+37 ]
+        "color env_intensity" [ 1.5 1.5 1.5 ]
+       
 WorldBegin
-	Color [1 1 1]
-	Opacity [1 1 1]
 
 	# there's still the area lights, interior/exterior/atmosphere issue
-	$(light_shaders)
-	$(volume_shaders)
+    # $(light_shaders)
+	# $(volume_shaders)
 
+	Color [1 1 1]
+	Opacity [1 1 1]
+    
 	# Stanford Dragon
 	AttributeBegin
 		Attribute "identifier" "string name" ["StanfordDragon"]
@@ -34,8 +38,10 @@ WorldBegin
 	# Background Box
 	AttributeBegin
 		Attribute "identifier" "string name" ["BackgroundBox"]
-		Surface "grid" "float hfreq" [ 3 ] "float vfreq" [ 3 ] "float hblur" [ 0.01 ] "float vblur" [ 0.01 ]
-		ReadArchive "archives/Box.rib.gz"
+        Surface "diffuse_3dl" "float Kd" [ .18 ] "color Cd" [ 1.0 1 1 ] "float roughness" [ 0.0 ]
+		#ReadArchive "archives/Box.rib.gz"
+        
+        PointsGeneralPolygons [ 1 ] [ 4 ] [ 0 1 3 2 ] "P" [ 25 25 0 -25 25 0 25 -25 -0 -25 -25 0 ] 		
 	AttributeEnd
 WorldEnd
 
