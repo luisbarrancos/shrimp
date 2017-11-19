@@ -923,7 +923,7 @@ void rib_root_block::write_RIB (const std::string& RIBFile, const std::string& T
     // displacement
     if (!DisplacementName.empty()) {
         displacement_shaders += "Displacement \"" + DisplacementName + "\"\n";
-        displacement_shaders += "\t\tAttribute \"displacementbound\" \"float sphere\" [0.5] \"string coordinatesystem\" [\"shader\"]\n";
+        // displacement_shaders += "\t\tAttribute \"displacementbound\" \"float sphere\" [0.5] \"string coordinatesystem\" [\"shader\"]\n";
         //displacement_shaders += "Attribute \"render\" \"patch_multiplier\" 1.0\n";
     }
 
