@@ -52,9 +52,13 @@ Which results in
 
 ![Standard Buddha](screenshots/networks/lichen_buddha.jpg "Lichen Stanford Buddha")
 
-More examples below:
+##### More examples below:
+
+Solid wood block Stanford Buddha
 
 ![Stanford Buddha 2](screenshots/networks/wood_buddha.jpg "Wooden Stanford Buddha")
+
+Bronze Buddha, with patine
 
 ![Stanford Buddha 3](screenshots/networks/bronze_buddha.jpg "Bronze Stanford Buddha")
 
