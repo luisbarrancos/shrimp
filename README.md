@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/luisbarrancos/shrimp.svg?branch=master)](https://travis-ci.org/luisbarrancos/shrimp)[![License: GPL v3](https://img.shields.io/badge/License-GPL%20v3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)
  
-Rhe [Shrimp](https://sourceforge.net/projects/shrimp/) [RenderMan Shading Language](https://renderman.pixar.com/resources/RenderMan_20/shadingLanguage.html) shader building tool, that exposed RSL's functions as building blocks. In that regard it was more of a shader building tool than a shader network building tool.
+The [Shrimp](https://sourceforge.net/projects/shrimp/) [RenderMan Shading Language](https://renderman.pixar.com/resources/RenderMan_20/shadingLanguage.html) shader building tool, that exposed RSL's functions as building blocks. In that regard it was more of a shader building tool than a shader network building tool.
 
 This contains all the development history that was spread amongst the CVS, SVN and Mercurial branches, for the historical [GTK 1.x](https://www.gtk.org/download/) application, [FLTK2](http://fltk.org/doc-2.0/html/), and finally [Qt4](https://doc.qt.io/qt-4.8/) GUI/frontend.
 
