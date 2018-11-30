@@ -18,82 +18,76 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "block_code.h"
 #include "ui_block_code.h"
 
 #include "src/miscellaneous/logging.h"
 
-block_code::block_code(QWidget* parent, services* shrimpServicesInstance, shader_block* block) :
-    QDialog (parent),
-    ui (new Ui::blockCodeDialog),
-    shrimpServices (shrimpServicesInstance),
-    editedBlock (block)
+block_code::block_code(
+    QWidget* parent,
+    services* shrimpServicesInstance,
+    shader_block* block)
+    : QDialog(parent)
+    , ui(new Ui::blockCodeDialog)
+    , shrimpServices(shrimpServicesInstance)
+    , editedBlock(block)
 {
     ui->setupUi(this);
 
     log() << aspect << "Block Code dialog" << std::endl;
 
     // set values
-    ui->ioTextEdit->setPlainText (QString::fromStdString (buildInfo()));
-    ui->codeTextEdit->setPlainText (QString::fromStdString (block->get_code()));
+    ui->ioTextEdit->setPlainText(QString::fromStdString(buildInfo()));
+    ui->codeTextEdit->setPlainText(QString::fromStdString(block->get_code()));
 
     // connect events
-    connect (ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
-    connect (ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
+    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
+    connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
-
-block_code::~block_code()
-{
-}
-
+block_code::~block_code() = default;
 
 void block_code::cancelButton()
 {
     close();
 }
 
-
 void block_code::okButton()
 {
     log() << aspect << "Save block code" << std::endl;
 
     // save code
-    editedBlock->set_code (ui->codeTextEdit->toPlainText().toStdString());
+    editedBlock->set_code(ui->codeTextEdit->toPlainText().toStdString());
 
     close();
 }
 
-
 std::string block_code::buildInfo()
 {
     // get block content
-    std::string inputs ("");
-    for (shader_block::properties_t::const_iterator input = editedBlock->m_inputs.begin(); input != editedBlock->m_inputs.end(); ++input)
+    std::string inputs("");
+    for (auto& m_input : editedBlock->m_inputs)
     {
         if (!inputs.empty())
         {
             inputs += ", ";
         }
 
-        inputs += input->m_name;
+        inputs += m_input.m_name;
     }
 
-    std::string outputs ("");
-    for (shader_block::properties_t::const_iterator output = editedBlock->m_outputs.begin(); output != editedBlock->m_outputs.end(); ++output)
+    std::string outputs("");
+    for (auto& m_output : editedBlock->m_outputs)
     {
         if (!outputs.empty())
         {
             outputs += ", ";
         }
 
-        outputs += output->m_name;
+        outputs += m_output.m_name;
     }
 
-    std::string info = "inputs: " + inputs + "\n"
-            + "outputs: " + outputs;
+    std::string info = "inputs: " + inputs + "\n" + "outputs: " + outputs;
 
     return info;
 }
-

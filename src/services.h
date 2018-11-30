@@ -27,7 +27,6 @@
 
 #include "interfaces/i_system_functions.h"
 
-
 // Service class used to access all Shrimp functions (used to separate the GUI from the core)
 class services
 {
@@ -35,11 +34,17 @@ class services
     general_options& preferences;
 
     void build_xml_documentation();
-    void build_xml_documentation_block (const block_tree_node_t& tree_node, std::string& index, std::string& content);
+    void build_xml_documentation_block(
+        const block_tree_node_t& tree_node,
+        std::string& index,
+        std::string& content);
 
-public:
+  public:
     // constructor/destructor
-    services(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path);
+    services(
+        i_system_functions* SystemFunctions,
+        general_options& prefs,
+        const std::string& block_path);
     ~services();
 
     i_system_functions* system_function_instance();
@@ -48,47 +53,138 @@ public:
     void reset_scene();
 
     // load and save scene
-    bool load (const std::string& Scene) { bool result = m_scene->load (Scene); if (result) { m_scene_file = Scene; } return result; }
-    bool save () { if (m_scene_file != "") { /* use current scene file */ m_scene->save_as (m_scene_file); return true; } else { return false; } }
-    void save_as (const std::string& ShaderFile) { m_scene_file = ShaderFile; m_scene->save_as (ShaderFile); }
+    bool load(const std::string& Scene)
+    {
+        bool result = m_scene->load(Scene);
+        if (result)
+        {
+            m_scene_file = Scene;
+        }
+        return result;
+    }
+    bool save()
+    {
+        if (m_scene_file != "")
+        { /* use current scene file */
+            m_scene->save_as(m_scene_file);
+            return true;
+        }
+        else
+        {
+            return false;
+        }
+    }
+    void save_as(const std::string& ShaderFile)
+    {
+        m_scene_file = ShaderFile;
+        m_scene->save_as(ShaderFile);
+    }
 
-    std::string get_scene_name() const { return m_scene->name(); }
-    void set_scene_name (const std::string& Name) { m_scene->set_name (Name); }
-    std::string get_scene_description() const { return m_scene->description(); }
-    void set_scene_description (const std::string& Description) { m_scene->set_description(Description); }
-    std::string get_scene_authors() const { return m_scene->authors(); }
-    void set_scene_authors (const std::string& Authors) { m_scene->set_authors(Authors); }
+    std::string get_scene_name() const
+    {
+        return m_scene->name();
+    }
+    void set_scene_name(const std::string& Name)
+    {
+        m_scene->set_name(Name);
+    }
+    std::string get_scene_description() const
+    {
+        return m_scene->description();
+    }
+    void set_scene_description(const std::string& Description)
+    {
+        m_scene->set_description(Description);
+    }
+    std::string get_scene_authors() const
+    {
+        return m_scene->authors();
+    }
+    void set_scene_authors(const std::string& Authors)
+    {
+        m_scene->set_authors(Authors);
+    }
 
     // return block hierarchy
     block_tree_node_t get_block_hierarchy();
 
-    shrimp::shader_blocks_t get_scene_blocks() { return m_scene->get_scene_blocks(); }
+    shrimp::shader_blocks_t get_scene_blocks()
+    {
+        return m_scene->get_scene_blocks();
+    }
 
-    std::string get_unique_block_name (const std::string& Name) const { return m_scene->get_unique_block_name (Name); }
+    std::string get_unique_block_name(const std::string& Name) const
+    {
+        return m_scene->get_unique_block_name(Name);
+    }
 
-    shader_block* get_block (const std::string& Name) { return m_scene->get_block (Name); }
-    void set_block_name (shader_block* Block, const std::string& NewName) { m_scene->set_block_name (Block, NewName); }
-    void delete_block (const std::string& BlockName) { m_scene->delete_block (BlockName); }
-    shader_block* add_custom_block (const std::string& Name = "New block", const bool RootBlock = false) { return m_scene->add_custom_block (Name, RootBlock); }
+    shader_block* get_block(const std::string& Name)
+    {
+        return m_scene->get_block(Name);
+    }
+    void set_block_name(shader_block* Block, const std::string& NewName)
+    {
+        m_scene->set_block_name(Block, NewName);
+    }
+    void delete_block(const std::string& BlockName)
+    {
+        m_scene->delete_block(BlockName);
+    }
+    shader_block* add_custom_block(
+        const std::string& Name = "New block",
+        const bool RootBlock    = false)
+    {
+        return m_scene->add_custom_block(Name, RootBlock);
+    }
 
-    shrimp::dag_t get_scene_dag() { return m_scene->m_dag; }
+    shrimp::dag_t get_scene_dag()
+    {
+        return m_scene->m_dag;
+    }
 
-    shader_block* get_parent (const std::string& BlockName, const std::string& Input, std::string& ParentOutput) const { return m_scene->get_parent (BlockName, Input, ParentOutput); }
+    shader_block* get_parent(
+        const std::string& BlockName,
+        const std::string& Input,
+        std::string& ParentOutput) const
+    {
+        return m_scene->get_parent(BlockName, Input, ParentOutput);
+    }
 
     //////////// Actions
-    shader_block* add_predefined_block (const std::string& BlockName) { return m_scene->add_predefined_block (BlockName); }
-    void connect (const shrimp::io_t& Input, const shrimp::io_t& Output) { m_scene->connect (Input, Output); }
-    void disconnect (const shrimp::io_t& IO) { m_scene->disconnect (IO); }
+    shader_block* add_predefined_block(const std::string& BlockName)
+    {
+        return m_scene->add_predefined_block(BlockName);
+    }
+    void connect(const shrimp::io_t& Input, const shrimp::io_t& Output)
+    {
+        m_scene->connect(Input, Output);
+    }
+    void disconnect(const shrimp::io_t& IO)
+    {
+        m_scene->disconnect(IO);
+    }
 
-    std::string show_code() { return m_scene->get_shader_code(); }
-    void show_preview (const std::string& TempDir) { m_scene->show_preview (TempDir); }
-    void export_scene (const std::string& Directory) { m_scene->export_scene (Directory); }
+    std::string show_code()
+    {
+        return m_scene->get_shader_code();
+    }
+    void show_preview(const std::string& TempDir)
+    {
+        m_scene->show_preview(TempDir);
+    }
+    void export_scene(const std::string& Directory)
+    {
+        m_scene->export_scene(Directory);
+    }
 
     //////////// Selection
-    shrimp::shader_blocks_t get_selected_blocks() { return m_block_selection; }
+    shrimp::shader_blocks_t get_selected_blocks()
+    {
+        return m_block_selection;
+    }
 
     // returns whether a block is selected
-    bool is_selected (shader_block* Block);
+    bool is_selected(shader_block* Block);
 
     // returns the size of the selection set
     int selection_size();
@@ -97,28 +193,51 @@ public:
     void clear_selection();
 
     // toggle block selection state
-    void set_block_selection (shader_block* Block, const bool Selection);
+    void set_block_selection(shader_block* Block, const bool Selection);
 
     // block roll
-    void set_block_rolled_state (shader_block* Block, const bool Rolled);
-    bool is_rolled (const shader_block* Block) const { return m_scene->is_rolled(Block); }
+    void set_block_rolled_state(shader_block* Block, const bool Rolled);
+    bool is_rolled(const shader_block* Block) const
+    {
+        return m_scene->is_rolled(Block);
+    }
 
     /////////// Group handling
 
-    shrimp::group_set_t group_list() { return m_scene->group_list(); }
+    shrimp::group_set_t group_list()
+    {
+        return m_scene->group_list();
+    }
     shrimp::group_set_t get_selected_groups();
     void group_selection();
-    void add_to_group (const std::string& Block, const int Group) { m_scene->add_to_group (Block, Group); }
-    int get_block_group (const shader_block* Block) { return m_scene->get_block_group (Block); }
-    void ungroup (const int Group) { m_scene->ungroup (Group); }
-    const std::string get_group_name (const int Group) const { return m_scene->get_group_name (Group); }
-    void set_group_name (const int Group, const std::string& Name) { m_scene->set_group_name (Group, Name); }
-    shrimp::shader_blocks_t get_group_blocks (const int Group) { return m_scene->get_group_blocks (Group); }
+    void add_to_group(const std::string& Block, const int Group)
+    {
+        m_scene->add_to_group(Block, Group);
+    }
+    int get_block_group(const shader_block* Block)
+    {
+        return m_scene->get_block_group(Block);
+    }
+    void ungroup(const int Group)
+    {
+        m_scene->ungroup(Group);
+    }
+    const std::string get_group_name(const int Group) const
+    {
+        return m_scene->get_group_name(Group);
+    }
+    void set_group_name(const int Group, const std::string& Name)
+    {
+        m_scene->set_group_name(Group, Name);
+    }
+    shrimp::shader_blocks_t get_group_blocks(const int Group)
+    {
+        return m_scene->get_group_blocks(Group);
+    }
 
-    void set_group_selection (const int Group , const bool Selection);
-    bool is_group_selected (const int Group);
+    void set_group_selection(const int Group, const bool Selection);
+    bool is_group_selected(const int Group);
     int group_selection_size();
-
 
     ////////// Copy/Delete functions
 
@@ -137,13 +256,11 @@ public:
 
     void delete_selection();
 
-
-private:
+  private:
     // paste block
     void paste_blocks();
     // copy connections of copy/paste operation
     void copy_connections();
-
 
     // currently edited scene and its file name
     scene* m_scene;
@@ -154,7 +271,7 @@ private:
     shrimp::group_set_t m_group_selection;
 
     // copy buffers
-    typedef std::pair <std::string, shader_block*> copy_block_t;
+    typedef std::pair<std::string, shader_block*> copy_block_t;
     // first copy_block: original block, second copy_block: new block
     typedef std::map<copy_block_t, copy_block_t> shader_blocks_copy_t;
 
@@ -163,7 +280,4 @@ private:
     shrimp::groups_t m_groups_buffer;
 };
 
-
 #endif // _services_h_
-
-

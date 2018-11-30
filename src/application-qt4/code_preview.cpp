@@ -18,16 +18,15 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "code_preview.h"
 #include "ui_code_preview.h"
 
 #include "src/miscellaneous/logging.h"
 
-code_preview::code_preview(QWidget *parent, services* shrimpServicesInstance) :
-    QDialog (parent),
-    ui (new Ui::codePreviewDialog),
-    shrimpServices (shrimpServicesInstance)
+code_preview::code_preview(QWidget* parent, services* shrimpServicesInstance)
+    : QDialog(parent)
+    , ui(new Ui::codePreviewDialog)
+    , shrimpServices(shrimpServicesInstance)
 {
     ui->setupUi(this);
 
@@ -41,15 +40,9 @@ code_preview::code_preview(QWidget *parent, services* shrimpServicesInstance) :
     QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
-
-code_preview::~code_preview()
-{
-
-}
-
+code_preview::~code_preview() = default;
 
 void code_preview::okButton()
 {
     close();
 }
-

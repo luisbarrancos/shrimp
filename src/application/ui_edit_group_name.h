@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_edit_group_name_h_
 #define _ui_edit_group_name_h_
 
@@ -31,51 +30,48 @@
 
 namespace edit_group_name
 {
-
 static fltk::Input* name = 0;
 
 static int answer;
 static void set_answer(fltk::Widget* w, long a)
 {
-	answer = a;
-	w->window()->make_exec_return(false);
+    answer = a;
+    w->window()->make_exec_return(false);
 }
 
 static int dialog(const std::string& Name)
 {
-	// build dialog window
-	fltk::Window window(400, 80, "Group name");
-	window.begin();
+    // build dialog window
+    fltk::Window window(400, 80, "Group name");
+    window.begin();
 
-		if(!name)
-			name = new fltk::Input(70,10, 300,23, "Name");
-		else
-			window.add(name);
-		name->tooltip("Group name");
+    if (!name)
+        name = new fltk::Input(70, 10, 300, 23, "Name");
+    else
+        window.add(name);
+    name->tooltip("Group name");
 
+    name->text(Name.c_str());
 
-		name->text(Name.c_str());
+    fltk::ReturnButton* rb = new fltk::ReturnButton(150, 40, 75, 25, "OK");
+    rb->label("Ok");
+    rb->callback(set_answer, 1);
 
-		fltk::ReturnButton* rb = new fltk::ReturnButton(150, 40, 75, 25, "OK");
-		rb->label("Ok");
-		rb->callback(set_answer, 1);
+    fltk::Button* cb = new fltk::Button(250, 40, 70, 25, "Cancel");
+    cb->label("Cancel");
+    cb->callback(set_answer, 0);
 
-		fltk::Button* cb = new fltk::Button(250, 40, 70, 25, "Cancel");
-		cb->label("Cancel");
-		cb->callback(set_answer, 0);
+    window.end();
 
-	window.end();
+    // show it
+    window.exec();
 
-	// show it
-	window.exec();
+    // don't delete the dialogs with the window
+    window.remove(name);
 
-	// don't delete the dialogs with the window
-	window.remove(name);
-
-	return answer;
+    return answer;
 }
 
-}
+} // namespace edit_group_name
 
 #endif // _ui_edit_group_name_h_
-

@@ -18,16 +18,14 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _rib_root_block_h_
 #define _rib_root_block_h_
 
 #include "preferences.h"
-#include "shader_block.h"
 #include "scene.h"
+#include "shader_block.h"
 
 #include "../interfaces/i_system_functions.h"
-
 
 class rib_root_block : public shader_block
 {
@@ -42,35 +40,41 @@ class rib_root_block : public shader_block
     // AOV output preview
     bool m_AOV;
 
-public:
-    rib_root_block (const std::string& Name, scene* Scene, i_system_functions* SystemFunctions, general_options& preferences);
+  public:
+    rib_root_block(
+        const std::string& Name,
+        scene* Scene,
+        i_system_functions* SystemFunctions,
+        general_options& preferences);
 
     std::string show_code();
 
-    std::string get_root_type() { return root_type; }
+    std::string get_root_type()
+    {
+        return root_type;
+    }
 
     // show a preview of current scene
-    void show_preview (const std::string& Directory);
+    void show_preview(const std::string& Directory);
 
     // export scene (RIB file and shaders)
-    void export_scene (const std::string& Directory);
+    void export_scene(const std::string& Directory);
 
     // getters and setters
-    void set_general_statements (const std::string& Statements);
+    void set_general_statements(const std::string& Statements);
     std::string get_general_statements();
-    void set_imager_statement (const std::string& Statement);
+    void set_imager_statement(const std::string& Statement);
     std::string get_imager_statement();
 
-    void set_AOV (const bool State);
+    void set_AOV(const bool State);
     bool get_AOV();
 
-private:
+  private:
     // RIB scene statements
     std::string m_general_statements;
     std::string m_imager_statement;
 
-    typedef enum
-    {
+    typedef enum {
         SURFACE,
         DISPLACEMENT,
         LIGHT,
@@ -79,13 +83,31 @@ private:
     } shader_t;
 
     // write a RIB file for preview and image output
-    void write_RIB (const std::string& RIBFile, const std::string& TempDir, const std::string& SurfaceName = "", const std::string& DisplacementName = "", const std::string& LightName = "", const std::string& AtmosphereName = "", const std::string& ImagerName = "");
+    void write_RIB(
+        const std::string& RIBFile,
+        const std::string& TempDir,
+        const std::string& SurfaceName      = "",
+        const std::string& DisplacementName = "",
+        const std::string& LightName        = "",
+        const std::string& AtmosphereName   = "",
+        const std::string& ImagerName       = "");
 
-    std::string shader_compilation_command (const std::string& Shader, const std::string& ShaderPath, const std::string& DestinationName, const std::string& DestinationPath, const std::string& IncludePath);
-    std::string scene_rendering_command (const std::string& RIBFile, const std::string& ShaderPath);
+    std::string shader_compilation_command(
+        const std::string& Shader,
+        const std::string& ShaderPath,
+        const std::string& DestinationName,
+        const std::string& DestinationPath,
+        const std::string& IncludePath);
+    std::string scene_rendering_command(
+        const std::string& RIBFile,
+        const std::string& ShaderPath);
 
     // parses a shader in the RIB scene and returns the shader compilation command
-    std::string parse_scene_shader (const std::string& RIBscene, const std::string ShaderPath, const std::string& TempDir, const std::string ShaderType);
+    std::string parse_scene_shader(
+        const std::string& RIBscene,
+        const std::string& ShaderPath,
+        const std::string& TempDir,
+        const std::string& ShaderType);
 
     // outputs scene and shader files, returns rendering command list
     struct renderingCommands
@@ -94,31 +116,47 @@ private:
         std::string rendererCommand;
     };
 
-    void write_scene_and_shaders (const std::string& SceneDirectory, renderingCommands& CommandList);
+    void write_scene_and_shaders(
+        const std::string& SceneDirectory,
+        renderingCommands& CommandList);
 
     // outputs rendering command list
-    void write_command_list (const renderingCommands& CommandList, const std::string& AbsoluteFileName);
+    void write_command_list(
+        const renderingCommands& CommandList,
+        const std::string& AbsoluteFileName);
 
     // export a shader to a RSL file
-    void export_shader (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName);
+    void export_shader(
+        const shader_t ShaderType,
+        const std::string& ShaderName,
+        const std::string& Directory,
+        const std::string& FileName);
     // export a K-3D slmeta file
-    void export_k3d_slmeta (const shader_t ShaderType, const std::string& ShaderName, const std::string& Directory, const std::string& FileName);
-
+    void export_k3d_slmeta(
+        const shader_t ShaderType,
+        const std::string& ShaderName,
+        const std::string& Directory,
+        const std::string& FileName);
 
     // build a shader starting from he root block, returns the shader file content
-    std::string build_shader_file (const shader_t ShaderType, const std::string& ShaderName);
+    std::string build_shader_file(
+        const shader_t ShaderType,
+        const std::string& ShaderName);
     // recursively build the shader code ending at given block
-    void build_shader_code (shader_block* Block, std::string& ShaderCode, std::set<std::string>& LocalVariables);
+    void build_shader_code(
+        shader_block* Block,
+        std::string& ShaderCode,
+        std::set<std::string>& LocalVariables);
     // build the K-3D slmeta file for a shader
-    std::string build_k3d_meta_file (const shader_t ShaderType, const std::string& ShaderName);
+    std::string build_k3d_meta_file(
+        const shader_t ShaderType,
+        const std::string& ShaderName);
 
     // return the list of connected blocks that make the shader
-    shrimp::shader_blocks_t get_all_shader_blocks (const shader_t ShaderType);
+    shrimp::shader_blocks_t get_all_shader_blocks(const shader_t ShaderType);
 
     // return true when the given pad input has an output connected
     bool has_connected_parent(const std::string& PadName);
 };
 
-
 #endif
-

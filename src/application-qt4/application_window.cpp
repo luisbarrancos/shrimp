@@ -18,9 +18,7 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "application_window.h"
-#include "ui_application_window.h"
 #include "block_code.h"
 #include "block_info.h"
 #include "block_input_output.h"
@@ -29,30 +27,31 @@
 #include "options.h"
 #include "rib_block.h"
 #include "shader_properties.h"
+#include "ui_application_window.h"
 
 #include "src/application-qt4/system_functions.h"
 #include "src/miscellaneous/logging.h"
 #include "src/shading/rib_root_block.h"
 
+#include <QContextMenuEvent>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QContextMenuEvent>
 #include <QSignalMapper>
 
 #include <memory>
 
-application_window::application_window (QWidget* parent) :
-    QMainWindow (parent),
-    ui (new Ui::application_window)
+application_window::application_window(QWidget* parent)
+    : QMainWindow(parent)
+    , ui(new Ui::application_window)
 {
-    ui->setupUi (this);
+    ui->setupUi(this);
 
     // set default window title
-    setWindowTitle ("Shrimp");
+    setWindowTitle("Shrimp");
 
     // initialize logging
     log_level_t level = ASPECT;
-    std::unique_ptr<std::streambuf> filter_level (new filter_by_level_buf (level, log()));
+    std::unique_ptr<std::streambuf> filter_level(new filter_by_level_buf(level, log()));
 
     /*
             log() << error << "LOG = ERROR" << std::endl;
@@ -68,29 +67,29 @@ application_window::application_window (QWidget* parent) :
     systemFunctions = new system_functions();
 
     // load stylesheet
-    std::string qtPath = findDataDirectory ("qt");
-    qtPath = systemFunctions->combine_paths (qtPath, "stylesheet.qss");
+    std::string qtPath = findDataDirectory("qt");
+    qtPath             = systemFunctions->combine_paths(qtPath, "stylesheet.qss");
 
-    QFile styleSheetFile (QString::fromStdString (qtPath));
-    styleSheetFile.open (QFile::ReadOnly);
-    QString styleSheet = QLatin1String (styleSheetFile.readAll());
+    QFile styleSheetFile(QString::fromStdString(qtPath));
+    styleSheetFile.open(QFile::ReadOnly);
+    QString styleSheet = QLatin1String(styleSheetFile.readAll());
     styleSheetFile.close();
 
-    setStyleSheet (styleSheet);
+    setStyleSheet(styleSheet);
 
     // load preferences
-    std::string dataPath = findDataDirectory ("data");
-    preferences.initialize (systemFunctions, dataPath);
+    std::string dataPath = findDataDirectory("data");
+    preferences.initialize(systemFunctions, dataPath);
 
     // create service
-    std::string blockPath = findDataDirectory ("blocks");
-    shrimp_services = new services (systemFunctions, preferences, blockPath);
+    std::string blockPath = findDataDirectory("blocks");
+    shrimp_services       = new services(systemFunctions, preferences, blockPath);
 
     // initialize renderer
     renderers = preferences.get_renderer_list();
-    scenes = preferences.get_scene_list();
+    scenes    = preferences.get_scene_list();
 
-    setupRendererCombo ("3Delight");
+    setupRendererCombo("3Delight");
     setupSceneCombo();
 
     // add the QGLWidget scene_view to the main window
@@ -99,72 +98,96 @@ application_window::application_window (QWidget* parent) :
 
     // build block popup menu
     menuNode menuRootNode;
-    blockPopupMenuTree["Root"] = menuNode();
+    blockPopupMenuTree["Root"]       = menuNode();
     const block_tree_node_t rootNode = shrimp_services->get_block_hierarchy();
     buildBlockSubmenu(rootNode, "Root");
 
     // initiliaze variables
-    activeBlock = 0;
+    activeBlock = nullptr;
 
     // connect events
-    connect (ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
-    connect (ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
-    connect (ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
-    connect (ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
-    connect (ui->actionShaderProperties, SIGNAL(triggered()), this, SLOT(shaderPropertiesDialog()));
-    connect (ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
-    connect (ui->actionExportScene, SIGNAL(triggered()), this, SLOT(exportScene()));
-    connect (ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
-    connect (ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
+    connect(ui->actionNew, SIGNAL(triggered()), this, SLOT(newScene()));
+    connect(ui->actionOpen, SIGNAL(triggered()), this, SLOT(openSceneFile()));
+    connect(ui->actionSave, SIGNAL(triggered()), this, SLOT(saveScene()));
+    connect(ui->actionSaveAs, SIGNAL(triggered()), this, SLOT(saveSceneAsFile()));
+    connect(
+        ui->actionShaderProperties,
+        SIGNAL(triggered()),
+        this,
+        SLOT(shaderPropertiesDialog()));
+    connect(ui->actionCodePreview, SIGNAL(triggered()), this, SLOT(codePreviewDialog()));
+    connect(ui->actionExportScene, SIGNAL(triggered()), this, SLOT(exportScene()));
+    connect(ui->actionOptions, SIGNAL(triggered()), this, SLOT(optionsDialog()));
+    connect(ui->actionQuit, SIGNAL(triggered()), this, SLOT(close()));
 
-    connect (ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
-    connect (ui->actionPaste, SIGNAL(triggered()), this, SLOT(paste()));
-    connect (ui->actionCut, SIGNAL(triggered()), this, SLOT(cut()));
-    connect (ui->actionGroup, SIGNAL(triggered()), this, SLOT(group()));
-    connect (ui->actionUngroup, SIGNAL(triggered()), this, SLOT(ungroup()));
-    connect (ui->actionEditBlock, SIGNAL(triggered()), this, SLOT(editBlock()));
-    connect (ui->actionDeleteBlocks, SIGNAL(triggered()), this, SLOT(deleteBlocks()));
+    connect(ui->actionCopy, SIGNAL(triggered()), this, SLOT(copy()));
+    connect(ui->actionPaste, SIGNAL(triggered()), this, SLOT(paste()));
+    connect(ui->actionCut, SIGNAL(triggered()), this, SLOT(cut()));
+    connect(ui->actionGroup, SIGNAL(triggered()), this, SLOT(group()));
+    connect(ui->actionUngroup, SIGNAL(triggered()), this, SLOT(ungroup()));
+    connect(ui->actionEditBlock, SIGNAL(triggered()), this, SLOT(editBlock()));
+    connect(ui->actionDeleteBlocks, SIGNAL(triggered()), this, SLOT(deleteBlocks()));
 
-    connect (ui->actionShowGrid, SIGNAL(toggled(bool)), this, SLOT(toggleGrid(bool)));
-    connect (ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
+    connect(ui->actionShowGrid, SIGNAL(toggled(bool)), this, SLOT(toggleGrid(bool)));
+    connect(
+        ui->actionSnapBlocks, SIGNAL(toggled(bool)), this, SLOT(toggleGridSnap(bool)));
 
-    connect (ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
-    connect (ui->rendererCombo, SIGNAL(activated(QString)), this, SLOT(changeRenderer(QString)));
-    connect (ui->displayCombo, SIGNAL(activated(QString)), SLOT(changeDisplay(QString)));
-    connect (ui->sceneCombo, SIGNAL(activated(QString)), SLOT(changeRenderScene(QString)));
-    connect (ui->renderButton, SIGNAL(clicked()), this, SLOT(renderScene()));
+    connect(ui->addBlockButton, SIGNAL(clicked()), this, SLOT(newBlockPopup()));
+    connect(
+        ui->rendererCombo,
+        SIGNAL(activated(QString)),
+        this,
+        SLOT(changeRenderer(QString)));
+    connect(ui->displayCombo, SIGNAL(activated(QString)), SLOT(changeDisplay(QString)));
+    connect(ui->sceneCombo, SIGNAL(activated(QString)), SLOT(changeRenderScene(QString)));
+    connect(ui->renderButton, SIGNAL(clicked()), this, SLOT(renderScene()));
 
-    connect (ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
-    connect (ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
+    connect(ui->zoomSlider, SIGNAL(valueChanged(int)), this, SLOT(changeZoom(int)));
+    connect(ui->fitSceneButton, SIGNAL(clicked()), this, SLOT(fitScene()));
 
-    connect (ui_scene_view, SIGNAL(setSceneZoom(const double)), this, SLOT(updateSceneZoom(const double)));
-    connect (ui_scene_view, SIGNAL(shaderBlockRightClick(const std::string)), this, SLOT(blockRightClick(const std::string)));
-    connect (ui_scene_view, SIGNAL(shaderPropertyRightClick(shrimp::io_t)), this, SLOT(propertyRightClick(shrimp::io_t)));
-    connect (ui_scene_view, SIGNAL(blockGroupRightClick(int)), this, SLOT(groupRightClick(const int)));
+    connect(
+        ui_scene_view,
+        SIGNAL(setSceneZoom(const double)),
+        this,
+        SLOT(updateSceneZoom(const double)));
+    connect(
+        ui_scene_view,
+        SIGNAL(shaderBlockRightClick(const std::string)),
+        this,
+        SLOT(blockRightClick(const std::string)));
+    connect(
+        ui_scene_view,
+        SIGNAL(shaderPropertyRightClick(shrimp::io_t)),
+        this,
+        SLOT(propertyRightClick(shrimp::io_t)));
+    connect(
+        ui_scene_view,
+        SIGNAL(blockGroupRightClick(int)),
+        this,
+        SLOT(groupRightClick(const int)));
 }
-
 
 application_window::~application_window()
 {
     delete ui;
 }
 
-
 std::string application_window::findDataDirectory(const std::string& directoryName)
 {
     // find the given directory on system: in current path
     QString currentPath = QDir().currentPath();
-    std::string dataPath = systemFunctions->combine_paths (currentPath.toStdString(), directoryName);
-    if (systemFunctions->is_directory (dataPath))
+    std::string dataPath =
+        systemFunctions->combine_paths(currentPath.toStdString(), directoryName);
+    if (systemFunctions->is_directory(dataPath))
     {
         log() << info << directoryName << " found in: " << dataPath << std::endl;
         return dataPath;
     }
 
     // in parent path
-    dataPath = systemFunctions->combine_paths (currentPath.toStdString(), "..");
-    dataPath = systemFunctions->combine_paths (dataPath, directoryName);
-    if (systemFunctions->is_directory (dataPath))
+    dataPath = systemFunctions->combine_paths(currentPath.toStdString(), "..");
+    dataPath = systemFunctions->combine_paths(dataPath, directoryName);
+    if (systemFunctions->is_directory(dataPath))
     {
         log() << info << directoryName << " found in: " << dataPath << std::endl;
         return dataPath;
@@ -175,41 +198,40 @@ std::string application_window::findDataDirectory(const std::string& directoryNa
     return "";
 }
 
-
-void application_window::buildBlockSubmenu(const block_tree_node_t& treeNode, const std::string& menuNodeName)
+void application_window::buildBlockSubmenu(
+    const block_tree_node_t& treeNode,
+    const std::string& menuNodeName)
 {
     // check whether the directory has children
-    for (block_tree_node_list_t::const_iterator subNode = treeNode.child_nodes.begin();
-         subNode != treeNode.child_nodes.end(); ++subNode)
+    for (const auto& child_node : treeNode.child_nodes)
     {
-        std::string newDir = subNode->node_name;
+        std::string newDir = child_node.node_name;
         blockPopupMenuTree[menuNodeName].subDirList.insert(newDir);
 
         blockPopupMenuTree[newDir] = menuNode();
 
-        buildBlockSubmenu(*subNode, newDir);
+        buildBlockSubmenu(child_node, newDir);
     }
 
-    for (default_block_list_t::const_iterator block = treeNode.blocks.begin();
-         block != treeNode.blocks.end(); ++block)
+    for (const auto& block : treeNode.blocks)
     {
         // add menu item
-        QAction* blockAction = new QAction(QString::fromStdString(block->name), this);
+        QAction* blockAction = new QAction(QString::fromStdString(block.name), this);
 
         menuBlock blockInfo;
         blockInfo.action = blockAction;
-        blockInfo.block = *block;
+        blockInfo.block  = block;
         blockPopupMenuTree[menuNodeName].actionList.push_back(blockInfo);
     }
 }
 
-
 void application_window::setupRendererCombo(const std::string& rendererName)
 {
     unsigned long currentMenuNumber = 0;
-    unsigned long rendererIndex = 0;
+    unsigned long rendererIndex     = 0;
 
-    for (general_options::renderers_t::iterator renderer = renderers.begin(); renderer != renderers.end(); ++renderer, ++currentMenuNumber)
+    for (auto renderer = renderers.begin(); renderer != renderers.end();
+         ++renderer, ++currentMenuNumber)
     {
         ui->rendererCombo->addItem(QString::fromStdString(renderer->second.name));
 
@@ -224,33 +246,30 @@ void application_window::setupRendererCombo(const std::string& rendererName)
     setupDisplayCombo(rendererName);
 }
 
-
 void application_window::setupDisplayCombo(const std::string& renderer)
 {
-    for (general_options::renderers_t::iterator r = renderers.begin(); r != renderers.end(); ++r)
+    for (auto& r : renderers)
     {
-        if (r->second.name == renderer)
+        if (r.second.name == renderer)
         {
             ui->displayCombo->clear();
-            for (general_options::displays_t::const_iterator currentDisplay = r->second.displays.begin(); currentDisplay != r->second.displays.end(); ++currentDisplay)
+            for (auto& display : r.second.displays)
             {
-                ui->displayCombo->addItem(QString::fromStdString(*currentDisplay));
+                ui->displayCombo->addItem(QString::fromStdString(display));
             }
         }
     }
 }
 
-
 void application_window::setupSceneCombo()
 {
     ui->sceneCombo->clear();
 
-    for (general_options::scenes_t::iterator scene = scenes.begin(); scene != scenes.end(); ++scene)
+    for (auto& scene : scenes)
     {
-        ui->sceneCombo->addItem(QString::fromStdString(scene->name));
+        ui->sceneCombo->addItem(QString::fromStdString(scene.name));
     }
 }
-
 
 void application_window::newScene()
 {
@@ -258,10 +277,10 @@ void application_window::newScene()
     ui_scene_view->fit_scene();
 }
 
-
 void application_window::openSceneFile()
 {
-    QString path = QFileDialog::getOpenFileName(this, "Find scene file", QString(), QString());
+    QString path =
+        QFileDialog::getOpenFileName(this, "Find scene file", QString(), QString());
     log() << INFO << "opening file: " << path.toStdString() << std::endl;
 
     std::string std_path = path.toStdString();
@@ -287,7 +306,6 @@ void application_window::openSceneFile()
     setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
 }
 
-
 void application_window::saveScene()
 {
     if (!shrimp_services->save())
@@ -296,10 +314,10 @@ void application_window::saveScene()
     }
 }
 
-
 void application_window::saveSceneAsFile()
 {
-    QString path = QFileDialog::getSaveFileName(this, "Save scene as...", QString(), "Shrimp file (*.xml)");
+    QString path = QFileDialog::getSaveFileName(
+        this, "Save scene as...", QString(), "Shrimp file (*.xml)");
     log() << INFO << "File save: " << path.toStdString() << std::endl;
 
     if (path.isEmpty())
@@ -335,7 +353,6 @@ void application_window::saveSceneAsFile()
     shrimp_services->save_as(path.toStdString());
 }
 
-
 void application_window::shaderPropertiesDialog()
 {
     shader_properties properties(this, shrimp_services);
@@ -344,17 +361,16 @@ void application_window::shaderPropertiesDialog()
     setWindowTitle(QString::fromStdString(shrimp_services->get_scene_name()));
 }
 
-
 void application_window::codePreviewDialog()
 {
-    code_preview preview (this, shrimp_services);
+    code_preview preview(this, shrimp_services);
     preview.exec();
 }
 
-
 void application_window::exportScene()
 {
-    QString path = QFileDialog::getExistingDirectory(this, "Export scene to...", QString());
+    QString path =
+        QFileDialog::getExistingDirectory(this, "Export scene to...", QString());
     if (path.isEmpty())
     {
         // No directory selected
@@ -363,29 +379,25 @@ void application_window::exportScene()
 
     // export
     log() << INFO << "Exporting file to: " << path.toStdString() << std::endl;
-    shrimp_services->export_scene (path.toStdString());
+    shrimp_services->export_scene(path.toStdString());
 }
-
 
 void application_window::optionsDialog()
 {
-    options editPreferences (this, shrimp_services, preferences);
+    options editPreferences(this, shrimp_services, preferences);
     editPreferences.exec();
 }
-
 
 void application_window::copy()
 {
     shrimp_services->copy_selected_blocks(ui_scene_view->get_active_block());
 }
 
-
 void application_window::paste()
 {
     shrimp_services->paste(ui_scene_view->get_active_block());
     ui_scene_view->redraw();
 }
-
 
 void application_window::cut()
 {
@@ -396,7 +408,6 @@ void application_window::cut()
     }
 }
 
-
 void application_window::group()
 {
     if (shrimp_services->selection_size() >= 1)
@@ -405,7 +416,6 @@ void application_window::group()
         ui_scene_view->redraw();
     }
 }
-
 
 void application_window::ungroup()
 {
@@ -418,15 +428,14 @@ void application_window::ungroup()
     else if (shrimp_services->group_selection_size() > 0)
     {
         shrimp::group_set_t selectedGroups = shrimp_services->get_selected_groups();
-        for (shrimp::group_set_t::const_iterator g = selectedGroups.begin(); g != selectedGroups.end(); ++g)
+        for (int selectedGroup : selectedGroups)
         {
-            shrimp_services->ungroup (*g);
+            shrimp_services->ungroup(selectedGroup);
         }
 
         ui_scene_view->redraw();
     }
 }
-
 
 void application_window::editBlock()
 {
@@ -435,16 +444,16 @@ void application_window::editBlock()
         shader_block* block = ui_scene_view->get_active_block();
         if (block)
         {
-            block_code editCode (this, shrimp_services, activeBlock);
+            block_code editCode(this, shrimp_services, activeBlock);
             editCode.exec();
 
             // toggle block selection
             shrimp_services->clear_selection();
-            shrimp_services->set_block_selection(block, !shrimp_services->is_selected(block));
+            shrimp_services
+                ->set_block_selection(block, !shrimp_services->is_selected(block));
         }
     }
 }
-
 
 void application_window::deleteBlocks()
 {
@@ -452,20 +461,17 @@ void application_window::deleteBlocks()
     ui_scene_view->redraw();
 }
 
-
 void application_window::toggleGrid(bool checked)
 {
     ui_scene_view->set_grid_state(checked);
     ui_scene_view->redraw();
 }
 
-
 void application_window::toggleGridSnap(bool checked)
 {
     ui_scene_view->set_snap_to_grid_state(checked);
     ui_scene_view->redraw();
 }
-
 
 void application_window::newBlockPopup()
 {
@@ -477,7 +483,6 @@ void application_window::newBlockPopup()
     menu.exec(ui->addBlockButton->mapToGlobal(localPos));
 }
 
-
 void application_window::changeRenderer(const QString& rendererName)
 {
     log() << aspect << "Change renderer to " << rendererName.toStdString() << std::endl;
@@ -485,30 +490,27 @@ void application_window::changeRenderer(const QString& rendererName)
     setupDisplayCombo(rendererName.toStdString());
 
     // save new renderer to preferences
-    preferences.set_renderer_name (rendererName.toStdString());
+    preferences.set_renderer_name(rendererName.toStdString());
     preferences.save();
 }
-
 
 void application_window::changeDisplay(const QString& displayName)
 {
     log() << aspect << "Change display to " << displayName.toStdString() << std::endl;
 
     // save new display to preferences
-    preferences.set_display_name (displayName.toStdString());
+    preferences.set_display_name(displayName.toStdString());
     preferences.save();
 }
-
 
 void application_window::changeRenderScene(const QString& sceneName)
 {
     log() << aspect << "Change render scene to " << sceneName.toStdString() << std::endl;
 
     // save new scene to preferences
-    preferences.set_scene (sceneName.toStdString());
+    preferences.set_scene(sceneName.toStdString());
     preferences.save();
 }
-
 
 void application_window::renderScene()
 {
@@ -516,31 +518,28 @@ void application_window::renderScene()
     shrimp_services->show_preview(tempDir);
 }
 
-
 void application_window::changeZoom(int zoom)
 {
-    double value = static_cast<double>(zoom) / 20.0d;
+    double value = static_cast<double>(zoom) / 20.0;
 
     ui_scene_view->set_size(value);
     ui_scene_view->redraw();
 }
-
 
 void application_window::fitScene()
 {
     ui_scene_view->fit_scene();
 }
 
-
-void application_window::blockPopupMenu(QString blockName)
+void application_window::blockPopupMenu(const QString& blockName)
 {
     log() << aspect << "Adding new block: " << blockName.toStdString() << std::endl;
 
-    shader_block* newBlock = shrimp_services->add_predefined_block(blockName.toStdString());
+    shader_block* newBlock =
+        shrimp_services->add_predefined_block(blockName.toStdString());
     ui_scene_view->move_block_to_view_center(newBlock);
     ui_scene_view->redraw();
 }
-
 
 /*void application_window::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -551,41 +550,37 @@ void application_window::blockPopupMenu(QString blockName)
     menu.exec(event->globalPos());
 }*/
 
-
-void application_window::buildContextMenuFromBlock(QMenu& menu, const std::string menuName)
+void application_window::buildContextMenuFromBlock(
+    QMenu& menu,
+    const std::string& menuName)
 {
     menuNode& node = blockPopupMenuTree[menuName];
 
-    for (std::set<std::string>::iterator dirName = node.subDirList.begin();
-         dirName != node.subDirList.end(); ++dirName)
+    for (const auto& subDirName : node.subDirList)
     {
-        const std::string subDirName = *dirName;
         QMenu* newSubMenu = menu.addMenu(QString::fromStdString(subDirName));
         buildContextMenuFromBlock(*newSubMenu, subDirName);
     }
 
-    QSignalMapper* signalMapper = new QSignalMapper(this);
-    for (std::vector<menuBlock>::iterator entry = node.actionList.begin();
-         entry != node.actionList.end(); ++entry)
+    auto* signalMapper = new QSignalMapper(this);
+    for (auto& entry : node.actionList)
     {
-        QAction* newAction = menu.addAction(QString::fromStdString(entry->block.name));
+        QAction* newAction = menu.addAction(QString::fromStdString(entry.block.name));
         connect(newAction, SIGNAL(triggered()), signalMapper, SLOT(map()));
-        signalMapper->setMapping(newAction, QString::fromStdString(entry->block.name));
+        signalMapper->setMapping(newAction, QString::fromStdString(entry.block.name));
     }
 
     connect(signalMapper, SIGNAL(mapped(QString)), this, SLOT(blockPopupMenu(QString)));
 }
 
-
 void application_window::updateSceneZoom(const double newZoom)
 {
-    ui->zoomSlider->setValue(static_cast<int>(newZoom * 20.0d));
+    ui->zoomSlider->setValue(static_cast<int>(newZoom * 20.0));
 }
 
-
-void application_window::blockRightClick (const std::string& blockName)
+void application_window::blockRightClick(const std::string& blockName)
 {
-    activeBlock = shrimp_services->get_block (blockName);
+    activeBlock = shrimp_services->get_block(blockName);
     if (!activeBlock)
     {
         return;
@@ -593,90 +588,89 @@ void application_window::blockRightClick (const std::string& blockName)
 
     const bool isRoot = activeBlock->m_root_block;
 
-    QMenu menu (this);
-    menu.setTitle ("Block");
+    QMenu menu(this);
+    menu.setTitle("Block");
 
     if (!isRoot)
     {
-        if (shrimp_services->is_selected (activeBlock))
+        if (shrimp_services->is_selected(activeBlock))
         {
-            QAction* deselectMenuItem = menu.addAction ("Deselect");
-            connect (deselectMenuItem, SIGNAL(triggered()), this, SLOT(deselectActiveBlock()));
+            QAction* deselectMenuItem = menu.addAction("Deselect");
+            connect(
+                deselectMenuItem, SIGNAL(triggered()), this, SLOT(deselectActiveBlock()));
         }
         else
         {
-            QAction* selectMenuItem = menu.addAction ("Select");
-            connect (selectMenuItem, SIGNAL(triggered()), this, SLOT(selectActiveBlock()));
+            QAction* selectMenuItem = menu.addAction("Select");
+            connect(selectMenuItem, SIGNAL(triggered()), this, SLOT(selectActiveBlock()));
         }
 
         if (shrimp_services->selection_size() > 1)
         {
-            QAction* groupSelectionItem = menu.addAction ("Group selection");
-            connect (groupSelectionItem, SIGNAL(triggered()), this, SLOT(groupSelection()));
+            QAction* groupSelectionItem = menu.addAction("Group selection");
+            connect(
+                groupSelectionItem, SIGNAL(triggered()), this, SLOT(groupSelection()));
         }
 
-        if (shrimp_services->is_rolled (activeBlock))
+        if (shrimp_services->is_rolled(activeBlock))
         {
-            QAction* unrollItem = menu.addAction ("Unroll");
-            connect (unrollItem, SIGNAL(triggered()), this, SLOT(unrollActiveBlock()));
+            QAction* unrollItem = menu.addAction("Unroll");
+            connect(unrollItem, SIGNAL(triggered()), this, SLOT(unrollActiveBlock()));
         }
         else
         {
-            QAction* rollItem = menu.addAction ("Roll");
-            connect (rollItem, SIGNAL(triggered()), this, SLOT(rollActiveBlock()));
+            QAction* rollItem = menu.addAction("Roll");
+            connect(rollItem, SIGNAL(triggered()), this, SLOT(rollActiveBlock()));
         }
     }
 
     menu.addSeparator();
 
-    QAction* infoItem = menu.addAction ("Edit Info");
-    connect (infoItem, SIGNAL(triggered()), this, SLOT(activeBlockInfo()));
+    QAction* infoItem = menu.addAction("Edit Info");
+    connect(infoItem, SIGNAL(triggered()), this, SLOT(activeBlockInfo()));
 
     //QAction* renameItem = menu.addAction ("Rename");
     //connect (renameItem, SIGNAL(triggered()), this, SLOT(renameActiveBlock()));
 
     if (!isRoot)
     {
-        QAction* addInputItem = menu.addAction ("Add Input");
-        connect (addInputItem, SIGNAL(triggered()), this, SLOT(addInput()));
-        QAction* addOutputItem = menu.addAction ("Add Output");
-        connect (addOutputItem, SIGNAL(triggered()), this, SLOT(addOutput()));
-        QAction* editCodeItem = menu.addAction ("Edit Code");
-        connect (editCodeItem, SIGNAL(triggered()), this, SLOT(editCode()));
+        QAction* addInputItem = menu.addAction("Add Input");
+        connect(addInputItem, SIGNAL(triggered()), this, SLOT(addInput()));
+        QAction* addOutputItem = menu.addAction("Add Output");
+        connect(addOutputItem, SIGNAL(triggered()), this, SLOT(addOutput()));
+        QAction* editCodeItem = menu.addAction("Edit Code");
+        connect(editCodeItem, SIGNAL(triggered()), this, SLOT(editCode()));
 
         menu.addSeparator();
 
-        QAction* deleteItem = menu.addAction ("Delete");
-        connect (deleteItem, SIGNAL(triggered()), this, SLOT(deleteActiveBlock()));
+        QAction* deleteItem = menu.addAction("Delete");
+        connect(deleteItem, SIGNAL(triggered()), this, SLOT(deleteActiveBlock()));
     }
     else
     {
         // RIB root block functions
-        rib_root_block* rib = dynamic_cast<rib_root_block*> (activeBlock);
+        auto* rib = dynamic_cast<rib_root_block*>(activeBlock);
         if (rib)
         {
-            QAction* editRibItem = menu.addAction ("Edit RIB");
-            connect (editRibItem, SIGNAL(triggered()), this, SLOT(editRibBlock()));
+            QAction* editRibItem = menu.addAction("Edit RIB");
+            connect(editRibItem, SIGNAL(triggered()), this, SLOT(editRibBlock()));
         }
     }
 
     menu.exec(QCursor::pos());
 }
 
-
 void application_window::selectActiveBlock()
 {
-    shrimp_services->set_block_selection (activeBlock, true);
+    shrimp_services->set_block_selection(activeBlock, true);
     ui_scene_view->redraw();
 }
-
 
 void application_window::deselectActiveBlock()
 {
-    shrimp_services->set_block_selection (activeBlock, false);
+    shrimp_services->set_block_selection(activeBlock, false);
     ui_scene_view->redraw();
 }
-
 
 void application_window::groupSelection()
 {
@@ -684,76 +678,69 @@ void application_window::groupSelection()
     ui_scene_view->redraw();
 }
 
-
 void application_window::rollActiveBlock()
 {
-    shrimp_services->set_block_rolled_state (activeBlock, true);
+    shrimp_services->set_block_rolled_state(activeBlock, true);
     ui_scene_view->redraw();
 }
-
 
 void application_window::unrollActiveBlock()
 {
-    shrimp_services->set_block_rolled_state (activeBlock, false);
+    shrimp_services->set_block_rolled_state(activeBlock, false);
     ui_scene_view->redraw();
 }
-
 
 void application_window::activeBlockInfo()
 {
     log() << aspect << "Edit block info" << std::endl;
 
-    block_info editInfo (this, shrimp_services, activeBlock);
+    block_info editInfo(this, shrimp_services, activeBlock);
     editInfo.exec();
 }
-
 
 void application_window::renameActiveBlock()
 {
     log() << aspect << "Edit block name" << std::endl;
 
-    block_name editName (this, shrimp_services, activeBlock);
+    block_name editName(this, shrimp_services, activeBlock);
     editName.exec();
 }
-
 
 void application_window::addInput()
 {
     log() << aspect << "Edit block input" << std::endl;
 
-    block_input_output addInput (this, shrimp_services, "addInput", activeBlock);
+    block_input_output addInput(this, shrimp_services, "addInput", activeBlock);
     addInput.exec();
 
     ui_scene_view->redraw();
 }
 
-
 void application_window::addOutput()
 {
     log() << aspect << "Edit block output" << std::endl;
 
-    block_input_output addOutput (this, shrimp_services, "addOutput", activeBlock);
+    block_input_output addOutput(this, shrimp_services, "addOutput", activeBlock);
     addOutput.exec();
 
     ui_scene_view->redraw();
 }
 
-
 void application_window::editCode()
 {
     log() << aspect << "Edit block code" << std::endl;
 
-    block_code editCode (this, shrimp_services, activeBlock);
+    block_code editCode(this, shrimp_services, activeBlock);
     editCode.exec();
 }
 
-
 void application_window::deleteActiveBlock()
 {
-    QMessageBox msgBox (this);
-    msgBox.setInformativeText (QString::fromStdString ("Do you really want to delete '" + activeBlock->name() + "' block?"));
-    msgBox.setStandardButtons (QMessageBox::Yes | QMessageBox::Cancel);
-    msgBox.setDefaultButton (QMessageBox::Cancel);
+    QMessageBox msgBox(this);
+    msgBox.setInformativeText(QString::fromStdString(
+        "Do you really want to delete '" + activeBlock->name() + "' block?"));
+    msgBox.setStandardButtons(QMessageBox::Yes | QMessageBox::Cancel);
+    msgBox.setDefaultButton(QMessageBox::Cancel);
 
     int answer = msgBox.exec();
 
@@ -763,18 +750,17 @@ void application_window::deleteActiveBlock()
         return;
     }
 
-    shrimp_services->delete_block (activeBlock->name());
+    shrimp_services->delete_block(activeBlock->name());
 }
-
 
 void application_window::editRibBlock()
 {
     log() << aspect << "Edit RIB block" << std::endl;
 
-    rib_root_block* rootBlock = dynamic_cast<rib_root_block*> (activeBlock);
+    auto* rootBlock = dynamic_cast<rib_root_block*>(activeBlock);
     if (rootBlock)
     {
-        rib_block editRIB (this, shrimp_services, rootBlock);
+        rib_block editRIB(this, shrimp_services, rootBlock);
         editRIB.exec();
     }
     else
@@ -783,11 +769,10 @@ void application_window::editRibBlock()
     }
 }
 
-
-void application_window::propertyRightClick (const shrimp::io_t& property)
+void application_window::propertyRightClick(const shrimp::io_t& property)
 {
     activeProperty = property;
-    activeBlock = shrimp_services->get_block (property.first);
+    activeBlock    = shrimp_services->get_block(property.first);
     if (!activeBlock)
     {
         return;
@@ -795,27 +780,27 @@ void application_window::propertyRightClick (const shrimp::io_t& property)
 
     const bool isRoot = activeBlock->m_root_block;
 
-    QMenu menu (this);
-    menu.setTitle ("Pad");
+    QMenu menu(this);
+    menu.setTitle("Pad");
 
     int itemCount = 0;
 
     if (!isRoot)
     {
         // add 'Edit'
-        QAction* editPad = menu.addAction ("Edit");
-        connect (editPad, SIGNAL(triggered()), this, SLOT(editProperty()));
+        QAction* editPad = menu.addAction("Edit");
+        connect(editPad, SIGNAL(triggered()), this, SLOT(editProperty()));
 
         ++itemCount;
     }
 
     // if the block has a parent:
     std::string foo;
-    if (shrimp_services->get_parent (property.first, property.second, foo))
+    if (shrimp_services->get_parent(property.first, property.second, foo))
     {
         // add 'Disconnect'
-        QAction* disconnectPad = menu.addAction ("Disconnect");
-        connect (disconnectPad, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+        QAction* disconnectPad = menu.addAction("Disconnect");
+        connect(disconnectPad, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
 
         ++itemCount;
     }
@@ -826,76 +811,73 @@ void application_window::propertyRightClick (const shrimp::io_t& property)
     }
 }
 
-
 void application_window::editProperty()
 {
     log() << error << "Edit block property" << std::endl;
 
     const std::string propertyName = activeProperty.second;
 
-    if (activeBlock && activeBlock->is_input (propertyName))
+    if (activeBlock && activeBlock->is_input(propertyName))
     {
         log() << aspect << "Edit selected input" << std::endl;
 
-        block_input_output editInput (this, shrimp_services, "editInput", activeBlock, propertyName);
+        block_input_output editInput(
+            this, shrimp_services, "editInput", activeBlock, propertyName);
         editInput.exec();
 
         ui_scene_view->redraw();
     }
-    else if (activeBlock && activeBlock->is_output (propertyName))
+    else if (activeBlock && activeBlock->is_output(propertyName))
     {
         log() << aspect << "Edit selected output" << std::endl;
 
-        block_input_output editOutput (this, shrimp_services, "editOutput", activeBlock, propertyName);
+        block_input_output editOutput(
+            this, shrimp_services, "editOutput", activeBlock, propertyName);
         editOutput.exec();
 
         ui_scene_view->redraw();
     }
 }
 
-
 void application_window::disconnectProperty()
 {
     log() << aspect << "Disconnect property" << std::endl;
 
-    shrimp_services->disconnect (activeProperty);
+    shrimp_services->disconnect(activeProperty);
 
     ui_scene_view->redraw();
 }
 
-
-void application_window::groupRightClick (const int group)
+void application_window::groupRightClick(const int group)
 {
     activeGroup = group;
 
-    QMenu menu (this);
-    menu.setTitle ("Group");
+    QMenu menu(this);
+    menu.setTitle("Group");
 
     // add 'Renamme'
-    QAction* renameGroup = menu.addAction ("Rename group");
-    connect (renameGroup, SIGNAL(triggered()), this, SLOT(editProperty()));
+    QAction* renameGroup = menu.addAction("Rename group");
+    connect(renameGroup, SIGNAL(triggered()), this, SLOT(editProperty()));
 
     // add 'Disconnect'
-    QAction* ungroup = menu.addAction ("Ungroup");
-    connect (ungroup, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+    QAction* ungroup = menu.addAction("Ungroup");
+    connect(ungroup, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
 
     menu.exec(QCursor::pos());
 }
-
 
 void application_window::emptyRightClick()
 {
-    QMenu menu (this);
-    menu.setTitle ("Group");
+    QMenu menu(this);
+    menu.setTitle("Group");
 
     // add 'Group selection'
-    QAction* groupSelection = menu.addAction ("Group selection");
-    connect (groupSelection, SIGNAL(triggered()), this, SLOT(editProperty()));
+    QAction* groupSelection = menu.addAction("Group selection");
+    connect(groupSelection, SIGNAL(triggered()), this, SLOT(editProperty()));
 
     // add 'Disconnect'
-    QAction* clearSelection = menu.addAction ("Clear selection");
-    connect (clearSelection, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
+    QAction* clearSelection = menu.addAction("Clear selection");
+    connect(clearSelection, SIGNAL(triggered()), this, SLOT(disconnectProperty()));
 
     menu.exec(QCursor::pos());
 }
-

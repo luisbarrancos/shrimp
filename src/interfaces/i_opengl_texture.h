@@ -18,22 +18,33 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _i_opengl_texture_h_
 #define _i_opengl_texture_h_
 
 class i_opengl_texture
 {
-public:
-	virtual void set_file(const char* filename) {}
+  public:
+    virtual ~i_opengl_texture() = default;
 
-	virtual int width() { return 0; }
-	virtual int height() { return 0; }
-	virtual int format() { return 0; }
+    virtual void set_file(const char* filename) {}
 
-	virtual uchar* data() { return 0; }
+    virtual int width()
+    {
+        return 0;
+    }
+    virtual int height()
+    {
+        return 0;
+    }
+    virtual int format()
+    {
+        return 0;
+    }
+
+    virtual unsigned char* data()
+    {
+        return nullptr;
+    }
 };
 
-
 #endif // _i_opengl_texture_h_
-

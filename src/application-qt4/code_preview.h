@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef CODE_PREVIEW_H
 #define CODE_PREVIEW_H
 
@@ -26,23 +25,23 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class codePreviewDialog;
+namespace Ui
+{
+class codePreviewDialog;
 }
 
-
-class code_preview: public QDialog
+class code_preview : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit code_preview (QWidget* parent, services* shrimpServicesInstance);
-    ~code_preview();
+  public:
+    explicit code_preview(QWidget* parent, services* shrimpServicesInstance);
+    ~code_preview() override;
 
-public slots:
+  public slots:
     void okButton();
 
-private:
+  private:
     Ui::codePreviewDialog* ui;
     services* shrimpServices;
 };

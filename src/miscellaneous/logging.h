@@ -18,20 +18,18 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _logging_h_
 #define _logging_h_
 
 #include <ostream>
 
 // available log levels
-typedef enum
-{
-    ERROR = 1,
+typedef enum {
+    ERROR   = 1,
     WARNING = 2,
-    INFO = 3,
-    DEBUG = 4,
-    ASPECT = 5
+    INFO    = 3,
+    DEBUG   = 4,
+    ASPECT  = 5
 } log_level_t;
 
 std::ostream& log();
@@ -43,22 +41,20 @@ std::ostream& warning(std::ostream&);
 std::ostream& info(std::ostream&);
 
 // When attached to an output stream, filters-out messages below the given level
-class filter_by_level_buf :
-        public std::streambuf
+class filter_by_level_buf : public std::streambuf
 {
-public:
+  public:
     filter_by_level_buf(const log_level_t MinimumLevel, std::ostream& Stream);
-    ~filter_by_level_buf();
+    ~filter_by_level_buf() override;
 
-protected:
-    int overflow(int);
-    int sync();
+  protected:
+    int overflow(int) override;
+    int sync() override;
 
-private:
+  private:
     std::ostream& m_stream;
     std::streambuf* const m_streambuf;
     const log_level_t m_minimum_level;
 };
 
 #endif // _logging_h_
-

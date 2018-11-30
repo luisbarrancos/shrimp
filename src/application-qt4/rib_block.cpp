@@ -18,56 +18,54 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "rib_block.h"
 #include "ui_rib_block.h"
 
 #include "src/miscellaneous/logging.h"
 
-rib_block::rib_block(QWidget* parent, services* shrimpServicesInstance, rib_root_block* block) :
-    QDialog (parent),
-    ui (new Ui::ribBlockDialog),
-    shrimpServices (shrimpServicesInstance),
-    editedBlock (block)
+rib_block::rib_block(
+    QWidget* parent,
+    services* shrimpServicesInstance,
+    rib_root_block* block)
+    : QDialog(parent)
+    , ui(new Ui::ribBlockDialog)
+    , shrimpServices(shrimpServicesInstance)
+    , editedBlock(block)
 {
     ui->setupUi(this);
 
     log() << aspect << "RIB Block dialog" << std::endl;
 
     // set values
-    ui->declarationsTextEdit->setPlainText (QString::fromStdString (editedBlock->get_general_statements()));
-    ui->imagerLineEdit->setText (QString::fromStdString (editedBlock->get_imager_statement()));
-    ui->aovCheckBox->setChecked (editedBlock->get_AOV());
+    ui->declarationsTextEdit->setPlainText(
+        QString::fromStdString(editedBlock->get_general_statements()));
+    ui->imagerLineEdit->setText(
+        QString::fromStdString(editedBlock->get_imager_statement()));
+    ui->aovCheckBox->setChecked(editedBlock->get_AOV());
 
     // connect events
-    connect (ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
-    connect (ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
+    connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
+    connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
-
-rib_block::~rib_block()
-{
-}
-
+rib_block::~rib_block() = default;
 
 void rib_block::cancelButton()
 {
     close();
 }
 
-
 void rib_block::okButton()
 {
     log() << aspect << "Save RIB block" << std::endl;
 
     QString declarations = ui->declarationsTextEdit->toPlainText();
-    QString imager = ui->imagerLineEdit->text();
-    bool aov = ui->aovCheckBox->checkState();
+    QString imager       = ui->imagerLineEdit->text();
+    bool aov             = ui->aovCheckBox->checkState();
 
-    editedBlock->set_general_statements (declarations.toStdString());
-    editedBlock->set_imager_statement (imager.toStdString());
-    editedBlock->set_AOV (aov);
+    editedBlock->set_general_statements(declarations.toStdString());
+    editedBlock->set_imager_statement(imager.toStdString());
+    editedBlock->set_AOV(aov);
 
     close();
 }
-

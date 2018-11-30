@@ -18,16 +18,18 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _rib_root_block_parsing_h_
 #define _rib_root_block_parsing_h_
 
 #include <set>
 #include <string>
 
-std::string create_array_value_variables (const std::string code, std::set<std::string>& local_variables);
+std::string create_array_value_variables(
+    const std::string& code,
+    std::set<std::string>& local_variables);
 
-std::string replace_array_assignations (const std::string code, std::set<std::string>& local_variables);
+std::string replace_array_assignations(
+    const std::string& code,
+    std::set<std::string>& local_variables);
 
 #endif
-

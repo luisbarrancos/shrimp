@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_scene_view_h_
 #define _ui_scene_view_h_
 
@@ -28,81 +27,134 @@
 #include <fltk/run.h>
 
 #include <fltk/GlWindow.h>
-#include <fltk/gl.h>
 #include <fltk/PopupMenu.h>
-
+#include <fltk/gl.h>
 
 #include <stdlib.h>
 
-class scene_view :
-	public fltk::GlWindow,
-	public opengl_view
+class scene_view
+    : public fltk::GlWindow,
+      public opengl_view
 {
-public:
-	scene_view (services* services_instance, int x, int y, int w, int h, const char* l = 0);
+  public:
+    scene_view(
+        services* services_instance,
+        int x,
+        int y,
+        int w,
+        int h,
+        const char* l = 0);
 
-	// OpenGL widget draw() override
-	void draw();
+    // OpenGL widget draw() override
+    void draw();
 
-	// OpenGL widget handle(int Event) override
-	int handle (int Event);
+    // OpenGL widget handle(int Event) override
+    int handle(int Event);
 
-	double fit_scene();
+    double fit_scene();
 
-	// texture handling
-	void load_texture(const char* filename, GLuint& texId);
+    // texture handling
+    void load_texture(const char* filename, GLuint& texId);
 
-	// callbacks
-	void shader_property_right_click (shrimp::io_t& Property);
-	void shader_block_right_click (std::string& Block);
-	void block_group_right_click (int Group);
-	void empty_right_click();
+    // callbacks
+    void shader_property_right_click(shrimp::io_t& Property);
+    void shader_block_right_click(std::string& Block);
+    void block_group_right_click(int Group);
+    void empty_right_click();
 
+  private:
+    // temporary storage
+    shader_block* m_active_block;
+    shrimp::io_t m_active_property;
+    int m_active_group;
 
-private:
-	// temporary storage
-	shader_block* m_active_block;
-	shrimp::io_t m_active_property;
-	int m_active_group;
+    // callbacks
+    void on_select_block(fltk::Widget* W, void* Data);
+    static void cb_select_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_select_block(W, Data);
+    }
+    void on_deselect_block(fltk::Widget* W, void* Data);
+    static void cb_deselect_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_deselect_block(W, Data);
+    }
+    void on_roll_block(fltk::Widget* W, void* Data);
+    static void cb_roll_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_roll_block(W, Data);
+    }
+    void on_unroll_block(fltk::Widget* W, void* Data);
+    static void cb_unroll_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_unroll_block(W, Data);
+    }
+    void on_group_selection(fltk::Widget* W, void* Data);
+    static void cb_group_selection(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_group_selection(W, Data);
+    }
+    void on_clear_selection(fltk::Widget* W, void* Data);
+    static void cb_clear_selection(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_clear_selection(W, Data);
+    }
+    void on_rename_group(fltk::Widget* W, void* Data);
+    static void cb_rename_group(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_rename_group(W, Data);
+    }
+    void on_ungroup(fltk::Widget* W, void* Data);
+    static void cb_ungroup(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_ungroup(W, Data);
+    }
+    void on_block_info(fltk::Widget* W, void* Data);
+    static void cb_block_info(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_block_info(W, Data);
+    }
+    void on_rename_block(fltk::Widget* W, void* Data);
+    static void cb_rename_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_rename_block(W, Data);
+    }
+    void on_delete_block(fltk::Widget* W, void* Data);
+    static void cb_delete_block(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_delete_block(W, Data);
+    }
 
-	// callbacks
-	void on_select_block (fltk::Widget* W, void* Data);
-	static void cb_select_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_select_block (W, Data); }
-	void on_deselect_block (fltk::Widget* W, void* Data);
-	static void cb_deselect_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_deselect_block (W, Data); }
-	void on_roll_block (fltk::Widget* W, void* Data);
-	static void cb_roll_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_roll_block (W, Data); }
-	void on_unroll_block (fltk::Widget* W, void* Data);
-	static void cb_unroll_block (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_unroll_block (W, Data); }
-	void on_group_selection (fltk::Widget* W, void* Data);
-	static void cb_group_selection(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_group_selection (W, Data); }
-	void on_clear_selection (fltk::Widget* W, void* Data);
-	static void cb_clear_selection(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_clear_selection (W, Data); }
-	void on_rename_group (fltk::Widget* W, void* Data);
-	static void cb_rename_group(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_rename_group (W, Data); }
-	void on_ungroup (fltk::Widget* W, void* Data);
-	static void cb_ungroup(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_ungroup (W, Data); }
-	void on_block_info (fltk::Widget* W, void* Data);
-	static void cb_block_info(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_block_info (W, Data); }
-	void on_rename_block (fltk::Widget* W, void* Data);
-	static void cb_rename_block(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_rename_block (W, Data); }
-	void on_delete_block (fltk::Widget* W, void* Data);
-	static void cb_delete_block(fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_delete_block (W, Data); }
-
-	void on_add_input (fltk::Widget* W, void* Data);
-	static void cb_add_input (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_add_input (W, Data); }
-	void on_add_output (fltk::Widget* W, void* Data);
-	static void cb_add_output (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_add_output (W, Data); }
-	void on_edit_code (fltk::Widget* W, void* Data);
-	static void cb_edit_code (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_edit_code (W, Data); }
-	void on_edit_pad (fltk::Widget* W, void* Data);
-	static void cb_edit_pad (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_edit_pad (W, Data); }
-	void on_edit_RIB (fltk::Widget* W, void* Data);
-	static void cb_edit_RIB (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_edit_RIB (W, Data); }
-	void on_disconnect_pad (fltk::Widget* W, void* Data);
-	static void cb_disconnect_pad (fltk::Widget* W, void* Data) { ((scene_view*)Data)->on_disconnect_pad (W, Data); }
+    void on_add_input(fltk::Widget* W, void* Data);
+    static void cb_add_input(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_add_input(W, Data);
+    }
+    void on_add_output(fltk::Widget* W, void* Data);
+    static void cb_add_output(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_add_output(W, Data);
+    }
+    void on_edit_code(fltk::Widget* W, void* Data);
+    static void cb_edit_code(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_edit_code(W, Data);
+    }
+    void on_edit_pad(fltk::Widget* W, void* Data);
+    static void cb_edit_pad(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_edit_pad(W, Data);
+    }
+    void on_edit_RIB(fltk::Widget* W, void* Data);
+    static void cb_edit_RIB(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_edit_RIB(W, Data);
+    }
+    void on_disconnect_pad(fltk::Widget* W, void* Data);
+    static void cb_disconnect_pad(fltk::Widget* W, void* Data)
+    {
+        ((scene_view*) Data)->on_disconnect_pad(W, Data);
+    }
 };
 
-
 #endif // _ui_scene_view_h_
-

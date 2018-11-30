@@ -17,66 +17,68 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef scene_view_h
 #define scene_view_h
-
 
 #include "../opengl_view/opengl_view.h"
 #include "../services.h"
 
 #include <QGLWidget>
 
-
-class scene_view :
-        public QGLWidget,
-        public opengl_view
+class scene_view
+    : public QGLWidget,
+      public opengl_view
 {
-public:
+  public:
     Q_OBJECT
 
-    services* m_services;
+    services* m_services{};
 
-public:
-    scene_view (services* services_instance);
-    ~scene_view();
+  public:
+    explicit scene_view(services* services_instance);
+    ~scene_view() override;
 
-    QSize sizeHint() const;
+    QSize sizeHint() const override;
     void redraw();
 
     double fit_scene();
 
-protected:
-    void initializeGL();
-    void paintGL();
-    void resizeGL (int width, int height);
-    void drawGlText (const std::string Text, const double X, const double Y, const double Z, const double Size, const bool Bold);
+  protected:
+    void initializeGL() override;
+    void paintGL() override;
+    void resizeGL(int width, int height) override;
 
-    void mousePressEvent (QMouseEvent *);
-    void mouseMoveEvent (QMouseEvent *);
-    void mouseReleaseEvent (QMouseEvent *);
-    void wheelEvent (QWheelEvent *);
+    void drawGlText(
+        const std::string Text,
+        const double X,
+        const double Y,
+        const double Z,
+        const double Size,
+        const bool Bold) override;
 
-    void updateSceneZoom(const double);
+    void mousePressEvent(QMouseEvent*) override;
+    void mouseMoveEvent(QMouseEvent*) override;
+    void mouseReleaseEvent(QMouseEvent*) override;
+    void wheelEvent(QWheelEvent*) override;
+
+    void updateSceneZoom(const double) override;
 
     // callbacks
-    void shader_property_right_click (shrimp::io_t& Property);
-    void shader_block_right_click (std::string& Block);
-    void block_group_right_click (int Group);
-    void empty_right_click();
+    void shader_property_right_click(shrimp::io_t& Property) override;
+    void shader_block_right_click(std::string& Block) override;
+    void block_group_right_click(int Group) override;
+    void empty_right_click() override;
 
-signals:
-    void setSceneZoom (const double);
-    void shaderBlockRightClick (const std::string blockName);
-    void shaderPropertyRightClick (const shrimp::io_t property);
-    void blockGroupRightClick (const int group);
+  signals:
+    void setSceneZoom(const double);
+    void shaderBlockRightClick(const std::string blockName);
+    void shaderPropertyRightClick(const shrimp::io_t property);
+    void blockGroupRightClick(const int group);
     void emptyRightClick();
 
-private:
+  private:
     QSize currentSize;
     QFont currentFont;
 };
 
-
 #endif // scene_view_h
-

@@ -18,51 +18,48 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "ui_about.h"
 
 #include <fltk/DoubleBufferWindow.h>
+#include <fltk/Monitor.h>
 #include <fltk/ReturnButton.h>
 #include <fltk/SharedImage.h>
-#include <fltk/Monitor.h>
 
+fltk::DoubleBufferWindow* about_panel = (fltk::DoubleBufferWindow*) 0;
 
-fltk::DoubleBufferWindow* about_panel = (fltk::DoubleBufferWindow*)0;
-
-static void cb_about_ok(fltk::ReturnButton*, void*) {
-
-	about_panel->hide();
-	delete about_panel;
+static void cb_about_ok(fltk::ReturnButton*, void*)
+{
+    about_panel->hide();
+    delete about_panel;
 }
 
-fltk::Window* about_window() {
+fltk::Window* about_window()
+{
+    fltk::DoubleBufferWindow* o = about_panel =
+        new fltk::DoubleBufferWindow(550, 400, "About Shrimp");
+    o->type(241);
+    o->color((fltk::Color) 97);
+    o->selection_color((fltk::Color) 47);
+    o->begin();
+    fltk::Group* g = new fltk::Group(0, 0, 550, 400);
+    g->image(fltk::jpegImage::get("data/about.jpg"));
+    g->begin();
+    fltk::ReturnButton* about_ok = new fltk::ReturnButton(483, 364, 50, 16, "OK");
+    about_ok->buttoncolor((fltk::Color) 0x4c519000);
+    about_ok->labelcolor((fltk::Color) 0xffffff00);
+    about_ok->highlight_color((fltk::Color) 0x6a4fe800);
+    about_ok->shortcut(0xff0d);
+    about_ok->callback((fltk::Callback*) cb_about_ok);
+    g->end();
+    g->resizable(o);
+    o->end();
+    o->set_non_modal();
+    o->clear_border();
+    o->resizable(o);
 
-	fltk::DoubleBufferWindow* o = about_panel = new fltk::DoubleBufferWindow(550, 400, "About Shrimp");
-	o->type(241);
-	o->color((fltk::Color)97);
-	o->selection_color((fltk::Color)47);
-	o->begin();
-		fltk::Group* g = new fltk::Group(0, 0, 550, 400);
-		g->image(fltk::jpegImage::get("data/about.jpg"));
-		g->begin();
-			fltk::ReturnButton* about_ok = new fltk::ReturnButton(483, 364, 50, 16, "OK");
-			about_ok->buttoncolor((fltk::Color)0x4c519000);
-			about_ok->labelcolor((fltk::Color)0xffffff00);
-			about_ok->highlight_color((fltk::Color)0x6a4fe800);
-			about_ok->shortcut(0xff0d);
-			about_ok->callback((fltk::Callback*)cb_about_ok);
-		g->end();
-		g->resizable(o);
-	o->end();
-	o->set_non_modal();
-	o->clear_border();
-	o->resizable(o);
+    o->border(true);
+    o->Rectangle::set(fltk::Monitor::find(0, 0), o->w(), o->h(), fltk::ALIGN_CENTER);
+    o->show();
 
-	o->border(true);
-	o->Rectangle::set(fltk::Monitor::find(0,0),o->w(),o->h(),fltk::ALIGN_CENTER);
-	o->show();
-
-	return about_panel;
+    return about_panel;
 }
-
-

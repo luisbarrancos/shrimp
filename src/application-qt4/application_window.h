@@ -18,27 +18,26 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <QMainWindow>
 #include "src/application-qt4/scene_view.h"
 #include "src/services.h"
 #include "src/shading/preferences.h"
+#include <QMainWindow>
 
-namespace Ui {
-    class application_window;
+namespace Ui
+{
+class application_window;
 }
-
 
 // context menu pop tree structure
 struct block_tree_node_t;
-typedef std::vector<block_tree_node_t> block_tree_node_list_t;
+using block_tree_node_list_t = std::vector<block_tree_node_t>;
 
 struct menuBlock
 {
-    QAction* action;
+    QAction* action{};
     default_block_t block;
 };
 
@@ -48,16 +47,15 @@ struct menuNode
     std::vector<menuBlock> actionList;
 };
 
-
 class application_window : public QMainWindow
 {
     Q_OBJECT
 
-public:
-    explicit application_window(QWidget *parent = 0);
-    ~application_window();
+  public:
+    explicit application_window(QWidget* parent = nullptr);
+    ~application_window() override;
 
-public slots:
+  public slots:
     // File menu
     void newScene();
     void openSceneFile();
@@ -90,9 +88,9 @@ public slots:
     void changeZoom(int zoom);
     void fitScene();
     void updateSceneZoom(const double);
-    void blockPopupMenu(QString);
+    void blockPopupMenu(const QString&);
 
-    void blockRightClick (const std::string& blockName);
+    void blockRightClick(const std::string& blockName);
     void selectActiveBlock();
     void deselectActiveBlock();
     void groupSelection();
@@ -106,20 +104,20 @@ public slots:
     void deleteActiveBlock();
     void editRibBlock();
 
-    void propertyRightClick (const shrimp::io_t& property);
+    void propertyRightClick(const shrimp::io_t& property);
     void editProperty();
     void disconnectProperty();
 
-    void groupRightClick (const int group);
+    void groupRightClick(const int group);
 
     void emptyRightClick();
 
-protected:
+  protected:
     //void contextMenuEvent(QContextMenuEvent *event);
-    void buildContextMenuFromBlock(QMenu&, const std::string);
+    void buildContextMenuFromBlock(QMenu&, const std::string&);
 
-private:
-    Ui::application_window *ui;
+  private:
+    Ui::application_window* ui;
     scene_view* ui_scene_view;
     i_system_functions* systemFunctions;
     services* shrimp_services;
@@ -135,7 +133,7 @@ private:
 
     shader_block* activeBlock;
     shrimp::io_t activeProperty;
-    int activeGroup;
+    int activeGroup{};
 
     void setupRendererCombo(const std::string&);
     void setupDisplayCombo(const std::string&);

@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "system_functions.h"
 
 #include "../miscellaneous/logging.h"
@@ -31,131 +30,127 @@
 
 #if defined _WIN32
 #else
-# include <sys/stat.h>
+#include <sys/stat.h>
 #endif
-
 
 std::string system_functions::get_user_directory()
 {
-	log() << aspect << "system_functions::get_user_directory()" << std::endl;
+    log() << aspect << "system_functions::get_user_directory()" << std::endl;
 
-	// get user's home
-	char home[1024];
-	fltk::filename_absolute (home, 1024, "~");
+    // get user's home
+    char home[1024];
+    fltk::filename_absolute(home, 1024, "~");
 
-	// check for .shrimp directory, create it if not there
-	std::string shrimp = std::string (home) + ".shrimp";
-	if (!fltk::filename_isdir (shrimp.c_str()))
-	{
+    // check for .shrimp directory, create it if not there
+    std::string shrimp = std::string(home) + ".shrimp";
+    if (!fltk::filename_isdir(shrimp.c_str()))
+    {
 #if defined _WIN32
-		mkdir (shrimp.c_str());
+        mkdir(shrimp.c_str());
 #else
-		mkdir(shrimp.c_str(), 0777);
+        mkdir(shrimp.c_str(), 0777);
 #endif
-	}
+    }
 
-	return shrimp;
+    return shrimp;
 }
-
 
 std::string system_functions::get_temp_directory()
 {
-	// get .shrimp directory
-	std::string shrimp = get_user_directory();
+    // get .shrimp directory
+    std::string shrimp = get_user_directory();
 
-	// check for temp directory
-	std::string temp = shrimp + "/temp";
-	if (!fltk::filename_isdir(temp.c_str()))
-	{
+    // check for temp directory
+    std::string temp = shrimp + "/temp";
+    if (!fltk::filename_isdir(temp.c_str()))
+    {
 #if defined _WIN32
-		mkdir(temp.c_str());
+        mkdir(temp.c_str());
 #else
-		mkdir(temp.c_str(), 0777);
+        mkdir(temp.c_str(), 0777);
 #endif
-	}
+    }
 
-	return temp;
+    return temp;
 }
 
-
-std::string system_functions::get_absolute_path (const std::string& Path)
+std::string system_functions::get_absolute_path(const std::string& Path)
 {
-	// get user's home
-	char home[1024];
-	fltk::filename_absolute (home, 1024, Path.c_str());
+    // get user's home
+    char home[1024];
+    fltk::filename_absolute(home, 1024, Path.c_str());
 
-	return std::string (home);
+    return std::string(home);
 }
 
-
-std::vector<std::string> system_functions::list_directory (const std::string& directory)
+std::vector<std::string> system_functions::list_directory(const std::string& directory)
 {
-	std::vector<std::string> list;
+    std::vector<std::string> list;
 
-	// read directory content
-	dirent** directory_items;
-	const int file_count = fltk::filename_list (directory.c_str(), &directory_items);
-	if (file_count < 0)
-	{
-		log() << error << "Couldn't list the content of directory '" << directory << "'" << std::endl;
-	}
-	else
-	{
-		for (int f = 0; f < file_count; ++f)
-		{
-			std::string file = std::string (directory_items[f]->d_name);
-			list.push_back (file);
+    // read directory content
+    dirent** directory_items;
+    const int file_count = fltk::filename_list(directory.c_str(), &directory_items);
+    if (file_count < 0)
+    {
+        log() << error << "Couldn't list the content of directory '" << directory << "'"
+              << std::endl;
+    }
+    else
+    {
+        for (int f = 0; f < file_count; ++f)
+        {
+            std::string file = std::string(directory_items[f]->d_name);
+            list.push_back(file);
 
-			free (directory_items[f]);
-		}
-	}
+            free(directory_items[f]);
+        }
+    }
 
-	free (directory_items);
+    free(directory_items);
 
-	return list;
+    return list;
 }
 
-
-bool system_functions::is_directory (const std::string& path)
+bool system_functions::is_directory(const std::string& path)
 {
-	return fltk::filename_isdir (path.c_str());
+    return fltk::filename_isdir(path.c_str());
 }
 
-
-std::string system_functions::combine_paths (const std::string& path1, const std::string& path2)
+std::string system_functions::combine_paths(
+    const std::string& path1,
+    const std::string& path2)
 {
-	return path1 + '/' + path2;
+    return path1 + '/' + path2;
 }
 
-
-std::string system_functions::get_file_extension (const std::string& file)
+std::string system_functions::get_file_extension(const std::string& file)
 {
-	return std::string (fltk::filename_ext (file.c_str()));
+    return std::string(fltk::filename_ext(file.c_str()));
 }
 
-
-void system_functions::save_file (const std::string& destination, const std::string& content)
+void system_functions::save_file(
+    const std::string& destination,
+    const std::string& content)
 {
-	std::ofstream file (destination.c_str());
-	if (file.is_open())
-	{
-		file << content;
-		file.close();
-	}
-	else
-	{
-		log() << error << "Couldn't save file '" << destination << "'" << std::endl;
-	}
+    std::ofstream file(destination.c_str());
+    if (file.is_open())
+    {
+        file << content;
+        file.close();
+    }
+    else
+    {
+        log() << error << "Couldn't save file '" << destination << "'" << std::endl;
+    }
 }
 
-
-bool system_functions::execute_command (const std::string& Command)
+bool system_functions::execute_command(const std::string& Command)
 {
-	int status = system (Command.c_str());
+    int status = system(Command.c_str());
 
-	return status > 0;
+    return status > 0;
 
-/*
+    /*
 	int pid = fork();
 	if(pid == -1)
 	{
@@ -184,5 +179,3 @@ bool system_functions::execute_command (const std::string& Command)
 	}
 */
 }
-
-

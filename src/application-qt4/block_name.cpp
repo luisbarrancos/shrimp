@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "block_name.h"
 #include "ui_block_name.h"
 
@@ -26,36 +25,33 @@
 
 #include <QMessageBox>
 
-block_name::block_name(QWidget* parent, services* shrimpServicesInstance, shader_block* block) :
-    QDialog (parent),
-    ui (new Ui::blockNameDialog),
-    shrimpServices (shrimpServicesInstance),
-    editedBlock (block)
+block_name::block_name(
+    QWidget* parent,
+    services* shrimpServicesInstance,
+    shader_block* block)
+    : QDialog(parent)
+    , ui(new Ui::blockNameDialog)
+    , shrimpServices(shrimpServicesInstance)
+    , editedBlock(block)
 {
     ui->setupUi(this);
 
     log() << aspect << "Block Name dialog" << std::endl;
 
     // set values
-    ui->blockNameLineEdit->setText (QString::fromStdString (block->name()));
+    ui->blockNameLineEdit->setText(QString::fromStdString(block->name()));
 
     // connect events
     QObject::connect(ui->cancelButton, SIGNAL(clicked()), this, SLOT(cancelButton()));
     QObject::connect(ui->okButton, SIGNAL(clicked()), this, SLOT(okButton()));
 }
 
-
-block_name::~block_name()
-{
-
-}
-
+block_name::~block_name() = default;
 
 void block_name::cancelButton()
 {
     close();
 }
-
 
 void block_name::okButton()
 {
@@ -69,10 +65,10 @@ void block_name::okButton()
     else if (newName.isEmpty())
     {
         // can't rename to an empty string
-        QMessageBox msgBox (this);
-        msgBox.setInformativeText (QString::fromStdString ("New name cannot be empty!"));
-        msgBox.setStandardButtons (QMessageBox::Ok);
-        msgBox.setDefaultButton (QMessageBox::Ok);
+        QMessageBox msgBox(this);
+        msgBox.setInformativeText(QString::fromStdString("New name cannot be empty!"));
+        msgBox.setStandardButtons(QMessageBox::Ok);
+        msgBox.setDefaultButton(QMessageBox::Ok);
         msgBox.exec();
 
         // try again
@@ -81,26 +77,27 @@ void block_name::okButton()
     else
     {
         // check whether the name already exists
-        const std::string uniqueName = shrimpServices->get_unique_block_name (newName.toStdString());
+        const std::string uniqueName =
+            shrimpServices->get_unique_block_name(newName.toStdString());
         if (uniqueName == newName.toStdString())
         {
             // new name is unique, save it
-            shrimpServices->set_block_name (editedBlock, newName.toStdString());
+            shrimpServices->set_block_name(editedBlock, newName.toStdString());
         }
         else
         {
-            QMessageBox msgBox (this);
-            msgBox.setInformativeText (QString::fromStdString ("This name already exists."));
-            msgBox.setStandardButtons (QMessageBox::Ok);
-            msgBox.setDefaultButton (QMessageBox::Ok);
+            QMessageBox msgBox(this);
+            msgBox.setInformativeText(
+                QString::fromStdString("This name already exists."));
+            msgBox.setStandardButtons(QMessageBox::Ok);
+            msgBox.setDefaultButton(QMessageBox::Ok);
             msgBox.exec();
 
             // suggest new name
-            ui->blockNameLineEdit->setText (QString::fromStdString (uniqueName));
+            ui->blockNameLineEdit->setText(QString::fromStdString(uniqueName));
             return;
         }
     }
 
     close();
 }
-

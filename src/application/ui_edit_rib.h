@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_edit_rib_h_
 #define _ui_edit_rib_h_
 
@@ -38,95 +37,98 @@
 
 namespace edit_rib
 {
-
 static fltk::TextEditor* s_code;
 static fltk::Input* s_imager;
 static fltk::LightButton* s_AOV;
 
-class dialog {
+class dialog
+{
+  private:
+    fltk::Window* w;
+    rib_root_block* m_block;
 
-private:
-	fltk::Window* w;
-	rib_root_block* m_block;
+  public:
+    dialog()
+    {
+        // build dialog window
+        w = new fltk::Window(600, 500, "Edit RIB");
+        w->begin();
 
-public:
-	dialog() {
+        s_code = new fltk::TextEditor(90, 10, 500, 350, "Declarations");
+        w->add(s_code);
+        s_code->tooltip("RIB statements to include before the frame");
+        s_code->wrap_mode(true);
+        w->resizable(s_code);
 
-		// build dialog window
-		w = new fltk::Window (600, 500, "Edit RIB");
-		w->begin();
+        s_imager = new fltk::Input(90, 362, 500, 23, "Imager");
+        w->add(s_imager);
+        s_imager->tooltip("Imager definition");
 
-			s_code = new fltk::TextEditor (90,10, 500,350, "Declarations");
-			w->add (s_code);
-			s_code->tooltip ("RIB statements to include before the frame");
-			s_code->wrap_mode (true);
-			w->resizable (s_code);
+        s_AOV = new fltk::LightButton(70, 400, 90, 23, "AOV");
+        w->add(s_AOV);
+        s_AOV->tooltip("Enable or disable AOV output preview");
 
-			s_imager = new fltk::Input (90,362, 500,23, "Imager");
-			w->add (s_imager);
-			s_imager->tooltip ("Imager definition");
+        fltk::ReturnButton* rb = new fltk::ReturnButton(400, 470, 70, 25, "OK");
+        rb->label("Ok");
+        rb->callback(cb_ok, (void*) this);
 
-			s_AOV = new fltk::LightButton (70,400, 90,23, "AOV");
-			w->add (s_AOV);
-			s_AOV->tooltip ("Enable or disable AOV output preview");
+        fltk::Button* cb = new fltk::Button(500, 470, 70, 25, "Cancel");
+        cb->label("Cancel");
+        cb->callback(cb_cancel, (void*) this);
 
+        w->end();
+    }
 
-			fltk::ReturnButton* rb = new fltk::ReturnButton (400, 470, 70, 25, "OK");
-			rb->label ("Ok");
-			rb->callback (cb_ok, (void*)this);
+    ~dialog()
+    {
+        delete w;
+    }
 
-			fltk::Button* cb = new fltk::Button (500, 470, 70, 25, "Cancel");
-			cb->label ("Cancel");
-			cb->callback (cb_cancel, (void*)this);
+    void open_dialog(rib_root_block* Block)
+    {
+        // save processed block
+        m_block = Block;
 
-		w->end();
-	}
+        s_code->text(m_block->get_general_statements().c_str());
+        s_imager->text(m_block->get_imager_statement().c_str());
+        s_AOV->value(m_block->get_AOV());
 
-	~dialog() {
+        // show...
+        w->exec();
+    }
 
-		delete w;
-	}
+    void on_ok(fltk::Widget* W)
+    {
+        // get user's content and save it
+        const std::string general_statements = s_code->text();
+        m_block->set_general_statements(general_statements);
 
-	void open_dialog (rib_root_block* Block) {
+        const std::string imager_statement = s_imager->text();
+        m_block->set_imager_statement(imager_statement);
 
-		// save processed block
-		m_block = Block;
+        const bool AOV_preview = s_AOV->value();
+        m_block->set_AOV(AOV_preview);
 
-		s_code->text (m_block->get_general_statements().c_str());
-		s_imager->text (m_block->get_imager_statement().c_str());
-		s_AOV->value (m_block->get_AOV());
+        // close the dialog
+        W->window()->make_exec_return(false);
+    }
 
-		// show...
-		w->exec();
-	}
+    void on_cancel(fltk::Widget* W)
+    {
+        // close the dialog
+        W->window()->make_exec_return(false);
+    }
 
-	void on_ok (fltk::Widget* W) {
-
-		// get user's content and save it
-		const std::string general_statements = s_code->text();
-		m_block->set_general_statements (general_statements);
-
-		const std::string imager_statement = s_imager->text();
-		m_block->set_imager_statement (imager_statement);
-
-		const bool AOV_preview = s_AOV->value();
-		m_block->set_AOV (AOV_preview);
-
-		// close the dialog
-		W->window()->make_exec_return (false);
-	}
-
-	void on_cancel (fltk::Widget* W) {
-
-		// close the dialog
-		W->window()->make_exec_return (false);
-	}
-
-	static void cb_ok (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
-	static void cb_cancel (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
+    static void cb_ok(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_ok(W);
+    }
+    static void cb_cancel(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_cancel(W);
+    }
 };
 
-}
+} // namespace edit_rib
 
 #endif // _ui_edit_rib_h_
-

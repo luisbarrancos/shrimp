@@ -18,12 +18,11 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_edit_code_h_
 #define _ui_edit_code_h_
 
-#include "../miscellaneous/misc_xml.h"
 #include "../miscellaneous/misc_string_functions.h"
+#include "../miscellaneous/misc_xml.h"
 
 #include <fltk/Choice.h>
 #include <fltk/Input.h>
@@ -37,109 +36,118 @@
 
 namespace edit_code
 {
-
 static fltk::TextDisplay* s_info;
 static fltk::TextEditor* s_code;
 
-class dialog {
+class dialog
+{
+  private:
+    fltk::Window* w;
+    shader_block* m_block;
 
-private:
-	fltk::Window* w;
-	shader_block* m_block;
+  public:
+    dialog()
+    {
+        // build dialog window
+        w = new fltk::Window(600, 500, "Edit code");
+        w->begin();
 
-public:
-	dialog() {
+        s_info = new fltk::TextDisplay(70, 10, 520, 100, "Block Info");
+        w->add(s_info);
+        s_info->wrap_mode(true);
+        s_info->tooltip("Informations about the block to write the shader code");
 
-		// build dialog window
-		w = new fltk::Window(600, 500, "Edit code");
-		w->begin();
+        s_code = new fltk::TextEditor(70, 112, 520, 350, "Code");
+        w->add(s_code);
+        s_code->tooltip("Shader code");
+        s_code->wrap_mode(true);
+        w->resizable(s_code);
 
-			s_info = new fltk::TextDisplay (70,10, 520,100, "Block Info");
-			w->add (s_info);
-			s_info->wrap_mode (true);
-			s_info->tooltip ("Informations about the block to write the shader code");
+        fltk::ReturnButton* rb = new fltk::ReturnButton(400, 470, 70, 25, "OK");
+        rb->label("Ok");
+        rb->callback(cb_ok, (void*) this);
 
-			s_code = new fltk::TextEditor (70,112, 520,350, "Code");
-			w->add (s_code);
-			s_code->tooltip ("Shader code");
-			s_code->wrap_mode (true);
-			w->resizable (s_code);
+        fltk::Button* cb = new fltk::Button(500, 470, 70, 25, "Cancel");
+        cb->label("Cancel");
+        cb->callback(cb_cancel, (void*) this);
 
+        w->end();
+    }
 
-			fltk::ReturnButton* rb = new fltk::ReturnButton (400, 470, 70, 25, "OK");
-			rb->label ("Ok");
-			rb->callback (cb_ok, (void*)this);
+    ~dialog()
+    {
+        delete w;
+    }
 
-			fltk::Button* cb = new fltk::Button (500, 470, 70, 25, "Cancel");
-			cb->label ("Cancel");
-			cb->callback (cb_cancel, (void*)this);
+    void open_dialog(shader_block* Block)
+    {
+        // save processed block
+        m_block = Block;
 
-		w->end();
-	}
+        // get block content
+        std::string info("");
+        std::string inputs("");
+        std::string outputs("");
 
-	~dialog()
-	{
-		delete w;
-	}
+        for (shader_block::properties_t::const_iterator input = m_block->m_inputs.begin();
+             input != m_block->m_inputs.end();
+             ++input)
+        {
+            if (!inputs.empty())
+            {
+                inputs += ", ";
+            }
 
-	void open_dialog (shader_block* Block)
-	{
-		// save processed block
-		m_block = Block;
+            inputs += input->m_name;
+        }
+        for (shader_block::properties_t::const_iterator output =
+                 m_block->m_outputs.begin();
+             output != m_block->m_outputs.end();
+             ++output)
+        {
+            if (!outputs.empty())
+            {
+                outputs += ", ";
+            }
 
-		// get block content
-		std::string info ("");
-		std::string inputs ("");
-		std::string outputs ("");
+            outputs += output->m_name;
+        }
 
-		for (shader_block::properties_t::const_iterator input = m_block->m_inputs.begin(); input != m_block->m_inputs.end(); ++input) {
+        info = "inputs: " + inputs + "\n" + "outputs: " + outputs;
 
-			if (!inputs.empty()) {
-				inputs += ", ";
-			}
+        s_info->text(info.c_str());
+        s_code->text(m_block->get_code().c_str());
 
-			inputs += input->m_name;
-		}
-		for (shader_block::properties_t::const_iterator output = m_block->m_outputs.begin(); output != m_block->m_outputs.end(); ++output) {
+        // show...
+        w->exec();
+    }
 
-			if (!outputs.empty()) {
-				outputs += ", ";
-			}
+    void on_ok(fltk::Widget* W)
+    {
+        // get user's content and save it
+        const std::string code = s_code->text();
+        m_block->set_code(code);
 
-			outputs += output->m_name;
-		}
+        // close the dialog
+        W->window()->make_exec_return(false);
+    }
 
-		info = "inputs: " + inputs + "\n"
-			+ "outputs: " + outputs;
+    void on_cancel(fltk::Widget* W)
+    {
+        // close the dialog
+        W->window()->make_exec_return(false);
+    }
 
-		s_info->text (info.c_str());
-		s_code->text (m_block->get_code().c_str());
-
-		// show...
-		w->exec();
-	}
-
-	void on_ok (fltk::Widget* W) {
-
-		// get user's content and save it
-		const std::string code = s_code->text();
-		m_block->set_code (code);
-
-		// close the dialog
-		W->window()->make_exec_return (false);
-	}
-
-	void on_cancel (fltk::Widget* W) {
-
-		// close the dialog
-		W->window()->make_exec_return (false);
-	}
-
-	static void cb_ok (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
-	static void cb_cancel (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
+    static void cb_ok(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_ok(W);
+    }
+    static void cb_cancel(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_cancel(W);
+    }
 };
 
-}
+} // namespace edit_code
 
 #endif // _ui_edit_code_h_
-

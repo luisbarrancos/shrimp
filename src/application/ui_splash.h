@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_splash_panel_h_
 #define _ui_splash_panel_h_
 
@@ -28,4 +27,3 @@
 fltk::Window* splash_screen();
 
 #endif // _ui_splash_panel_h_
-

@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef BLOCK_INFO_H
 #define BLOCK_INFO_H
 
@@ -26,25 +25,28 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class blockInfoDialog;
+namespace Ui
+{
+class blockInfoDialog;
 }
 
-
-class block_info: public QDialog
+class block_info : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit block_info (QWidget *parent, services* shrimpServicesInstance, shader_block* block);
-    ~block_info();
+  public:
+    explicit block_info(
+        QWidget* parent,
+        services* shrimpServicesInstance,
+        shader_block* block);
+    ~block_info() override;
 
-public slots:
+  public slots:
     void cancelButton();
     void okButton();
 
-private:
-    Ui::blockInfoDialog *ui;
+  private:
+    Ui::blockInfoDialog* ui;
     services* shrimpServices;
 
     shader_block* editedBlock;

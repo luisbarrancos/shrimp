@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_edit_block_name_h_
 #define _ui_edit_block_name_h_
 
@@ -34,109 +33,117 @@
 
 namespace edit_block_name
 {
-
 static fltk::Input* s_name;
 
-class dialog {
+class dialog
+{
+  private:
+    fltk::Window* w;
+    services* m_services;
+    std::string m_edited_block;
 
-private:
-	fltk::Window* w;
-	services* m_services;
-	std::string m_edited_block;
+  public:
+    dialog(services* Services)
+        : m_services(Services)
+    {
+        // build dialog window
+        w = new fltk::Window(400, 80, "Block name");
+        w->begin();
 
-public:
-	dialog(services* Services) :
-		m_services(Services) {
+        s_name = new fltk::Input(70, 10, 300, 23, "Name");
+        w->add(s_name);
+        s_name->tooltip("Edit block name");
 
-		// build dialog window
-		w = new fltk::Window(400, 80, "Block name");
-		w->begin();
+        fltk::ReturnButton* rb = new fltk::ReturnButton(150, 40, 75, 25, "OK");
+        rb->label("Ok");
+        rb->callback(cb_ok, (void*) this);
 
-			s_name = new fltk::Input(70,10, 300,23, "Name");
-			w->add(s_name);
-			s_name->tooltip("Edit block name");
+        fltk::Button* cb = new fltk::Button(250, 40, 70, 25, "Cancel");
+        cb->label("Cancel");
+        cb->callback(cb_cancel, (void*) this);
 
+        w->end();
+    }
 
-			fltk::ReturnButton* rb = new fltk::ReturnButton(150, 40, 75, 25, "OK");
-			rb->label("Ok");
-			rb->callback(cb_ok, (void*)this);
+    ~dialog()
+    {
+        delete w;
+    }
 
-			fltk::Button* cb = new fltk::Button(250, 40, 70, 25, "Cancel");
-			cb->label("Cancel");
-			cb->callback(cb_cancel, (void*)this);
+    void edit_name(const std::string& Name)
+    {
+        // set values
+        s_name->text(Name.c_str());
 
-		w->end();
-	}
+        // save block name for later use
+        m_edited_block = Name;
 
-	~dialog() {
+        // show it
+        w->exec();
+    }
 
-		delete w;
-	}
+    void on_ok(fltk::Widget* W)
+    {
+        const std::string new_name = s_name->value();
 
-	void edit_name (const std::string& Name) {
+        // save action to do
+        bool quit = false;
 
-		// set values
-		s_name->text (Name.c_str());
+        if (new_name == m_edited_block)
+        {
+            // the name didn't change
+            quit = true;
+        }
+        else if (new_name.empty())
+        {
+            // can't rename to an empty string
+            quit = false;
+            fltk::alert("New name is empty!");
+        }
+        else
+        {
+            // check whether the name already exists
+            const std::string unique_name = m_services->get_unique_block_name(new_name);
+            if (unique_name == new_name)
+            {
+                // the new name is unique
+                quit = true;
 
-		// save block name for later use
-		m_edited_block = Name;
+                shader_block* block = m_services->get_block(m_edited_block);
+                if (block)
+                {
+                    m_services->set_block_name(block, new_name);
+                }
+            }
+            else
+            {
+                const std::string message =
+                    "This name already exists, suggested name: " + unique_name;
+                fltk::alert(message.c_str());
+            }
+        }
 
-		// show it
-		w->exec();
-	}
+        if (quit)
+        {
+            W->window()->make_exec_return(false);
+        }
+    }
 
-	void on_ok(fltk::Widget* W) {
+    void on_cancel(fltk::Widget* W)
+    {
+        W->window()->make_exec_return(false);
+    }
 
-		const std::string new_name = s_name->value();
-
-		// save action to do
-		bool quit = false;
-
-		if (new_name == m_edited_block) {
-
-			// the name didn't change
-			quit = true;
-		} else if (new_name.empty()) {
-
-			// can't rename to an empty string
-			quit = false;
-			fltk::alert ("New name is empty!");
-		} else {
-
-			// check whether the name already exists
-			const std::string unique_name = m_services->get_unique_block_name (new_name);
-			if (unique_name == new_name) {
-
-				// the new name is unique
-				quit = true;
-
-				shader_block* block = m_services->get_block (m_edited_block);
-				if (block) {
-					m_services->set_block_name (block, new_name);
-				}
-			} else {
-
-				const std::string message = "This name already exists, suggested name: " + unique_name;
-				fltk::alert (message.c_str());
-			}
-		}
-
-		if (quit) {
-
-			W->window()->make_exec_return(false);
-		}
-	}
-
-	void on_cancel(fltk::Widget* W) {
-
-		W->window()->make_exec_return(false);
-	}
-
-	static void cb_ok(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
-	static void cb_cancel(fltk::Widget* W, void* Data) { ((dialog*)Data)->on_cancel(W); }
+    static void cb_ok(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_ok(W);
+    }
+    static void cb_cancel(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_cancel(W);
+    }
 };
 
-}
+} // namespace edit_block_name
 
 #endif // _ui_edit_block_name_h_
-

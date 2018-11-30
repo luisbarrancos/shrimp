@@ -5,16 +5,16 @@
 //#include "SharedImage.h"
 #include <fltk/SharedImage.h>
 
-namespace fltk {
-
-class FL_IMAGES_API tiffImage : public SharedImage {
-public:
-  tiffImage(const char* filename);
-  // virtual function overrides
-  bool fetch();
+namespace fltk
+{
+class FL_IMAGES_API tiffImage : public SharedImage
+{
+  public:
+    tiffImage(const char* filename);
+    // virtual function overrides
+    bool fetch();
 };
 
-}
+} // namespace fltk
 
 #endif
-

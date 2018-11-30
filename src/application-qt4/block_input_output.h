@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef BLOCK_INPUT_OUTPUT_H
 #define BLOCK_INPUT_OUTPUT_H
 
@@ -26,36 +25,48 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class blockInputOutputDialog;
+namespace Ui
+{
+class blockInputOutputDialog;
 }
 
-
-class block_input_output: public QDialog
+class block_input_output : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit block_input_output (QWidget *parent, services* shrimpServicesInstance, const std::string dialogType, shader_block* block, const std::string property = "");
-    ~block_input_output();
+  public:
+    explicit block_input_output(
+        QWidget* parent,
+        services* shrimpServicesInstance,
+        const std::string& dialogType,
+        shader_block* block,
+        const std::string& property = "");
+    ~block_input_output() override;
 
-public slots:
-    void typeChange(const QString typeName);
+  public slots:
+    void typeChange(const QString& typeName);
     void cancelButton();
     void okButton();
 
     void on_fileButton_clicked();
     void on_colorButton_clicked();
 
-private:
-    Ui::blockInputOutputDialog *ui;
+  private:
+    Ui::blockInputOutputDialog* ui;
     services* shrimpServices;
 
     const std::string ioDialogType;
     shader_block* editedBlock;
     const std::string editedProperty;
 
-    void setValues(const std::string name, const std::string storageTypeName, const std::string typeName, const std::string arrayTypeName, const int arraySize, const bool shaderParameterOutput, const std::string description);
+    void setValues(
+        const std::string& name,
+        const std::string& storageTypeName,
+        const std::string& typeName,
+        const std::string& arrayTypeName,
+        const int arraySize,
+        const bool shaderParameterOutput,
+        const std::string& description);
 };
 
 #endif // BLOCK_INPUT_OUTPUT_H

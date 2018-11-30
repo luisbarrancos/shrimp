@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _scene_h_
 #define _scene_h_
 
@@ -35,34 +34,34 @@
 #include <string>
 #include <vector>
 
-
 // the scene object (contains shaders)
 class scene
 {
     i_system_functions* m_system_functions;
     general_options& preferences;
 
-public:
-
+  public:
     //////////// DAG and block data structures
     shrimp::dag_t m_dag;
 
     //////////// Copy,paste data structures
     shrimp::dag_t m_dag_copy;
 
-
     //////////// Functions
 
-    scene(i_system_functions* SystemFunctions, general_options& prefs, const std::string block_path);
+    scene(
+        i_system_functions* SystemFunctions,
+        general_options& prefs,
+        const std::string& block_path);
     ~scene();
 
     // get and set name, description
     const std::string name() const;
-    void set_name (const std::string& Name);
+    void set_name(const std::string& Name);
     const std::string description() const;
-    void set_description (const std::string& Description);
+    void set_description(const std::string& Description);
     const std::string authors() const;
-    void set_authors (const std::string& Authors);
+    void set_authors(const std::string& Authors);
 
     // reset scene
     void empty_scene();
@@ -75,52 +74,55 @@ public:
     //////////// Blocks
 
     // add a block to the scene
-    void add_block (const std::string& BlockId, const std::string& BlockFile, shader_block* Block);
+    void add_block(
+        const std::string& BlockId,
+        const std::string& BlockFile,
+        shader_block* Block);
     // create a block from the predefined block list and add it to the scene
-    shader_block* add_predefined_block (const std::string& BlockName);
+    shader_block* add_predefined_block(const std::string& BlockName);
     // add a new (empty) block to the scene
-    shader_block* add_custom_block (const std::string& Name = "New block", const bool RootBlock = false);
+    shader_block* add_custom_block(
+        const std::string& Name = "New block",
+        const bool RootBlock    = false);
     // remove a block from the network and delete it
-    void delete_block (const std::string& BlockName);
-    void delete_group (const int Group);
+    void delete_block(const std::string& BlockName);
+    void delete_group(const int Group);
 
     // get a block's pointer from its name
-    shader_block* get_block (const std::string& Name);
+    shader_block* get_block(const std::string& Name);
     // find the root block
     shader_block* get_root_block();
     // make a block name unique in the scene
-    std::string get_unique_block_name (const std::string& Name) const;
+    std::string get_unique_block_name(const std::string& Name) const;
     // set a block's name, making sure it's unique
-    void set_block_name (shader_block* Block, const std::string& NewName);
+    void set_block_name(shader_block* Block, const std::string& NewName);
 
     // get all scene blocks
     shrimp::shader_blocks_t get_scene_blocks();
 
     // connect two blocks
-    void connect (const shrimp::io_t& Input, const shrimp::io_t& Output);
+    void connect(const shrimp::io_t& Input, const shrimp::io_t& Output);
     // disconnect an input or output from the network
-    void disconnect (const shrimp::io_t& IO);
+    void disconnect(const shrimp::io_t& IO);
     // tell whether an input is connected to an output
-    bool is_connected (const shrimp::io_t& Input);
+    bool is_connected(const shrimp::io_t& Input);
 
     // list of upward blocks in the DAG (parents + parents' parents + etc)
-    void upward_blocks (shader_block* StartingBlock, shrimp::shader_blocks_t& List);
-
+    void upward_blocks(shader_block* StartingBlock, shrimp::shader_blocks_t& List);
 
     //////////// Serialization
 
     // load and save a scene (a network of blocks with additional information, in an XML file)
-    bool load (const std::string& Scene);
-    void save_as (const std::string& ShaderFile);
+    bool load(const std::string& Scene);
+    void save_as(const std::string& ShaderFile);
 
     // return an XML representation of the shader
     xml::element xml_network();
 
-
     //////////// Rolled blocks
 
     // returns whether a block is rolled
-    bool is_rolled (const shader_block* Block) const;
+    bool is_rolled(const shader_block* Block) const;
 
     // returns the number of rolled blocks
     int rolled_block_count();
@@ -129,8 +131,7 @@ public:
     void unroll_all_blocks();
 
     // toggle block rolled / unrolled (normal)
-    void set_block_rolled_state (shader_block* Block, const bool Rolled);
-
+    void set_block_rolled_state(shader_block* Block, const bool Rolled);
 
     //////////// Grouping
 
@@ -138,35 +139,35 @@ public:
     shrimp::group_set_t group_list();
 
     // add a block to a group
-    void add_to_group (const std::string& Block, const int Group);
+    void add_to_group(const std::string& Block, const int Group);
 
     // returns the number of the group the block belongs to (0 == no group)
-    int get_block_group (const shader_block* Block);
+    int get_block_group(const shader_block* Block);
 
     // dismantles a group
-    void ungroup (const int Group);
+    void ungroup(const int Group);
 
-    void group_blocks (const shrimp::shader_blocks_t& Blocks);
-    shrimp::shader_blocks_t get_group_blocks (const int Group);
+    void group_blocks(const shrimp::shader_blocks_t& Blocks);
+    shrimp::shader_blocks_t get_group_blocks(const int Group);
 
     // group name functions
-    const std::string get_group_name (const int Group) const;
-    void set_group_name (const int Group, const std::string& Name);
+    const std::string get_group_name(const int Group) const;
+    void set_group_name(const int Group, const std::string& Name);
 
     std::string get_shader_code();
-    void show_preview (const std::string& TempDir);
+    void show_preview(const std::string& TempDir);
 
     // save current scene's RIB and shader files to a directory
-    void export_scene (const std::string& Directory);
-
+    void export_scene(const std::string& Directory);
 
     //////////// Misc
 
-    shader_block* get_parent (const std::string& BlockName, const std::string& Input, std::string& ParentOutput) const;
+    shader_block* get_parent(
+        const std::string& BlockName,
+        const std::string& Input,
+        std::string& ParentOutput) const;
 
-
-private:
-
+  private:
     //////////// Scene
 
     // scene name
@@ -176,7 +177,7 @@ private:
     // scene author(s)
     std::string m_authors;
 
-    rib_root_block* m_rib_root_block;
+    rib_root_block* m_rib_root_block{};
 
     // the list of blocks
     typedef std::map<std::string, shader_block*> shader_blocks_t;
@@ -190,16 +191,14 @@ private:
     //////////// List of available default blocks
     // the ones that come with the application and are loaded at launch
 
-    typedef std::map <std::string, default_block_t> default_blocks_t;
+    typedef std::map<std::string, default_block_t> default_blocks_t;
     default_blocks_t m_default_blocks;
 
     // load predefined Shrimp blocks
-    void load_default_blocks (block_tree_node_t& RootPath, unsigned long& BlockCount);
+    void load_default_blocks(block_tree_node_t& RootPath, unsigned long& BlockCount);
 
     // block hierarchy, contains the root block
     block_tree_node_t m_block_classification;
-
 };
 
 #endif // _scene_h_
-

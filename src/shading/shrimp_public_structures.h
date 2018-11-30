@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _shrimp_public_structures_h_
 #define _shrimp_public_structures_h_
 
@@ -29,22 +28,23 @@
 #include <string>
 #include <vector>
 
-
 namespace shrimp
 {
-    // definition of a pad, as a pair of strings:
-    // the first is the block name, the second is the pad name
-    typedef std::pair <std::string, std::string> io_t;
-    // store connections as a directed acyclic graph, Output -> Input,
-    // in a map as <input, output>, an input receives only one output
-    typedef std::map <io_t, io_t> dag_t;
+// definition of a pad, as a pair of strings:
+// the first is the block name, the second is the pad name
+typedef std::pair<std::string, std::string> io_t;
 
-    typedef std::set<shader_block*> shader_blocks_t;
-    // group structures
-    typedef std::set<int> group_set_t;
-    typedef std::map<std::string, int> groups_t;
-}
+// store connections as a directed acyclic graph, Output -> Input,
+// in a map as <input, output>, an input receives only one output
+typedef std::map<io_t, io_t> dag_t;
 
+using shader_blocks_t = std::set<shader_block*>;
+
+// group structures
+using group_set_t = std::set<int>;
+typedef std::map<std::string, int> groups_t;
+
+} // namespace shrimp
 
 // Shrimp block list
 struct default_block_t
@@ -52,12 +52,11 @@ struct default_block_t
     std::string name;
     std::string path;
 };
-typedef std::vector<default_block_t> default_block_list_t;
-
+using default_block_list_t = std::vector<default_block_t>;
 
 // Shrimp block hierarchy
 struct block_tree_node_t;
-typedef std::vector<block_tree_node_t> block_tree_node_list_t;
+using block_tree_node_list_t = std::vector<block_tree_node_t>;
 
 struct block_tree_node_t
 {
@@ -68,6 +67,4 @@ struct block_tree_node_t
     default_block_list_t blocks;
 };
 
-
 #endif // _shrimp_public_structures_h_
-

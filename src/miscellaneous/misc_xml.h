@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _misc_xml_h_
 #define _misc_xml_h_
 
@@ -27,11 +26,11 @@
 
 #include <map>
 #include <string>
+#include <utility>
 #include <vector>
 
 namespace xml
 {
-
 typedef std::map<std::string, std::string> attributes_t;
 void get_attributes(TiXmlElement& Element, attributes_t& Attributes);
 bool get_attribute(TiXmlElement& Element, const std::string& Name, std::string& Value);
@@ -39,7 +38,11 @@ bool get_attribute(TiXmlElement& Element, const std::string& Name, std::string& 
 // XML output
 struct attribute
 {
-    attribute(const std::string& Name, const std::string& Value) : name(Name), value(Value) {}
+    attribute(std::string Name, std::string Value)
+        : name(std::move(Name))
+        , value(std::move(Value))
+    {
+    }
 
     std::string name;
     std::string value;
@@ -47,37 +50,52 @@ struct attribute
 
 class element
 {
-public:
-    element(const std::string& Name) : name(Name) {}
+  public:
+    element(std::string Name)
+        : name(std::move(Name))
+    {
+    }
 
-    void set_text(const std::string& Value) { text = Value; }
+    void set_text(const std::string& Value)
+    {
+        text = Value;
+    }
 
-    void push_attribute(const std::string& Name, const std::string& Value) { attributes.push_back(attribute(Name, Value)); }
-    template<typename T>
-    void push_attribute(const std::string& Name, const T& Value) { push_attribute(Name, string_cast(Value)); }
+    void push_attribute(const std::string& Name, const std::string& Value)
+    {
+        attributes.emplace_back(Name, Value);
+    }
+    template <typename T>
+    void push_attribute(const std::string& Name, const T& Value)
+    {
+        push_attribute(Name, string_cast(Value));
+    }
 
-    void push_child(const element& Value) { children.push_back(Value); }
+    void push_child(const element& Value)
+    {
+        children.push_back(Value);
+    }
 
     std::string name;
     std::string text;
 
-    typedef std::vector<attribute> attributes_t;
+    using attributes_t = std::vector<attribute>;
     attributes_t attributes;
-    typedef std::vector<element> elements_t;
+    using elements_t = std::vector<element>;
     elements_t children;
 };
 
 class output_tree
 {
-public:
-    output_tree (element& Element, std::ostream& Stream) :
-        m_stream(Stream),
-        m_indentation(0)
+  public:
+    output_tree(element& Element, std::ostream& Stream)
+        : m_stream(Stream)
+        , m_indentation(0)
     {
         output(Element);
     }
 
-private:
+  private:
     std::ostream& m_stream;
     unsigned int m_indentation;
 
@@ -91,4 +109,3 @@ private:
 } // namespace xml
 
 #endif // _misc_xml_h_
-

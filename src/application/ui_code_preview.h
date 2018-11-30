@@ -18,12 +18,11 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _ui_code_preview_h_
 #define _ui_code_preview_h_
 
-#include "../miscellaneous/misc_xml.h"
 #include "../miscellaneous/misc_string_functions.h"
+#include "../miscellaneous/misc_xml.h"
 
 #include <fltk/ReturnButton.h>
 #include <fltk/TextDisplay.h>
@@ -33,56 +32,58 @@
 
 namespace code_preview
 {
-
 static fltk::TextDisplay* s_code;
 
-class dialog {
+class dialog
+{
+  private:
+    fltk::Window* w;
 
-private:
-	fltk::Window* w;
+  public:
+    dialog()
+    {
+        // build dialog window
+        w = new fltk::Window(600, 500, "Code preview");
+        w->begin();
 
-public:
-	dialog() {
+        s_code = new fltk::TextDisplay(50, 10, 540, 450, "Surface");
+        w->add(s_code);
+        s_code->tooltip("Shader code");
+        s_code->wrap_mode(true);
+        w->resizable(s_code);
 
-		// build dialog window
-		w = new fltk::Window (600, 500, "Code preview");
-		w->begin();
+        fltk::ReturnButton* rb = new fltk::ReturnButton(500, 470, 70, 25, "OK");
+        rb->label("Ok");
+        rb->callback(cb_ok, (void*) this);
 
-			s_code = new fltk::TextDisplay (50,10, 540,450, "Surface");
-			w->add (s_code);
-			s_code->tooltip ("Shader code");
-			s_code->wrap_mode (true);
-			w->resizable (s_code);
+        w->end();
+    }
 
-			fltk::ReturnButton* rb = new fltk::ReturnButton (500, 470, 70, 25, "OK");
-			rb->label ("Ok");
-			rb->callback (cb_ok, (void*)this);
+    ~dialog()
+    {
+        delete w;
+    }
 
-		w->end();
-	}
+    void open(const std::string& Code)
+    {
+        s_code->text(Code.c_str());
 
-	~dialog() {
-		delete w;
-	}
+        // show...
+        w->exec();
+    }
 
-	void open (const std::string& Code) {
+    void on_ok(fltk::Widget* W)
+    {
+        // close the dialog
+        W->window()->make_exec_return(false);
+    }
 
-		s_code->text (Code.c_str());
-
-		// show...
-		w->exec();
-	}
-
-	void on_ok(fltk::Widget* W) {
-
-		// close the dialog
-		W->window()->make_exec_return (false);
-	}
-
-	static void cb_ok (fltk::Widget* W, void* Data) { ((dialog*)Data)->on_ok(W); }
+    static void cb_ok(fltk::Widget* W, void* Data)
+    {
+        ((dialog*) Data)->on_ok(W);
+    }
 };
 
-}
+} // namespace code_preview
 
 #endif // _ui_code_preview_h_
-

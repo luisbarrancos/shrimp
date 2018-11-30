@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _image_handling_h_
 #define _image_handling_h_
 
@@ -30,31 +29,28 @@
 
 #include <tiffio.h>
 
-
 void initialize_fltk_image_handlers();
-
 
 class opengl_texture : public i_opengl_texture
 {
-public:
-	opengl_texture();
-	~opengl_texture();
+  public:
+    opengl_texture();
+    ~opengl_texture();
 
-	void set_file(const char* filename);
+    void set_file(const char* filename);
 
-	int width();
-	int height();
-	int format();
+    int width();
+    int height();
+    int format();
 
-	uchar* data();
+    uchar* data();
 
-private:
-	fltk::SharedImage* image;
+  private:
+    fltk::SharedImage* image;
 
-	int image_width;
-	int image_height;
-	int image_format;
+    int image_width;
+    int image_height;
+    int image_format;
 };
 
 #endif // _image_handling_h_
-

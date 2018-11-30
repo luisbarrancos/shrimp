@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef OPTIONS_H
 #define OPTIONS_H
 
@@ -26,35 +25,45 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class optionsDialog;
+namespace Ui
+{
+class optionsDialog;
 }
 
-
-class options: public QDialog
+class options : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit options (QWidget* parent, services* shrimpServicesInstance, general_options& optionsInstances);
-    ~options();
+  public:
+    explicit options(
+        QWidget* parent,
+        services* shrimpServicesInstance,
+        general_options& optionsInstances);
+    ~options() override;
 
-public slots:
-    void changeRenderer (const QString& rendererName);
+  public slots:
+    void changeRenderer(const QString& rendererName);
     void cancelButton();
     void okButton();
 
-private:
+  private:
     Ui::optionsDialog* ui;
     services* shrimpServices;
     general_options& preferences;
 
-    void setupRendererCombo (const std::string& rendererCode);
-    void setupDisplayCombo (const std::string& rendererCode, const std::string& rendererDisplay);
-    void setupSceneCombo();
-    void setupPixelFilterCombo (const std::string& rendererCode, const std::string& pixelFilter);
+    void setupRendererCombo(const std::string& rendererCode);
 
-    bool isDouble (const QString& textValue, const QString& fieldName);
+    void setupDisplayCombo(
+        const std::string& rendererCode,
+        const std::string& rendererDisplay);
+
+    void setupSceneCombo();
+
+    void setupPixelFilterCombo(
+        const std::string& rendererCode,
+        const std::string& pixelFilter);
+
+    bool isDouble(const QString& textValue, const QString& fieldName);
 };
 
 #endif // OPTIONS_H

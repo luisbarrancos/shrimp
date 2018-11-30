@@ -25,25 +25,28 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class blockNameDialog;
+namespace Ui
+{
+class blockNameDialog;
 }
 
-
-class block_name: public QDialog
+class block_name : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit block_name (QWidget *parent, services* shrimpServicesInstance, shader_block* block);
-    ~block_name();
+  public:
+    explicit block_name(
+        QWidget* parent,
+        services* shrimpServicesInstance,
+        shader_block* block);
+    ~block_name() override;
 
-public slots:
+  public slots:
     void cancelButton();
     void okButton();
 
-private:
-    Ui::blockNameDialog *ui;
+  private:
+    Ui::blockNameDialog* ui;
     services* shrimpServices;
 
     shader_block* editedBlock;

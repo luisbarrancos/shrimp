@@ -18,95 +18,93 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "logging.h"
 
 #include <iostream>
 
 namespace detail
 {
-
-int log_level_index() {
-
+int log_level_index()
+{
     static int index = std::ios::xalloc();
     return index;
 }
 
-long& log_level(std::ostream& Stream) {
-
-    return Stream.iword (log_level_index());
+long& log_level(std::ostream& Stream)
+{
+    return Stream.iword(log_level_index());
 }
 
 } // namespace detail
 
-std::ostream& log() {
-
-    detail::log_level (std::cerr) = 0;
+std::ostream& log()
+{
+    detail::log_level(std::cerr) = 0;
     return std::cerr;
 }
 
-std::ostream& aspect (std::ostream& Stream) {
-
-    detail::log_level (Stream) = ASPECT;
+std::ostream& aspect(std::ostream& Stream)
+{
+    detail::log_level(Stream) = ASPECT;
     Stream << " Aspect : ";
     return Stream;
 }
 
-std::ostream& debug (std::ostream& Stream) {
-
-    detail::log_level (Stream) = DEBUG;
+std::ostream& debug(std::ostream& Stream)
+{
+    detail::log_level(Stream) = DEBUG;
     Stream << " Debug : ";
     return Stream;
 }
 
-std::ostream& error (std::ostream& Stream) {
-
-    detail::log_level (Stream) = ERROR;
+std::ostream& error(std::ostream& Stream)
+{
+    detail::log_level(Stream) = ERROR;
     Stream << " Error : ";
     return Stream;
 }
 
-std::ostream& warning (std::ostream& Stream) {
-
-    detail::log_level (Stream) = WARNING;
+std::ostream& warning(std::ostream& Stream)
+{
+    detail::log_level(Stream) = WARNING;
     Stream << " Warning : ";
     return Stream;
 }
 
-std::ostream& info (std::ostream& Stream) {
-
-    detail::log_level (Stream) = INFO;
+std::ostream& info(std::ostream& Stream)
+{
+    detail::log_level(Stream) = INFO;
     Stream << " Info : ";
     return Stream;
 }
 
 // filter_by_level_buf
-filter_by_level_buf::filter_by_level_buf (const log_level_t MinimumLevel, std::ostream& Stream) :
-    m_stream (Stream),
-    m_streambuf (Stream.rdbuf()),
-    m_minimum_level (MinimumLevel)
+filter_by_level_buf::filter_by_level_buf(
+    const log_level_t MinimumLevel,
+    std::ostream& Stream)
+    : m_stream(Stream)
+    , m_streambuf(Stream.rdbuf())
+    , m_minimum_level(MinimumLevel)
 {
-    setp(0, 0);
+    setp(nullptr, nullptr);
     m_stream.rdbuf(this);
 }
 
-filter_by_level_buf::~filter_by_level_buf() {
-
+filter_by_level_buf::~filter_by_level_buf()
+{
     m_stream.rdbuf(m_streambuf);
 }
 
-int filter_by_level_buf::overflow (int c) {
-
-    if (detail::log_level (m_stream) <= m_minimum_level)
-        return m_streambuf->sputc (c);
+int filter_by_level_buf::overflow(int c)
+{
+    if (detail::log_level(m_stream) <= m_minimum_level)
+        return m_streambuf->sputc(c);
 
     return c;
 }
 
-int filter_by_level_buf::sync() {
-
+int filter_by_level_buf::sync()
+{
     m_streambuf->pubsync();
     return 0;
 }
-
-

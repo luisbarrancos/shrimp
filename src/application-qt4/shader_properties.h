@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef SHADER_PROPERTIES_H
 #define SHADER_PROPERTIES_H
 
@@ -26,25 +25,25 @@
 
 #include <QDialog>
 
-namespace Ui {
-    class shaderPropertiesDialog;
+namespace Ui
+{
+class shaderPropertiesDialog;
 }
 
-
-class shader_properties: public QDialog
+class shader_properties : public QDialog
 {
     Q_OBJECT
 
-public:
-    explicit shader_properties (QWidget *parent, services* shrimpServicesInstance);
-    ~shader_properties();
+  public:
+    explicit shader_properties(QWidget* parent, services* shrimpServicesInstance);
+    ~shader_properties() override;
 
-public slots:
+  public slots:
     void cancelButton();
     void okButton();
 
-private:
-    Ui::shaderPropertiesDialog *ui;
+  private:
+    Ui::shaderPropertiesDialog* ui;
     services* shrimpServices;
 };
 

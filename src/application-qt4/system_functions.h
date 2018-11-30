@@ -18,7 +18,6 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #ifndef _system_functions_h_
 #define _system_functions_h_
 
@@ -28,50 +27,52 @@
 
 #include <string>
 
-class system_functions : public QObject, public i_system_functions
+class system_functions
+    : public QObject,
+      public i_system_functions
 {
     Q_OBJECT
 
-public:
+  public:
     system_functions();
 
     // return user's data directory (home)
-    std::string get_user_directory();
+    std::string get_user_directory() override;
 
     // return temporary directory
-    std::string get_temp_directory();
+    std::string get_temp_directory() override;
 
     // return absolute system path
-    std::string get_absolute_path (const std::string& Path);
+    std::string get_absolute_path(const std::string& Path) override;
 
     // return the content of a directory (directories and files)
-    std::vector<std::string> list_directory (const std::string& directory);
+    std::vector<std::string> list_directory(const std::string& directory) override;
 
     // return true when the path is a directory
-    bool is_directory (const std::string& path);
+    bool is_directory(const std::string& path) override;
 
     // combine paths and files (add '/' or '\')
-    std::string combine_paths (const std::string& path1, const std::string& path2);
+    std::string combine_paths(const std::string& path1, const std::string& path2)
+        override;
 
     // return file extension ("test.xml" returns "xml")
-    std::string get_file_extension (const std::string& file);
+    std::string get_file_extension(const std::string& file) override;
 
     // save text to a file
-    void save_file (const std::string& destination, const std::string& content);
+    void save_file(const std::string& destination, const std::string& content) override;
 
     // execute a command
-    void execute_synchronous_command (const std::string& command);
+    void execute_synchronous_command(const std::string& command) override;
 
     // execute and detach a command
-    void execute_asynchronous_command (const std::string& command);
+    void execute_asynchronous_command(const std::string& command) override;
 
-private:
+  private:
     QProcess* runningProcess;
 
-private slots:
+  private slots:
     void processError(QProcess::ProcessError error);
     void processFinished(int exitCode, QProcess::ExitStatus exitStatus);
 };
 
 #endif // _system_functions_h_
-

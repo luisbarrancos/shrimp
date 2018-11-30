@@ -18,111 +18,104 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "scene.h"
 
 #include "../miscellaneous/misc_string_functions.h"
 
-
-shrimp::group_set_t scene::group_list() {
-
+shrimp::group_set_t scene::group_list()
+{
     shrimp::group_set_t groups;
-    for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
-        groups.insert(g->second);
+    for (auto& m_group : m_groups)
+    {
+        groups.insert(m_group.second);
     }
 
     return groups;
 }
 
-
-void scene::add_to_group (const std::string& Block, const int Group) {
-
+void scene::add_to_group(const std::string& Block, const int Group)
+{
     if (Block.size() && Group)
-        m_groups.insert (std::make_pair(Block, Group));
+        m_groups.insert(std::make_pair(Block, Group));
 }
 
-
-int scene::get_block_group (const shader_block* Block) {
-
-    shrimp::groups_t::const_iterator g = m_groups.find(Block->name());
-    if(g == m_groups.end())
+int scene::get_block_group(const shader_block* Block)
+{
+    auto g = m_groups.find(Block->name());
+    if (g == m_groups.end())
         return 0;
 
     return g->second;
 }
 
-
-void scene::ungroup (const int Group) {
-
+void scene::ungroup(const int Group)
+{
     shrimp::groups_t groups2;
-    for (shrimp::groups_t::iterator g = m_groups.begin(); g != m_groups.end(); ++g) {
-
-        if (g->second != Group) {
-
-            groups2.insert (*g);
+    for (auto& m_group : m_groups)
+    {
+        if (m_group.second != Group)
+        {
+            groups2.insert(m_group);
         }
     }
 
     m_groups = groups2;
 
-    m_group_names.erase (Group);
+    m_group_names.erase(Group);
 }
 
-
-void scene::group_blocks (const shrimp::shader_blocks_t& Blocks)
+void scene::group_blocks(const shrimp::shader_blocks_t& Blocks)
 {
     // find the next group number
     int max = 0;
-    for (shrimp::groups_t::const_iterator g = m_groups.begin(); g != m_groups.end(); ++g)
+    for (auto& m_group : m_groups)
     {
-        if(g->second > max)
-            max = g->second;
+        if (m_group.second > max)
+            max = m_group.second;
     }
     ++max;
 
     // store new group
-    for (shrimp::shader_blocks_t::const_iterator block_i = Blocks.begin(); block_i != Blocks.end(); ++block_i)
+    for (auto Block : Blocks)
     {
-        m_groups.insert(std::make_pair((*block_i)->name(), max));
+        m_groups.insert(std::make_pair(Block->name(), max));
     }
 }
 
-
-shrimp::shader_blocks_t scene::get_group_blocks (const int Group)
+shrimp::shader_blocks_t scene::get_group_blocks(const int Group)
 {
     shrimp::shader_blocks_t blocks;
 
-    for (shrimp::groups_t::const_iterator block_i = m_groups.begin(); block_i != m_groups.end(); ++block_i)
+    for (auto& m_group : m_groups)
     {
-        if (block_i->second == Group)
+        if (m_group.second == Group)
         {
-            blocks.insert (get_block (block_i->first));
+            blocks.insert(get_block(m_group.first));
         }
     }
 
     return blocks;
 }
 
-
-const std::string scene::get_group_name (const int Group) const {
-
-    group_names_t::const_iterator name = m_group_names.find(Group);
+const std::string scene::get_group_name(const int Group) const
+{
+    auto name = m_group_names.find(Group);
     if (name == m_group_names.end())
         return "Group " + string_cast(Group);
 
     return name->second;
 }
 
-
-void scene::set_group_name(const int Group, const std::string& Name) {
-
-    group_names_t::iterator g = m_group_names.find(Group);
-    if (g == m_group_names.end()) {
-        m_group_names.insert (std::make_pair(Group, Name));
-    } else {
+void scene::set_group_name(const int Group, const std::string& Name)
+{
+    auto g = m_group_names.find(Group);
+    if (g == m_group_names.end())
+    {
+        m_group_names.insert(std::make_pair(Group, Name));
+    }
+    else
+    {
         // insert() does not erase an existing record
         g->second = Name;
     }
 }
-
-

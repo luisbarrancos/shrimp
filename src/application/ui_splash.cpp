@@ -18,41 +18,37 @@
     along with Shrimp 2.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 #include "ui_splash.h"
 
 #include <fltk/DoubleBufferWindow.h>
-#include <fltk/SharedImage.h>
 #include <fltk/Monitor.h>
+#include <fltk/SharedImage.h>
 #include <fltk/run.h>
 
+fltk::Window* splash_screen()
+{
+    fltk::DoubleBufferWindow* o = new fltk::DoubleBufferWindow(550, 400, "splash screen");
+    o->type(241);
+    o->color((fltk::Color) 97);
+    o->selection_color((fltk::Color) 47);
+    o->begin();
+    fltk::Group* g = new fltk::Group(0, 0, 550, 400);
+    g->image(fltk::jpegImage::get("data/splash.jpg"));
+    g->resizable(o);
+    o->end();
+    o->set_non_modal();
+    o->clear_border();
+    o->resizable(o);
 
-fltk::Window* splash_screen() {
+    o->border(false);
+    o->Rectangle::set(fltk::Monitor::find(0, 0), o->w(), o->h(), fltk::ALIGN_CENTER);
+    o->show();
+    o->flush();
 
-	fltk::DoubleBufferWindow* o = new fltk::DoubleBufferWindow(550, 400, "splash screen");
-	o->type(241);
-	o->color((fltk::Color)97);
-	o->selection_color((fltk::Color)47);
-	o->begin();
-		fltk::Group* g = new fltk::Group(0, 0, 550, 400);
-		g->image(fltk::jpegImage::get("data/splash.jpg"));
-		g->resizable(o);
-	o->end();
-	o->set_non_modal();
-	o->clear_border();
-	o->resizable(o);
+    do
+    {
+        fltk::check();
+    } while (!o->visible());
 
-	o->border(false);
-	o->Rectangle::set(fltk::Monitor::find(0,0),o->w(),o->h(),fltk::ALIGN_CENTER);
-	o->show();
-	o->flush();
-
-	do {
-		fltk::check();
-
-	} while (!o->visible());
-
-	return o;
+    return o;
 }
-
-
